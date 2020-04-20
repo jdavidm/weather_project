@@ -1,5 +1,6 @@
-* Project: weather
-* Created: April 2020
+* Project: WB Weather
+* Created on: April 2020
+* Created by: jdm
 * Stata v.16
 
 * does
@@ -16,7 +17,7 @@
 		-This means we only want to drop data from the months Jun, Jul, Aug, Sep, Oct */
 
 * assumes
-	* masterDoFile.do run
+	* masterDoFile.do (unwritten)
 
 * TO DO:
 	* completed
@@ -30,6 +31,9 @@ global user "jdmichler"
 
 loc root = "G:\My Drive\weather_project\weather_data\tanzania\wave_1\raw"
 loc export = "G:\My Drive\weather_project\weather_data\tanzania\wave_1\daily"
+loc logout = "G:\My Drive\weather_project\weather_data\tanzania\log"
+
+log using `logout'/tza_npsy1_converter
 
 
 * **********************************************************************
@@ -116,7 +120,7 @@ foreach var of varlist rf_* {
 		loc ext = substr("`file'", 7, 2)
 		loc sat = substr("`file'", 10, 3)
 			
-	save "`export'/`folder'/`dat'_`ext'_`sat'_daily.dta", replace
+	customsave "`export'/`folder'/`dat'_`ext'_`sat'_daily.dta", replace
 	}
 }
 
@@ -205,8 +209,10 @@ foreach var of varlist tmp_* {
 		loc ext = substr("`file'", 7, 2)
 		loc sat = substr("`file'", 10, 2)
 		
-	save "`export'/`folder'/`dat'_`ext'_`sat'_daily.dta", replace
+	customsave "`export'/`folder'/`dat'_`ext'_`sat'_daily.dta", replace
 	}
 }
+
+log close
 
 /* END */
