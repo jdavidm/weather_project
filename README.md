@@ -49,30 +49,29 @@ The general repo structure looks as follows:<br>
 ```stata
 weather_project
 ├────README.md
+├────masterDoFile.do
 │    
-├────dataWork
-│    ├──masterDoFile.do
-│    │
-│    ├──country             /* one dir for each country */
-│    │  ├──household_code
-│    │  │  ├──wave          /* one dir for each wave */
-│    │  │  └──logs
-│    │  ├──weather_code
-│    │  │  ├──wave          /* one dir for each wave */
-│    │  │  └──logs
-|    |  ├──regression_code
-|    |  ├──output
-│    │  │  ├──tables
-│    │  │  └──figures
-│    │
-│    └──Analysis            /* overall analysis */
-│       ├──code
-│       │  └──logs
-│       └──output
-│          ├──tables
-│          └──figures
+├────country             /* one dir for each country */
+│    ├──household_code
+│    │  ├──wave          /* one dir for each wave */
+│    │  └──logs
+│    ├──weather_code
+│    │  ├──wave          /* one dir for each wave */
+│    │  └──logs
+│    ├──regression_code
+│    │  └──logs
+│    └──output
+│       ├──tables
+│       └──figures
+│
+│────Analysis            /* overall analysis */
+│    ├──code
+│    │  └──logs
+│    └──output
+│       ├──tables
+│       └──figures
 │   
-└──config
+└────config
 ```
 
   [1]: https://osf.io/8hnz5/
