@@ -1,10 +1,24 @@
-/*===========================================================================
-project:      Weather Statistics 
-Author:       Anna Josephson & Jeffrey D. Michler
----------------------------------------------------------------------------
-Creation Date:      July  16, 2017 
-Adapted Date:		July  11, 2019
-===========================================================================*/
+* Project: weather
+* Created: April 2020
+* Stata v.16
+
+* does
+	* reads in .dta files with daily values
+    * runs weather_command .ado file
+	* outputs .dta file of the relevant weather variables
+	* does the above for both rainfall and temperature data
+
+* assumes
+	* masterDoFile.do
+	* weather_command
+
+* TO DO:
+	* completed
+
+	
+* **********************************************************************
+* 0 - setup
+* **********************************************************************
 
 clear all
 set more off
@@ -12,29 +26,19 @@ set maxvar 32766
 
 discard
 
-/*=========================================================================
-                         0: Program Setup
-===========================================================================*/
-
 *-----0.1: Set up directories
 
 global user "themacfreezie"
 
 * For data
-loc root = "C:\Users/$user\Dropbox\Weather_Project\Data\Tanzania\weather_datasets\TZA_NPSY1"
+loc root = "G:\My Drive\weather_project\weather_data\tanzania\wave_1\daily"
 * To export results
-loc export = "C:\Users/$user\Dropbox\Weather_Project\Data\Tanzania\weather_datasets\TZA_NPSY1"
-* Command location
-loc command = "C:\Users/$user\Dropbox\Weather_Project\Data\Tanzania\weather_datasets"
-
-*-----0.2: Load command in memory
-
-do "`command'/weather.do"
+loc root = "G:\My Drive\weather_project\weather_data\tanzania\wave_1\refined"
 
 
-/*=========================================================================
-                         1: Run command for rain datasets
-===========================================================================*/
+* **********************************************************************
+* 1 - run command for rainfall
+* **********************************************************************
 
 local folderList : dir "`root'" dirs "NPSY1_rf*"
 
@@ -49,10 +53,10 @@ foreach folder of local folderList {
 	}
 }
 
-/*=========================================================================
-                         2: Run command for temperature datasets
-===========================================================================*/
 
+* **********************************************************************
+* 2 - run command for temperature
+* **********************************************************************
 
 local folderList : dir "`root'" dirs "NPSY1_t*"
 
@@ -66,3 +70,5 @@ foreach folder of local folderList {
 		weather tmp_ , temperature_data growbase_low(10) growbase_high(30) ini_month(1) fin_month(7) day_month(1) keep(hhid) save("`root'/`folder'/`dat'_`ext'_`sat'.dta")
 		}
 }
+
+/* END */
