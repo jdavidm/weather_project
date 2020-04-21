@@ -20,36 +20,45 @@
 * 0 - setup
 * **********************************************************************
 
-clear all
-set more off
-set maxvar 32766
+* set global user
+	global user "jdmichler"
 
-discard
+* define paths	
+	global root = "G:/My Drive/weather_project/weather_data/tanzania/wave_1/daily"
+	global export = "G:/My Drive/weather_project/weather_data/tanzania/wave_1/refined"
+	global logout = "C:/Users/$user/git/weather_project/tanzania/weather_code/logs"
 
-*-----0.1: Set up directories
-
-global user "themacfreezie"
-
-* For data
-loc root = "G:\My Drive\weather_project\weather_data\tanzania\wave_1\daily"
-* To export results
-loc root = "G:\My Drive\weather_project\weather_data\tanzania\wave_1\refined"
+* open log	
+	log using "`logout'/tza_npsy1_weather"
 
 
 * **********************************************************************
 * 1 - run command for rainfall
 * **********************************************************************
 
-local folderList : dir "`root'" dirs "NPSY1_rf*"
+* define local with all sub-folders in it
+	loc folderList : dir "`root'" dirs "NPSY1_rf*"
 
+* loop through each of the sub-folders in the above local
 foreach folder of local folderList {
-	local fileList : dir "`root'/`folder'" files "*.dta"
+	
+	* define local with all files in each sub-folder
+		loc fileList : dir "`root'/`folder'" files "*.dta"
+	
+	* loop through each file in the above local
 	foreach file in `fileList' {
+		
+		* import the daily data file
 		use `root'/`folder'/`file', clear
+		
+		* define locals to govern file naming
 		loc dat = substr("`file'", 1, 5)
 		loc ext = substr("`file'", 7, 2)
 		loc sat = substr("`file'", 10, 3)
-		weather rf_ , rain_data ini_month(1) fin_month(7) day_month(1) keep(hhid) save("`root'/`folder'/`dat'_`ext'_`sat'.dta")
+		
+		* run the user written weather command - this takes a while
+		weather rf_ , rain_data ini_month(1) fin_month(7) day_month(1) keep(hhid)
+		customsave , idvar(hhid) filename(`dat'_`ext'_`sat'.dta) path($export/`folder') dofile(TZA_NPSY1_weather)
 	}
 }
 
@@ -58,16 +67,29 @@ foreach folder of local folderList {
 * 2 - run command for temperature
 * **********************************************************************
 
-local folderList : dir "`root'" dirs "NPSY1_t*"
+* define local with all sub-folders in it
+	loc folderList : dir "`root'" dirs "NPSY1_t*"
 
+* loop through each of the sub-folders in the above local
 foreach folder of local folderList {
-	local fileList : dir "`root'/`folder'" files "*.dta"
+
+	* define local with all files in each sub-folder	
+	loc fileList : dir "`root'/`folder'" files "*.dta"
+	
+	* loop through each file in the above local
 	foreach file in `fileList' {
+		
+		* import the daily data file		
 		use `root'/`folder'/`file', clear
+		
+		* define locals to govern file naming		
 		loc dat = substr("`file'", 1, 5)
 		loc ext = substr("`file'", 7, 2)
 		loc sat = substr("`file'", 10, 2)
-		weather tmp_ , temperature_data growbase_low(10) growbase_high(30) ini_month(1) fin_month(7) day_month(1) keep(hhid) save("`root'/`folder'/`dat'_`ext'_`sat'.dta")
+		
+		* run the user written weather command - this takes a while		
+		weather tmp_ , temperature_data growbase_low(10) growbase_high(30) ini_month(1) fin_month(7) day_month(1) keep(hhid)
+		customsave , idvar(hhid) filename(`dat'_`ext'_`sat'.dta) path($export/`folder') dofile(TZA_NPSY1_weather)
 		}
 }
 

@@ -1,0 +1,22 @@
+{smcl}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}C:\Users/jdmichler\git\weather_project\tanzania\weather_code\logs/tza_npsy1_converter.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res}20 Apr 2020, 18:54:41
+{txt}
+{com}. 
+. 
+{txt}end of do-file
+
+{com}. do "C:\Users\JDMICH~1\AppData\Local\Temp\STD5fe0_000000.tmp"
+{txt}
+{com}. 
+. log close
+      {txt}name:  {res}<unnamed>
+       {txt}log:  {res}C:\Users/jdmichler\git\weather_project\tanzania\weather_code\logs/tza_npsy1_converter.smcl
+  {txt}log type:  {res}smcl
+ {txt}closed on:  {res}20 Apr 2020, 18:55:45
+{txt}{.-}
+{smcl}
+{txt}{sf}{ul off}
