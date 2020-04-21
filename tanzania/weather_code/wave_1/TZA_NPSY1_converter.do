@@ -31,32 +31,35 @@
 	global user "jdmichler"
 
 * define paths
-	global root = "G:/My Drive/weather_project/weather_data/tanzania/wave_1/raw"
-	global export = "G:/My Drive/weather_project/weather_data/tanzania/wave_1/daily"
-	global logout = "C:/Users/$user/git/weather_project/tanzania/weather_code/logs"
+	loc root = "G:/My Drive/weather_project/weather_data/tanzania/wave_1/raw"
+	loc export = "G:/My Drive/weather_project/weather_data/tanzania/wave_1/daily"
+	loc logout = "C:/Users/$user/git/weather_project/tanzania/weather_code/logs"
 
 * open log
-	log using "`logout'/tza_npsy1_converter"
+	log using "`logout'/tza_npsy1_converter", replace
 
 
 * **********************************************************************
 * 1 - converts rainfall data
 * **********************************************************************
 
-* define local with all sub-folders in it
-	loc folderList : dir "$root" dirs "NPSY1_rf*"
+/* define local with all sub-folders in it
+loc folderList : dir "`root'" dirs "NPSY1_rf*"
+
+* define local with all files in each sub-folder
+foreach folder of loc folderList {
 	
-* loop through each of the sub-folders in the above local
-foreach folder of local folderList {
+	*create directories to write output to
+	qui: capture mkdir "`export'/`folder'/"
 	
-	* define local with all files in each sub-folder
-		loc fileList : dir "$root/`folder'" files "*.csv"
+	* loop through each file in the above local
+	loc fileList : dir "`root'/`folder'" files "*.csv"
 	
 	* loop through each file in the above local
 	foreach file in `fileList' {
 		
 		* import the .csv files - this takes time
-		import delimited $root/`folder'/`file', varnames (1) clear
+		import delimited "`root'/`folder'/`file'", varnames (1) clear
 
 		* drop early and late observations
 		drop 	rf_19830101-rf_19831031 ///
@@ -69,8 +72,7 @@ foreach folder of local folderList {
 			if substr("`var'", 8, 2) == "08" drop `var'
 			if substr("`var'", 8, 2) == "09" drop `var'
 			if substr("`var'", 8, 2) == "10" drop `var'
-		}
-		
+	}
 		* shift early month variables one year forward, year refers to start of season
 		foreach var of varlist rf_* {
 			loc year = substr("`var'", 4, 4)
@@ -79,7 +81,6 @@ foreach folder of local folderList {
 			loc cyear = `year'-1
 			if `month' < 11 rename `var' rf_`cyear'`month'`day'
 		}
-		
 		* rename the five early month variables			
 		foreach var of varlist rf_* {
 			loc year = substr("`var'", 4, 4)
@@ -116,7 +117,6 @@ foreach folder of local folderList {
 			loc nmonth = `month'+2
 			if `month' == 01 rename `var' rf_`year'0`nmonth'`day'
 		}
-		
 		* rename the two later month variables			
 		foreach var of varlist rf_* {
 			loc year = substr("`var'", 4, 4)
@@ -132,18 +132,17 @@ foreach folder of local folderList {
 			loc nmonth = `month'-10
 			if `month' == 12 rename `var' rf_`year'0`nmonth'`day'
 		}
-		
 		* define locals to govern file naming
 		loc dat = substr("`file'", 1, 5)
 		loc ext = substr("`file'", 7, 2)
 		loc sat = substr("`file'", 10, 3)
-	
+		
 	* save file
-	save "$export/`folder'/`dat'_`ext'_`sat'_daily.dta", replace		
-	customsave , idvar(hhid) filename(`dat'_`ext'_`sat'_daily.dta) path($export/`folder') dofile(TZA_NPSY1_converter)
+	customsave , idvar(hhid) filename("`dat'_`ext'_`sat'_daily.dta") ///
+		path("`export'/`folder'") dofile(TZA_NPSY1_converter) user(jdmichler)
 	}
 }
-
+*/
 
 * **********************************************************************
 * 2 - converts temperature data
@@ -155,14 +154,17 @@ foreach folder of local folderList {
 * loop through each of the sub-folders in the above local
 foreach folder of local folderList {
 	
+	*create directories to write output to
+	qui: capture mkdir "`export'/`folder'/"
+	
 	* define local with all files in each sub-folder	
 		loc fileList : dir "`root'/`folder'" files "*.csv"
-	
+		
 	* loop through each file in the above local	
 	foreach file in `fileList' {
-
+		
 		* import the .csv files - this takes time	
-		import delimited `root'/`folder'/`file', varnames (1) clear
+		import delimited "`root'/`folder'/`file'", varnames(1) encoding(Big5) clear
 
 		* drop early and late observations
 		drop 	tmp_19830101-tmp_19831031 ///
@@ -176,7 +178,6 @@ foreach folder of local folderList {
 			if substr("`var'", 9, 2) == "09" drop `var'
 			if substr("`var'", 9, 2) == "10" drop `var'
 		}
-		
 		* shift early month variables one year forward
 		foreach var of varlist tmp_* {
 			loc year = substr("`var'", 5, 4)
@@ -185,7 +186,6 @@ foreach folder of local folderList {
 			loc cyear = `year'-1
 			if `month' < 11 rename `var' tmp_`cyear'`month'`day'
 		}
-		
 		* rename the five early month variables			
 		foreach var of varlist tmp_* {
 			loc year = substr("`var'", 5, 4)
@@ -245,8 +245,8 @@ foreach folder of local folderList {
 		loc sat = substr("`file'", 10, 2)
 
 	* save file
-	save "`export'/`folder'/`dat'_`ext'_`sat'_daily.dta", replace
-	customsave , idvar(hhid) filename(`dat'_`ext'_`sat'_daily.dta) path($export/`folder') dofile(TZA_NPSY1_converter)
+	customsave , idvar(hhid) filename("`dat'_`ext'_`sat'_daily.dta") ///
+		path("`export'/`folder'") dofile(TZA_NPSY1_converter) user(jdmichler)
 	}
 }
 
