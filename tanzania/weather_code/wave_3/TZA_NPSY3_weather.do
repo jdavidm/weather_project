@@ -65,10 +65,10 @@ foreach folder of local folderList {
 		loc sat = substr("`file'", 10, 3)
 		
 		* run the user written weather command - this takes a while
-		weather rf_ , rain_data ini_month(1) fin_month(7) day_month(1) keep(hhid)
+		weather rf_ , rain_data ini_month(1) fin_month(7) day_month(1) keep(y3_hhid)
 		
 		* save file
-		customsave , idvar(hhid) filename("`dat'_`ext'_`sat'.dta") ///
+		customsave , idvar(y3_hhid) filename("`dat'_`ext'_`sat'.dta") ///
 			path("`export'/`folder'") dofile(TZA_NPSY3_weather) user(jdmichler)
 	}
 }
@@ -102,10 +102,10 @@ foreach folder of local folderList {
 		loc sat = substr("`file'", 10, 2)
 		
 		* run the user written weather command - this takes a while		
-		weather tmp_ , temperature_data growbase_low(10) growbase_high(30) ini_month(1) fin_month(7) day_month(1) keep(hhid)
+		weather tmp_ , temperature_data growbase_low(10) growbase_high(30) ini_month(1) fin_month(7) day_month(1) keep(y3_hhid)
 		
 		* save file
-		customsave , idvar(hhid) filename("`dat'_`ext'_`sat'.dta") ///
+		customsave , idvar(y3_hhid) filename("`dat'_`ext'_`sat'.dta") ///
 			path("`export'/`folder'") dofile(TZA_NPSY3_weather) user(jdmichler)
 		}
 }

@@ -134,7 +134,7 @@ foreach folder of loc folderList {
 		loc sat = substr("`file'", 10, 3)
 		
 	* save file
-	customsave , idvar(hhid) filename("`dat'_`ext'_`sat'_daily.dta") ///
+	customsave , idvar(y4_hhid) filename("`dat'_`ext'_`sat'_daily.dta") ///
 		path("`export'/`folder'") dofile(TZA_NPSY4_converter) user(jdmichler)
 	}
 }
@@ -241,7 +241,7 @@ foreach folder of local folderList {
 		loc sat = substr("`file'", 10, 2)
 
 	* save file
-	customsave , idvar(hhid) filename("`dat'_`ext'_`sat'_daily.dta") ///
+	customsave , idvar(y4_hhid) filename("`dat'_`ext'_`sat'_daily.dta") ///
 		path("`export'/`folder'") dofile(TZA_NPSY4_converter) user(jdmichler)
 	}
 }
