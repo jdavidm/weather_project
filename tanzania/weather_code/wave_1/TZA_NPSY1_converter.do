@@ -4,7 +4,7 @@
 * Stata v.16
 
 * does
-	* reads in .csv files
+	* reads in Tanzania, wave 1 .csv files
     * drops unnecessary daily observations
 	* outputs .dta file ready for processing by the weather program
 	* does the above for both rainfall and temperature data
@@ -17,7 +17,7 @@
 		-This means we only want to drop data from the months Jun, Jul, Aug, Sep, Oct */
 
 * assumes
-	* masterDoFile.do (unwritten)
+	* TZA_NPS_masterDoFile.do
 
 * TO DO:
 	* completed
@@ -49,7 +49,7 @@ loc folderList : dir "`root'" dirs "NPSY1_rf*"
 * define local with all files in each sub-folder
 foreach folder of loc folderList {
 	
-	*create directories to write output to
+	* create directories to write output to
 	qui: capture mkdir "`export'/`folder'/"
 	
 	* loop through each file in the above local

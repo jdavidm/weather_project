@@ -4,7 +4,7 @@
 * Stata v.16
 
 * does
-	* reads in Tanzania, wave 2 .csv files
+	* reads in Tanzania, wave 4 .csv files
     * drops unnecessary daily observations
 	* outputs .dta file ready for processing by the weather program
 	* does the above for both rainfall and temperature data
@@ -31,12 +31,12 @@
 	global user "jdmichler"
 
 * define paths
-	loc root = "G:/My Drive/weather_project/weather_data/tanzania/wave_2/raw"
-	loc export = "G:/My Drive/weather_project/weather_data/tanzania/wave_2/daily"
+	loc root = "G:/My Drive/weather_project/weather_data/tanzania/wave_4/raw"
+	loc export = "G:/My Drive/weather_project/weather_data/tanzania/wave_4/daily"
 	loc logout = "G:/My Drive/weather_project/weather_data/tanzania/logs"
 
 * open log
-	log using "`logout'/tza_npsy2_converter", replace
+	log using "`logout'/tza_npsy4_converter", replace
 
 
 * **********************************************************************
@@ -44,12 +44,12 @@
 * **********************************************************************
 
 * define local with all sub-folders in it
-loc folderList : dir "`root'" dirs "NPSY2_rf*"
+loc folderList : dir "`root'" dirs "NPSY4_rf*"
 
 * define local with all files in each sub-folder
 foreach folder of loc folderList {
 	
-	* create directories to write output to
+	*create directories to write output to
 	qui: capture mkdir "`export'/`folder'/"
 	
 	* loop through each file in the above local
@@ -139,7 +139,7 @@ foreach folder of loc folderList {
 		
 	* save file
 	customsave , idvar(hhid) filename("`dat'_`ext'_`sat'_daily.dta") ///
-		path("`export'/`folder'") dofile(TZA_NPSY2_converter) user(jdmichler)
+		path("`export'/`folder'") dofile(TZA_NPSY4_converter) user(jdmichler)
 	}
 }
 
@@ -149,12 +149,12 @@ foreach folder of loc folderList {
 * **********************************************************************
 
 * define local with all sub-folders in it
-	loc folderList : dir "`root'" dirs "NPSY2_t*"
+	loc folderList : dir "`root'" dirs "NPSY4_t*"
 
 * loop through each of the sub-folders in the above local
 foreach folder of local folderList {
 	
-	* create directories to write output to
+	*create directories to write output to
 	qui: capture mkdir "`export'/`folder'/"
 	
 	* define local with all files in each sub-folder	
@@ -246,7 +246,7 @@ foreach folder of local folderList {
 
 	* save file
 	customsave , idvar(hhid) filename("`dat'_`ext'_`sat'_daily.dta") ///
-		path("`export'/`folder'") dofile(TZA_NPSY2_converter) user(jdmichler)
+		path("`export'/`folder'") dofile(TZA_NPSY4_converter) user(jdmichler)
 	}
 }
 

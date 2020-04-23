@@ -3,7 +3,7 @@
 * Stata v.16
 
 * does
-	* reads in Tanzania, wave 3 .dta files with daily values
+	* reads in Tanzania, wave 4 .dta files with daily values
     * runs weather_command .ado file
 	* outputs .dta file of the relevant weather variables
 	* does the above for both rainfall and temperature data
@@ -24,12 +24,12 @@
 	global user "jdmichler"
 
 * define paths	
-	loc root = "G:/My Drive/weather_project/weather_data/tanzania/wave_3/daily"
-	loc export = "G:/My Drive/weather_project/weather_data/tanzania/wave_3/refined"
+	loc root = "G:/My Drive/weather_project/weather_data/tanzania/wave_4/daily"
+	loc export = "G:/My Drive/weather_project/weather_data/tanzania/wave_4/refined"
 	loc logout = "G:/My Drive/weather_project/weather_data/tanzania/logs"
 
 * open log	
-	*log using "`logout'/tza_npsy3_weather"
+	*log using "`logout'/tza_npsy4_weather"
 
 
 * **********************************************************************
@@ -37,7 +37,7 @@
 * **********************************************************************
 
 * define local with all sub-folders in it
-	loc folderList : dir "`root'" dirs "NPSY3_rf*"
+	loc folderList : dir "`root'" dirs "NPSY4_rf*"
 
 * loop through each of the sub-folders in the above local
 foreach folder of local folderList {
@@ -64,7 +64,7 @@ foreach folder of local folderList {
 		
 		* save file
 		customsave , idvar(hhid) filename("`dat'_`ext'_`sat'.dta") ///
-			path("`export'/`folder'") dofile(TZA_NPSY3_weather) user(jdmichler)
+			path("`export'/`folder'") dofile(TZA_NPSY4_weather) user(jdmichler)
 	}
 }
 
@@ -74,7 +74,7 @@ foreach folder of local folderList {
 * **********************************************************************
 
 * define local with all sub-folders in it
-	loc folderList : dir "`root'" dirs "NPSY3_t*"
+	loc folderList : dir "`root'" dirs "NPSY4_t*"
 
 * loop through each of the sub-folders in the above local
 foreach folder of local folderList {
@@ -101,7 +101,7 @@ foreach folder of local folderList {
 		
 		* save file
 		customsave , idvar(hhid) filename("`dat'_`ext'_`sat'.dta") ///
-			path("`export'/`folder'") dofile(TZA_NPSY3_weather) user(jdmichler)
+			path("`export'/`folder'") dofile(TZA_NPSY4_weather) user(jdmichler)
 		}
 }
 
