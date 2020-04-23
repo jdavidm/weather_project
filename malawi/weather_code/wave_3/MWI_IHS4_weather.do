@@ -1,68 +1,114 @@
-/*===========================================================================
-project:      Weather Statistics 
-Author:       Anna Josephson & Jeffrey D. Michler
----------------------------------------------------------------------------
-Creation Date:      July  16, 2017 
-Adapted Date:		July   2, 2019
-===========================================================================*/
+* Project: weather
+* Created: April 2020
+* Stata v.16
 
-clear all
-set more off
-set maxvar 20000
-discard
+* does
+	* reads in Malawi IHS4, which we term wave 3, .dta files with daily values
+    * runs weather_command .ado file
+	* outputs .dta file of the relevant weather variables
+	* does the above for both rainfall and temperature data
+	/* 	-the growing season that we care about is defined on the FAO website:
+			http://www.fao.org/giews/countrybrief/country.jsp?code=MWI
+		-we measure rainfall during the months that the FAO defines as sowing and growing
+		-we define the relevant months as January 1 - July 31 */
 
-/*=========================================================================
-                         0: Program Setup
-===========================================================================*/
+* assumes
+	* weather_command.ado
 
-*-----0.1: Set up directories
+* TO DO:
+	* completed
 
-global user "jdmichler"
+	
+* **********************************************************************
+* 0 - setup
+* **********************************************************************
 
-* For data
-loc root = "C:\Users/$user\Dropbox\Weather_Project\Data\Malawi\weather_datasets\MWI_IHS4"
-* To export results
-loc export = "C:\Users/$user\Dropbox\Weather_Project\Data\Malawi\weather_datasets\MWI_IHS4"
-* Command location
-loc command = "C:\Users/$user\Dropbox\Weather_Project\Data\Malawi\weather_datasets"
+* set global user
+	global user "jdmichler"
 
-*-----0.2: Load command in memory
+* define paths	
+	loc root = "G:/My Drive/weather_project/weather_data/malawi/wave_3/daily"
+	loc export = "G:/My Drive/weather_project/weather_data/malawi/wave_3/refined"
+	loc logout = "G:/My Drive/weather_project/weather_data/malawi/logs"
 
-do "`command'/weather.do"
+* open log	
+	log using "`logout'/MWI_IHS4_weather"
 
+	
+* **********************************************************************
+* 1 - run command for rainfall
+* **********************************************************************
 
-/*=========================================================================
-                         1: Run command for rain datasets
-===========================================================================*/
+* define local with all sub-folders in it
+	loc folderList : dir "`root'" dirs "IHS4_rf*"
 
-local folderList : dir "`root'" dirs "IHS4_rf*"
-
+* loop through each of the sub-folders in the above local
 foreach folder of local folderList {
-	local fileList : dir "`root'/`folder'" files "*.dta"
+	
+	* create directories to write output to
+	qui: capture mkdir "`export'/`folder'/"
+	
+	* define local with all files in each sub-folder
+		loc fileList : dir "`root'/`folder'" files "*.dta"
+	
+	* loop through each file in the above local
 	foreach file in `fileList' {
-		use `root'/`folder'/`file', clear
+		
+		* import the daily data file
+		use "`root'/`folder'/`file'", clear
+		
+		* define locals to govern file naming
 		loc dat = substr("`file'", 1, 4)
 		loc ext = substr("`file'", 6, 2)
 		loc sat = substr("`file'", 9, 3)
-		weather rf_ , rain_data ini_month(1) fin_month(8) day_month(1) keep(hhid) save("`root'/`folder'/`dat'_`ext'_`sat'.dta")
-		*Note that the naming convention creates a weird file name for x10 since the other extracts are called x1 not x01, etc.
+		
+		* run the user written weather command - this takes a while
+		weather rf_ , rain_data ini_month(1) fin_month(8) day_month(1) keep(hhid)
+		
+		* save file
+		customsave , idvar(hhid) filename("`dat'_`ext'_`sat'.dta") ///
+			path("`export'/`folder'") dofile(MWI_IHS4_weather) user(jdmichler)
 	}
 }
 
-/*=========================================================================
-                         2: Run command for temperature datasets
-===========================================================================*/
 
+* **********************************************************************
+* 2 - run command for temperature
+* **********************************************************************
 
-local folderList : dir "`root'" dirs "IHS4_t*"
+* define local with all sub-folders in it
+	loc folderList : dir "`root'" dirs "IHS4_t*"
 
+* loop through each of the sub-folders in the above local
 foreach folder of local folderList {
-	local fileList : dir "`root'/`folder'" files "*.dta"
+	
+	* create directories to write output to
+	qui: capture mkdir "`export'/`folder'/"
+
+	* define local with all files in each sub-folder	
+	loc fileList : dir "`root'/`folder'" files "*.dta"
+	
+	* loop through each file in the above local
 	foreach file in `fileList' {
-		use `root'/`folder'/`file', clear
+		
+		* import the daily data file		
+		use "`root'/`folder'/`file'", clear
+		
+		* define locals to govern file naming		
 		loc dat = substr("`file'", 1, 4)
 		loc ext = substr("`file'", 6, 2)
 		loc sat = substr("`file'", 9, 2)
-		weather tmp_ , temperature_data growbase_low(10) growbase_high(30) ini_month(1) fin_month(8) day_month(1) keep(hhid) save("`root'/`folder'/`dat'_`ext'_`sat'.dta")
+		
+		* run the user written weather command - this takes a while		
+		weather tmp_ , temperature_data growbase_low(10) growbase_high(30) ini_month(1) fin_month(8) day_month(1) keep(hhid)
+		
+		* save file
+		customsave , idvar(hhid) filename("`dat'_`ext'_`sat'.dta") ///
+			path("`export'/`folder'") dofile(MWI_IHS4_weather) user(jdmichler)
 		}
 }
+
+* close the log
+	log	close
+
+/* END */

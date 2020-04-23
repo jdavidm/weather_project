@@ -1,34 +1,103 @@
-clear all
+* Project: WB Weather
+* Created on: April 2020
+* Created by: jdm
+* Stata v.16
 
-global user "jdmichler"
+* does
+	* reads in Ethiopia, wave 1 .csv files
+	* outputs .dta file ready for processing by the weather program
+	* does the above for both rainfall and temperature data
 
-loc root = "C:\Users/$user\Dropbox\Weather_Project\Data\Ethiopia\weather_datasets\ETH_ESSY1"
-loc export = "C:\Users/$user\Dropbox\Weather_Project\Data\Ethiopia\weather_datasets\ETH_ESSY1"
+* assumes
+	* nothing
 
-local folderList : dir "`root'" dirs "ESSY1_rf*"
+* TO DO:
+	* completed
+
+	
+* **********************************************************************
+* 0 - setup
+* **********************************************************************
+
+* set user
+	global user "jdmichler"
+
+* define paths
+	loc root = "G:/My Drive/weather_project/weather_data/ethiopia/wave_1/raw"
+	loc export = "G:/My Drive/weather_project/weather_data/ethiopia/wave_1/daily"
+	loc logout = "G:/My Drive/weather_project/weather_data/ethiopia/logs"
+
+* open log
+	log using "`logout'/eth_essy1_converter", replace
+
+
+* **********************************************************************
+* 1 - converts rainfall data
+* **********************************************************************
+
+* define local with all sub-folders in it
+	loc folderList : dir "`root'" dirs "ESSY1_rf*"
+
+* loop through each of the sub-folders in the above local
 foreach folder of local folderList {
-	local fileList : dir "`root'/`folder'" files "*.csv"
-	foreach file in `fileList' {
-		import delimited `root'/`folder'/`file', varnames (1) clear
-
-		loc dat = substr("`file'", 1, 5)
-		loc ext = substr("`file'", 8, 2)
-		loc sat = substr("`file'", 11, 3)
+	
+	*create directories to write output to
+	qui: capture mkdir "`export'/`folder'/"
+	
+	* define local with all files in each sub-folder	
+		loc fileList : dir "`root'/`folder'" files "*.csv"
 		
-		save "`export'/`folder'/essy1_`ext'_`sat'_daily.dta", replace
-		}
-		}
+	* loop through each file in the above local	
+	foreach file in `fileList' {
+		
+		* import the .csv files - this takes time	
+		import delimited "`root'/`folder'/`file'", varnames (1) clear
 
-local folderList : dir "`root'" dirs "ESSY1_t*"
+		* define locals to govern file naming	
+			loc dat = substr("`file'", 1, 5)
+			loc ext = substr("`file'", 8, 2)
+			loc sat = substr("`file'", 11, 3)
+
+		* save file
+		customsave , idvar(hhid) filename("`dat'_`ext'_`sat'_daily.dta") ///
+			path("`export'/`folder'") dofile(ETH_ESSY1_converter) user(jdmichler)
+	}
+}
+
+* **********************************************************************
+* 2 - converts temperature data
+* **********************************************************************
+
+* define local with all sub-folders in it
+	loc folderList : dir "`root'" dirs "ESSY1_t*"
+
+* loop through each of the sub-folders in the above local
 foreach folder of local folderList {
-	local fileList : dir "`root'/`folder'" files "*.csv"
-	foreach file in `fileList' {
-		import delimited `root'/`folder'/`file', varnames (1) clear
-
-		loc dat = substr("`file'", 1, 5)
-		loc ext = substr("`file'", 8, 2)
-		loc sat = substr("`file'", 11, 2)
+	
+	*create directories to write output to
+	qui: capture mkdir "`export'/`folder'/"
+	
+	* define local with all files in each sub-folder	
+		loc fileList : dir "`root'/`folder'" files "*.csv"
 		
-		save "`export'/`folder'/essy1_`ext'_`sat'_daily.dta", replace
-		}
-		}
+	* loop through each file in the above local	
+	foreach file in `fileList' {
+		
+		* import the .csv files - this takes time	
+		import delimited "`root'/`folder'/`file'", varnames (1) clear
+
+		* define locals to govern file naming	
+			loc dat = substr("`file'", 1, 5)
+			loc ext = substr("`file'", 8, 2)
+			loc sat = substr("`file'", 11, 3)
+
+		* save file
+		customsave , idvar(hhid) filename("`dat'_`ext'_`sat'_daily.dta") ///
+			path("`export'/`folder'") dofile(ETH_ESSY1_converter) user(jdmichler)
+	}
+}
+
+* close the log
+	log	close
+
+/* END */
