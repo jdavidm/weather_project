@@ -4,20 +4,16 @@
 * Stata v.16
 
 * does
-	* reads in Tanzania, wave 2 .csv files
+	* reads in Tanzania, wave 1 .csv files
     * drops unnecessary daily observations
 	* outputs .dta file ready for processing by the weather program
 	* does the above for both rainfall and temperature data
-	/* 	-The growing season that we care about is defined on the FAO website: http://www.fao.org/giews/countrybrief/country.jsp?code=TZA
-		-We measure rainfall during the months that the FAO defines as sowing and growing
-		-Tanzania has unimodal and bimodal regions. 70% of crop production occurs in regions that are unimodal, so we focus on those
-		-We define the relevant months as Nov 1 - April 30.
-		-To make our weather program work, we need to run the code on data that starts on Nov 1 and ends on May 1
+	/* 	-To make our weather program work, we need to run the code on data that starts on Nov 1 and ends on May 1
 		-Because of this, we will keep rainfall data for the months Nov through May and use the weather command to get rid of May
 		-This means we only want to drop data from the months Jun, Jul, Aug, Sep, Oct */
 
 * assumes
-	* TZA_NPS_masterDoFile.do
+	* nothing
 
 * TO DO:
 	* completed

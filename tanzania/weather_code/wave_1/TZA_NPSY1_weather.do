@@ -7,10 +7,15 @@
     * runs weather_command .ado file
 	* outputs .dta file of the relevant weather variables
 	* does the above for both rainfall and temperature data
+	/* 	-the growing season that we care about is defined on the FAO website:
+			http://www.fao.org/giews/countrybrief/country.jsp?code=TZA
+		-we measure rainfall during the months that the FAO defines as sowing and growing
+		-Tanzania has unimodal and bimodal regions. 70% of crop production occurs in regions that are unimodal, so we focus on those
+		-We define the relevant months as Nov 1 - April 30 */
 
 * assumes
-	* TZA_NPS_masterDoFile.do
 	* weather_command.ado
+	* TZA_NPSY1_converter.do
 
 * TO DO:
 	* completed
