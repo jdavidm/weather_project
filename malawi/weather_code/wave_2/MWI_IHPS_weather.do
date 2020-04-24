@@ -71,7 +71,7 @@ foreach folder of local folderList {
 		
 		* save file
 		customsave , idvar(y2_hhid) filename("`dat'_`ext'_`sat'.dta") ///
-			path("`export'/`folder'") dofile(MWI_IHPS_weather) user(jdmichler)
+			path("`export'/`folder'") dofile(MWI_IHPS_weather) user($user)
 	}
 }
 
