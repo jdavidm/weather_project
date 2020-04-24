@@ -10,6 +10,7 @@
 
 * assumes
 	* weather_command.ado
+	* customsave.ado 
 	* subsidiary, wave-specific .do files
 
 * TO DO:
@@ -20,8 +21,13 @@
 * 0 - setup
 * **********************************************************************
 
+clear
+
+*set max vars
+	set maxvar 120000, perm  // this amount is only allowed for MP editions 
+
 * set global user
-	global user "jdmichler"
+	global user "aljosephson"
 
 * define paths
 	loc root = "C:/Users/$user/git/weather_project/malawi/weather_code"
