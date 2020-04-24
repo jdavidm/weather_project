@@ -9,7 +9,7 @@
 	* does the above for both rainfall and temperature data
 
 * assumes
-	* nothing
+	* customsave.ado
 
 * TO DO:
 	* completed
@@ -20,7 +20,7 @@
 * **********************************************************************
 
 * set user
-	global user "jdmichler"
+*	global user "jdmichler"
 
 * define paths
 	loc root = "G:/My Drive/weather_project/weather_data/ethiopia/wave_1/raw"
@@ -93,7 +93,7 @@ foreach folder of local folderList {
 
 		* save file
 		customsave , idvar(household_id) filename("`dat'_`ext'_`sat'_daily.dta") ///
-			path("`export'/`folder'") dofile(ETH_ESSY1_converter) user(jdmichler)
+			path("`export'/`folder'") dofile(ETH_ESSY1_converter) user($user)
 	}
 }
 

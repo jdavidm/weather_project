@@ -11,6 +11,7 @@
 * assumes
 	* weather_command.ado
 	* subsidiary, wave-specific .do files
+	* customsave.ado
 
 * TO DO:
 	* completed
@@ -30,6 +31,11 @@
 * **********************************************************************
 * 1 - run .do files
 * **********************************************************************
+
+clear
+
+*set max vars
+	set maxvar 120000, perm  // this amount is only allowed for MP editions 
 
 * do each of the file converters
 	do "`root'/wave_1/ETH_ESSY1_converter.do"	//	convert wave 1 .csv to .dta
