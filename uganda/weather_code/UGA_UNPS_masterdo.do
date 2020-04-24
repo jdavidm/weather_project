@@ -1,5 +1,6 @@
-* Project: weather
-* Created: April 2020
+* Project: WB Weather
+* Created on: April 2020
+* Created by: jdm
 * Stata v.16
 
 * does

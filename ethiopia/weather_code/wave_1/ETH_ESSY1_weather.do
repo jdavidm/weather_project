@@ -1,5 +1,6 @@
-* Project: weather
-* Created: April 2020
+* Project: WB Weather
+* Created on: April 2020
+* Created by: jdm
 * Stata v.16
 
 * does
@@ -13,6 +14,7 @@
 		-we define the relevant months as March 1 - November 30 */
 
 * assumes
+	* ETH_ESSY1_converter.do
 	* weather_command.ado
 
 * TO DO:
@@ -40,7 +42,7 @@
 * **********************************************************************
 
 * define local with all sub-folders in it
-	loc folderList : dir "`root'" dirs "ESSY1_rf*"
+	loc folderList : dir "`root'" dirs "ERSSY1_rf*"
 
 * loop through each of the sub-folders in the above local
 foreach folder of local folderList {
@@ -58,15 +60,15 @@ foreach folder of local folderList {
 		use "`root'/`folder'/`file'", clear
 		
 		* define locals to govern file naming
-		loc dat = substr("`file'", 1, 5)
-		loc ext = substr("`file'", 7, 2)
-		loc sat = substr("`file'", 10, 3)
+			loc dat = substr("`file'", 1, 6)
+			loc ext = substr("`file'", 8, 2)
+			loc sat = substr("`file'", 11, 3)
 		
 		* run the user written weather command - this takes a while
 		weather rf_ , rain_data ini_month(3) fin_month(12) day_month(1) keep(hhid)
 		
 		* save file
-		customsave , idvar(hhid) filename("`dat'_`ext'_`sat'.dta") ///
+		customsave , idvar(household_id) filename("`dat'_`ext'_`sat'.dta") ///
 			path("`export'/`folder'") dofile(ETH_ESSY1_weather) user(jdmichler)
 	}
 }
@@ -77,7 +79,7 @@ foreach folder of local folderList {
 * **********************************************************************
 
 * define local with all sub-folders in it
-	loc folderList : dir "`root'" dirs "ESSY1_t*"
+	loc folderList : dir "`root'" dirs "ERSSY1_t*"
 
 * loop through each of the sub-folders in the above local
 foreach folder of local folderList {
@@ -94,16 +96,16 @@ foreach folder of local folderList {
 		* import the daily data file		
 		use "`root'/`folder'/`file'", clear
 		
-		* define locals to govern file naming		
-		loc dat = substr("`file'", 1, 5)
-		loc ext = substr("`file'", 7, 2)
-		loc sat = substr("`file'", 10, 2)
+		* define locals to govern file naming
+			loc dat = substr("`file'", 1, 6)
+			loc ext = substr("`file'", 8, 2)
+			loc sat = substr("`file'", 11, 2)
 		
 		* run the user written weather command - this takes a while		
 		weather tmp_ , temperature_data growbase_low(10) growbase_high(30) ini_month(3) fin_month(12) day_month(1) keep(hhid)
 		
 		* save file
-		customsave , idvar(hhid) filename("`dat'_`ext'_`sat'.dta") ///
+		customsave , idvar(household_id) filename("`dat'_`ext'_`sat'.dta") ///
 			path("`export'/`folder'") dofile(ETH_ESSY1_weather) user(jdmichler)
 		}
 }

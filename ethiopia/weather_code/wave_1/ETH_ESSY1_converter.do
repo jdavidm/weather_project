@@ -36,7 +36,7 @@
 * **********************************************************************
 
 * define local with all sub-folders in it
-	loc folderList : dir "`root'" dirs "ESSY1_rf*"
+	loc folderList : dir "`root'" dirs "ERSSY1_rf*"
 
 * loop through each of the sub-folders in the above local
 foreach folder of local folderList {
@@ -53,13 +53,13 @@ foreach folder of local folderList {
 		* import the .csv files - this takes time	
 		import delimited "`root'/`folder'/`file'", varnames (1) clear
 
-		* define locals to govern file naming	
-			loc dat = substr("`file'", 1, 5)
+		* define locals to govern file naming
+			loc dat = substr("`file'", 1, 6)
 			loc ext = substr("`file'", 8, 2)
 			loc sat = substr("`file'", 11, 3)
 
 		* save file
-		customsave , idvar(hhid) filename("`dat'_`ext'_`sat'_daily.dta") ///
+		customsave , idvar(household_id) filename("`dat'_`ext'_`sat'_daily.dta") ///
 			path("`export'/`folder'") dofile(ETH_ESSY1_converter) user(jdmichler)
 	}
 }
@@ -69,7 +69,7 @@ foreach folder of local folderList {
 * **********************************************************************
 
 * define local with all sub-folders in it
-	loc folderList : dir "`root'" dirs "ESSY1_t*"
+	loc folderList : dir "`root'" dirs "ERSSY1_t*"
 
 * loop through each of the sub-folders in the above local
 foreach folder of local folderList {
@@ -86,13 +86,13 @@ foreach folder of local folderList {
 		* import the .csv files - this takes time	
 		import delimited "`root'/`folder'/`file'", varnames (1) clear
 
-		* define locals to govern file naming	
-			loc dat = substr("`file'", 1, 5)
+		* define locals to govern file naming
+			loc dat = substr("`file'", 1, 6)
 			loc ext = substr("`file'", 8, 2)
-			loc sat = substr("`file'", 11, 3)
+			loc sat = substr("`file'", 11, 2)
 
 		* save file
-		customsave , idvar(hhid) filename("`dat'_`ext'_`sat'_daily.dta") ///
+		customsave , idvar(household_id) filename("`dat'_`ext'_`sat'_daily.dta") ///
 			path("`export'/`folder'") dofile(ETH_ESSY1_converter) user(jdmichler)
 	}
 }

@@ -1,5 +1,6 @@
-* Project: weather
-* Created: April 2020
+* Project: WB Weather
+* Created on: April 2020
+* Created by: jdm
 * Stata v.16
 
 * does
@@ -13,6 +14,7 @@
 		-we define the relevant months as March 1 - November 30 */
 
 * assumes
+	* ETH_ESSY3_converter.do
 	* weather_command.ado
 
 * TO DO:
@@ -58,15 +60,15 @@ foreach folder of local folderList {
 		use "`root'/`folder'/`file'", clear
 		
 		* define locals to govern file naming
-		loc dat = substr("`file'", 1, 5)
-		loc ext = substr("`file'", 7, 2)
-		loc sat = substr("`file'", 10, 3)
+			loc dat = substr("`file'", 1, 5)
+			loc ext = substr("`file'", 7, 2)
+			loc sat = substr("`file'", 10, 3)
 		
 		* run the user written weather command - this takes a while
-		weather rf_ , rain_data ini_month(3) fin_month(12) day_month(1) keep(hhid)
+		weather rf_ , rain_data ini_month(3) fin_month(12) day_month(1) keep(household_id2)
 		
 		* save file
-		customsave , idvar(hhid) filename("`dat'_`ext'_`sat'.dta") ///
+		customsave , idvar(household_id2) filename("`dat'_`ext'_`sat'.dta") ///
 			path("`export'/`folder'") dofile(ETH_ESSY3_weather) user(jdmichler)
 	}
 }
@@ -95,15 +97,15 @@ foreach folder of local folderList {
 		use "`root'/`folder'/`file'", clear
 		
 		* define locals to govern file naming		
-		loc dat = substr("`file'", 1, 5)
-		loc ext = substr("`file'", 7, 2)
-		loc sat = substr("`file'", 10, 2)
+			loc dat = substr("`file'", 1, 5)
+			loc ext = substr("`file'", 7, 2)
+			loc sat = substr("`file'", 10, 2)
 		
 		* run the user written weather command - this takes a while		
-		weather tmp_ , temperature_data growbase_low(10) growbase_high(30) ini_month(3) fin_month(12) day_month(1) keep(hhid)
+		weather tmp_ , temperature_data growbase_low(10) growbase_high(30) ini_month(3) fin_month(12) day_month(1) keep(household_id2)
 		
 		* save file
-		customsave , idvar(hhid) filename("`dat'_`ext'_`sat'.dta") ///
+		customsave , idvar(household_id2) filename("`dat'_`ext'_`sat'.dta") ///
 			path("`export'/`folder'") dofile(ETH_ESSY3_weather) user(jdmichler)
 		}
 }

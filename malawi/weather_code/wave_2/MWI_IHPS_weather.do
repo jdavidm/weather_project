@@ -1,5 +1,6 @@
-* Project: weather
-* Created: April 2020
+* Project: WB Weather
+* Created on: April 2020
+* Created by: jdm
 * Stata v.16
 
 * does
@@ -10,9 +11,10 @@
 	/* 	-the growing season that we care about is defined on the FAO website:
 			http://www.fao.org/giews/countrybrief/country.jsp?code=MWI
 		-we measure rainfall during the months that the FAO defines as sowing and growing
-		-we define the relevant months as January 1 - July 31 */
+		-we define the relevant months as October 1 - April 30 */
 
 * assumes
+	* MWI_IHPS_converter.do
 	* weather_command.ado
 
 * TO DO:
@@ -32,7 +34,7 @@
 	loc logout = "G:/My Drive/weather_project/weather_data/malawi/logs"
 
 * open log	
-	log using "`logout'/MWI_IHPS_weather"
+	log using "`logout'/mwi_ihps_weather"
 
 	
 * **********************************************************************

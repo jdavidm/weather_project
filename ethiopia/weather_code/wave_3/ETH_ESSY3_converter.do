@@ -55,11 +55,11 @@ foreach folder of local folderList {
 
 		* define locals to govern file naming	
 			loc dat = substr("`file'", 1, 5)
-			loc ext = substr("`file'", 8, 2)
-			loc sat = substr("`file'", 11, 3)
+			loc ext = substr("`file'", 7, 2)
+			loc sat = substr("`file'", 10, 3)
 
 		* save file
-		customsave , idvar(hhid) filename("`dat'_`ext'_`sat'_daily.dta") ///
+		customsave , idvar(household_id2) filename("`dat'_`ext'_`sat'_daily.dta") ///
 			path("`export'/`folder'") dofile(ETH_ESSY3_converter) user(jdmichler)
 	}
 }
@@ -88,11 +88,11 @@ foreach folder of local folderList {
 
 		* define locals to govern file naming	
 			loc dat = substr("`file'", 1, 5)
-			loc ext = substr("`file'", 8, 2)
-			loc sat = substr("`file'", 11, 3)
+			loc ext = substr("`file'", 7, 2)
+			loc sat = substr("`file'", 10, 2)
 
 		* save file
-		customsave , idvar(hhid) filename("`dat'_`ext'_`sat'_daily.dta") ///
+		customsave , idvar(household_id2) filename("`dat'_`ext'_`sat'_daily.dta") ///
 			path("`export'/`folder'") dofile(ETH_ESSY3_converter) user(jdmichler)
 	}
 }
