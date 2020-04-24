@@ -49,5 +49,4 @@ clear
 	do "`root'/wave_3/MWI_IHS4_weather.do"		//	generate wave 3 .weather variables
 	do "`root'/wave_4/MWI_IHS4p_weather.do"		//	generate wave 4 .weather variables
 
-	
 /* END */

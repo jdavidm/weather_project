@@ -10,6 +10,7 @@
 
 * assumes
 	* weather_command.ado
+	* customsave.ado 
 	* subsidiary, wave-specific .do files
 
 * TO DO:
@@ -19,6 +20,11 @@
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
+
+clear
+
+*set max vars
+	set maxvar 120000, perm  // this amount is only allowed for MP editions
 
 * set global user
 	global user "jdmichler"
@@ -41,5 +47,4 @@
 	do "`root'/wave_2/UGA_UNPSY2_weather.do"	//	generate wave 2 .weather variables
 	do "`root'/wave_3/UGA_UNPSY3_weather.do"	//	generate wave 3 .weather variables
 
-	
 /* END */
