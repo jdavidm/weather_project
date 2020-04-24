@@ -26,7 +26,8 @@
 * **********************************************************************
 
 * set global user
-	global user "jdmichler"
+	*global user "jdmichler"
+	*global user set in masterdo
 
 * define paths	
 	loc root = "G:/My Drive/weather_project/weather_data/malawi/wave_2/daily"
