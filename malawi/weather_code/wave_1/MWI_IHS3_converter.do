@@ -13,7 +13,7 @@
 		-This means we only want to drop data from the months Jun, Jul, Aug, Sep */
 
 * assumes
-	* nothing
+	* customsave.ado
 
 * TO DO:
 	* completed

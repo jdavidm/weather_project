@@ -16,6 +16,7 @@
 * assumes
 	* MWI_IHS4_converter.do
 	* weather_command.ado
+	* customsave.ado
 
 * TO DO:
 	* completed
