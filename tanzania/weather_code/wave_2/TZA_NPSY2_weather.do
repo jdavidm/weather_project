@@ -26,7 +26,7 @@
 * **********************************************************************
 
 * set global user
-	global user "jdmichler"
+	*global user "jdmichler" // global user set in TZA_NPS_masterdo
 
 * define paths	
 	loc root = "G:/My Drive/weather_project/weather_data/tanzania/wave_2/daily"
@@ -34,7 +34,7 @@
 	loc logout = "G:/My Drive/weather_project/weather_data/tanzania/logs"
 
 * open log	
-	*log using "`logout'/tza_npsy2_weather"
+	log using "`logout'/tza_npsy2_weather", replace
 
 
 * **********************************************************************
@@ -69,7 +69,7 @@ foreach folder of local folderList {
 		
 		* save file
 		customsave , idvar(y2_hhid) filename("`dat'_`ext'_`sat'.dta") ///
-			path("`export'/`folder'") dofile(TZA_NPSY2_weather) user(jdmichler)
+			path("`export'/`folder'") dofile(TZA_NPSY2_weather) user($user)
 	}
 }
 
@@ -106,7 +106,7 @@ foreach folder of local folderList {
 		
 		* save file
 		customsave , idvar(y2_hhid) filename("`dat'_`ext'_`sat'.dta") ///
-			path("`export'/`folder'") dofile(TZA_NPSY2_weather) user(jdmichler)
+			path("`export'/`folder'") dofile(TZA_NPSY2_weather) user($user)
 		}
 }
 
