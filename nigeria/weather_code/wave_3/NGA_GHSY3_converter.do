@@ -20,7 +20,7 @@
 * **********************************************************************
 
 * set user
-*	global user "jdmichler"
+*	global user "jdmichler" // global user set in TZA_NPS_masterdo
 
 * define paths
 	loc root = "G:/My Drive/weather_project/weather_data/nigeria/wave_3/raw"
@@ -28,7 +28,7 @@
 	loc logout = "G:/My Drive/weather_project/weather_data/nigeria/logs"
 
 * open log
-	log using "`logout'/NGA_GHSY3_converter", replace
+	log using "`logout'/nga_ghsy3_converter", replace
 	
 	
 * **********************************************************************
@@ -56,7 +56,7 @@ foreach folder of local folderList {
 		* define locals to govern file naming
 			loc dat = substr("`file'", 1, 5)
 			loc ext = substr("`file'", 7, 2)
-			loc sat = substr("`file'", 10, 2)
+			loc sat = substr("`file'", 10, 3)
 
 		* save file
 		customsave , idvar(hhid) filename("`dat'_`ext'_`sat'_daily.dta") ///

@@ -37,7 +37,7 @@
 	loc logout = "G:/My Drive/weather_project/weather_data/uganda/logs"
 
 * open log	
-	log using "`logout'/uga_unpsy1_weather"
+	log using "`logout'/uga_unpsy1_weather", replace
 
 
 * **********************************************************************
@@ -55,10 +55,7 @@ foreach folder of local folderList {
 	
 	* define local with all files in each sub-folder
 	loc fileList : dir "`root'/`folder'" files "*daily.dta"
-	
-	* create directories to write output to
-	qui: capture mkdir "`export'/`folder'/"
-	
+		
 	* loop through each file in the above local
 	foreach file in `fileList' {
 		
@@ -92,9 +89,6 @@ foreach folder of local folderList {
 	
 	* define local with all files in each sub-folder
 	loc fileList : dir "`root'/`folder'" files "*daily.dta"
-	
-	* create directories to write output to
-	qui: capture mkdir "`export'/`folder'/"
 	
 	* loop through each file in the above local
 	foreach file in `fileList' {
@@ -133,9 +127,6 @@ foreach folder of local folderList {
 	* define local with all files in each sub-folder
 	loc fileList : dir "`root'/`folder'" files "*daily.dta"
 	
-	* create directories to write output to
-	qui: capture mkdir "`export'/`folder'/"
-	
 	* loop through each file in the above local
 	foreach file in `fileList' {
 		
@@ -148,7 +139,7 @@ foreach folder of local folderList {
 			loc sat = substr("`file'", 11, 2)
 		
 		* run the user written weather command - this takes a while
-		weather rf_ , rain_data ini_month(4) fin_month(10) day_month(1) keep(hhid)
+		weather tmp_ , temperature_data growbase_low(10) growbase_high(30) ini_month(4) fin_month(10) day_month(1) keep(hhid)
 		
 		* save file
 		customsave , idvar(hhid) filename("`dat'_`ext'_`sat'_n.dta") ///
@@ -170,9 +161,6 @@ foreach folder of local folderList {
 	* define local with all files in each sub-folder
 	loc fileList : dir "`root'/`folder'" files "*daily.dta"
 	
-	* create directories to write output to
-	qui: capture mkdir "`export'/`folder'/"
-	
 	* loop through each file in the above local
 	foreach file in `fileList' {
 		
@@ -185,7 +173,7 @@ foreach folder of local folderList {
 			loc sat = substr("`file'", 11, 2)
 		
 		* run the user written weather command - this takes a while
-		weather rf_ , rain_data ini_month(2) fin_month(8) day_month(1) keep(hhid)
+		weather tmp_ , temperature_data growbase_low(10) growbase_high(30) ini_month(2) fin_month(8) day_month(1) keep(hhid)
 		
 		* save file
 		customsave , idvar(hhid) filename("`dat'_`ext'_`sat'_s.dta") ///
