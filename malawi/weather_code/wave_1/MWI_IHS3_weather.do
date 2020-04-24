@@ -3,7 +3,6 @@
 * Created by: jdm
 * Stata v.16
 
-
 * does
 	* reads in Malawi IHS3, which we term wave 1, .dta files with daily values
     * runs weather_command .ado file
@@ -28,8 +27,7 @@
 * **********************************************************************
 
 * set global user
-	*global user "jdmichler"
-	*global user set in masterdo
+	*global user "jdmichler" // global user set in masterdo
 	
 * define paths	
 	loc root = "G:/My Drive/weather_project/weather_data/malawi/wave_1/daily"
@@ -63,9 +61,9 @@ foreach folder of local folderList {
 		use "`root'/`folder'/`file'", clear
 		
 		* define locals to govern file naming
-		loc dat = substr("`file'", 1, 4)
-		loc ext = substr("`file'", 6, 2)
-		loc sat = substr("`file'", 9, 3)
+			loc dat = substr("`file'", 1, 4)
+			loc ext = substr("`file'", 6, 2)
+			loc sat = substr("`file'", 9, 3)
 		
 		* run the user written weather command - this takes a while
 		weather rf_ , rain_data ini_month(1) fin_month(8) day_month(1) keep(case_id)
