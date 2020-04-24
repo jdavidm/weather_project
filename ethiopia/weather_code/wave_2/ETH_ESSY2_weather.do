@@ -16,6 +16,7 @@
 * assumes
 	* ETH_ESSY2_converter.do
 	* weather_command.ado
+	* customsave.ado
 
 * TO DO:
 	* completed
@@ -26,7 +27,7 @@
 * **********************************************************************
 
 * set global user
-	global user "jdmichler"
+*	global user "jdmichler"
 
 * define paths	
 	loc root = "G:/My Drive/weather_project/weather_data/ethiopia/wave_2/daily"
@@ -106,7 +107,7 @@ foreach folder of local folderList {
 		
 		* save file
 		customsave , idvar(household_id2) filename("`dat'_`ext'_`sat'.dta") ///
-			path("`export'/`folder'") dofile(ETH_ESSY2_weather) user(jdmichler)
+			path("`export'/`folder'") dofile(ETH_ESSY2_weather) user($user)
 		}
 }
 
