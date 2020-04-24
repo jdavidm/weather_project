@@ -70,7 +70,7 @@ foreach folder of local folderList {
 		
 		* save file
 		customsave , idvar(household_id) filename("`dat'_`ext'_`sat'.dta") ///
-			path("`export'/`folder'") dofile(ETH_ESSY1_weather) user(jdmichler)
+			path("`export'/`folder'") dofile(ETH_ESSY1_weather) user($user)
 	}
 }
 
