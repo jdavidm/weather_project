@@ -254,7 +254,7 @@ foreach folder of local folderList {
 		
 	* save file
 	customsave , idvar(hhid) filename("`dat'_`ext'_`sat'_daily.dta") ///
-		path("`export'/`folder'") dofile(MWI_IHS4_converter) user(jdmichler)
+		path("`export'/`folder'") dofile(MWI_IHS4_converter) user($user)
 	}
 }	
 
