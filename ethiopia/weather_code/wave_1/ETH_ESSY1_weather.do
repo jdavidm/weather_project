@@ -35,7 +35,7 @@
 	loc logout = "G:/My Drive/weather_project/weather_data/ethiopia/logs"
 
 * open log	
-	log using "`logout'/eth_essy1_weather"
+	log using "`logout'/eth_essy1_weather", replace
 
 
 * **********************************************************************
@@ -66,7 +66,7 @@ foreach folder of local folderList {
 			loc sat = substr("`file'", 11, 3)
 		
 		* run the user written weather command - this takes a while
-		weather rf_ , rain_data ini_month(3) fin_month(12) day_month(1) keep(hhid)
+		weather rf_ , rain_data ini_month(3) fin_month(12) day_month(1) keep(household_id)
 		
 		* save file
 		customsave , idvar(household_id) filename("`dat'_`ext'_`sat'.dta") ///
@@ -103,7 +103,7 @@ foreach folder of local folderList {
 			loc sat = substr("`file'", 11, 2)
 		
 		* run the user written weather command - this takes a while		
-		weather tmp_ , temperature_data growbase_low(10) growbase_high(30) ini_month(3) fin_month(12) day_month(1) keep(hhid)
+		weather tmp_ , temperature_data growbase_low(10) growbase_high(30) ini_month(3) fin_month(12) day_month(1) keep(household_id)
 		
 		* save file
 		customsave , idvar(household_id) filename("`dat'_`ext'_`sat'.dta") ///

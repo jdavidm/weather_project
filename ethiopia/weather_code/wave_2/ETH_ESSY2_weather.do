@@ -35,7 +35,7 @@
 	loc logout = "G:/My Drive/weather_project/weather_data/ethiopia/logs"
 
 * open log	
-	log using "`logout'/eth_essy2_weather"
+	log using "`logout'/eth_essy2_weather", replace
 
 
 * **********************************************************************
