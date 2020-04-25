@@ -59,7 +59,7 @@ foreach folder of local folderList {
 			loc sat = substr("`file'", 11, 3)
 
 		* save file
-		customsave , idvar(hh_id) filename("`dat'_`ext'_`sat'_daily.dta") ///
+		customsave , idvar(hhid) filename("`dat'_`ext'_`sat'_daily.dta") ///
 			path("`export'/`folder'") dofile(UGA_UNPSY2_converter) user($user)
 	}
 }
@@ -93,7 +93,7 @@ foreach folder of local folderList {
 			loc sat = substr("`file'", 11, 3)
 
 		* save file
-		customsave , idvar(hh_id) filename("`dat'_`ext'_`sat'_daily.dta") ///
+		customsave , idvar(hhid) filename("`dat'_`ext'_`sat'_daily.dta") ///
 			path("`export'/`folder'") dofile(UGA_UNPSY2_converter) user($user)
 	}
 }

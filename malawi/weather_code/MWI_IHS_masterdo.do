@@ -27,7 +27,7 @@ clear
 	set maxvar 120000, perm  // this amount is only allowed for MP editions 
 
 * set global user
-	global user "aljosephson"
+	global user "jdmichler"
 
 * define paths
 	loc root = "C:/Users/$user/git/weather_project/malawi/weather_code"
@@ -44,9 +44,9 @@ clear
 	do "`root'/wave_4/MWI_IHS4p_converter.do"	//	convert wave 4 .csv to .dta
 	
 * do each of the weather commands
-	do "`root'/wave_1/MWI_IHS3_weather.do"		//	generate wave 1 .weather variables
-	do "`root'/wave_2/MWI_IHPS_weather.do"		//	generate wave 2 .weather variables
-	do "`root'/wave_3/MWI_IHS4_weather.do"		//	generate wave 3 .weather variables
-	do "`root'/wave_4/MWI_IHS4p_weather.do"		//	generate wave 4 .weather variables
+	*do "`root'/wave_1/MWI_IHS3_weather.do"		//	generate wave 1 .weather variables
+	*do "`root'/wave_2/MWI_IHPS_weather.do"		//	generate wave 2 .weather variables
+	*do "`root'/wave_3/MWI_IHS4_weather.do"		//	generate wave 3 .weather variables
+	*do "`root'/wave_4/MWI_IHS4p_weather.do"		//	generate wave 4 .weather variables
 
 /* END */

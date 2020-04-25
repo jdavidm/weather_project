@@ -43,8 +43,8 @@ clear
 	do "`root'/wave_3/NGA_GHSY3_converter.do"	//	convert wave 3 .csv to .dta
 	
 * do each of the weather commands
-	do "`root'/wave_1/NGA_GHSY1_weather.do"		//	generate wave 1 .weather variables
-	do "`root'/wave_2/NGA_GHSY2_weather.do"		//	generate wave 2 .weather variables
-	do "`root'/wave_3/NGA_GHSY3_weather.do"		//	generate wave 3 .weather variables
+	*do "`root'/wave_1/NGA_GHSY1_weather.do"		//	generate wave 1 .weather variables
+	*do "`root'/wave_2/NGA_GHSY2_weather.do"		//	generate wave 2 .weather variables
+	*do "`root'/wave_3/NGA_GHSY3_weather.do"		//	generate wave 3 .weather variables
 
 /* END */
