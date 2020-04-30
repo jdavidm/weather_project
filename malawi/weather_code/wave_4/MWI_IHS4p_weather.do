@@ -36,7 +36,7 @@
 	loc logout = "G:/My Drive/weather_project/weather_data/malawi/logs"
 
 * open log	
-	log using "`logout'/mwi_ihs4p_weather"
+	log using "`logout'/mwi_ihs4p_weather", replace
 	
 	
 * **********************************************************************

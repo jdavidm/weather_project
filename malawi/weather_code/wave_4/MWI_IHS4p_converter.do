@@ -138,7 +138,7 @@ foreach folder of local folderList {
 		* define locals to govern file naming
 			loc dat = substr("`file'", 1, 5)
 			loc ext = substr("`file'", 7, 2)
-			loc sat = substr("`file'", 10, 2)
+			loc sat = substr("`file'", 10, 3)
 		
 	* save file
 	customsave , idvar(y3_hhid) filename("`dat'_`ext'_`sat'_daily.dta") ///
