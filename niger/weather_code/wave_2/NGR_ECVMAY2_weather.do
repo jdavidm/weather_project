@@ -66,10 +66,10 @@ foreach folder of local folderList {
 			loc sat = substr("`file'", 12, 3)
 		
 		* run the user written weather command - this takes a while
-		weather rf_ , rain_data ini_month(6) fin_month(12) day_month(1) keep(hid)
+		weather rf_ , rain_data ini_month(6) fin_month(12) day_month(1) keep(hhid_y2)
 		
 		* save file
-		customsave , idvar(hid) filename("`dat'_`ext'_`sat'.dta") ///
+		customsave , idvar(hhid_y2) filename("`dat'_`ext'_`sat'.dta") ///
 			path("`export'/`folder'") dofile(NGR_ECVMAY2_weather) user($user)
 	}
 }
@@ -103,10 +103,10 @@ foreach folder of local folderList {
 			loc sat = substr("`file'", 12, 2)
 		
 		* run the user written weather command - this takes a while		
-		weather tmp_ , temperature_data growbase_low(10) growbase_high(30) ini_month(6) fin_month(12) day_month(1) keep(hid)
+		weather tmp_ , temperature_data growbase_low(10) growbase_high(30) ini_month(6) fin_month(12) day_month(1) keep(hhid_y2)
 		
 		* save file
-		customsave , idvar(hid) filename("`dat'_`ext'_`sat'.dta") ///
+		customsave , idvar(hhid_y2) filename("`dat'_`ext'_`sat'.dta") ///
 			path("`export'/`folder'") dofile(NGR_ECVMAY2_weather) user($user)
 		}
 }
