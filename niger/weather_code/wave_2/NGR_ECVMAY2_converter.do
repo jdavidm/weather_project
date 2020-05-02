@@ -4,7 +4,7 @@
 * Stata v.16
 
 * does
-	* reads in Uganda, wave 3 .csv files
+	* reads in Niger, wave 2 .csv files
 	* outputs .dta file ready for processing by the weather program
 	* does the above for both rainfall and temperature data
 
@@ -20,15 +20,15 @@
 * **********************************************************************
 
 * set user
-	*global user "jdmichler" // global user set in masterdo
+*	global user "jdmichler"
 
 * define paths
-	loc root = "G:/My Drive/weather_project/weather_data/uganda/wave_3/raw"
-	loc export = "G:/My Drive/weather_project/weather_data/uganda/wave_3/daily"
-	loc logout = "G:/My Drive/weather_project/weather_data/uganda/logs"
+	loc root = "G:/My Drive/weather_project/weather_data/niger/wave_2/raw"
+	loc export = "G:/My Drive/weather_project/weather_data/niger/wave_2/daily"
+	loc logout = "G:/My Drive/weather_project/weather_data/niger/logs"
 
 * open log
-	log using "`logout'/uga_unpsy3_converter", replace
+	log using "`logout'/ngr_ecvmay2_converter", replace
 
 
 * **********************************************************************
@@ -36,7 +36,7 @@
 * **********************************************************************
 
 * define local with all sub-folders in it
-	loc folderList : dir "`root'" dirs "UNPSY3_rf*"
+loc folderList : dir "`root'" dirs "ECVMAY2_rf*"
 
 * loop through each of the sub-folders in the above local
 foreach folder of local folderList {
@@ -54,13 +54,13 @@ foreach folder of local folderList {
 		import delimited "`root'/`folder'/`file'", varnames (1) clear
 
 		* define locals to govern file naming
-			loc dat = substr("`file'", 1, 6)
-			loc ext = substr("`file'", 8, 2)
-			loc sat = substr("`file'", 11, 3)
+			loc dat = substr("`file'", 1, 7)
+			loc ext = substr("`file'", 9, 2)
+			loc sat = substr("`file'", 12, 3)
 
 		* save file
-		customsave , idvar(hhid) filename("`dat'_`ext'_`sat'_daily.dta") ///
-			path("`export'/`folder'") dofile(UGA_UNPSY3_converter) user($user)
+		customsave , idvar(hhid_y2) filename("`dat'_`ext'_`sat'_daily.dta") ///
+			path("`export'/`folder'") dofile(NGR_ECVMAY1_converter) user($user)
 	}
 }
 
@@ -70,7 +70,7 @@ foreach folder of local folderList {
 * **********************************************************************
 
 * define local with all sub-folders in it
-	loc folderList : dir "`root'" dirs "UNPSY3_t*"
+loc folderList : dir "`root'" dirs "ECVMAY2_t*"
 
 * loop through each of the sub-folders in the above local
 foreach folder of local folderList {
@@ -88,13 +88,13 @@ foreach folder of local folderList {
 		import delimited "`root'/`folder'/`file'", varnames (1) clear
 
 		* define locals to govern file naming
-			loc dat = substr("`file'", 1, 6)
-			loc ext = substr("`file'", 8, 2)
-			loc sat = substr("`file'", 11, 3)
+			loc dat = substr("`file'", 1, 7)
+			loc ext = substr("`file'", 9, 2)
+			loc sat = substr("`file'", 12, 2)
 
 		* save file
-		customsave , idvar(hhid) filename("`dat'_`ext'_`sat'_daily.dta") ///
-			path("`export'/`folder'") dofile(UGA_UNPSY3_converter) user($user)
+		customsave , idvar(hhid_y2) filename("`dat'_`ext'_`sat'_daily.dta") ///
+			path("`export'/`folder'") dofile(NGR_ECVMAY1_converter) user($user)
 	}
 }
 
