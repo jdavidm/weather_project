@@ -38,10 +38,10 @@ clear
 * **********************************************************************
 
 * do each of the file converters
-	*do "`root'/wave_1/TZA_NPSY1_converter.do"	//	convert wave 1 .csv to .dta
-	*do "`root'/wave_2/TZA_NPSY2_converter.do"	//	convert wave 2 .csv to .dta
-	*do "`root'/wave_3/TZA_NPSY3_converter.do"	//	convert wave 3 .csv to .dta
-	*do "`root'/wave_4/TZA_NPSY4_converter.do"	//	convert wave 4 .csv to .dta
+	do "`root'/wave_1/TZA_NPSY1_converter.do"	//	convert wave 1 .csv to .dta
+	do "`root'/wave_2/TZA_NPSY2_converter.do"	//	convert wave 2 .csv to .dta
+	do "`root'/wave_3/TZA_NPSY3_converter.do"	//	convert wave 3 .csv to .dta
+	do "`root'/wave_4/TZA_NPSY4_converter.do"	//	convert wave 4 .csv to .dta
 	
 * do each of the weather commands
 	do "`root'/wave_1/TZA_NPSY1_weather.do"		//	generate wave 1 .weather variables
