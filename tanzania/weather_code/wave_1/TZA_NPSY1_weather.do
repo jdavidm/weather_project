@@ -3,14 +3,19 @@
 * Stata v.16
 
 * does
-	* reads in .dta files with daily values
+	* reads in Tanzania, wave 1 .dta files with daily values
     * runs weather_command .ado file
 	* outputs .dta file of the relevant weather variables
 	* does the above for both rainfall and temperature data
+	/* 	-the growing season that we care about is defined on the FAO website:
+			http://www.fao.org/giews/countrybrief/country.jsp?code=TZA
+		-we measure rainfall during the months that the FAO defines as sowing and growing
+		-Tanzania has unimodal and bimodal regions. 70% of crop production occurs in regions that are unimodal, so we focus on those
+		-We define the relevant months as Nov 1 - April 30 */
 
 * assumes
-	* masterDoFile.do
-	* weather_command
+	* weather_command.ado
+	* TZA_NPSY1_converter.do
 
 * TO DO:
 	* completed
@@ -21,15 +26,15 @@
 * **********************************************************************
 
 * set global user
-	global user "jdmichler"
+	*global user "jdmichler" // global user set in TZA_NPS_masterdo
 
 * define paths	
-	global root = "G:/My Drive/weather_project/weather_data/tanzania/wave_1/daily"
-	global export = "G:/My Drive/weather_project/weather_data/tanzania/wave_1/refined"
-	global logout = "C:/Users/$user/git/weather_project/tanzania/weather_code/logs"
+	loc root = "G:/My Drive/weather_project/weather_data/tanzania/wave_1/daily"
+	loc export = "G:/My Drive/weather_project/weather_data/tanzania/wave_1/refined"
+	loc logout = "G:/My Drive/weather_project/weather_data/tanzania/logs"
 
 * open log	
-	log using "`logout'/tza_npsy1_weather"
+	log using "`logout'/tza_npsy1_weather", replace
 
 
 * **********************************************************************
@@ -42,6 +47,9 @@
 * loop through each of the sub-folders in the above local
 foreach folder of local folderList {
 	
+	* create directories to write output to
+	qui: capture mkdir "`export'/`folder'/"
+	
 	* define local with all files in each sub-folder
 		loc fileList : dir "`root'/`folder'" files "*.dta"
 	
@@ -49,7 +57,7 @@ foreach folder of local folderList {
 	foreach file in `fileList' {
 		
 		* import the daily data file
-		use `root'/`folder'/`file', clear
+		use "`root'/`folder'/`file'", clear
 		
 		* define locals to govern file naming
 		loc dat = substr("`file'", 1, 5)
@@ -58,7 +66,10 @@ foreach folder of local folderList {
 		
 		* run the user written weather command - this takes a while
 		weather rf_ , rain_data ini_month(1) fin_month(7) day_month(1) keep(hhid)
-		customsave , idvar(hhid) filename(`dat'_`ext'_`sat'.dta) path($export/`folder') dofile(TZA_NPSY1_weather)
+		
+		* save file
+		customsave , idvar(hhid) filename("`dat'_`ext'_`sat'.dta") ///
+			path("`export'/`folder'") dofile(TZA_NPSY1_weather) user($user)
 	}
 }
 
@@ -72,6 +83,9 @@ foreach folder of local folderList {
 
 * loop through each of the sub-folders in the above local
 foreach folder of local folderList {
+	
+	* create directories to write output to
+	qui: capture mkdir "`export'/`folder'/"
 
 	* define local with all files in each sub-folder	
 	loc fileList : dir "`root'/`folder'" files "*.dta"
@@ -80,7 +94,7 @@ foreach folder of local folderList {
 	foreach file in `fileList' {
 		
 		* import the daily data file		
-		use `root'/`folder'/`file', clear
+		use "`root'/`folder'/`file'", clear
 		
 		* define locals to govern file naming		
 		loc dat = substr("`file'", 1, 5)
@@ -89,8 +103,14 @@ foreach folder of local folderList {
 		
 		* run the user written weather command - this takes a while		
 		weather tmp_ , temperature_data growbase_low(10) growbase_high(30) ini_month(1) fin_month(7) day_month(1) keep(hhid)
-		customsave , idvar(hhid) filename(`dat'_`ext'_`sat'.dta) path($export/`folder') dofile(TZA_NPSY1_weather)
+		
+		* save file
+		customsave , idvar(hhid) filename("`dat'_`ext'_`sat'.dta") ///
+			path("`export'/`folder'") dofile(TZA_NPSY1_weather) user($user)
 		}
 }
+
+* close the log
+	log	close
 
 /* END */
