@@ -35,19 +35,22 @@
 * *********************1*************************************************
 
 * load data
-	use "$root/AG_SEC_2B", clear
+	use 		"$root/AG_SEC_2B", clear
 
 * renaming variables of interest
-	rename y3_hhid hhid
-	rename ag2b_15 plotsize_self
-	rename ag2b_20 plotsize_gps
+	rename 		y3_hhid hhid
+	rename 		ag2b_15 plotsize_self
+	rename 		ag2b_20 plotsize_gps
 
 * generating unique observation id for each ob
-	generate plot_id = hhid + " " + plotnum
-	isid plot_id
+	generate 	plot_id = hhid + " " + plotnum
+	isid 		plot_id
+	
+* generate seasonal variable
+	generate 	season = 1
 	
 * keep what we want, get rid of the rest
-	keep hhid plot_id plotsize_self plotsize_gps
+	keep 		hhid plot_id plotsize_self plotsize_gps plotnum season
 
 * prepare for export
 compress

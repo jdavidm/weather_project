@@ -4,9 +4,8 @@
 * Stata v.16
 
 * does
-	* cleans Tanzania household variables, wave 3 Ag sec2a
-	* looks like a parcel roster, "all plots anyone in your household owned or 
-	* cultivated during the long rainy season"
+	* cleans Tanzania household variables, wave 3 hh secA
+	* pulls regional identifiers
 	
 * assumes
 	* customsave.ado
@@ -28,36 +27,31 @@
 	global logout = "G:/My Drive/weather_project/household_data/tanzania/logs"
 
 * open log
-	log using "$logout/wv3_AGSEC2A", append
+	log using "$logout/wv3_HHSECA", append
 
 * ***********************************************************************
-* 1 - TZA 2012 (Wave 3) - Agriculture Section 2A 
+* 1 - TZA 2012 (Wave 3) - Agriculture Section 5B 
 * *********************1*************************************************
 
 * load data
-	use 		"$root/AG_SEC_2A", clear
+	use 		"$root/HH_SEC_A", clear
 
-* renaming variables of interest
-	rename 		y3_hhid hhid
-	rename 		ag2a_04 plotsize_self
-	rename 		ag2a_09 plotsize_gps
-
-* generating unique observation id for each ob
-	generate 	plot_id = hhid + " " + plotnum
-	isid 		plot_id
+* keep variables of interest
+	keep 		occ- hh_a12_1
 	
-* generate seasonal variable
-	generate 	season = 0
-	
-* keep what we want, get rid of the rest
-	keep 		hhid plot_id plotsize_self plotsize_gps plotnum season
+* renaming some variables
+	rename		y3_hhid hhid
+	rename		hh_a01_1 region
+	rename		hh_a02_1 district
+	rename		hh_a03_1 ward
+	rename		hh_a04_1 village
 
 * prepare for export
 compress
 describe
 summarize 
-sort plot_id
-customsave , idvar(plot_id) filename(AG_SEC2A.dta) path("$export") dofile(2012_AGSEC2A) user($user)
+sort hhid
+customsave , idvar(hhid) filename(HH_SECA.dta) path("$export") dofile(2012_HHSECA) user($user)
 
 * close the log
 	log	close

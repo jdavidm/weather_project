@@ -34,34 +34,40 @@
 * *********************1*************************************************
 
 * load data
-	use "$root/AG_SEC_3B", clear
+	use 		"$root/AG_SEC_3B", clear
 
 * renaming variables of interest
-	rename y3_hhid hhid
-	generate plot_id = hhid + " " + plotnum
-	isid plot_id
+	rename 		y3_hhid hhid
+	generate 	plot_id = hhid + " " + plotnum
+	isid 		plot_id
 
 * renaming inputs
-	rename ag3b_03 status
-	rename ag3b_07_2 crop_code
-	rename ag3b_18 irrigated 
-	rename ag3b_47 fert_any
-	rename ag3b_49 kilo_fert
-	rename ag3b_60 pesticide_any
+	rename 		ag3b_03 status
+	rename 		ag3b_07_2 crop_code
+	rename 		ag3b_18 irrigated 
+	rename 		ag3b_47 fert_any
+	rename 		ag3b_49 kilo_fert
+	rename 		ag3b_60 pesticide_any
 
 * compiling labor inputs
-	egen hh_labor_days = rsum(ag3b_72_1 ag3b_72_2 ag3b_72_3 ag3b_72_4 ag3b_72_5 ///
-	ag3b_72_6 ag3b_72_7 ag3b_72_8 ag3b_72_9 ag3b_72_10 ag3b_72_11 ag3b_72_12 ///
-	ag3b_72_13 ag3b_72_14 ag3b_72_15 ag3b_72_16 ag3b_72_17 ag3b_72_18 ag3b_72_19 ///
-	ag3b_72_20 ag3b_72_21 ag3b_72_22 ag3b_72_23 ag3b_72_24)
+	egen 		hh_labor_days = rsum(ag3b_72_1 ag3b_72_2 ag3b_72_3 ag3b_72_4 ///
+				ag3b_72_5 ag3b_72_6 ag3b_72_7 ag3b_72_8 ag3b_72_9 ag3b_72_10 ///
+				ag3b_72_11 ag3b_72_12 ag3b_72_13 ag3b_72_14 ag3b_72_15 ///
+				ag3b_72_16 ag3b_72_17 ag3b_72_18 ag3b_72_19 ag3b_72_20 ///
+				ag3b_72_21 ag3b_72_22 ag3b_72_23 ag3b_72_24)
 
-	egen hired_labor_days = rsum(ag3b_74_1 ag3b_74_2 ag3b_74_3 ag3b_74_5 ag3b_74_6 ag3b_74_7 ///
-	ag3b_74_9 ag3b_74_10 ag3b_74_11 ag3b_74_13 ag3b_74_14 ag3b_74_15)
+	egen 		hired_labor_days = rsum(ag3b_74_1 ag3b_74_2 ag3b_74_3 ag3b_74_5 ///
+				ag3b_74_6 ag3b_74_7 ag3b_74_9 ag3b_74_10 ag3b_74_11 ag3b_74_13 ///
+				ag3b_74_14 ag3b_74_15)
  
-	generate labor_days = hh_labor_days + hired_labor_days
+	generate 	labor_days = hh_labor_days + hired_labor_days
+
+* generate seasonal variable
+	generate 	season = 1
 
 * keep what we want, get rid of the rest
-	keep hhid plot_id status crop_code irrigated fert_any kilo_fert pesticide_any labor_days 
+	keep 		hhid plot_id status crop_code irrigated fert_any kilo_fert ///
+				pesticide_any labor_days plotnum season
 
 * prepare for export
 compress

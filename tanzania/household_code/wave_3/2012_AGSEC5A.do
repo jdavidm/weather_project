@@ -34,25 +34,30 @@
 * *********************1*************************************************
 
 * load data
-	use "$root/AG_SEC_5A", clear
+	use 		"$root/AG_SEC_5A", clear
 
 * rename variables of interest
-	rename y3_hhid hhid
-	rename zaocode crop_code
+	rename 		y3_hhid hhid
+	rename 		zaocode crop_code
 
 * generate unique ob id
-	tostring crop_code, generate(crop_num) format(%03.0g) force
-	generate crop_id = hhid + " " + crop_num
+	tostring 	crop_code, generate(crop_num) format(%03.0g) force
+	generate 	crop_id = hhid + " " + crop_num
 * crop_id not unique, 5 duplicate obs
 
 * renaming sales variables
-	rename ag5a_02 wgt_sold
-	label variable wgt_sold "What was the quanitity sold? (kg)"
-	rename ag5a_03 value_sold
-	label variable value_sold "What was the total value of the sales? (T-shillings)"
+	rename 		ag5a_02 wgt_sold
+	label 		variable wgt_sold "What was the quanitity sold? (kg)"
+	rename 		ag5a_03 value_sold
+	label 		variable value_sold "What was the total value of the sales? (T-shillings)"
+	generate 	price = value_sold/wgt_sold
+	label 		variable price "Price per kg"
+	
+*generate seasonal variable
+	generate 	season = 0
 
 * keep what we want, get rid of what we don't
-	keep hhid crop_code wgt_sold value_sold crop_id
+	keep 		hhid crop_code wgt_sold value_sold crop_id price season
 
 * prepare for export
 compress
