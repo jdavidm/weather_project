@@ -1,21 +1,22 @@
-* Project: weather
-* Created: April 2020
+* Project: WB Weather
+* Created on: April 2020
+* Created by: jdm
 * Stata v.16
 
 * does
-	* reads in Tanzania, wave 1 .dta files with daily values
+	* reads in Niger, wave 1 .dta files with daily values
     * runs weather_command .ado file
 	* outputs .dta file of the relevant weather variables
 	* does the above for both rainfall and temperature data
 	/* 	-the growing season that we care about is defined on the FAO website:
-			http://www.fao.org/giews/countrybrief/country.jsp?code=TZA
+			http://www.fao.org/giews/countrybrief/country.jsp?code=NER
 		-we measure rainfall during the months that the FAO defines as sowing and growing
-		-Tanzania has unimodal and bimodal regions. 70% of crop production occurs in regions that are unimodal, so we focus on those
-		-We define the relevant months as Nov 1 - April 30 */
+		-we define the relevant months as 1 June - 30 November */
 
 * assumes
+	* NGR_ECVMAY1_converter.do
 	* weather_command.ado
-	* TZA_NPSY3_converter.do
+	* customsave.ado
 
 * TO DO:
 	* completed
@@ -26,15 +27,15 @@
 * **********************************************************************
 
 * set global user
-	*global user "jdmichler" // global user set in TZA_NPS_masterdo
+*	global user "jdmichler"
 
 * define paths	
-	loc root = "G:/My Drive/weather_project/weather_data/tanzania/wave_3/daily"
-	loc export = "G:/My Drive/weather_project/weather_data/tanzania/wave_3/refined"
-	loc logout = "G:/My Drive/weather_project/weather_data/tanzania/logs"
+	loc root = "G:/My Drive/weather_project/weather_data/niger/wave_1/daily"
+	loc export = "G:/My Drive/weather_project/weather_data/niger/wave_1/refined"
+	loc logout = "G:/My Drive/weather_project/weather_data/niger/logs"
 
 * open log	
-	log using "`logout'/tza_npsy3_weather", replace
+	log using "`logout'/ngr_ecvmay1_weather", replace
 
 
 * **********************************************************************
@@ -42,7 +43,7 @@
 * **********************************************************************
 
 * define local with all sub-folders in it
-	loc folderList : dir "`root'" dirs "NPSY3_rf*"
+	loc folderList : dir "`root'" dirs "ECVMAY1_rf*"
 
 * loop through each of the sub-folders in the above local
 foreach folder of local folderList {
@@ -60,16 +61,16 @@ foreach folder of local folderList {
 		use "`root'/`folder'/`file'", clear
 		
 		* define locals to govern file naming
-		loc dat = substr("`file'", 1, 5)
-		loc ext = substr("`file'", 7, 2)
-		loc sat = substr("`file'", 10, 3)
+			loc dat = substr("`file'", 1, 7)
+			loc ext = substr("`file'", 9, 2)
+			loc sat = substr("`file'", 12, 3)
 		
 		* run the user written weather command - this takes a while
-		weather rf_ , rain_data ini_month(1) fin_month(7) day_month(1) keep(y3_hhid)
+		weather rf_ , rain_data ini_month(6) fin_month(12) day_month(1) keep(hid)
 		
 		* save file
-		customsave , idvar(y3_hhid) filename("`dat'_`ext'_`sat'.dta") ///
-			path("`export'/`folder'") dofile(TZA_NPSY3_weather) user($user)
+		customsave , idvar(hid) filename("`dat'_`ext'_`sat'.dta") ///
+			path("`export'/`folder'") dofile(NGR_ECVMAY1_weather) user($user)
 	}
 }
 
@@ -79,7 +80,7 @@ foreach folder of local folderList {
 * **********************************************************************
 
 * define local with all sub-folders in it
-	loc folderList : dir "`root'" dirs "NPSY3_t*"
+	loc folderList : dir "`root'" dirs "ECVMAY1_t*"
 
 * loop through each of the sub-folders in the above local
 foreach folder of local folderList {
@@ -96,17 +97,17 @@ foreach folder of local folderList {
 		* import the daily data file		
 		use "`root'/`folder'/`file'", clear
 		
-		* define locals to govern file naming		
-		loc dat = substr("`file'", 1, 5)
-		loc ext = substr("`file'", 7, 2)
-		loc sat = substr("`file'", 10, 2)
+		* define locals to govern file naming
+			loc dat = substr("`file'", 1, 7)
+			loc ext = substr("`file'", 9, 2)
+			loc sat = substr("`file'", 12, 2)
 		
 		* run the user written weather command - this takes a while		
-		weather tmp_ , temperature_data growbase_low(10) growbase_high(30) ini_month(1) fin_month(7) day_month(1) keep(y3_hhid)
+		weather tmp_ , temperature_data growbase_low(10) growbase_high(30) ini_month(6) fin_month(12) day_month(1) keep(hid)
 		
 		* save file
-		customsave , idvar(y3_hhid) filename("`dat'_`ext'_`sat'.dta") ///
-			path("`export'/`folder'") dofile(TZA_NPSY3_weather) user($user)
+		customsave , idvar(hid) filename("`dat'_`ext'_`sat'.dta") ///
+			path("`export'/`folder'") dofile(NGR_ECVMAY1_weather) user($user)
 		}
 }
 
