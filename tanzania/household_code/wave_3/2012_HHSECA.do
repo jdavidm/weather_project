@@ -30,7 +30,7 @@
 	log using "$logout/wv3_HHSECA", append
 
 * ***********************************************************************
-* 1 - TZA 2012 (Wave 3) - Agriculture Section 5B 
+* 1 - TZA 2012 (Wave 3) - Household Section A
 * *********************1*************************************************
 
 * load data

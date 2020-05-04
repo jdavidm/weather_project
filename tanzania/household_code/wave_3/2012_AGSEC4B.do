@@ -71,7 +71,7 @@
 * see if you can find quantity purchased and quantity of old seeds used to derive total value seeds used
 
 * keep what we want, get rid of what we don't
-	keep 		hhid plotnum crop_id crop_code mixedcrop_pct harvest_month ///
+	keep 		hhid plotnum plot_id crop_id crop_code mixedcrop_pct harvest_month ///
 				wgt_hvsted value_seed_purch season
 
 * prepare for export
