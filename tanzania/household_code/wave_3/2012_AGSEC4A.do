@@ -27,7 +27,7 @@
 	global logout = "G:/My Drive/weather_project/household_data/tanzania/logs"
 
 * open log
-	log using "$logout/wv3_AGSE4A", replace
+	log using "$logout/wv3_AGSE4A", append
 
 * ***********************************************************************
 * 1 - TZA 2012 (Wave 3) - Agriculture Section 4A 
@@ -43,13 +43,11 @@
 * generate unique identifier 
 	tostring crop_code, generate(crop_num) format(%03.0g) force
 	generate crop_id = hhid + " " + plotnum + " " + crop_num
+	duplicates report crop_id
 * crop_id not unique, 6 duplicates 
-* something weird is going on here, there's the crop code and hhid and plotnum
-* but also a string variable crop_num
-	generate crop_id2 = crop_id + " " + crop_num
-* crop_id2 also not unique, also 6 duplicates
-* probably inconsequential
-
+	duplicates drop crop_id, force
+	isid crop_id
+	
 * generating mixed crop variable
 	rename ag4a_01 purestand
 	generate mixedcrop_pct = .
@@ -62,8 +60,8 @@
 * 2,249 of these are also missing crop codes
 * assuming these fields are fallow
 	sort crop_code
-* should they be dropped? All these obs seem to have no other info
-* probably so
+	drop if mixedcrop_pct == .
+* dropped all observations missing mixedcrop_pct, including two with crop_code
 
 * other variables of interest
 	rename ag4a_24_1 harvest_month

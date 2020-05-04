@@ -27,7 +27,7 @@
 	global logout = "G:/My Drive/weather_project/household_data/tanzania/logs"
 
 * open log
-	log using "$logout/wv3_AGSE4B", replace
+	log using "$logout/wv3_AGSE4B", append
 
 * ***********************************************************************
 * 1 - TZA 2012 (Wave 3) - Agriculture Section 4B 
@@ -59,6 +59,7 @@
 	sort crop_code
 * should they be dropped? All these obs seem to have no other info
 * probably so
+	drop if crop_code == . 
 
 * other variables of interest
 	rename ag4b_24_1 harvest_month

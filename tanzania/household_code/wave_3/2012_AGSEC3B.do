@@ -27,7 +27,7 @@
 	global logout = "G:/My Drive/weather_project/household_data/tanzania/logs"
 
 * open log
-	log using "$logout/wv3_AGSEC3B", replace
+	log using "$logout/wv3_AGSEC3B", append
 
 * ***********************************************************************
 * 1 - TZA 2012 (Wave 3) - Agriculture Section 3B
