@@ -3,9 +3,22 @@
 * Created by: alj
 * Stata v.16
 
-* WAVE 1 POST HARVEST, NGA SECTA1 AG
+* does
+	* reads in Nigeria, WAVE 1 POST HARVEST, NGA SECTA1 AG
+	* determines primary and secondary crops, cleans production (quantity, hecatres)
+	* converts to hectares and kilograms, as appropriate
+	* outputs "clean" data file ready for combination with wave 1 hh data
 
-* notes: still includes some notes from Alison Conley's work in spring 2020
+* assumes
+	* customsave.ado
+	* harvconv_wave1_secta1.dta conversion file
+	* land_conversion.dta conversion file 
+
+* TO DO:
+	* unsure - incomplete, runs but maybe not right? 
+
+* Other notes: 
+	* still includes some notes from Alison Conley's work in spring 2020
 	
 * **********************************************************************
 * 0 - setup
@@ -24,13 +37,13 @@
 	
 * open log	
 	log using "`logout'/secta1_harvestw1", append
-		
-* import the first relevant data file: secta1_harvestw1
-		use "`root'/secta1_harvestw1", clear 	
 
 * **********************************************************************
 * 1 - general clean up, renaming, etc. 
 * **********************************************************************
+		
+* import the first relevant data file: secta1_harvestw1
+		use "`root'/secta1_harvestw1", clear 	
 
 		* it looks like over 6000 reported that they planted crops on the plot ... 
 		* but we only have areas and crop info for about 460 observations
@@ -105,7 +118,7 @@ generate harv2_unit = sa1q37b
 
 
 * **********************************************************************
-* 2 - converting harvest quantities and crop areas to kilograms 
+* 2 - converting harvest quantities & crop areas to hects & kilograms 
 * **********************************************************************
 
 * define new paths for conversions	
