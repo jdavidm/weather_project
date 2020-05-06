@@ -1,7 +1,39 @@
-*WAVE 1, POST HARVEST, NGA SECTA3 AG - 
-*HELP NEED to convert harvest quantities and NAira to USD
+* Project: WB Weather
+* Created on: May 2020
+* Created by: alj
+* Stata v.16
 
-use "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_raw/NGA_2010_GHSP-W1_v03_M_STATA/Post Harvest Wave 1/Agriculture/secta3_harvestw1.dta", clear
+* WAVE 1, POST HARVEST, NGA SECTA3 AG 
+
+* notes: still includes some notes from Alison Conley's work in spring 2020
+
+* to do
+	*outstanding issues: convert harvest quantities (????) and Naira to USD
+	
+* **********************************************************************
+* 0 - setup
+* **********************************************************************
+
+* set global user
+	global user "aljosephson"
+	
+* define paths	
+	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_1/raw"
+	loc export = "G:/My Drive/weather_project/household_data/nigeria/wave_1/refined"
+	loc logout = "G:/My Drive/weather_project/household_data/nigeria/logs"
+
+* close log (in case still open)
+	*log close
+	
+* open log	
+	log using "`logout'/secta3_harvestw1", append
+		
+* import the first relevant data file: secta1_harvestw1
+		use "`root'/secta3_harvestw1", clear 	
+
+* **********************************************************************
+* 1 - harvest information
+* **********************************************************************
 
 rename sa3q2 cropcode
 tab cropcode
@@ -19,10 +51,16 @@ gen crop_area = sa3q5a
 label variable crop_area "what was the land area of crop harvested since the last interview? not using standardized unit"
 rename sa3q5b area_unit
 
-merge m:1 zone using "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_raw/conversion_files/land-conversion.dta"
+* **********************************************************************
+* 2 - conversion factors, etc. (hectares, kgs)
+* **********************************************************************
 
+* define new paths for conversions	
+	loc root = "G:/My Drive/weather_project/household_data/nigeria/conversion_files/"
+
+merge m:1 zone using "`root'/land-conversion"
+* all matched
 drop _merge
-
 
 tab area_unit
 tab area_unit, nolabel
@@ -42,9 +80,9 @@ rename sa3q6b harv_unit
 tab harv_unit
 tab harv_unit, nolabel
 
-merge m:1 cropcode harv_unit using "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_raw/conversion_files/harvconv.dta"
+merge m:1 cropcode harv_unit using "`root'/harvconv"
 *matched 9,917 but didn't match 5,212 (from master 3,101 and using 2,111)
-
+*values not matched from master usually had issue which prevented harvest e.g. lost crop
 
 *we will also use this measure to get yield
 gen harvestq = sa3q6a
@@ -59,13 +97,21 @@ order harvestq harv_unit harv_conversion harv_kg
 
 rename sa3q3 cultivated
 
+* **********************************************************************
+* 3 - conversion factors - Naria to USD
+* **********************************************************************
+*STILL NEEDS TO BE CONVERTED TO USD
+
 gen crop_value = sa3q18
 label variable crop_value "if you had sold all crop harvested since the last visit, what would be the total value in Naira?"
-*HELP needs to be converted to usd
+
+
+* **********************************************************************
+* 4 - end matter, clean up to save
+* **********************************************************************
+
 
 drop _merge
-
-
 
 keep zone ///
 state ///
@@ -90,13 +136,14 @@ compress
 describe
 summarize 
 
-save "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_clean/data/wave_1/ph_secta3.dta", replace
+* save file
+		customsave , idvar(hhid) filename("ph_secta3.dta") ///
+			path("`export'/`folder'") dofile(secta3_harvestw1) user($user)
+			
+			*2111 observation(s) are missing the ID variable hhid. Specifying the noidok option will let you proceed, but it's not good practice.
 
+			
+* close the log
+	log	close
 
-
-
-
-
-
-
-
+/* END */
