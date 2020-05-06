@@ -1,13 +1,44 @@
-*POST HARVEST, NGA SECTA2 AG - Labor
+* Project: WB Weather
+* Created on: May 2020
+* Created by: alj
+* Stata v.16
 
-use "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_raw/NGA_2010_GHSP-W1_v03_M_STATA/Post Harvest Wave 1/Agriculture/secta2_harvestw1.dta", clear
+* POST HARVEST, NGA SECTA2 AG - Labor
+
+* notes: still includes some notes from Alison Conley's work in spring 2020
+	
+* **********************************************************************
+* 0 - setup
+* **********************************************************************
+
+* set global user
+	global user "aljosephson"
+	
+* define paths	
+	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_1/raw"
+	loc export = "G:/My Drive/weather_project/household_data/nigeria/wave_1/refined"
+	loc logout = "G:/My Drive/weather_project/household_data/nigeria/logs"
+
+* close log (in case still open)
+	*log close
+	
+* open log	
+	log using "`logout'/secta2_harvestw1", append
+		
+* import the first relevant data file: secta1_harvestw1
+		use "`root'/secta2_harvestw1", clear 	
+
+* **********************************************************************
+* 1 - defining labor, labor days, etc. 
+* **********************************************************************
 
 describe
 sort hhid plotid
 isid hhid plotid, missok
 
-*per the survey, these are laborers from the last rainy/harvest season NOT the dry season harvest
+*according to survey: these are laborers from the last rainy/harvest season (e.g. NOT the dry season harvest)
 *household member labor, this calculation is (weeks x days per week) for up to 4 members of the household that were laborers
+
 gen hh_1 = (sa2q1a2 * sa2q1a3)
 replace hh_1 = 0 if hh_1 == .
 
@@ -23,6 +54,7 @@ replace hh_4 = 0 if hh_4 == .
 gen hh_days = hh_1 + hh_2 + hh_3 + hh_4
 
 *hired labor days, this calculation is (# of people hired for harvest)(# of days they worked)
+
 gen men_days = (sa2q2 * sa2q3)
 replace men_days = 0 if men_days == . 
 
@@ -42,6 +74,11 @@ replace free_days = 0 if free_days == .
 *total labor days, we will need the labor rate in days/hectare but will need the plotsize from other data sets to get it
 gen labor_days = (men_days + women_days + child_days + free_days + hh_days)
 
+
+* **********************************************************************
+* 2 - end matter, clean up to save
+* **********************************************************************
+
 keep zone ///
 state ///
 lga ///
@@ -55,5 +92,12 @@ compress
 describe
 summarize 
 
-save "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_clean/data/wave_1/ph_secta2.dta", replace
+* save file
+		customsave , idvar(hhid) filename("ph_secta2.dta") ///
+			path("`export'/`folder'") dofile(secta2_harvestw1) user($user)
+			
+* close the log
+	log	close
+
+/* END */
 

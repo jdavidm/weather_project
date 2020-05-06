@@ -337,6 +337,8 @@ summarize
 * save file
 		customsave , idvar(hhid) filename("ph_secta1.dta") ///
 			path("`export'/`folder'") dofile(secta1_harvestw1) user($user)
+			
+		*quote on customsave issue - 2547 observation(s) are missing the ID variable hhid. Specifying the noidok option will let you proceed, but it's not good practice.
 
 * close the log
 	log	close
