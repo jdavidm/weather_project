@@ -7,19 +7,21 @@
 	* reads in Nigeria, WAVE 1 POST HARVEST, NGA SECTA1 AG
 	* determines primary and secondary crops, cleans production (quantity, hecatres)
 	* converts to hectares and kilograms, as appropriate
-	* outputs "clean" data file ready for combination with wave 1 hh data
+	* maybe more who knows
+	* outputs clean data file ready for combination with wave 1 hh data
 
 * assumes
 	* customsave.ado
 	* harvconv_wave1_secta1.dta conversion file
 	* land_conversion.dta conversion file 
-
-* TO DO:
-	* unsure - incomplete, runs but maybe not right? 
-
-* Other notes: 
+	
+* other notes: 
 	* still includes some notes from Alison Conley's work in spring 2020
 	
+* TO DO:
+	* unsure - incomplete, runs but maybe not right? 
+	* clarify "does" section
+
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
@@ -36,7 +38,7 @@
 	*log close
 	
 * open log	
-	log using "`logout'/secta1_harvestw1", append
+	log using "`logout'/ph_secta1", append
 
 * **********************************************************************
 * 1 - general clean up, renaming, etc. 
@@ -124,7 +126,6 @@ generate harv2_unit = sa1q37b
 * define new paths for conversions	
 	loc root = "G:/My Drive/weather_project/household_data/nigeria/conversion_files/"
   
-
 merge m:1 cropcode harv1_unit using "`root'/harvconv_wave1_secta1"
 tab _merge 
 * it looks like that went well, non-matched appear to be ones that didn't harvest or didn't have a harvest unit
@@ -195,9 +196,7 @@ replace crop1_area_hec = crop1_area*sqmcon if crop1_area_unit == 7
 *conv hect
 replace crop1_area_hec = crop1_area if crop1_area_unit == 6
 
-
 label variable crop1_area_hec "SR crop area converted to hectares for main crop harvested"
-
 
 * **********************************************************************
 * 2bii - converting crop areas to hectares - secondary crop
@@ -349,9 +348,8 @@ summarize
 
 * save file
 		customsave , idvar(hhid) filename("ph_secta1.dta") ///
-			path("`export'/`folder'") dofile(secta1_harvestw1) user($user)
-			
-		*quote on customsave issue - 2547 observation(s) are missing the ID variable hhid. Specifying the noidok option will let you proceed, but it's not good practice.
+			path("`export'/`folder'") dofile(ph_secta1) user($user)
+*note on customsave issue - 2547 observation(s) are missing the ID variable hhid 
 
 * close the log
 	log	close

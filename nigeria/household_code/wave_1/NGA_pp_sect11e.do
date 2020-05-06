@@ -1,14 +1,56 @@
-*WAVE 1 POST PLANTING, NIGERIA SECT 11E AG
-*NEED TO CONVERT SEED UNITS TO KGS
+* Project: WB Weather
+* Created on: May 2020
+* Created by: alj
+* Stata v.16
 
-use "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_raw/NGA_2010_GHSP-W1_v03_M_STATA/Post Planting Wave 1/Agriculture/sect11e_plantingw1.dta", clear
+* does
+	* reads in Nigeria, WAVE 1 POST PLANTING, NIGERIA SECT 11E AG
+	* determines seed use 
+	* converts kilograms, as appropriate
+	* maybe more who knows
+	* outputs clean data file ready for combination with wave 1 hh data
+
+* assumes
+	* customsave.ado
+	
+* other notes: 
+	* still includes some notes from Alison Conley's work in spring 2020
+	
+* TO DO:
+	* from Alison: "NEED TO CONVERT SEED UNITS TO KGS"
+	* unsure - incomplete, runs but maybe not right? 
+	* clarify "does" section
+
+* **********************************************************************
+* 0 - setup
+* **********************************************************************
+
+* set global user
+	global user "aljosephson"
+	
+* define paths	
+	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_1/raw"
+	loc export = "G:/My Drive/weather_project/household_data/nigeria/wave_1/refined"
+	loc logout = "G:/My Drive/weather_project/household_data/nigeria/logs"
+
+* close log (in case still open)
+	*log close
+	
+* open log	
+	log using "`logout'/pp_sect11e", append
+
+* **********************************************************************
+* 1 - deterine seed use
+* **********************************************************************
+		
+* import the first relevant data file: secta1_harvestw1
+		use "`root'/sect11e_plantingw1", clear 	
 
 describe
 sort hhid plotid cropid
 isid hhid plotid cropid, missok
 *hhid and plotid do not uniquely identify, with cropid they do
 
-***SEEDS
 gen leftover_q = s11eq6a
 label variable leftover_q "quantity of last year's seed used"
 rename s11eq6b leftover_unit1 
@@ -52,6 +94,7 @@ gen purchaseda_kg = .
 replace purchaseda_kg = purchased_qa if purchased_unit1_a == 2
 replace purchaseda_kg = purchased_qa*100 if purchased_unit1_a == 1
 
+****ISSUES HERE??****
 /*dropping second source purchase because there are only 17 observations
 gen purchased_qb = s11eq28a
 tab purchased_qb
@@ -70,11 +113,18 @@ replace purchasedb_kg = purchased_qb if purchased_unit2_a == 2
 replace purchasedb_kg = purchased_qb*100 if purchased_unit2_a == 1
 */
 
-*adding all of the converted seed quantities (need to also convert the weird units and add them to this total)
+*adding all of the converted seed quantities (need to also convert the weird units and add them to this total) 
 gen seed_kg = .
 replace seed_kg = leftover_kg + freeseed_kg + purchaseda_kg 
+*NEED TO CONVERT WEIRD UNITS AND ADD TO THIS TOTAL
 
 
+*ALJ OPINION (6 May) - OMIT SEEDS - these values are a nightmare, official word from WB was to use food conversions to approximate seed measurement, which seems problematic
+*as we are already missing seed for Malawi - would not be inappropriate or entirely out of line to omit here as well
+
+* **********************************************************************
+* 2 - end matter, clean up to save
+* **********************************************************************
 
 keep zone ///
 state ///
@@ -102,5 +152,12 @@ compress
 describe
 summarize 
 
-save "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_clean/data/wave_1/pp_sect11e.dta", replace
+* save file
+		customsave , idvar(hhid) filename("pp-sect11e.dta") ///
+			path("`export'/`folder'") dofile(pp_sect11e) user($user)
+*note on customsave issue - 2547 observation(s) are missing the ID variable hhid 
 
+* close the log
+	log	close
+
+/* END */

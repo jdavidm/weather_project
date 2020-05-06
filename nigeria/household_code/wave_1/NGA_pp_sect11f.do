@@ -1,7 +1,50 @@
-*WAVE 1 POST PLANTING, NIGERIA SECT11F
-*CONVERT AREA UNITS
+* Project: WB Weather
+* Created on: May 2020
+* Created by: alj
+* Stata v.16
 
-use "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_raw/NGA_2010_GHSP-W1_v03_M_STATA/Post Planting Wave 1/Agriculture/sect11F_plantingw1.dta", clear
+* does
+	* reads in Nigeria, WAVE 1 POST PLANTING, NIGERIA SECT11F
+	* from Alison: "CONVERT AREA UNITS"
+	* maybe more who knows
+	* outputs clean data file ready for combination with wave 1 hh data
+
+* assumes
+	* customsave.ado
+	* land_conversion.dta conversion file 
+	
+* other notes: 
+	* still includes some notes from Alison Conley's work in spring 2020
+	
+* TO DO:
+	* LOTS to do - issues with measurement, unclear questions - see notes in file
+	* incomplete, runs but maybe not right? 
+	* clarify "does" section
+
+* **********************************************************************
+* 0 - setup
+* **********************************************************************
+
+* set global user
+	global user "aljosephson"
+	
+* define paths	
+	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_1/raw"
+	loc export = "G:/My Drive/weather_project/household_data/nigeria/wave_1/refined"
+	loc logout = "G:/My Drive/weather_project/household_data/nigeria/logs"
+
+* close log (in case still open)
+	*log close
+	
+* open log	
+	log using "`logout'/pp_sect11f", append
+
+* **********************************************************************
+* 1 - general clean up, renaming, etc. 
+* **********************************************************************
+		
+* import the first relevant data file: secta1_harvestw1
+		use "`root'/sect11F_plantingw1", clear 	
 
 describe
 sort hhid plotid cropid
@@ -15,7 +58,12 @@ label variable area_planted_unit "unit of measurement reported"
 tab area_planted_unit, nolabel
 tab area_planted_unit
 
-merge m:1 zone using "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_raw/conversion_files/land-conversion.dta"
+
+* define new paths for conversions	
+	loc root = "G:/My Drive/weather_project/household_data/nigeria/conversion_files/"
+
+merge m:1 zone using "`root'/land-conversion"
+
 
 gen planted_area_hec = .
 *heaps conversion
@@ -47,6 +95,11 @@ rename s11fq3b plant_yr
 tab plant_yr
 *96% of the reported year is 2010 - do we care when they were planted?
 
+
+* **********************************************************************
+* 2 - end matter, clean up to save
+* **********************************************************************
+
 keep zone ///
 state ///
 lga ///
@@ -74,4 +127,11 @@ compress
 describe
 summarize 
 
-save "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_clean/data/wave_1/pp_sect11f.dta", replace
+* save file
+		customsave , idvar(hhid) filename("pp_sect11f.dta") ///
+			path("`export'/`folder'") dofile(pp_sect11f) user($user)
+
+* close the log
+	log	close
+
+/* END */

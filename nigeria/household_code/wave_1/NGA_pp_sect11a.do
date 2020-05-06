@@ -3,10 +3,22 @@
 * Created by: alj
 * Stata v.16
 
-* WAVE 1 - POST PLANTING NIGERIA, SECTION 11A AG
+* does
+	* reads in Nigeria, WAVE 1 - POST PLANTING NIGERIA, SECTION 11A AG
+	* determines total and cultivated
+	* maybe more who knows
+	* outputs clean data file ready for combination with wave 1 hh data
 
-* notes: still includes some notes from Alison Conley's work in spring 2020
+* assumes
+	* customsave.ado
 	
+* other notes: 
+	* still includes some notes from Alison Conley's work in spring 2020
+	
+* TO DO:
+	* unsure - incomplete, runs but maybe not right? 
+	* clarify "does" section
+
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
@@ -23,7 +35,7 @@
 	*log close
 	
 * open log	
-	log using "`logout'/sect11a_plantingw1", append
+	log using "`logout'/pp_sect11a", append
 		
 * import the first relevant data file: secta1_harvestw1
 		use "`root'/sect11a_plantingw1", clear 	
@@ -31,6 +43,9 @@
 * **********************************************************************
 * 1 - cleaning cultivation, etc.
 * **********************************************************************
+
+* import the first relevant data file: secta1_harvestw1
+		use "`root'/sect11a_plantingw1", clear 	
 
 describe
 sort hhid
@@ -60,7 +75,7 @@ summarize
 
 * save file
 		customsave , idvar(hhid) filename("pp_sect11a.dta") ///
-			path("`export'/`folder'") dofile(sect11a_plantingw1) user($user)
+			path("`export'/`folder'") dofile(pp_sect11a) user($user)
 
 * close the log
 	log	close

@@ -1,6 +1,48 @@
-*WAVE 1 POST PLANTING, NIGERIA SECT 11D AG - fertilizer (in kgs)
+* Project: WB Weather
+* Created on: May 2020
+* Created by: alj
+* Stata v.16
 
-use "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_raw/NGA_2010_GHSP-W1_v03_M_STATA/Post Planting Wave 1/Agriculture/sect11d_plantingw1.dta", clear
+* does
+	* reads in Nigeria, WAVE 1 POST PLANTING, NIGERIA SECT 11D AG - fertilizer
+	* determines fertilizer use in kilograms 
+	* maybe more who knows
+	* outputs clean data file ready for combination with wave 1 hh data
+
+* assumes
+	* customsave.ado
+	
+* other notes: 
+	* still includes some notes from Alison Conley's work in spring 2020
+	
+* TO DO:
+	* unsure - incomplete, runs but maybe not right? 
+	* clarify "does" section
+
+* **********************************************************************
+* 0 - setup
+* **********************************************************************
+
+* set global user
+	global user "aljosephson"
+	
+* define paths	
+	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_1/raw"
+	loc export = "G:/My Drive/weather_project/household_data/nigeria/wave_1/refined"
+	loc logout = "G:/My Drive/weather_project/household_data/nigeria/logs"
+
+* close log (in case still open)
+	*log close
+	
+* open log	
+	log using "`logout'/pp_sect11d", append
+
+* **********************************************************************
+* 1 - determine fertilizer use 
+* **********************************************************************
+		
+* import the first relevant data file: secta1_harvestw1
+		use "`root'/sect11d_plantingw1", clear 
 
 describe
 sort hhid plotid
@@ -21,6 +63,10 @@ replace purchased_fert_kg2 = 0 if purchased_fert_kg2 ==.
 generate fert_used_kg = leftover_fert_kg + free_fert_kg + purchased_fert_kg1 + purchased_fert_kg2
 label variable fert_used_kg "kilograms of fertilizer used from all sources"
 
+* **********************************************************************
+* 2 - end matter, clean up to save
+* **********************************************************************
+
 keep zone ///
 state ///
 lga ///
@@ -38,7 +84,12 @@ compress
 describe
 summarize 
 
-save "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_clean/data/wave_1/pp_sect11d.dta", replace
+* save file
+		customsave , idvar(hhid) filename("pp_sect11d.dta") ///
+			path("`export'/`folder'") dofile(pp_sect11d) user($user)
+*note on customsave issue - 2547 observation(s) are missing the ID variable hhid 
 
+* close the log
+	log	close
 
-
+/* END */

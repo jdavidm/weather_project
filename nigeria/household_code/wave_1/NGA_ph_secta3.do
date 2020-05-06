@@ -3,12 +3,29 @@
 * Created by: alj
 * Stata v.16
 
-* WAVE 1, POST HARVEST, NGA SECTA3 AG 
-
-* notes: still includes some notes from Alison Conley's work in spring 2020
-
 * to do
-	*outstanding issues: convert harvest quantities (????) and Naira to USD
+	*outstanding issues: 
+	
+* does
+	* reads in Nigeria, WAVE 1, POST HARVEST, NGA SECTA3 AG 
+	* determines primary and secondary crops, cleans harvest (quantity, hecatres)
+	* converts to hectares and kilograms, as appropriate
+	* need to include conversion to Naria 
+	* maybe more who knows
+	* outputs clean data file ready for combination with wave 1 hh data
+
+* assumes
+	* customsave.ado
+	* harvconv.dta conversion file
+	* land_conversion.dta conversion file 
+	
+* other notes: 
+	* still includes some notes from Alison Conley's work in spring 2020
+	
+* TO DO:
+	* convert harvest quantities (???? - seems like this may be done - ????) and Naira to USD
+	* unsure - incomplete, runs but maybe not right? 
+	* clarify "does" section
 	
 * **********************************************************************
 * 0 - setup
@@ -26,14 +43,15 @@
 	*log close
 	
 * open log	
-	log using "`logout'/secta3_harvestw1", append
+	log using "`logout'/ph_secta3", append
 		
-* import the first relevant data file: secta1_harvestw1
-		use "`root'/secta3_harvestw1", clear 	
 
 * **********************************************************************
 * 1 - harvest information
 * **********************************************************************
+
+* import the first relevant data file: secta1_harvestw1
+		use "`root'/secta3_harvestw1", clear 	
 
 rename sa3q2 cropcode
 tab cropcode
@@ -138,9 +156,9 @@ summarize
 
 * save file
 		customsave , idvar(hhid) filename("ph_secta3.dta") ///
-			path("`export'/`folder'") dofile(secta3_harvestw1) user($user)
+			path("`export'/`folder'") dofile(ph_secta3) user($user)
 			
-			*2111 observation(s) are missing the ID variable hhid. Specifying the noidok option will let you proceed, but it's not good practice.
+			*2111 observation(s) are missing the ID variable hhid.
 
 			
 * close the log

@@ -1,7 +1,52 @@
- *WAVE 1 POST PLANTING, NIGERIA SECT11G
-*CONVERT HARVEST QUANTITIES
+* Project: WB Weather
+* Created on: May 2020
+* Created by: alj
+* Stata v.16
 
-use "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_raw/NGA_2010_GHSP-W1_v03_M_STATA/Post Planting Wave 1/Agriculture/sect11g_plantingw1.dta", clear
+* does
+	* reads in Nigeria, WAVE 1 POST PLANTING, NIGERIA SECT11G
+	* converts harvest quantitites 
+	* converts to kilograms, as appropriate
+	* maybe more who knows
+	* outputs clean data file ready for combination with wave 1 hh data
+
+* assumes
+	* customsave.ado
+	* harvconv.dta conversion file 
+	
+* other notes: 
+	* still includes some notes from Alison Conley's work in spring 2020
+	
+* TO DO:
+	* problematic issues with conversions 
+	* not best practices for fixing observations - does the trick, typos fairly obvious, but not great...
+	* unsure - incomplete, runs but maybe not right? 
+	* clarify "does" section
+
+* **********************************************************************
+* 0 - setup
+* **********************************************************************
+
+* set global user
+	global user "aljosephson"
+	
+* define paths	
+	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_1/raw"
+	loc export = "G:/My Drive/weather_project/household_data/nigeria/wave_1/refined"
+	loc logout = "G:/My Drive/weather_project/household_data/nigeria/logs"
+
+* close log (in case still open)
+	*log close
+	
+* open log	
+	log using "`logout'/pp_sect11g", append
+
+* **********************************************************************
+* 1 - general clean up, renaming, etc. 
+* **********************************************************************
+		
+* import the first relevant data file: secta1_harvestw1
+		use "`root'/sect11g_plantingw1", clear 	
 
 describe
 sort hhid plotid cropid
@@ -97,17 +142,35 @@ sort harv_unit2 harv_unit
 
 *obs = 950
 
-merge m:1 cropcode harv_unit using "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_raw/conversion_files/harvconv.dta"
+*issues with encoding harv_unit2
+encode harv_unit2, generate (harv_unit2a)
+rename harv_unit2 harv_unit2_test
+rename harv_unit2a harv_unit2
+
+* **********************************************************************
+* 2 - converting quantities
+* **********************************************************************
+
+* define new paths for conversions	
+	loc root = "G:/My Drive/weather_project/household_data/nigeria/conversion_files/"
+  
+merge m:1 cropcode harv_unit using "`root'/harvconv"
 
 drop if _merge == 1 & harv_conversion == .
 *either no conversion (no definition for head) or no units 
 *obs = 520
 
+drop _merge
+
 gen harvestq = .
 replace harvestq = harvestq_pp*conv_harvunit2 if conv_harvunit2 != .
 
-merge m:1 cropcode harv_unit2 using "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_raw/conversion_files/harvconv.dta"
+merge m:1 cropcode harv_unit2 using "`root'/harvconv"
 replace harvestq = harvestq_pp*conv_harvunit2 if conv_harvunit2 != .
+
+* **********************************************************************
+* 3 - end matter, clean up to save
+* **********************************************************************
 
 keep zone ///
 state ///
@@ -124,4 +187,12 @@ compress
 describe
 summarize 
 
-save "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_clean/data/wave_1/pp_sect11g.dta", replace
+
+* save file
+		customsave , idvar(hhid) filename("pp_sect11g.dta") ///
+			path("`export'/`folder'") dofile(pp_sect11g) user($user)
+
+* close the log
+	log	close
+
+/* END */

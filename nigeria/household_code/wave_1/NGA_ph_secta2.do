@@ -3,9 +3,24 @@
 * Created by: alj
 * Stata v.16
 
-* POST HARVEST, NGA SECTA2 AG - Labor
-
 * notes: still includes some notes from Alison Conley's work in spring 2020
+
+
+* does
+	* reads in Nigeria, POST HARVEST, NGA SECTA2 AG - Labor
+	* determines labor days
+	* maybe more who knows
+	* outputs clean data file ready for combination with wave 1 hh data
+
+* assumes
+	* customsave.ado
+
+* other notes: 
+	* still includes some notes from Alison Conley's work in spring 2020
+	
+* TO DO:
+	* unsure - incomplete, runs but maybe not right? 
+	* clarify "does" section
 	
 * **********************************************************************
 * 0 - setup
@@ -23,14 +38,14 @@
 	*log close
 	
 * open log	
-	log using "`logout'/secta2_harvestw1", append
+	log using "`logout'/ph_secta2", append
 		
-* import the first relevant data file: secta1_harvestw1
-		use "`root'/secta2_harvestw1", clear 	
-
 * **********************************************************************
 * 1 - defining labor, labor days, etc. 
 * **********************************************************************
+
+* import the first relevant data file: secta1_harvestw1
+		use "`root'/secta2_harvestw1", clear 	
 
 describe
 sort hhid plotid
@@ -94,7 +109,7 @@ summarize
 
 * save file
 		customsave , idvar(hhid) filename("ph_secta2.dta") ///
-			path("`export'/`folder'") dofile(secta2_harvestw1) user($user)
+			path("`export'/`folder'") dofile(ph_secta2) user($user)
 			
 * close the log
 	log	close
