@@ -1,5 +1,37 @@
-*WAVE 1 - POST PLANTING NIGERIA, SECT 11A1 AG
-*converted - check
+* Project: WB Weather
+* Created on: May 2020
+* Created by: alj
+* Stata v.16
+
+* WAVE 1 - POST PLANTING NIGERIA, SECT 11A1 AG
+
+* notes: still includes some notes from Alison Conley's work in spring 2020
+	
+* **********************************************************************
+* 0 - setup
+* **********************************************************************
+
+* set global user
+	global user "aljosephson"
+	
+* define paths	
+	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_1/raw"
+	loc export = "G:/My Drive/weather_project/household_data/nigeria/wave_1/refined"
+	loc logout = "G:/My Drive/weather_project/household_data/nigeria/logs"
+
+* close log (in case still open)
+	*log close
+	
+* open log	
+	log using "`logout'/secta1_harvestw1", append
+		
+* import the first relevant data file: secta1_harvestw1
+		use "`root'/secta1_harvestw1", clear 	
+
+* **********************************************************************
+* 1 - general clean up, renaming, etc. 
+* **********************************************************************
+
 use "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_raw/NGA_2010_GHSP-W1_v03_M_STATA/Post Planting Wave 1/Agriculture/sect11a1_plantingw1.dta", clear
 
 describe
