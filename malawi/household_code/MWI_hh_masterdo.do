@@ -88,4 +88,31 @@
 * do IHS4*pnl household cleaning filefiles
 	do 			"$code/wave_4/ihs4lpnl_hh_clean.do"		//	cleans IHS4lpnl
 
+
+* **********************************************************************
+* 3 - run wave specific .do files to merge with weather
+* **********************************************************************
+
+* do each IHS3 household cleaning files
+	do 			"$code/wave_1/ihs3cx_merge.do"			//	merges IHS3cx to weather
+	do 			"$code/wave_1/ihs3spnl_merge.do"		//	merges IHS3spnl to weather
+	do 			"$code/wave_1/ihs3lpnl_merge.do"		//	merges IHS3lpnl to weather
+
+* do each IHPS*pnl household cleaning files
+	do 			"$code/wave_2/ihpsspnl_merge.do"		//	merges IHPSspnl to weather
+	do 			"$code/wave_2/ihpslpnl_merge.do"		//	merges IHPSlpnl	to weather
+
+* do IHS4 household cleaning filename
+	do 			"$code/wave_3/ihs4cx_merge.do"			//	merges IHS4cx to weather
+	
+* do IHS4*pnl household cleaning filefiles
+	do 			"$code/wave_4/ihs4lpnl_merge.do"		//	merges IHS4lpnl to weather
+
+
+* **********************************************************************
+* 3 - run .do file to append each wave
+* **********************************************************************
+
+	do			"$code/WMI_append_merged.do"		// append waves
+	
 /* END */
