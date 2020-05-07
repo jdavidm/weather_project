@@ -41,7 +41,7 @@
 * 1 - determine fertilizer use 
 * **********************************************************************
 		
-* import the first relevant data file: secta1_harvestw1
+* import the first relevant data file
 		use "`root'/sect11d_plantingw1", clear 
 
 describe

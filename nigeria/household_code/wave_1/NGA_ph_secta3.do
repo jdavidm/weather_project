@@ -50,7 +50,7 @@
 * 1 - harvest information
 * **********************************************************************
 
-* import the first relevant data file: secta1_harvestw1
+* import the first relevant data file
 		use "`root'/secta3_harvestw1", clear 	
 
 rename sa3q2 cropcode

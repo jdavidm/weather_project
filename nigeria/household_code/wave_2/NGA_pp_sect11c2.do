@@ -1,7 +1,51 @@
-*WAVE 2 POST PLANTING, NIGERIA AG SECT11C2
+* Project: WB Weather
+* Created on: May 2020
+* Created by: alj
+* Stata v.16
 
-use "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_raw/NGA_2012_GHSP-W2_v02_M_STATA/Post Planting Wave 2/Agriculture/sect11c2_plantingw2.dta", clear
- 
+* does
+	* reads in Nigeria, WAVE 2 POST PLANTING, NIGERIA AG SECT11C2
+	* determines pesticide and herbicide use
+	* maybe more who knows
+	* outputs clean data file ready for combination with wave 2 hh data
+
+* assumes
+	* customsave.ado
+	
+* other notes: 
+	* still includes some notes from Alison Conley's work in spring 2020
+	
+* TO DO:
+	* some issues with conversion units, detailed by Alison below
+		*alj incliniation - binary only keep suffix "_any"
+	* unsure - incomplete, runs but maybe not right? 
+	* clarify "does" section
+
+* **********************************************************************
+* 0 - setup
+* **********************************************************************
+
+* set global user
+	global user "aljosephson"
+	
+* define paths	
+	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_2/raw"
+	loc export = "G:/My Drive/weather_project/household_data/nigeria/wave_2/refined"
+	loc logout = "G:/My Drive/weather_project/household_data/nigeria/logs"
+
+* close log (in case still open)
+	*log close
+	
+* open log	
+	log using "`logout'/pp_sect11c2", append
+
+* **********************************************************************
+* 1 - determines pesticide and herbicide use 
+* **********************************************************************
+		
+* import the first relevant data file
+		use "`root'/sect11c2_plantingw2", clear 	
+
 describe
 sort hhid plotid 
 isid hhid plotid, missok
@@ -30,7 +74,13 @@ tab herb_unit
 *HELP: same situation here except we would lose about 2.5% of observations if we 
 *decide to drop the weird measurement units, but we still need a weight conversion factor for app rate
 
-keep zone ///
+
+* **********************************************************************
+* 2 - end matter, clean up to save
+* **********************************************************************
+
+keep hhid ///
+zone ///
 state ///
 lga ///
 sector ///
@@ -49,4 +99,11 @@ compress
 describe
 summarize 
 
-save "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_clean/data/wave_2/pp_sect11c2.dta", replace
+* save file
+		customsave , idvar(hhid) filename("pp_sect11c2.dta") ///
+			path("`export'/`folder'") dofile(pp_sect11c2) user($user)
+
+* close the log
+	log	close
+
+/* END */

@@ -1,7 +1,51 @@
-*WAVE 3 POST PLANTING, NIGERIA AG SECT11E
-*HELP: Needs conversion for weights of seeds to get application rate variable
+* Project: WB Weather
+* Created on: May 2020
+* Created by: alj
+* Stata v.16
 
-use "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_raw/NGA_2015_GHSP-W3_v02_M_Stata/Post Planting Wave 3/sect11e_plantingw3.dta", clear
+* does
+	* reads in Nigeria, WAVE 3 POST PLANTING, NIGERIA AG SECT11E
+	* determines seed
+	* maybe more who knows
+	* outputs clean data file ready for combination with wave 3 hh data
+
+* assumes
+	* customsave.ado
+	* land-conversion.dta conversion file
+	
+* other notes: 
+	* still includes some notes from Alison Conley's work in spring 2020
+	
+* TO DO:
+	* major issues with seed: from Alison: Needs conversion for weights of seeds to get application rate variable
+		*alj opinion (7 May): omit seed
+	* unsure - incomplete, runs but maybe not right? 
+	* clarify "does" section
+	
+* **********************************************************************
+* 0 - setup
+* **********************************************************************
+
+* set global user
+	global user "aljosephson"
+	
+* define paths	
+	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_3/raw"
+	loc export = "G:/My Drive/weather_project/household_data/nigeria/wave_3/refined"
+	loc logout = "G:/My Drive/weather_project/household_data/nigeria/logs"
+
+* close log (in case still open)
+	*log close
+	
+* open log	
+	log using "`logout'/pp_sect11e", append
+
+* **********************************************************************
+* 1 - determine seed 
+* **********************************************************************
+		
+* import the first relevant data file
+		use "`root'/sect11e_plantingw3", clear 
 
 describe
 sort hhid plotid cropid
@@ -38,7 +82,14 @@ rename s11eq30b purchased_unit_b
 label variable purchased_unit_b "unit of purchased seed used from second source"
 tab purchased_unit_b
 
-keep zone ///
+*major measurement issues with seed - probably omit
+
+* **********************************************************************
+* 2 - end matter, clean up to save
+* **********************************************************************
+
+keep hhid ///
+zone ///
 state ///
 lga ///
 hhid ///
@@ -59,5 +110,11 @@ compress
 describe
 summarize 
 
-save "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_clean/data/wave_3/pp_sect11e.dta", replace
+* save file
+		customsave , idvar(hhid) filename("pp_sect11e.dta") ///
+			path("`export'/`folder'") dofile(pp_sect11e) user($user)
 
+* close the log
+	log	close
+
+/* END */

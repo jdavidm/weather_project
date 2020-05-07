@@ -43,7 +43,7 @@
 * 1 - deterine seed use
 * **********************************************************************
 		
-* import the first relevant data file: secta1_harvestw1
+* import the first relevant data file
 		use "`root'/sect11e_plantingw1", clear 	
 
 describe

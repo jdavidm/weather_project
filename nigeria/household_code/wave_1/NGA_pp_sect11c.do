@@ -41,7 +41,7 @@
 * 1 - determine pesticide and herbicide use 
 * **********************************************************************
 		
-* import the first relevant data file: secta1_harvestw1
+* import the first relevant data file
 		use "`root'/sect11c_plantingw1", clear 	
 
 describe

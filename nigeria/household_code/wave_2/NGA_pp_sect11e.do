@@ -1,7 +1,52 @@
-*WAVE 2 POST PLANTING, NGA AG SECT11E - SEED
-***NEED HELP WITH CONVERSION
+* Project: WB Weather
+* Created on: May 2020
+* Created by: alj
+* Stata v.16
 
-use "/Users/aljosephson/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_raw/NGA_2012_GHSP-W2_v02_M_STATA/Post Planting Wave 2/Agriculture/sect11e_plantingw2.dta", clear
+* does
+	* reads in Nigeria, WAVE 2 POST PLANTING, NGA AG SECT11E - SEED
+	* determines seeds
+	* maybe more who knows
+	* outputs clean data file ready for combination with wave 2 hh data
+
+* assumes
+	* customsave.ado
+	* harvconv_wave2_ph_secta1.dta conversion file
+	* land_conversion.dta conversion file 
+	
+* other notes: 
+	* still includes some notes from Alison Conley's work in spring 2020
+	
+* TO DO:
+	* from Alison: "NEED HELP WITH CONVERSION"
+		* opinion of alj (7 May) drop seed, do not include in analysis
+	* unsure - incomplete, runs but maybe not right? 
+	* clarify "does" section
+
+* **********************************************************************
+* 0 - setup
+* **********************************************************************
+
+* set global user
+	global user "aljosephson"
+	
+* define paths	
+	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_2/raw"
+	loc export = "G:/My Drive/weather_project/household_data/nigeria/wave_2/refined"
+	loc logout = "G:/My Drive/weather_project/household_data/nigeria/logs"
+
+* close log (in case still open)
+	*log close
+	
+* open log	
+	log using "`logout'/pp_sect11e", append
+
+* **********************************************************************
+* 1 - determines seed  
+* **********************************************************************
+		
+* import the first relevant data file:
+		use "`root'/sect11e_plantingw2", clear 	
 
 describe
 sort hhid plotid cropid
@@ -38,10 +83,16 @@ rename s11eq30b purchased_unit_b
 label variable purchased_unit_b "unit of purchased seed used from second source"
 tab purchased_unit_b
 
-
 *look at all the different variables used - how do we count these?
 
-keep zone ///
+*omitting several oil pam obs - alj
+
+* **********************************************************************
+* 3 - end matter, clean up to save
+* **********************************************************************
+
+keep hhid ///
+zone ///
 state ///
 lga ///
 hhid ///
@@ -59,11 +110,15 @@ purchased_unit_b ///
 seed_use ///
 tracked_obs ///
 
-*omitting several oil pam obs - alj
-
 compress
 describe
 summarize 
 
-save "/Users/aljosephson/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_clean/data/wave_2/pp_sect11e.dta", replace
+* save file
+		customsave , idvar(hhid) filename("pp_sect11e.dta") ///
+			path("`export'/`folder'") dofile(pp_sect11e) user($user)
 
+* close the log
+	log	close
+
+/* END */

@@ -1,6 +1,51 @@
-*WAVE 3 POST PLANTING, NIGERIA AG SECT11F
+* Project: WB Weather
+* Created on: May 2020
+* Created by: alj
+* Stata v.16
 
-use "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_raw/NGA_2015_GHSP-W3_v02_M_Stata/Post Planting Wave 3/sect11f_plantingw3.dta", clear
+* does
+	* reads in Nigeria, WAVE 3 POST PLANTING, NIGERIA AG SECT11F
+	* determines planted area
+	* conversion to hectares, as appropriate
+	* maybe more who knows
+	* outputs clean data file ready for combination with wave 3 hh data
+
+* assumes
+	* customsave.ado
+	* land-conversion.dta conversion file
+	
+* other notes: 
+	* still includes some notes from Alison Conley's work in spring 2020
+	
+* TO DO:
+	* some issues with conversion to kgs
+	* unsure - incomplete, runs but maybe not right? 
+	* clarify "does" section
+	
+* **********************************************************************
+* 0 - setup
+* **********************************************************************
+
+* set global user
+	global user "aljosephson"
+	
+* define paths	
+	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_3/raw"
+	loc export = "G:/My Drive/weather_project/household_data/nigeria/wave_3/refined"
+	loc logout = "G:/My Drive/weather_project/household_data/nigeria/logs"
+
+* close log (in case still open)
+	*log close
+	
+* open log	
+	log using "`logout'/pp_sect11f", append
+
+* **********************************************************************
+* 1 - determine plot size
+* **********************************************************************
+		
+* import the first relevant data file
+		use "`root'/sect11f_plantingw3", clear 
 
 describe
 sort hhid plotid cropid
@@ -11,7 +56,14 @@ label variable area_planted "what was the total area planted on this plot with t
 rename s11fq1b area_planted_unit
 label variable area_planted_unit "unit of measurement reported"
 
-merge m:1 zone using "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_raw/conversion_files/land-conversion.dta"
+* **********************************************************************
+* 2 - conversions to hectares 
+* **********************************************************************
+
+* redefine paths for conversion 
+	loc root = "G:/My Drive/weather_project/household_data/nigeria/conversion_files"
+
+merge m:1 zone using "`root'/land-conversion" 
 
 tab area_planted_unit, nolabel
 tab area_planted_unit
@@ -34,8 +86,6 @@ replace planted_area_hec = area_planted*sqmcon if area_planted_unit == 7
 
 label variable planted_area_hec "SR total area planted on this plot with the crop since the beginning of the year converted to hectares"
 
-
-*do we need to know the method of cropping used? we are only concerned with their main crop, so do we need to report
 *if the crop was mono-cropped or inter-cropped? Because with inter-cropping part of the harvest could be the main crop?
 rename s11fq2 crop_method
 
@@ -43,7 +93,12 @@ rename s11fq3a plant_month
 rename s11fq3b plant_yr
 tab plant_yr
 
-keep zone ///
+* **********************************************************************
+* 3 - end matter, clean up to save
+* **********************************************************************
+
+keep hhid ///
+zone ///
 state ///
 lga ///
 sector ///
@@ -69,4 +124,11 @@ compress
 describe
 summarize 
 
-save "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_clean/data/wave_3/pp_sect11f.dta", replace
+* save file
+		customsave , idvar(hhid) filename("pp_sect11f.dta") ///
+			path("`export'/`folder'") dofile(pp_sect11f) user($user)
+
+* close the log
+	log	close
+
+/* END */

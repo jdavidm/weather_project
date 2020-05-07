@@ -44,7 +44,7 @@
 * 1 - general clean up, renaming, etc. 
 * **********************************************************************
 		
-* import the first relevant data file: secta1_harvestw1
+* import the first relevant data file
 		use "`root'/secta1_harvestw1", clear 	
 
 		* it looks like over 6000 reported that they planted crops on the plot ... 

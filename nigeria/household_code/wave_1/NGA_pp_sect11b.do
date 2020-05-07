@@ -42,7 +42,7 @@
 * 1 - determine cultivated plot + irrigation 
 * **********************************************************************
 		
-* import the first relevant data file: secta1_harvestw1
+* import the first relevant data file
 		use "`root'/sect11b_plantingw1", clear 	
 
 describe

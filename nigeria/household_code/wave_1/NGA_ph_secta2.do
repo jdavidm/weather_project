@@ -44,7 +44,7 @@
 * 1 - defining labor, labor days, etc. 
 * **********************************************************************
 
-* import the first relevant data file: secta1_harvestw1
+* import the first relevant data file
 		use "`root'/secta2_harvestw1", clear 	
 
 describe

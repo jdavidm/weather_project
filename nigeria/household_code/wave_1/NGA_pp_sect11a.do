@@ -44,7 +44,7 @@
 * 1 - cleaning cultivation, etc.
 * **********************************************************************
 
-* import the first relevant data file: secta1_harvestw1
+* import the first relevant data file
 		use "`root'/sect11a_plantingw1", clear 	
 
 describe

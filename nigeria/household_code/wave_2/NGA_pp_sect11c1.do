@@ -1,8 +1,52 @@
-*WAVE 2 POST PLANTING, NIGERIA AG SECT11C1 - PLANTING LABOR
-**HELP: in wave 1, there was no survey collection of data regarding labor used in the planting process,
-* only in the harvest process - so do we want this data?
+* Project: WB Weather
+* Created on: May 2020
+* Created by: alj
+* Stata v.16
 
-use "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_raw/NGA_2012_GHSP-W2_v02_M_STATA/Post Planting Wave 2/Agriculture/sect11c1_plantingw2.dta", clear
+* does
+	* reads in Nigeria, WAVE 2 POST PLANTING, NIGERIA AG SECT11C1 - PLANTING LABOR
+	* determines primary and secondary crops, cleans production (quantity, hecatres)
+	* converts to hectares and kilograms, as appropriate
+	* maybe more who knows
+	* outputs clean data file ready for combination with wave 2 hh data
+
+* assumes
+	* customsave.ado
+	* harvconv_wave2_ph_secta1.dta conversion file
+	* land_conversion.dta conversion file 
+	
+* other notes: 
+	* still includes some notes from Alison Conley's work in spring 2020
+	
+* TO DO:
+	* from Alison: in wave 1, there was no survey collection of data regarding labor used in the planting process, only in the harvest process - so do we want this data?" - alj inclination == no
+	* unsure - incomplete, runs but maybe not right? 
+	* clarify "does" section
+
+* **********************************************************************
+* 0 - setup
+* **********************************************************************
+
+* set global user
+	global user "aljosephson"
+	
+* define paths	
+	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_2/raw"
+	loc export = "G:/My Drive/weather_project/household_data/nigeria/wave_2/refined"
+	loc logout = "G:/My Drive/weather_project/household_data/nigeria/logs"
+
+* close log (in case still open)
+	*log close
+	
+* open log	
+	log using "`logout'/pp_sect11c1", append
+
+* **********************************************************************
+* 1 - labor 
+* **********************************************************************
+		
+* import the first relevant data file
+		use "`root'/sect11c1_plantingw2", clear 	
 
 describe
 sort hhid plotid
@@ -30,7 +74,13 @@ replace child_days = 0 if child_days == .
 gen pp_labor = hh_1 + hh_2 + hh_3 + hh_4 + men_days + women_days + child_days
 label variable pp_labor "total labor in days for planting process"
 
-keep zone ///
+
+* **********************************************************************
+* 2 - end matter, clean up to save
+* **********************************************************************
+
+keep hhid ///
+zone ///
 state ///
 lga ///
 sector ///
@@ -44,4 +94,11 @@ compress
 describe
 summarize 
 
-save "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_clean/data/wave_2/pp_sect11c1.dta", replace
+* save file
+		customsave , idvar(hhid) filename("pp_sect11c1.dta") ///
+			path("`export'/`folder'") dofile(pp_sect11c1) user($user)
+
+* close the log
+	log	close
+
+/* END */

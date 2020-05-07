@@ -1,6 +1,52 @@
-*WAVE 2, POST HARVEST, NIGERIA AG SECTA1
+* Project: WB Weather
+* Created on: May 2020
+* Created by: alj
+* Stata v.16
 
-use "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_raw/NGA_2012_GHSP-W2_v02_M_STATA/Post Harvest Wave 2/Agriculture/secta1_harvestw2.dta", clear
+* does
+	* reads in Nigeria, WAVE 2, POST HARVEST, NIGERIA AG SECTA1
+	* determines primary and secondary crops, cleans production (quantity, hecatres)
+	* converts to hectares and kilograms, as appropriate
+	* maybe more who knows
+	* outputs clean data file ready for combination with wave 2 hh data
+
+* assumes
+	* customsave.ado
+	* harvconv_wave2_ph_secta1.dta conversion file
+	* land_conversion.dta conversion file 
+	
+* other notes: 
+	* still includes some notes from Alison Conley's work in spring 2020
+	
+* TO DO:
+	* maybe issues with harv2_unit and harv1_unit
+	* unsure - incomplete, runs but maybe not right? 
+	* clarify "does" section
+
+* **********************************************************************
+* 0 - setup
+* **********************************************************************
+
+* set global user
+	global user "aljosephson"
+	
+* define paths	
+	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_2/raw"
+	loc export = "G:/My Drive/weather_project/household_data/nigeria/wave_2/refined"
+	loc logout = "G:/My Drive/weather_project/household_data/nigeria/logs"
+
+* close log (in case still open)
+	*log close
+	
+* open log	
+	log using "`logout'/ph_secta1", append
+
+* **********************************************************************
+* 1 - general clean up, renaming, etc. 
+* **********************************************************************
+		
+* import the first relevant data file
+		use "`root'/secta1_harvestw2", clear 	
 
 describe
 sort hhid plotid
@@ -41,10 +87,15 @@ label variable crop1_area "what was the total area planted on this plot with the
 
 rename sa1q28b crop1_area_unit
 
+gen cropcode = main_crop
+
+*primary crop quantity unit. note: the survey asked for another unit, however there were no observations listed for it so I didn't record it here
+generate harv1_unit = sa1q31b 
+
 rename sa1q30 plant_month
 label variable plant_month "what month did you plant seeds for the main crop during the dry season on this plot since last interview?"
 
-rename harvestq_1
+rename sa1q31a harvestq_1
 
 *the secondary crop harvested
 rename sa1q33 secondcrop
@@ -64,20 +115,17 @@ rename sa1q36 plant_month2
 *secondary crop quantity unit. note: the survey asked for another unit, however there were no observations listed for it so I didn't record it here
 generate harv2_unit = sa1q37b 
 
-*** CONVERTING HARVEST QUANTITIES TO KGS
+* **********************************************************************
+* 2a - converting harvest quantities to kilograms 
+* **********************************************************************
 
+* define new paths for conversions	
+	loc root = "G:/My Drive/weather_project/household_data/nigeria/conversion_files/wave_2"
 
-merge m:1 cropcode harv1_unit using "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_raw/conversion_files/wave_2/harvconv_wave2_ph_secta1.dta"
-*
-
+merge m:1 cropcode harv1_unit using "`root'/harvconv_wave2_ph_secta1"
 drop _merge
 
-merge m:1 cropcode harv2_unit using "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_raw/conversion_files/wave_2/harvconv_wave2_ph_secta1.dta"
-tab _merge harvestq_2
-*
-
-
-
+merge m:1 cropcode harv2_unit using  "`root'/harvconv_wave2_ph_secta1" 
 drop _merge
 
 gen harv_kg1 =.
@@ -90,13 +138,18 @@ replace harv_kg2 = harvestq_2*harv_conversion2
 replace harv_kg2 = 0 if harv_kg2 ==. 
 * observations converted
 
+* **********************************************************************
+* 2bi - converting crop areas to hectares 
+* **********************************************************************
 
-****CONVERTING CROP AREAS
+* define new paths for conversions	
+	loc root = "G:/My Drive/weather_project/household_data/nigeria/conversion_files/"
+	
 tab crop1_area_unit
-merge m:1 zone using "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_raw/conversion_files/land-conversion.dta"
+merge m:1 zone using "`root'/land-conversion"
+
 tab _merge
 drop _merge
-
 
 tab crop1_area_unit
 tab crop1_area_unit, nolabel
@@ -115,7 +168,6 @@ replace crop1_area_hec = crop1_area*ridgecon if crop1_area_unit == 2
 *convert stands
 replace crop1_area_hec = crop1_area*standcon if crop1_area_unit == 3 
 
-
 *convert plots
 replace crop1_area_hec = crop1_area*plotcon if crop1_area_unit == 4
 
@@ -132,7 +184,11 @@ label variable crop1_area_hec "SR crop area converted to hectares"
 
 tab plot_unit
 
-***CONVERTING PLOT SIZES to hectares
+
+* **********************************************************************
+* 2bii - converting plot areas and gps to hectares 
+* **********************************************************************
+
 *ridges
 gen plot_size_hec = .
 replace plot_size_hec = plot_size_SR*ridgecon if plot_unit == 2
@@ -150,14 +206,18 @@ replace plot_size_hec = plot_size_SR if plot_unit == 6
 replace plot_size_hec = plot_size_SR*sqmcon if plot_unit == 7
 label variable plot_size_hec "SR plot size converted to hectares"
 
-
 *convert gps report to hectares
 gen plot_size_2 = .
 replace plot_size_2 = plot_size_GPS*sqmcon
 label variable plot_size_2 "GPS measured area of plot in hectares"
 
 
-keep zone ///
+* **********************************************************************
+* 3 - end matter, clean up to save
+* **********************************************************************
+
+keep hhid ///
+zone ///
 state ///
 lga ///
 sector ///
@@ -190,4 +250,11 @@ compress
 describe
 summarize 
 
-save "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_clean/data/wave_2/ph_secta1.dta", replace
+* save file
+		customsave , idvar(hhid) filename("ph_secta1.dta") ///
+			path("`export'/`folder'") dofile(ph_secta1) user($user)
+
+* close the log
+	log	close
+
+/* END */

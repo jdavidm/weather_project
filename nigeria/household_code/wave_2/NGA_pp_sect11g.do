@@ -1,8 +1,52 @@
- *WAVE 2 POST PLANTING, NIGERIA SECT11G
-*CONVERT HARVEST QUANTITIES
+* Project: WB Weather
+* Created on: May 2020
+* Created by: alj
+* Stata v.16
 
-use "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_raw/NGA_2012_GHSP-W2_v02_M_STATA/Post Planting Wave 2/Agriculture/sect11g_plantingw2.dta", clear
+* does
+	* reads in Nigeria, WAVE 2 POST PLANTING, NIGERIA SECT11G
+	* determines harvest (quantity)
+	* converts to kilograms, as appropriate
+	* maybe more who knows
+	* outputs clean data file ready for combination with wave 2 hh data
 
+* assumes
+	* customsave.ado
+	* harvconv.dta conversion file 
+	
+* other notes: 
+	* still includes some notes from Alison Conley's work in spring 2020
+	
+* TO DO:
+	* some issues with conversion to kilograms
+	* unsure - incomplete, runs but maybe not right? 
+	* clarify "does" section
+
+* **********************************************************************
+* 0 - setup
+* **********************************************************************
+
+* set global user
+	global user "aljosephson"
+	
+* define paths	
+	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_2/raw"
+	loc export = "G:/My Drive/weather_project/household_data/nigeria/wave_2/refined"
+	loc logout = "G:/My Drive/weather_project/household_data/nigeria/logs"
+
+* close log (in case still open)
+	*log close
+	
+* open log	
+	log using "`logout'/pp_sect11g", append
+
+* **********************************************************************
+* 1 - determine harvest quantities 
+* **********************************************************************
+		
+* import the first relevant data file
+		use "`root'/sect11g_plantingw2", clear 	
+ 
 describe
 sort hhid plotid cropid
 isid hhid plotid cropid, missok
@@ -12,10 +56,15 @@ label variable harvestq "How much (tree/perm crop) did you harvest since the new
 rename s11gq8b harv_unit
 *these are the units of measurement
 
+* **********************************************************************
+* 2 - converting harvest quantities to kilograms 
+* **********************************************************************
 
-merge m:1 cropcode harv_unit using "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_raw/conversion_files/wave_2/harvconv.dta"
+* define new paths for conversions	
+	loc root = "G:/My Drive/weather_project/household_data/nigeria/conversion_files/"
+
+merge m:1 cropcode harv_unit using "`root'/harvconv"
 *merged 649, not matched from master = 830
-
 
 tab harvestq
 tab harv_unit
@@ -25,27 +74,31 @@ tab harv_unit, nolabel
 tab _merge harv_unit
 
 *trying to remedy some of the conversion problems
-*congo for cashew and cocoa
-replace conversion =  1.5 if harv_unit == 7 & conversion == .
+*congo for cashew and cocoa - this values taken from shared material on LSMS website 
+replace harv_conversion =  1.5 if harv_unit == 7 & harv_conversion == .
 
 *medium bunch for soybeans and maize
-replace conversion = 8 if harv_unit == 42 & conversion == .
+replace harv_conversion = 8 if harv_unit == 42 & harv_conversion == .
 
 *small bunches for yam and agbora
-replace conversion = 5 if harv_unit == 41 & conversion == .
+replace harv_conversion = 5 if harv_unit == 41 & harv_conversion == .
 
 *tiyas for ginger
-replace conversion = 2.27 if harv_unit == 14 & conversion ==.
+replace harv_conversion = 2.27 if harv_unit == 14 & harv_conversion ==.
 
 *mudu for agboro and cashew nut
-replace conversion = 1.3 if harv_unit == 5 & conversion ==.
+replace harv_conversion = 1.3 if harv_unit == 5 & harv_conversion ==.
 
 *this process was able to add 17 observations
  
+generate harv_kg = harvestq*harv_conversion
 
-generate harv_kg = harvestq*conversion
+* **********************************************************************
+* 3 - end matter, clean up to save
+* **********************************************************************
 
-keep zone ///
+keep hhid ///
+zone ///
 state ///
 lga ///
 sector ///
@@ -58,11 +111,18 @@ harvestq ///
 harv_unit ///
 _merge ///
 harv_kg ///
-conversion ///
+harv_conversion ///
 
 
 compress
 describe
 summarize 
 
-save "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_clean/data/wave_2/pp_sect11g.dta", replace
+* save file
+		customsave , idvar(hhid) filename("pp_sect11g.dta") ///
+			path("`export'/`folder'") dofile(pp_sect11g) user($user)
+
+* close the log
+	log	close
+
+/* END */

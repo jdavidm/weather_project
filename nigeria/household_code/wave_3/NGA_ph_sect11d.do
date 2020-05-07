@@ -1,7 +1,53 @@
-*WAVE 3, POST HARVEST, NIGERIA AG SECT11D - Fertilizer
-**NOTE: this portion of the survey was previously in post planting portion of wave 1 and wave 2
+* Project: WB Weather
+* Created on: May 2020
+* Created by: alj
+* Stata v.16
 
-use "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_raw/NGA_2015_GHSP-W3_v02_M_Stata/Post Harvest Wave 3/secta11d_harvestw3.dta", clear
+* does
+	* reads in Nigeria, WAVE 3, POST HARVEST, NIGERIA AG SECT11D - Fertilizer
+	* determines fertilizer (quantity)
+	* converts to kilograms, as appropriate
+	* maybe more who knows
+	* outputs clean data file ready for combination with wave 3 hh data
+	
+* assumes
+	* customsave.ado
+	
+* other notes: 
+	* still includes some notes from Alison Conley's work in spring 2020
+	
+* TO DO:
+	* see notes below
+	* unsure - incomplete, runs but maybe not right? 
+	* clarify "does" section
+	
+* Alison Notes: 
+	* this portion of the survey was previously in post planting portion of wave 1 and wave 2
+
+* **********************************************************************
+* 0 - setup
+* **********************************************************************
+
+* set global user
+	global user "aljosephson"
+	
+* define paths	
+	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_3/raw"
+	loc export = "G:/My Drive/weather_project/household_data/nigeria/wave_3/refined"
+	loc logout = "G:/My Drive/weather_project/household_data/nigeria/logs"
+
+* close log (in case still open)
+	*log close
+	
+* open log	
+	log using "`logout'/ph_sect11d", append
+
+* **********************************************************************
+* 1 - determine fertilizer and conversion to kgs
+* **********************************************************************
+		
+* import the first relevant data file
+		use "`root'/secta11d_harvestw3", clear 
 
 describe
 sort hhid plotid 
@@ -11,7 +57,7 @@ rename s11dq1 fertilizer_any
 *binary for fert use
 
 *the survey divides the fertilizer into left over, received for free, and purchased so here I combine them
-*HELP: the quantity is giving in NOT GIVEN IN KGS in wave 3 so we need to convert these weights to kgs (label should be fert_used_kg for total)
+*the quantity is giving in NOT GIVEN IN KGS in wave 3 so we need to convert these weights to kgs (label should be fert_used_kg for total)
 *here is inorganic leftover fertilizer
 generate leftover_iq = s11dq4a
 replace leftover_iq = 0 if leftover_iq ==.
@@ -57,7 +103,6 @@ replace purch1 = purch_iq1*100 if purch_unit1 ==2
 replace purch1 = purch_iq1 if purch_unit1 ==3
 replace purch1 = 0 if purch1 ==.
 
-
 *purchased inorganic, 2nd source
 gen purch_iq2 = s11dq28a
 replace purch_iq2 = 0 if purch_iq2 ==. 
@@ -76,7 +121,12 @@ generate fert_used_kg = leftover + sub_iq + free + purch1 + purch2
 
 label variable fert_used_kg "total inorganic fertilizer used in kgs"
 
-keep zone ///
+* **********************************************************************
+* 2 - end matter, clean up to save
+* **********************************************************************
+
+keep hhid ///
+zone ///
 state ///
 lga ///
 hhid ///
@@ -104,4 +154,11 @@ compress
 describe
 summarize 
 
-save "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_clean/data/wave_3/ph_sect11d.dta", replace
+* save file
+		customsave , idvar(hhid) filename("ph_sect11d.dta") ///
+			path("`export'/`folder'") dofile(ph_sect11d) user($user)
+
+* close the log
+	log	close
+
+/* END */

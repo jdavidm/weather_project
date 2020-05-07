@@ -43,7 +43,7 @@
 * 1 - general clean up, renaming, etc. 
 * **********************************************************************
 		
-* import the first relevant data file: secta1_harvestw1
+* import the first relevant data file
 		use "`root'/sect11F_plantingw1", clear 	
 
 describe

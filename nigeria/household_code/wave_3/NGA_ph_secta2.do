@@ -1,6 +1,48 @@
-*WAVE 3 POST HARVEST, NIGERIA AG SECTA2
+* Project: WB Weather
+* Created on: May 2020
+* Created by: alj
+* Stata v.16
 
-use "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_raw/NGA_2015_GHSP-W3_v02_M_Stata/Post Harvest Wave 3/secta2_harvestw3.dta", clear
+* does
+	* reads in Nigeria, WAVE 3 POST HARVEST, NIGERIA AG SECTA2
+	* determines labor 
+	* maybe more who knows
+	* outputs clean data file ready for combination with wave 3 hh data
+
+* assumes
+	* customsave.ado
+	
+* other notes: 
+	* still includes some notes from Alison Conley's work in spring 2020
+	
+* TO DO:
+	* unsure - incomplete, runs but maybe not right? 
+	* clarify "does" section
+	
+* **********************************************************************
+* 0 - setup
+* **********************************************************************
+
+* set global user
+	global user "aljosephson"
+	
+* define paths	
+	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_3/raw"
+	loc export = "G:/My Drive/weather_project/household_data/nigeria/wave_3/refined"
+	loc logout = "G:/My Drive/weather_project/household_data/nigeria/logs"
+
+* close log (in case still open)
+	*log close
+	
+* open log	
+	log using "`logout'/ph_secta2", append
+
+* **********************************************************************
+* 1 - determine labor use
+* **********************************************************************
+		
+* import the first relevant data file
+		use "`root'/secta2_harvestw3", clear 	
 
 describe
 sort hhid plotid
@@ -111,7 +153,12 @@ gen labor_days_ht = (men_days_ht + women_days_ht + child_days_ht + free_days_ht 
 ***TOTAL DAYS (SUM OF PH AND HT)
 gen labor_days = labor_days_ph + labor_days_ht
 
-keep zone ///
+* **********************************************************************
+* 2 - end matter, clean up to save
+* **********************************************************************
+
+keep hhid ///
+zone ///
 state ///
 lga ///
 sector ///
@@ -119,13 +166,16 @@ hhid ///
 ea ///
 plotid ///
 labor_days ///
-tracked_obs ///
 
 compress
 describe
 summarize 
 
-save "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_clean/data/wave_3/ph_secta2.dta", replace
+* save file
+		customsave , idvar(hhid) filename("ph_secta2.dta") ///
+			path("`export'/`folder'") dofile(ph_secta2) user($user)
 
+* close the log
+	log	close
 
-
+/* END */

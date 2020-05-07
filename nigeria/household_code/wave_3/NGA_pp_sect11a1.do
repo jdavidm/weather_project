@@ -1,7 +1,49 @@
-*WAVE 3 POST PLANTING, NIGERIA AG SECTA1
-**wave 3 does not have the tracked_obs variable that was present in wave 2 - may not be a problem (looks like we may have a key) but worth noting
+* Project: WB Weather
+* Created on: May 2020
+* Created by: alj
+* Stata v.16
 
-use "/Users/aljosephson/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_raw/NGA_2015_GHSP-W3_v02_M_Stata/Post Planting Wave 3/sect11a1_plantingw3.dta", clear
+* does
+	* reads in Nigeria, WAVE 3 POST PLANTING, NIGERIA AG SECTA1
+	* determines plot size
+	* maybe more who knows
+	* outputs clean data file ready for combination with wave 3 hh data
+
+* assumes
+	* customsave.ado
+	* land-conversion.dta conversion file
+	
+* other notes: 
+	* still includes some notes from Alison Conley's work in spring 2020
+	
+* TO DO:
+	* unsure - incomplete, runs but maybe not right? 
+	* clarify "does" section
+	
+* **********************************************************************
+* 0 - setup
+* **********************************************************************
+
+* set global user
+	global user "aljosephson"
+	
+* define paths	
+	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_3/raw"
+	loc export = "G:/My Drive/weather_project/household_data/nigeria/wave_3/refined"
+	loc logout = "G:/My Drive/weather_project/household_data/nigeria/logs"
+
+* close log (in case still open)
+	*log close
+	
+* open log	
+	log using "`logout'/ph_sect11a1", append
+
+* **********************************************************************
+* 1 - determine plot size
+* **********************************************************************
+		
+* import the first relevant data file
+		use "`root'/sect11a1_plantingw3", clear 	
 
 describe
 sort hhid plotid
@@ -15,7 +57,14 @@ label variable SR_unit "self reported unit of measure, 1=heaps, 2=ridges, 3=stan
 gen plot_size_GPS = s11aq4c
 label variable plot_size_GPS "in sq. meters"
 
-merge m:1 zone using "/Users/aljosephson/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_raw/conversion_files/land-conversion.dta"
+* **********************************************************************
+* 2 - conversions
+* **********************************************************************
+
+* redefine paths for conversion 
+	loc root = "G:/My Drive/weather_project/household_data/nigeria/conversion_files"
+
+merge m:1 zone using "`root'/land-conversion" 
 
 tab SR_unit, nolabel
 
@@ -48,7 +97,12 @@ label variable plot_size_2 "GPS measured area of plot in hectares"
 gen mgr_id = s11aq6a
 label variable mgr_id "who in this household manages this plot?"
 
-keep zone ///
+* **********************************************************************
+* 3 - end matter, clean up to save
+* **********************************************************************
+
+keep hhid ///
+zone ///
 state ///
 lga ///
 sector ///
@@ -73,5 +127,11 @@ compress
 describe
 summarize 
 
-save "/Users/aljosephson/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_clean/data/wave_3/pp_sect11a1.dta", replace
+* save file
+		customsave , idvar(hhid) filename("ph_sect11a1.dta") ///
+			path("`export'/`folder'") dofile(ph_sect11a1) user($user)
 
+* close the log
+	log	close
+
+/* END */

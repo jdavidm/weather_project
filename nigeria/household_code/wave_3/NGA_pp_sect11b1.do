@@ -1,27 +1,57 @@
-*WAVE 3 POST PLANTING, NIGERIA AG SECT11B1
+* Project: WB Weather
+* Created on: May 2020
+* Created by: alj
+* Stata v.16
 
-use "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_raw/NGA_2015_GHSP-W3_v02_M_Stata/Post Planting Wave 3/sect11b1_plantingw3.dta", clear
+* does
+	* reads in Nigeria, WAVE 3 POST PLANTING, NIGERIA AG SECT11B1
+	* determines irrigation and plot use
+	* maybe more who knows
+	* outputs clean data file ready for combination with wave 3 hh data
+
+* assumes
+	* customsave.ado
+	
+* other notes: 
+	* still includes some notes from Alison Conley's work in spring 2020
+	
+* TO DO:
+	* unsure - incomplete, runs but maybe not right? 
+	* clarify "does" section
+	
+* **********************************************************************
+* 0 - setup
+* **********************************************************************
+
+* set global user
+	global user "aljosephson"
+	
+* define paths	
+	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_3/raw"
+	loc export = "G:/My Drive/weather_project/household_data/nigeria/wave_3/refined"
+	loc logout = "G:/My Drive/weather_project/household_data/nigeria/logs"
+
+* close log (in case still open)
+	*log close
+	
+* open log	
+	log using "`logout'/ph_sect11b1", append
+
+* **********************************************************************
+* 1 - determine irrigation and plot use
+* **********************************************************************
+		
+* import the first relevant data file
+		use "`root'/sect11b1_plantingw3", clear 	
 
 describe
 sort hhid plotid
 isid hhid plotid, missok
 
-*owner(s) of plots, I don't think we will need this, it's only for plots that people hold a title too
-gen owner1 = s11b1q6a
-gen owner2 = s11b1q6b
-
-*do we need to record all of the decision makers of the plot? this is for plots that are owned if so here are their hhids:
-gen mgr1 = s11b1q12a
-gen mgr2 = s11b1q12b
-gen mgr3 = s11b1q12c
-gen mgr4 = s11b1q12d
+*alj: drop Alison's information about ownership and manager of plots
 
 *is this plot irrigated?
 rename s11b1q39 irrigated
-
-*primary decision makers for rented plots
-rename s11b1q16b1 rent_mgr1
-rename s11b1q16b2 rent_mgr2
 
 *binary for cultivation of plot
 rename s11b1q27 cultivated
@@ -30,29 +60,30 @@ rename s11b1q27 cultivated
 *harvested or not based on other info or previously established binary)
 rename s11b1q28 plot_use
 
+* **********************************************************************
+* 2 - end matter, clean up to save
+* **********************************************************************
 
-keep zone ///
+keep hhid /// 
+zone ///
 state ///
 lga ///
 sector ///
 ea ///
 hhid ///
 plotid ///
-owner1 ///
-owner2 ///
-mgr1 ///
-mgr2 ///
-mgr3 ///
-mgr4 ///
 irrigated ///
-rent_mgr1 ///
-rent_mgr2 ///
 plot_use ///
-
-
 
 compress
 describe
 summarize 
 
-save "/Users/alisonconley/Dropbox/Weather_Project/Data/Nigeria/analysis_datasets/Nigeria_clean/data/wave_3/pp_sect11b1.dta", replace
+* save file
+		customsave , idvar(hhid) filename("ph_sect11b1.dta") ///
+			path("`export'/`folder'") dofile(ph_sect11b1) user($user)
+
+* close the log
+	log	close
+
+/* END */
