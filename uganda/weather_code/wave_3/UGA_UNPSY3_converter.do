@@ -1,38 +1,104 @@
-*converting files from .csv to .dta
-*note, there are currently no csv files in root folder
-*would need to be extracted again from folders in data> Uganda> weather_datasets> Compressed_files_UNPSY3
+* Project: WB Weather
+* Created on: April 2020
+* Created by: jdm
+* Stata v.16
 
-clear all
+* does
+	* reads in Uganda, wave 3 .csv files
+	* outputs .dta file ready for processing by the weather program
+	* does the above for both rainfall and temperature data
 
-global user "jdmichler"
+* assumes
+	* customsave.ado
 
-loc root = "C:\Users/$user\Dropbox\Weather_Project\Data\Uganda\weather_datasets\UGA_UNPSY3"
-loc export = "C:\Users/$user\Dropbox\Weather_Project\Data\Uganda\weather_datasets\UGA_UNPSY3"
+* TO DO:
+	* completed
 
-local folderList : dir "`root'" dirs "UNPSY3_rf*"
+	
+* **********************************************************************
+* 0 - setup
+* **********************************************************************
+
+* set user
+	*global user "jdmichler" // global user set in masterdo
+
+* define paths
+	loc root = "G:/My Drive/weather_project/weather_data/uganda/wave_3/raw"
+	loc export = "G:/My Drive/weather_project/weather_data/uganda/wave_3/daily"
+	loc logout = "G:/My Drive/weather_project/weather_data/uganda/logs"
+
+* open log
+	log using "`logout'/uga_unpsy3_converter", replace
+
+
+* **********************************************************************
+* 1 - converts rainfall data
+* **********************************************************************
+
+* define local with all sub-folders in it
+	loc folderList : dir "`root'" dirs "UNPSY3_rf*"
+
+* loop through each of the sub-folders in the above local
 foreach folder of local folderList {
-	local fileList : dir "`root'/`folder'" files "*.csv"
-	foreach file in `fileList' {
-		import delimited `root'/`folder'/`file', varnames (1) clear
-
-		loc dat = substr("`file'", 1, 5)
-		loc ext = substr("`file'", 7, 2)
-		loc sat = substr("`file'", 10, 3)
+	
+	*create directories to write output to
+	qui: capture mkdir "`export'/`folder'/"
+	
+	* define local with all files in each sub-folder	
+		loc fileList : dir "`root'/`folder'" files "*.csv"
 		
-		save "`export'/`folder'/`dat'_`ext'_`sat'_daily.dta", replace
-		}
-		}
+	* loop through each file in the above local	
+	foreach file in `fileList' {
+		
+		* import the .csv files - this takes time	
+		import delimited "`root'/`folder'/`file'", varnames (1) clear
 
-local folderList : dir "`root'" dirs "UNPSY3_t*"
+		* define locals to govern file naming
+			loc dat = substr("`file'", 1, 6)
+			loc ext = substr("`file'", 8, 2)
+			loc sat = substr("`file'", 11, 3)
+
+		* save file
+		customsave , idvar(hhid) filename("`dat'_`ext'_`sat'_daily.dta") ///
+			path("`export'/`folder'") dofile(UGA_UNPSY3_converter) user($user)
+	}
+}
+
+
+* **********************************************************************
+* 2 - converts temperature data
+* **********************************************************************
+
+* define local with all sub-folders in it
+	loc folderList : dir "`root'" dirs "UNPSY3_t*"
+
+* loop through each of the sub-folders in the above local
 foreach folder of local folderList {
-	local fileList : dir "`root'/`folder'" files "*.csv"
-	foreach file in `fileList' {
-		import delimited `root'/`folder'/`file', varnames (1) clear
-
-		loc dat = substr("`file'", 1, 5)
-		loc ext = substr("`file'", 7, 2)
-		loc sat = substr("`file'", 10, 3)
+	
+	*create directories to write output to
+	qui: capture mkdir "`export'/`folder'/"
+	
+	* define local with all files in each sub-folder	
+		loc fileList : dir "`root'/`folder'" files "*.csv"
 		
-		save "`export'/`folder'/`dat'_`ext'_`sat'_daily.dta", replace
-		}
-		}
+	* loop through each file in the above local	
+	foreach file in `fileList' {
+		
+		* import the .csv files - this takes time	
+		import delimited "`root'/`folder'/`file'", varnames (1) clear
+
+		* define locals to govern file naming
+			loc dat = substr("`file'", 1, 6)
+			loc ext = substr("`file'", 8, 2)
+			loc sat = substr("`file'", 11, 3)
+
+		* save file
+		customsave , idvar(hhid) filename("`dat'_`ext'_`sat'_daily.dta") ///
+			path("`export'/`folder'") dofile(UGA_UNPSY3_converter) user($user)
+	}
+}
+
+* close the log
+	log	close
+
+/* END */

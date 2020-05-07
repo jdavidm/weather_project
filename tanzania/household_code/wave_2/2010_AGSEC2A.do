@@ -5,6 +5,7 @@
 
 * does
 	*cleans Tanzania household variables, wave 2 Ag sec2a
+  *looks like a parcel roster, "all plots anyone in your household owned or cultivated during the 2010 long rainy season"
 
 * assumes
 
@@ -27,15 +28,15 @@
 
 *Open log
 	log using "$logout/wv2_AGSEC2A"
-clear all
+
+*attempting to clean Tanzania household variables
+global user "themacfreezie"
 
 **********************************************************************************
 **	TZA 2010 (Wave 2) - Agriculture Section 2A 
 **********************************************************************************
 
 use "$root/AG_SEC2A", clear
-
-*	looks like a parcel roster, "all plots anyone in your household owned or cultivated during the 2010 long rainy season"
 
 rename y2_hhid hhid
 rename ag2a_04 plotsize_self
