@@ -113,6 +113,6 @@
 * 3 - run .do file to append each wave
 * **********************************************************************
 
-	do			"$code/WMI_append_merged.do"		// append waves
+	do			"$code/MWI_append_merged.do"		// append waves
 	
 /* END */

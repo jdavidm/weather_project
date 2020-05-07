@@ -25,7 +25,7 @@
 * **********************************************************************
 
 * set global user
-	global	user		"jdmichler"
+	*global	user		"jdmichler" // global managed by masterdo, turn on to run single file
 
 * define paths
 	loc		root 	= 	"G:/My Drive/weather_project/merged_data/malawi"
@@ -40,130 +40,143 @@
 * 1 - append cross section
 * **********************************************************************
 
-* define local with all sub-folders in it
-	loc			folderList : dir "`root'" dirs "wave_*"
+* define local to loop through and allow for file name comparison	
+	loc 		fileList1 : dir "`root'/wave_1" files "cx*"
+	loc 		dat1 = substr("`fileList1'", 1, 3)
+	loc 		ext1 = substr("`fileList1'", 5, 2)
+	loc 		sat1 = substr("`fileList1'", 8, 3)
 
-* loop through each file in the above local
-	foreach 	folder of local folderList {
+* define local with all wave 1 files in each sub-folder	
+	loc 		fileList1 : dir "`root'/wave_1" files "cx1*"
 	
-	* define local to loop through and allow for file name comparison	
-		loc 		fileList1 : dir "`root'/`folder'" files "cx*"
-		loc 		dat1 = substr("`fileList1'", 1, 3)
-		loc 		ext1 = substr("`fileList1'", 5, 2)
-		loc 		sat1 = substr("`fileList1'", 8, 3)
-
-	* define local with all wave 1 files in each sub-folder	
-		loc 		fileList1 : dir "`root'/`folder'" files "cx1*"
+* loop through each file in the above local
+	foreach		file1 in `fileList1' {
+		
+	* import the first .dta merged file
+		use 		"`root'/wave_1/`file1'", clear
+			
+	* define local with all wave 3 files in each sub-folder	
+		loc 		fileList2 : dir "`root'/wave_3" files "cx2*"
 	
 	* loop through each file in the above local
-		foreach		file1 in `fileList1' {
-		
-		* import the first .dta merged file files
-			use 		"`root'/`file1'", clear
-			
-		* define local with all wave 2 files in each sub-folder	
-			loc 		fileList2 : dir "`root'" files "cx2*"
-	
-		* loop through each file in the above local
-			foreach		file2 in `fileList2' {
+		foreach		file2 in `fileList2' {
 				
-			* check to see if files share the same name
-				if		(substr("`file1'", 5, 2) == substr("`file2'", 5, 2) )  ///
-				& 		(substr("`file1'", 8, 3) == substr("`file2'", 8, 3) )  {
+		* check to see if files share the same name
+			if		(substr("`file1'", 5, 2) == substr("`file2'", 5, 2) )  ///
+			& 		(substr("`file1'", 8, 3) == substr("`file2'", 8, 3) )  {
 						
-				* if they do not match, then append file 2 to file 1
-					append		using `root'/`file2', force
-			}
+			* if they do not match, then append file 2 to file 1
+				append		using "`root'/wave_3/`file2'", force
 		}
-		* define file naming criteria		
-			loc 	ext = substr("`file1'", 5, 2)
-			loc 	sat = substr("`file1'", 8, 3)		
-					
-			* save file
-			customsave 	, idvar(case_id) filename("cx_`ext'_tp`sat'_merged.dta") ///
-			path("`export'") dofile(mwi_append_merged) user($user)
 	}
+	* define file naming criteria		
+		loc 	ext = substr("`file1'", 5, 2)
+		loc 	sat = substr("`file1'", 8, 3)		
+					
+	* save file
+		customsave 	, idvar(case_id) filename("cx_`ext'_`sat'.dta") ///
+			path("`export'") dofile(mwi_append_merged) user($user)
 }
+
 	
 * **********************************************************************
 * 2 - append short panel
 * **********************************************************************
 
-* define local with all sub-folders in it
-	loc			folderList : dir "`root'" dirs "wave_*"
+* define local to loop through and allow for file name comparison	
+	loc 		fileList1 : dir "`root'/wave_1" files "sp*"
+	loc 		dat1 = substr("`fileList1'", 1, 3)
+	loc 		ext1 = substr("`fileList1'", 5, 2)
+	loc 		sat1 = substr("`fileList1'", 8, 3)
 
-* loop through each file in the above local
-	foreach 	folder of local folderList {
+* define local with all wave 1 files in each sub-folder	
+	loc 		fileList1 : dir "`root'/wave_1" files "sp1*"
 	
-	* define local to loop through and allow for file name comparison	
-		loc 		fileList1 : dir "`root'" files "sp*"
-		loc 		dat1 = substr("`fileList1'", 1, 3)
-		loc 		ext1 = substr("`fileList1'", 5, 2)
-		loc 		sat1 = substr("`fileList1'", 8, 3)
-
-	* define local with all wave 1 files in each sub-folder	
-		loc 		fileList1 : dir "`root'" files "sp1*"
+* loop through each file in the above local
+	foreach 	file1 in `fileList1' {
+		
+	* import the first .dta merged file files
+		use 		"`root'/wave_1/`file1'", clear
+			
+	* define local with all wave 2 files in each sub-folder	
+		loc 		fileList2 : dir "`root'/wave_2" files "sp2*"
 	
 	* loop through each file in the above local
-		foreach 	file1 in `fileList1' {
-		
-		* import the first .dta merged file files
-			use 		"`root'/`file1'", clear
-			
-		* define local with all wave 2 files in each sub-folder	
-			loc 		fileList2 : dir "`root'" files "sp2*"
-	
-		* loop through each file in the above local
-			foreach 	file2 in `fileList2' {
+		foreach 	file2 in `fileList2' {
 				
-			* check to see if files share the same name
-				if  	(substr("`file1'", 5, 2) == substr("`file2'", 5, 2) )  ///
-				& 		(substr("`file1'", 8, 3) == substr("`file2'", 8, 3) )  {
+		* check to see if files share the same name
+			if  	(substr("`file1'", 5, 2) == substr("`file2'", 5, 2) )  ///
+			& 		(substr("`file1'", 8, 3) == substr("`file2'", 8, 3) )  {
 						
-				* if they do not match, then append file 2 to file 1
-					append 		using `root'/`file2', force
-			}
+			* if they do not match, then append file 2 to file 1
+				append 		using "`root'/wave_2/`file2'", force
 		}
-		* define file naming criteria
-		loc 		ext = substr("`file1'", 5, 2)
-		loc 		sat = substr("`file1'", 8, 3)	
-					
-			* save file
-			customsave 	, idvar(y2_hhid) filename("sp_`ext'_tp`sat'_merged.dta") ///
-			path("`export'") dofile(mwi_append_merged) user($user)
 	}
+	* define file naming criteria
+	loc 		ext = substr("`file1'", 5, 2)
+	loc 		sat = substr("`file1'", 8, 3)	
+					
+	* save file
+	customsave 	, idvar(case_id) filename("sp_`ext'_`sat'.dta") ///
+		path("`export'") dofile(mwi_append_merged) user($user)
 }
+
 
 * **********************************************************************
 * 3 - append long panel
 * **********************************************************************
 
-loc fileList1 : dir "`root'" files "lp*"
-loc dat1 = substr("`fileList1'", 1, 3)
-loc ext1 = substr("`fileList1'", 5, 2)
-loc sat1 = substr("`fileList1'", 8, 3)
+* define local to loop through and allow for file name comparison	
+	loc 		fileList1 : dir "`root'/wave_1" files "lp*"
+	loc 		dat1 = substr("`fileList1'", 1, 3)
+	loc 		ext1 = substr("`fileList1'", 5, 2)
+	loc 		sat1 = substr("`fileList1'", 8, 3)
 
-loc fileList1 : dir "`root'" files "lp1*"
-foreach file1 in `fileList1' {
-	use "`root'/`file1'", clear
+* define local with all wave 1 files in each sub-folder	
+	loc 		fileList1 : dir "`root'/wave_1" files "lp1*"
 	
-	loc fileList2 : dir "`root'" files "lp2*"
-	foreach file2 in `fileList2' {
-	if  (substr("`file1'", 5, 2) == substr("`file2'", 5, 2) )  ///
-	& (substr("`file1'", 8, 3) == substr("`file2'", 8, 3) )  {
-	append using `root'/`file2', force
-		loc fileList3 : dir "`root'" files "lp3*"
-		foreach file3 in `fileList3' {
-		if  (substr("`file1'", 5, 2) == substr("`file3'", 5, 2) )  ///
-		& (substr("`file1'", 8, 3) == substr("`file3'", 8, 3) )  {
-		append using `root'/`file3', force
-		}
+* loop through each file in the above local
+	foreach 	file1 in `fileList1' {
+		
+	* import the first .dta merged file files
+		use 		"`root'/wave_1/`file1'", clear
+			
+	* define local with all wave 2 files in each sub-folder	
+		loc 		fileList2 : dir "`root'/wave_2" files "lp2*"
+	
+	* loop through each file in the above local
+		foreach 	file2 in `fileList2' {
+				
+		* check to see if files share the same name
+			if  	(substr("`file1'", 5, 2) == substr("`file2'", 5, 2) )  ///
+			& 		(substr("`file1'", 8, 3) == substr("`file2'", 8, 3) )  {
+						
+			* if they do not match, then append file 2 to file 1
+				append 		using "`root'/wave_2/`file2'", force
+			
+			* define local with all wave 4 files in each sub-folder	
+				loc 		fileList3 : dir "`root'/wave_4" files "lp3*"
+	
+			* loop through each file in the above local
+				foreach 	file3 in `fileList3' {
+				
+				* check to see if files share the same name
+					if  		(substr("`file1'", 5, 2) == substr("`file3'", 5, 2) )  ///
+					& 			(substr("`file1'", 8, 3) == substr("`file3'", 8, 3) )  {
+						
+				* if they do not match, then append file 2 to file 1
+					append 		using "`root'/wave_4/`file3'", force
+				}
+			}
 		}
 	}
-	}
-	loc ext = substr("`file1'", 5, 2)
-	loc sat = substr("`file1'", 8, 3)
-	save "`export'/lp_`ext'_`sat'.dta", replace
+	* define file naming criteria
+		loc 		ext = substr("`file1'", 5, 2)
+		loc 		sat = substr("`file1'", 8, 3)
+					
+	* save file
+	customsave 	, idvar(y2_hhid) filename("lp_`ext'_`sat'.dta") ///
+		path("`export'") dofile(mwi_append_merged) user($user)
 }
 
 * close the log

@@ -20,7 +20,7 @@
 * **********************************************************************
 
 * set global user
-	global	user		"jdmichler"
+	*global	user		"jdmichler" // global managed by masterdo, turn on to run single file
 
 * define paths
 	loc		rootw 	= 	"G:/My Drive/weather_project/weather_data/malawi/wave_1/refined"
@@ -159,14 +159,14 @@
 								
 		* define file naming criteria		
 			loc 		ext = substr("`file'", 6, 2)
-			loc 		sat = substr("`file'", 9, 2)
+			loc 		sat = substr("`file'", 10, 1)
 
 		* generate variable to record data source
 			gen 		data = "sp1"
 			lab var 	data "Data Source"
 		
 		* generate variable to record satellite source
-			gen 		satellite = "`sat'"
+			gen 		satellite = "tp`sat'"
 			lab var 	satellite "Weather Satellite"
 		
 		* generate variable to record extraction method

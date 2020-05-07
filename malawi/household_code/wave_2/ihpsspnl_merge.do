@@ -20,7 +20,7 @@
 * **********************************************************************
 
 * set global user
-	global	user		"jdmichler"
+	*global	user		"jdmichler" // global managed by masterdo, turn on to run single file
 
 * define paths
 	loc		rootw 	= 	"G:/My Drive/weather_project/weather_data/malawi/wave_2/refined"
@@ -66,8 +66,8 @@
 						dev_raindays_2013- dev_raindays_2016
 			drop 		mean_period_norain- dev_norain_2011 ///
 						dev_norain_2013- dev_norain_2016
-			drop 		mean_period_raindays_percent- dev_raindays_percent_2011 ///
-						dev_raindays_percent_2013- dev_raindays_percent_2016
+			drop 		mean_period_percent_raindays- dev_percent_raindays_2011 ///
+						dev_percent_raindays_2013- dev_percent_raindays_2016
 		
 		* rename variables by dropping the year suffix			
 			rename 		*_2012 *
@@ -165,14 +165,14 @@
 		
 		* define file naming criteria			
 			loc 		ext = substr("`file'", 6, 2)
-			loc 		sat = substr("`file'", 9, 2)
+			loc 		sat = substr("`file'", 10, 1)
 
 		* generate variable to record data source
 			gen 		data = "sp2"
 			lab var 	data "Data Source"
 		
 		* generate variable to record satellite source
-			gen 		satellite = "`sat'"
+			gen 		satellite = "tp`sat'"
 			lab var 	satellite "Weather Satellite"
 		
 		* generate variable to record extraction method
@@ -180,7 +180,7 @@
 			lab var 	extraction "Extraction Method"			
 							
 		* save file
-		customsave 	, idvar(y2_hhid) filename("sp2_`ext'_`sat'_merged.dta") ///
+		customsave 	, idvar(y2_hhid) filename("sp2_`ext'_tp`sat'_merged.dta") ///
 		path("`export'") dofile(ihpsspnl_merge) user($user)
 		}
 }
