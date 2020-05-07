@@ -33,7 +33,7 @@
 	loc logout = "G:/My Drive/weather_project/weather_data/malawi/logs"
 
 * open log
-	log using "`logout'/mwi_ihs3_converter", replace
+	log using "`logout'/mwi_ihs3_converter", append
 
 
 * **********************************************************************
@@ -49,7 +49,7 @@ foreach folder of local folderList {
 	* create directories to write output to
 	qui: capture mkdir "`export'/`folder'/"
 	
-	* loop through each file in the above local
+	* define each file in the above local
 		loc fileList : dir "`root'/`folder'" files "*.csv"
 	
 	* loop through each file in the above local
