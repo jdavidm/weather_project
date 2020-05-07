@@ -23,7 +23,7 @@
 * **********************************************************************
 
 * set global user
-	global	user		"jdmichler"
+	global	user		"aljosephson"
 
 * define paths
 	global	source 	= 	"G:/My Drive/weather_project/household_data/malawi/wb_raw_data/tmp"
