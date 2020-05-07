@@ -110,7 +110,7 @@
 
 
 * **********************************************************************
-* 3 - run .do file to append each wave
+* 4 - run .do file to append each wave
 * **********************************************************************
 
 	do			"$code/MWI_append_merged.do"		// append waves
