@@ -41,10 +41,10 @@
 	rename 		zaocode crop_code
 
 * generate unique identifier
-	generate 	plot_id = hhid + " " + plotnum
-	tostring 	crop_code, generate(crop_num) format(%03.0g) force
-	generate 	crop_id = hhid + " " + plotnum + " " + crop_num
-	duplicates drop crop_id, force
+	generate 			plot_id = hhid + " " + plotnum
+	tostring 			crop_code, generate(crop_num)
+	gen str20 			crop_id = hhid + " " + plotnum + " " + crop_num
+	duplicates drop 	crop_id, force
 * dropping one dupicate observation
 	isid 		crop_id
 
@@ -70,7 +70,7 @@
 	rename 		ag4a_28 wgt_hvsted
 	label 		variable wgt_hvsted "What was the quanitity harvested? (kg)"
 	rename 		ag4a_12 value_seed_purch
-	generate 	season = 1
+	generate 	season = 0
 * see if you can find quantity purchased and quantity of old seeds used to derive total value seeds used
 
 * keep what we want, get rid of what we don't

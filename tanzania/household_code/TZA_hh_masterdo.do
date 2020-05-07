@@ -37,14 +37,24 @@
 * define local with all files in each sub-folder
 	foreach folder of loc folderList {
 
-* loop through each file in the above local
-	loc fileList : dir "`root'/`folder'" files "*.do"
+* loop through each long rainy season file in the above local
+	loc fileList : dir "`root'/`folder'" files "*A.do"
 	
 * loop through each file in the above local
 	foreach file in `fileList' {
 	    
 	* run each individual file
 		do "`root'/`folder'/`file'"		
+	}
+	
+* loop through each short rainy season file in the above local
+	loc fileList : dir "`root'/`folder'" files "*B.do"
+	
+* loop through each file in the above local
+	foreach file in `fileList' {
+	    
+	* run each individual file
+		do "`root'/`folder'/`file'"			
 	}
 	}
 	
