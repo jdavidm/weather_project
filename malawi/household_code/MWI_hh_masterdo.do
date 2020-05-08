@@ -94,25 +94,25 @@
 * **********************************************************************
 
 * do each IHS3 household cleaning files
-	do 			"$code/wave_1/ihs3cx_merge.do"			//	merges IHS3cx to weather
-	do 			"$code/wave_1/ihs3spnl_merge.do"		//	merges IHS3spnl to weather
-	do 			"$code/wave_1/ihs3lpnl_merge.do"		//	merges IHS3lpnl to weather
+	do 			"$code/wave_1/ihs3cx_build.do"			//	builds IHS3cx with weather
+	do 			"$code/wave_1/ihs3spnl_build.do"		//	builds IHS3spnl with weather
+	do 			"$code/wave_1/ihs3lpnl_build.do"		//	builds IHS3lpnl with weather
 
 * do each IHPS*pnl household cleaning files
-	do 			"$code/wave_2/ihpsspnl_merge.do"		//	merges IHPSspnl to weather
-	do 			"$code/wave_2/ihpslpnl_merge.do"		//	merges IHPSlpnl	to weather
+	do 			"$code/wave_2/ihpsspnl_build.do"		//	builds IHPSspnl with weather
+	do 			"$code/wave_2/ihpslpnl_build.do"		//	builds IHPSlpnl	with weather
 
 * do IHS4 household cleaning filename
-	do 			"$code/wave_3/ihs4cx_merge.do"			//	merges IHS4cx to weather
+	do 			"$code/wave_3/ihs4cx_build.do"			//	builds IHS4cx with weather
 	
 * do IHS4*pnl household cleaning filefiles
-	do 			"$code/wave_4/ihs4lpnl_merge.do"		//	merges IHS4lpnl to weather
+	do 			"$code/wave_4/ihs4lpnl_build.do"		//	builds IHS4lpnl with weather
 
 
 * **********************************************************************
 * 4 - run .do file to append each wave
 * **********************************************************************
 
-	do			"$code/MWI_append_merged.do"		// append waves
+	do			"$code/MWI_append_built.do"		// append waves
 	
 /* END */
