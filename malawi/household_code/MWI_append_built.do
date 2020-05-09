@@ -25,7 +25,7 @@
 * **********************************************************************
 
 * set global user
-	*global	user		"jdmichler" // global managed by masterdo, turn on to run single file
+	global	user		"jdmichler" // global managed by masterdo, turn on to run single file
 
 * define paths
 	loc		root 	= 	"G:/My Drive/weather_project/merged_data/malawi"
@@ -45,7 +45,35 @@
 
 * append the second cross section file
 	append		using "`root'/wave_3/cx2_merged.dta", force
+
+* reformat case_id
+	format %15.0g case_id
+
+* drop duplicates (not sure why there are duplicats)
+	duplicates 	tag case_id, generate(dup)
+	drop if 	dup > 0 & qx_type == ""
+	drop		dup
+
+* create household, country, and data identifiers
+	egen		cx_id = seq()
+	lab var		cx_id "Cross section unique id"
+
+	gen			country = "malawi"
+	lab var		country "Country"
+
+	gen			dtype = "cx"
+	lab var		dtype "Data type"
+
+* combine variables
+	replace		hhweight	= hhweightR1 if hhweight == .
+	replace		hh_x02 		= ag_c0a if hh_x02 == .
+	replace		hh_x04		= ag_j0a if hh_x04 == .
+	drop		hhweightR1 ag_c0a ag_j0a
 	
+* order variables
+	order		country dtype region district urban ta strata cluster ///
+				ea_id cx_id case_id hhid hhweight hh_x02 hh_x04
+
 * save file
 	qui: compress
 	customsave 	, idvarname(case_id) filename("mwi_cx.dta") ///
@@ -61,10 +89,42 @@
 
 * append the second short panel file
 	append		using "`root'/wave_2/sp2_merged.dta", force
+
+* reformat case_id
+	format %15.0g case_id
+
+* drop split-off households, keep only original households
+	duplicates 	tag case_id year, generate(dup)
+	drop if 	dup > 0 & splitoffR2 != 1
+	drop if 	dup > 0 & tracking_R1_to_R2 ==1
+	drop		dup
+	duplicates 	tag case_id year, generate(dup)
+	drop if		dup > 0 
+	drop		dup
+
+* create household, country, and data identifiers
+	egen		sp_id = seq()
+	lab var		sp_id "Short panel unique id"
+
+	gen			country = "malawi"
+	lab var		country "Country"
+
+	gen			dtype = "sp"
+	lab var		dtype "Data type"
+
+* combine variables
+	replace		urban		= urbanR2 if urban == .
+	replace		strata 		= strataR2 if strata == .
+	rename		hhweightR1 	hhweight
+	drop		urbanR2- distance_R1_to_R2
+	
+* order variables
+	order		country dtype region district urban ta strata cluster ///
+				ea_id sp_id case_id y2_hhid hhweight
 	
 * save file
 	qui: compress
-	customsave 	, idvarname(case_id) filename("mwi_sp.dta") ///
+	customsave 	, idvarname(sp_id) filename("mwi_sp.dta") ///
 		path("`export'") dofile(mwi_append_built) user($user)
 
 
@@ -78,6 +138,44 @@
 * append the second and third long panel file
 	append		using "`root'/wave_2/lp2_merged.dta", force	
 	append		using "`root'/wave_4/lp3_merged.dta", force	
+
+* reformat case_id
+	format %15.0g case_id
+
+* drop split-off households, keep only original households
+	duplicates 	tag case_id year, generate(dup)
+	drop if		dup > 0 & mover_R1R2R3 == 1
+	drop		dup
+	duplicates 	tag case_id year, generate(dup)
+	drop if 	dup > 0 & splitoffR2 != 1
+	drop if 	dup > 0 & tracking_R1_to_R2 ==1
+	drop		dup
+	duplicates 	tag case_id year, generate(dup)
+	drop if		dup > 0 
+	drop		dup
+
+* create household, country, and data identifiers
+	sort		case_id year
+	egen		lp_id = seq()
+	lab var		lp_id "Long panel unique id"
+
+	gen			country = "malawi"
+	lab var		country "Country"
+
+	gen			dtype = "lp"
+	lab var		dtype "Data type"
+
+* combine variables
+	replace		urban		= urbanR2 if urban == .
+	replace		urban		= urbanR3 if urban == .
+	replace		strata 		= strataR2 if strata == .
+	replace		strata 		= strataR3 if strata == .
+	rename		hhweightR1 	hhweight
+	drop		urbanR2- distance_R1_to_R2 urbanR3- distance_R2_to_R3
+	
+* order variables
+	order		country dtype region district urban ta strata cluster ///
+				ea_id lp_id case_id y2_hhid y3_hhid hhweight
 	
 * save file
 	qui: compress

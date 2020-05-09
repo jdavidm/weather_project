@@ -104,6 +104,9 @@
 	lab var 	year "Year Rainy Season Begins"
 	order 		year, after(intyear)
 
+* destring unique household indicator
+	destring 	case_id, replace
+	
 * save data
 	customsave	, idvar(hhid) filename(hhfinal_ihs4cx.dta) ///
 				path("`export'") dofile(ihs4cx_hh_clean) user($user)

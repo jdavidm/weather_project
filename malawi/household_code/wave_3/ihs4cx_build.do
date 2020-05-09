@@ -40,7 +40,7 @@
 	use 		"`rooth'/hhfinal_ihs4cx.dta", clear
 	    
 * generate variable to record data source
-	gen 		data = "cx1"
+	gen 		data = "cx2"
 	lab var 	data "Data Source"	
 	
 * define local with all sub-folders in it
@@ -150,7 +150,7 @@
 * **********************************************************************
 	
 * define local with all sub-folders in it
-	loc 		folderList : dir "`rootw'" dirs "IHS3_t*"
+	loc 		folderList : dir "`rootw'" dirs "IHS4_t*"
 
 * define local with all files in each sub-folder	
 	foreach 	folder of local folderList {

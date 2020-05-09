@@ -90,6 +90,9 @@
 				ds_insecticideany rsmz_pesticideany rsmz_insecticideany ///
 				dsmz_pesticideany dsmz_insecticideany
 
+* destring unique household indicator
+	destring 	case_id, replace
+	
 * save data
 	customsave	, idvar(y3_hhid) filename(hhfinal_ihs4lpnl.dta) ///
 				path("`export'") dofile(ihs4lpnl_hh_clean) user($user)
