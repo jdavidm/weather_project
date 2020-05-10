@@ -1,0 +1,1888 @@
+{smcl}
+{txt}{sf}{ul off}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}C:/Users/themacfreezie/git/weather_project/tanzania/household_code/logs/wv1_AGSEC5B.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res} 9 May 2020, 21:32:18
+{txt}
+{com}. 
+. 
+. **********************************************************************************
+. **      TZA 2008 (Wave 1) - Agriculture Section 5B 
+. **********************************************************************************
+. 
+. 
+. * load data
+.         use             "$root/AG_SEC_5B", clear
+{err}{p 0 4 2}
+file G:/My Drive/weather_project/household_data/tanzania/wave_1/raw/AG_SEC_5B.dta
+not found
+{p_end}
+{txt}{search r(601), local:r(601);}
+
+end of do-file
+
+{search r(601), local:r(601);}
+
+{com}. do "C:\Users\THEMAC~1\AppData\Local\Temp\STD6320_000000.tmp"
+{txt}
+{com}. * Project: WB Weather
+. * Created on: May 2020
+. * Created by: McG
+. * Stata v.16
+. 
+. * does
+.         * cleans Tanzania household variables, wave 1 Ag sec5b
+.         * crop sales data, short rainy season
+.         
+. * assumes
+.         * customsave.ado
+. 
+. * TO DO:
+.         * completed
+. 
+.         
+. * **********************************************************************
+. * 0 - setup
+. * **********************************************************************
+. 
+. * set user
+.         global user "themacfreezie"
+{txt}
+{com}. 
+. * define paths
+.         global root = "G:/My Drive/weather_project/household_data/tanzania/wave_1/raw"
+{txt}
+{com}.         global export = "G:/My Drive/weather_project/household_data/tanzania/wave_1/refined"
+{txt}
+{com}.         global logout = "C:/Users/$user/git/weather_project/tanzania/household_code/logs"
+{txt}
+{com}. 
+. * open log
+.         log using "$logout/wv1_AGSEC5B", append
+{err}log file already open
+{txt}{search r(604), local:r(604);}
+
+end of do-file
+
+{search r(604), local:r(604);}
+
+{com}. do "C:\Users\THEMAC~1\AppData\Local\Temp\STD6320_000000.tmp"
+{txt}
+{com}. **********************************************************************************
+. **      TZA 2008 (Wave 1) - Agriculture Section 5B 
+. **********************************************************************************
+. 
+. * load data
+.         use             "$root/AG_SEC5B", clear
+{err}{p 0 4 2}
+file G:/My Drive/weather_project/household_data/tanzania/wave_1/raw/AG_SEC5B.dta
+not found
+{p_end}
+{txt}{search r(601), local:r(601);}
+
+end of do-file
+
+{search r(601), local:r(601);}
+
+{com}. do "C:\Users\THEMAC~1\AppData\Local\Temp\STD6320_000000.tmp"
+{txt}
+{com}. * load data
+.         use             "$root/SEC_5B", clear
+{txt}
+{com}. 
+. * rename variables of interest
+.         rename          zaocode crop_code
+{res}{txt}
+{com}. 
+. * generate unique ob id
+.         tostring                        crop_code, generate(crop_num)
+{txt}crop_num generated as {res:str3}
+
+{com}.         gen str20                       crop_id = hhid + " " + crop_num
+{txt}
+{com}.         duplicates report       crop_id
+
+{p 0 4}{txt}Duplicates in terms of {res} crop_id{p_end}
+
+{txt}{hline 10}{c TT}{hline 27}
+   copies {c |} observations       surplus
+{hline 10}{c +}{hline 27}
+        1 {c |}         {res}1029             0
+{txt}{hline 10}{c BT}{hline 27}
+
+{com}. * no duplicates
+. *       duplicates drop         crop_id, force
+.         isid                            crop_id
+{txt}
+{com}. 
+. * renaming sales variables
+.         rename          s5bq2 wgt_sold
+{res}{txt}
+{com}.         label           variable wgt_sold "What was the quanitity sold? (kg)"
+{txt}
+{com}.         rename          s5bq3 value_sold
+{res}{txt}
+{com}.         label           variable value_sold "What was the total value of the sales? (T-shillings)"
+{txt}
+{com}.         generate        price = value_sold/wgt_sold
+{txt}(791 missing values generated)
+
+{com}.         label           variable price "Price per kg"
+{txt}
+{com}. 
+. *generate seasonal variable
+.         generate        season = 1      
+{txt}
+{com}.         
+. * keep what we want, get rid of what we don't
+.         keep            hhid crop_code wgt_sold value_sold crop_id price season
+{txt}
+{com}. 
+. * prepare for export
+. compress
+  {txt}variable {bf}season{sf} was {bf}{res}float{sf}{txt} now {bf}{res}byte{sf}
+  {txt}variable {bf}crop_id{sf} was {bf}{res}str20{sf}{txt} now {bf}{res}str18{sf}
+{txt}  (5,145 bytes saved)
+
+{com}. describe
+
+{txt}Contains data from {res}G:/My Drive/weather_project/household_data/tanzania/wave_1/raw/SEC_5B.dta
+{txt}  obs:{res}         1,029                          
+{txt} vars:{res}             7                          28 May 2011 14:43
+{txt}{hline}
+              storage   display    value
+variable name   type    format     label      variable label
+{hline}
+{p 0 48}{res}{bind:hhid           }{txt}{bind: str14   }{bind:{txt}%14s      }{space 1}{bind:         }{bind:  }{res}{res}Unique HH Identifier{p_end}
+{p 0 48}{bind:crop_code      }{txt}{bind: int     }{bind:{txt}%27.0g    }{space 1}{txt}S5BZAOCODE{p_end}
+{p 0 48}{space 44}{bind:  }{res}{res}CROP ID{p_end}
+{p 0 48}{bind:wgt_sold       }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}What was the quanitity sold? (kg){p_end}
+{p 0 48}{bind:value_sold     }{txt}{bind: long    }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}What was the total value of the sales? (T-shillings){p_end}
+{p 0 48}{bind:crop_id        }{txt}{bind: str18   }{bind:{txt}%18s      }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{p 0 48}{bind:price          }{txt}{bind: float   }{bind:{txt}%9.0g     }{space 1}{bind:         }{bind:  }{res}{res}Price per kg{p_end}
+{p 0 48}{bind:season         }{txt}{bind: byte    }{bind:{txt}%9.0g     }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{txt}{hline}
+Sorted by: 
+{res}     Note: Dataset has changed since last saved.
+{txt}
+{com}. summarize 
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 8}hhid {c |}{res}          0
+{txt}{space 3}crop_code {c |}{res}      1,029    32.98445     82.2621         11        998
+{txt}{space 4}wgt_sold {c |}{res}        238    11192.56    30279.67        3.6     279000
+{txt}{space 2}value_sold {c |}{res}        238    127647.1    235212.4       1000    1430000
+{txt}{space 5}crop_id {c |}{res}          0
+{txt}{hline 13}{c +}{hline 57}
+{space 7}price {c |}{res}        238    279.1126    488.6343   .1666667   6203.704
+{txt}{space 6}season {c |}{res}      1,029           1           0          1          1
+{txt}
+{com}. sort crop_id
+{txt}
+{com}. customsave , idvar(crop_id) filename(AG_SEC5B.dta) path("$export") dofile(2008_AGSEC5B) user($user)
+ with do file 2008_AGSEC5B by user themacfreezie using computer Torbit
+
+{txt}
+{com}. 
+. * close the log
+.         log     close
+      {txt}name:  {res}<unnamed>
+       {txt}log:  {res}C:/Users/themacfreezie/git/weather_project/tanzania/household_code/logs/wv1_AGSEC5B.smcl
+  {txt}log type:  {res}smcl
+ {txt}closed on:  {res} 9 May 2020, 21:33:55
+{txt}{.-}
+{smcl}
+{txt}{sf}{ul off}{smcl}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}C:/Users/themacfreezie/git/weather_project/tanzania/household_code/logs/wv1_AGSEC5B.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res} 9 May 2020, 21:41:45
+{txt}
+{com}. 
+. 
+. **********************************************************************************
+. **      TZA 2008 (Wave 1) - Agriculture Section 5B 
+. **********************************************************************************
+. 
+. * load data
+.         use             "$root/SEC_5B", clear
+{txt}
+{com}. 
+. * rename variables of interest
+.         rename          zaocode crop_code
+{res}{txt}
+{com}. 
+. * generate unique ob id
+.         tostring                        crop_code, generate(crop_num)
+{txt}crop_num generated as {res:str3}
+
+{com}.         gen str20                       crop_id = hhid + " " + crop_num
+{txt}
+{com}.         duplicates report       crop_id
+
+{p 0 4}{txt}Duplicates in terms of {res} crop_id{p_end}
+
+{txt}{hline 10}{c TT}{hline 27}
+   copies {c |} observations       surplus
+{hline 10}{c +}{hline 27}
+        1 {c |}         {res}1029             0
+{txt}{hline 10}{c BT}{hline 27}
+
+{com}. * no duplicates
+. *       duplicates drop         crop_id, force
+.         isid                            crop_id
+{txt}
+{com}. 
+. * renaming sales variables
+.         rename          s5bq2 wgt_sold
+{res}{txt}
+{com}.         label           variable wgt_sold "What was the quanitity sold? (kg)"
+{txt}
+{com}.         rename          s5bq3 value_sold
+{res}{txt}
+{com}.         label           variable value_sold "What was the total value of the sales? (T-shillings)"
+{txt}
+{com}.         generate        price = value_sold/wgt_sold
+{txt}(791 missing values generated)
+
+{com}.         label           variable price "Price per kg"
+{txt}
+{com}. 
+. *generate seasonal variable
+.         generate        season = 1      
+{txt}
+{com}.         
+. * keep what we want, get rid of what we don't
+.         keep            hhid crop_code wgt_sold value_sold crop_id price season
+{txt}
+{com}. 
+. * prepare for export
+. compress
+  {txt}variable {bf}season{sf} was {bf}{res}float{sf}{txt} now {bf}{res}byte{sf}
+  {txt}variable {bf}crop_id{sf} was {bf}{res}str20{sf}{txt} now {bf}{res}str18{sf}
+{txt}  (5,145 bytes saved)
+
+{com}. describe
+
+{txt}Contains data from {res}G:/My Drive/weather_project/household_data/tanzania/wave_1/raw/SEC_5B.dta
+{txt}  obs:{res}         1,029                          
+{txt} vars:{res}             7                          28 May 2011 14:43
+{txt}{hline}
+              storage   display    value
+variable name   type    format     label      variable label
+{hline}
+{p 0 48}{res}{bind:hhid           }{txt}{bind: str14   }{bind:{txt}%14s      }{space 1}{bind:         }{bind:  }{res}{res}Unique HH Identifier{p_end}
+{p 0 48}{bind:crop_code      }{txt}{bind: int     }{bind:{txt}%27.0g    }{space 1}{txt}S5BZAOCODE{p_end}
+{p 0 48}{space 44}{bind:  }{res}{res}CROP ID{p_end}
+{p 0 48}{bind:wgt_sold       }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}What was the quanitity sold? (kg){p_end}
+{p 0 48}{bind:value_sold     }{txt}{bind: long    }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}What was the total value of the sales? (T-shillings){p_end}
+{p 0 48}{bind:crop_id        }{txt}{bind: str18   }{bind:{txt}%18s      }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{p 0 48}{bind:price          }{txt}{bind: float   }{bind:{txt}%9.0g     }{space 1}{bind:         }{bind:  }{res}{res}Price per kg{p_end}
+{p 0 48}{bind:season         }{txt}{bind: byte    }{bind:{txt}%9.0g     }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{txt}{hline}
+Sorted by: 
+{res}     Note: Dataset has changed since last saved.
+{txt}
+{com}. summarize 
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 8}hhid {c |}{res}          0
+{txt}{space 3}crop_code {c |}{res}      1,029    32.98445     82.2621         11        998
+{txt}{space 4}wgt_sold {c |}{res}        238    11192.56    30279.67        3.6     279000
+{txt}{space 2}value_sold {c |}{res}        238    127647.1    235212.4       1000    1430000
+{txt}{space 5}crop_id {c |}{res}          0
+{txt}{hline 13}{c +}{hline 57}
+{space 7}price {c |}{res}        238    279.1126    488.6343   .1666667   6203.704
+{txt}{space 6}season {c |}{res}      1,029           1           0          1          1
+{txt}
+{com}. sort crop_id
+{txt}
+{com}. customsave , idvar(crop_id) filename(AG_SEC5B.dta) path("$export") dofile(2008_AGSEC5B) user($user)
+ with do file 2008_AGSEC5B by user themacfreezie using computer Torbit
+
+{txt}
+{com}. 
+. * close the log
+.         log     close
+      {txt}name:  {res}<unnamed>
+       {txt}log:  {res}C:/Users/themacfreezie/git/weather_project/tanzania/household_code/logs/wv1_AGSEC5B.smcl
+  {txt}log type:  {res}smcl
+ {txt}closed on:  {res} 9 May 2020, 21:41:45
+{txt}{.-}
+{smcl}
+{txt}{sf}{ul off}{smcl}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}C:/Users/themacfreezie/git/weather_project/tanzania/household_code/logs/wv1_AGSEC5B.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res} 9 May 2020, 21:48:16
+{txt}
+{com}. 
+. **********************************************************************************
+. **      TZA 2008 (Wave 1) - Agriculture Section 4B 
+. **********************************************************************************
+. 
+. * load data
+.         use     "$root/SEC_4B", clear
+{txt}
+{com}. 
+{txt}end of do-file
+
+{com}. do "C:\Users\THEMAC~1\AppData\Local\Temp\STD6320_000000.tmp"
+{txt}
+{com}. 
+. * set user
+.         global user "themacfreezie"
+{txt}
+{com}. 
+. * define paths
+.         global root = "G:/My Drive/weather_project/household_data/tanzania/wave_1/raw"
+{txt}
+{com}.         global export = "G:/My Drive/weather_project/household_data/tanzania/wave_1/refined"
+{txt}
+{com}.         global logout = "C:/Users/$user/git/weather_project/tanzania/household_code/logs"
+{txt}
+{com}. 
+. * open log
+.         log using "$logout/wv1_AGSEC5B", append
+{err}log file already open
+{txt}{search r(604), local:r(604);}
+
+end of do-file
+
+{search r(604), local:r(604);}
+
+{com}. do "C:\Users\THEMAC~1\AppData\Local\Temp\STD6320_000000.tmp"
+{txt}
+{com}. 
+. * load data
+.         use     "$root/SEC_4B", clear
+{txt}
+{com}. 
+. * rename variables of interest
+.         rename          zaocode crop_code
+{res}{txt}
+{com}. 
+. * generate unique identifier
+.         generate                        plot_id = hhid + " " + plotnum
+{txt}
+{com}.         tostring                        crop_code, generate(crop_num)
+{txt}crop_num generated as {res:str3}
+
+{com}.         gen str20                       crop_id = hhid + " " + plotnum + " " + crop_num
+{txt}
+{com}.         duplicates report crop_id
+
+{p 0 4}{txt}Duplicates in terms of {res} crop_id{p_end}
+
+{txt}{hline 10}{c TT}{hline 27}
+   copies {c |} observations       surplus
+{hline 10}{c +}{hline 27}
+        1 {c |}         {res}2026             0
+        {txt}2 {c |}            {res}2             1
+{txt}{hline 10}{c BT}{hline 27}
+
+{com}. * no duplicates!
+.         isid                            crop_id
+{err}variable {bf:crop_id} does not uniquely identify the observations
+{txt}{search r(459), local:r(459);}
+
+end of do-file
+
+{search r(459), local:r(459);}
+
+{com}. duplicates list crop_id
+
+{p 0 4}{txt}Duplicates in terms of {res} crop_id{p_end}
+{txt}
+  {c TLC}{hline 6}{c -}{hline 22}{c TRC}
+  {c |} {res}obs:                crop_id {txt}{c |}
+  {c LT}{hline 6}{c -}{hline 22}{c RT}
+  {c |} {res}   9   02020113030158 M1 99 {txt}{c |}
+  {c |} {res}  10   02020113030158 M1 99 {txt}{c |}
+  {c BLC}{hline 6}{c -}{hline 22}{c BRC}
+
+{com}. do "C:\Users\THEMAC~1\AppData\Local\Temp\STD6320_000000.tmp"
+{txt}
+{com}. 
+. * load data
+.         use     "$root/SEC_4B", clear
+{txt}
+{com}. 
+. * rename variables of interest
+.         rename          zaocode crop_code
+{res}{txt}
+{com}. 
+. * generate unique identifier
+.         generate                        plot_id = hhid + " " + plotnum
+{txt}
+{com}.         tostring                        crop_code, generate(crop_num)
+{txt}crop_num generated as {res:str3}
+
+{com}.         gen str21                       crop_id = hhid + " " + plotnum + " " + crop_num
+{txt}
+{com}.         duplicates report crop_id
+
+{p 0 4}{txt}Duplicates in terms of {res} crop_id{p_end}
+
+{txt}{hline 10}{c TT}{hline 27}
+   copies {c |} observations       surplus
+{hline 10}{c +}{hline 27}
+        1 {c |}         {res}2028             0
+{txt}{hline 10}{c BT}{hline 27}
+
+{com}. 
+{txt}end of do-file
+
+{com}. do "C:\Users\THEMAC~1\AppData\Local\Temp\STD6320_000000.tmp"
+{txt}
+{com}. **********************************************************************************
+. **      TZA 2008 (Wave 1) - Agriculture Section 4B 
+. **********************************************************************************
+. 
+. * load data
+.         use     "$root/SEC_4B", clear
+{txt}
+{com}. 
+. * rename variables of interest
+.         rename          zaocode crop_code
+{res}{txt}
+{com}. 
+. * generate unique identifier
+.         generate                        plot_id = hhid + " " + plotnum
+{txt}
+{com}.         tostring                        crop_code, generate(crop_num)
+{txt}crop_num generated as {res:str3}
+
+{com}.         gen str21                       crop_id = hhid + " " + plotnum + " " + crop_num
+{txt}
+{com}.         duplicates report crop_id
+
+{p 0 4}{txt}Duplicates in terms of {res} crop_id{p_end}
+
+{txt}{hline 10}{c TT}{hline 27}
+   copies {c |} observations       surplus
+{hline 10}{c +}{hline 27}
+        1 {c |}         {res}2028             0
+{txt}{hline 10}{c BT}{hline 27}
+
+{com}. * one duplicates!
+.         isid                            crop_id
+{txt}
+{com}. 
+{txt}end of do-file
+
+{com}. log close
+      {txt}name:  {res}<unnamed>
+       {txt}log:  {res}C:/Users/themacfreezie/git/weather_project/tanzania/household_code/logs/wv1_AGSEC5B.smcl
+  {txt}log type:  {res}smcl
+ {txt}closed on:  {res} 9 May 2020, 21:54:22
+{txt}{.-}
+{smcl}
+{txt}{sf}{ul off}{smcl}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}C:/Users/themacfreezie/git/weather_project/tanzania/household_code/logs/wv1_AGSEC5B.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res} 9 May 2020, 21:54:31
+{txt}
+{com}. 
+. **********************************************************************************
+. **      TZA 2008 (Wave 1) - Agriculture Section 4B 
+. **********************************************************************************
+. 
+. * load data
+.         use     "$root/SEC_4B", clear
+{txt}
+{com}. 
+. * rename variables of interest
+.         rename          zaocode crop_code
+{res}{txt}
+{com}. 
+. * generate unique identifier
+.         generate                        plot_id = hhid + " " + plotnum
+{txt}
+{com}.         tostring                        crop_code, generate(crop_num)
+{txt}crop_num generated as {res:str3}
+
+{com}.         gen str21                       crop_id = hhid + " " + plotnum + " " + crop_num
+{txt}
+{com}.         duplicates report crop_id
+
+{p 0 4}{txt}Duplicates in terms of {res} crop_id{p_end}
+
+{txt}{hline 10}{c TT}{hline 27}
+   copies {c |} observations       surplus
+{hline 10}{c +}{hline 27}
+        1 {c |}         {res}2028             0
+{txt}{hline 10}{c BT}{hline 27}
+
+{com}. * one duplicates!
+.         isid                            crop_id
+{txt}
+{com}. 
+. * generating mixed crop variable
+.         rename                  s4bq3 purestand
+{res}{txt}
+{com}.         generate                mixedcrop_pct = .
+{txt}(2,028 missing values generated)
+
+{com}.         replace                 mixedcrop_pct = 100 if purestand == 1
+{txt}(626 real changes made)
+
+{com}.         replace                 mixedcrop_pct = 75 if s4bq4 == 3
+{txt}(55 real changes made)
+
+{com}.         replace                 mixedcrop_pct = 50 if s4bq4 == 2
+{txt}(183 real changes made)
+
+{com}.         replace                 mixedcrop_pct = 25 if s4bq4 == 1
+{txt}(242 real changes made)
+
+{com}.         tab                             mixedcrop_pct, missing
+
+{txt}mixedcrop_p {c |}
+         ct {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+         25 {c |}{res}        242       11.93       11.93
+{txt}         50 {c |}{res}        183        9.02       20.96
+{txt}         75 {c |}{res}         55        2.71       23.67
+{txt}        100 {c |}{res}        625       30.82       54.49
+{txt}          . {c |}{res}        923       45.51      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      2,028      100.00
+{txt}
+{com}. * there are 519 missing obs here
+.         tab             mixedcrop_pct crop_code, missing
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}     Maize      Paddy    Sorghum  Bulrush M {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}        54          7          4          0 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}        69          4          2          0 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}        26          1          1          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}       251         35          9          0 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}       381         31         26          1 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}       781         78         42          1 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |} Finger Mi      Wheat    Cassava  Sweet Pot {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         2          0          6         32 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         1          0          1         16 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          0          0          3 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         1          1         38         31 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         4          0         39         41 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         8          1         84        123 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |} Irish pot       Yams   Cocoyams     Onions {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         6          3          5          3 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         1          1          0          0 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         1          0          0          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         4          1          2          0 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         5          3         25          0 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}        17          8         32          3 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}     Beans    Cowpeas  Green gra  Pigeon pe {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}        52          9          1          0 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}        53          7          3          0 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}        12          2          2          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}       133         23          6          4 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}        97         20         13         11 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}       347         61         25         15 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |} Chick pea  Bambara n  Field pea  Sunflower {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         0          2          0          2 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         0          0          2          3 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          0          0          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         0          0          8          4 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         1         11          1         15 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         1         13         11         24 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}    Simsim  Groundnut   Palm Oil    Coconut {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         0         20          0          0 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         1          7          0          0 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          3          0          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         1         27          0          0 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         2         90          1          1 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         4        147          1          1 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |} Cashewnut  Soyabeans     Cotton    Tobacco {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         0          0          3          0 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         0          0          4          0 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          0          2          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         0          0         14          1 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         1          1         48         10 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         1          1         71         11 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}    Rubber     Banana    Cabbage   Tomatoes {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         0          0          0          5 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         0          0          0          2 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          0          0          1 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         0          4          1          7 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         1          2          0          6 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         1          6          1         21 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}   Spinach     Carrot   Chillies  Amaranths {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         2          0          0          9 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         0          0          0          1 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          0          0          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         0          2          4          2 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         0          0          0          0 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         2          2          4         12 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}  Pumpkins   Cucumber  Water Mel   Rambutan {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         8          3          0          0 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         1          1          1          1 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          0          0          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         2          4          0          0 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}        28          1          0          0 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}        39          9          1          1 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}      Okra       Fiwi      Other          . {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         2          0          2          0 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         1          0          0          0 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         1          0          0          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         0          0          5          0 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         1          3          0          2 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         5          3          7          2 {txt}{c |}{res}     2,028 
+{txt}
+{com}. 
+{txt}end of do-file
+
+{com}. do "C:\Users\THEMAC~1\AppData\Local\Temp\STD6320_000000.tmp"
+{txt}
+{com}. * load data
+.         use     "$root/SEC_4B", clear
+{txt}
+{com}. 
+. * rename variables of interest
+.         rename          zaocode crop_code
+{res}{txt}
+{com}. 
+. * generate unique identifier
+.         generate                        plot_id = hhid + " " + plotnum
+{txt}
+{com}.         tostring                        crop_code, generate(crop_num)
+{txt}crop_num generated as {res:str3}
+
+{com}.         gen str21                       crop_id = hhid + " " + plotnum + " " + crop_num
+{txt}
+{com}.         duplicates report       crop_id
+
+{p 0 4}{txt}Duplicates in terms of {res} crop_id{p_end}
+
+{txt}{hline 10}{c TT}{hline 27}
+   copies {c |} observations       surplus
+{hline 10}{c +}{hline 27}
+        1 {c |}         {res}2028             0
+{txt}{hline 10}{c BT}{hline 27}
+
+{com}. * one duplicates!
+.         isid                            crop_id
+{txt}
+{com}. 
+. * generating mixed crop variable
+.         rename          s4bq3 purestand
+{res}{txt}
+{com}.         generate        mixedcrop_pct = .
+{txt}(2,028 missing values generated)
+
+{com}.         replace         mixedcrop_pct = 100 if purestand == 1
+{txt}(626 real changes made)
+
+{com}.         replace         mixedcrop_pct = 75 if s4bq4 == 3
+{txt}(55 real changes made)
+
+{com}.         replace         mixedcrop_pct = 50 if s4bq4 == 2
+{txt}(183 real changes made)
+
+{com}.         replace         mixedcrop_pct = 25 if s4bq4 == 1
+{txt}(242 real changes made)
+
+{com}.         tab                     mixedcrop_pct, missing
+
+{txt}mixedcrop_p {c |}
+         ct {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+         25 {c |}{res}        242       11.93       11.93
+{txt}         50 {c |}{res}        183        9.02       20.96
+{txt}         75 {c |}{res}         55        2.71       23.67
+{txt}        100 {c |}{res}        625       30.82       54.49
+{txt}          . {c |}{res}        923       45.51      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      2,028      100.00
+{txt}
+{com}. * there are 923 obs missing mixedcrop_pct here
+.         tab             mixedcrop_pct crop_code, missing
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}     Maize      Paddy    Sorghum  Bulrush M {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}        54          7          4          0 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}        69          4          2          0 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}        26          1          1          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}       251         35          9          0 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}       381         31         26          1 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}       781         78         42          1 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |} Finger Mi      Wheat    Cassava  Sweet Pot {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         2          0          6         32 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         1          0          1         16 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          0          0          3 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         1          1         38         31 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         4          0         39         41 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         8          1         84        123 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |} Irish pot       Yams   Cocoyams     Onions {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         6          3          5          3 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         1          1          0          0 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         1          0          0          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         4          1          2          0 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         5          3         25          0 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}        17          8         32          3 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}     Beans    Cowpeas  Green gra  Pigeon pe {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}        52          9          1          0 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}        53          7          3          0 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}        12          2          2          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}       133         23          6          4 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}        97         20         13         11 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}       347         61         25         15 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |} Chick pea  Bambara n  Field pea  Sunflower {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         0          2          0          2 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         0          0          2          3 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          0          0          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         0          0          8          4 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         1         11          1         15 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         1         13         11         24 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}    Simsim  Groundnut   Palm Oil    Coconut {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         0         20          0          0 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         1          7          0          0 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          3          0          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         1         27          0          0 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         2         90          1          1 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         4        147          1          1 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |} Cashewnut  Soyabeans     Cotton    Tobacco {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         0          0          3          0 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         0          0          4          0 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          0          2          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         0          0         14          1 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         1          1         48         10 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         1          1         71         11 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}    Rubber     Banana    Cabbage   Tomatoes {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         0          0          0          5 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         0          0          0          2 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          0          0          1 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         0          4          1          7 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         1          2          0          6 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         1          6          1         21 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}   Spinach     Carrot   Chillies  Amaranths {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         2          0          0          9 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         0          0          0          1 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          0          0          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         0          2          4          2 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         0          0          0          0 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         2          2          4         12 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}  Pumpkins   Cucumber  Water Mel   Rambutan {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         8          3          0          0 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         1          1          1          1 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          0          0          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         2          4          0          0 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}        28          1          0          0 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}        39          9          1          1 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}      Okra       Fiwi      Other          . {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         2          0          2          0 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         1          0          0          0 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         1          0          0          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         0          0          5          0 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         1          3          0          2 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         5          3          7          2 {txt}{c |}{res}     2,028 
+{txt}
+{com}. * only 2 of that 923 is missing a crop code
+.         sort            crop_code
+{txt}
+{com}. * this is an issue
+. 
+{txt}end of do-file
+
+{com}. do "C:\Users\THEMAC~1\AppData\Local\Temp\STD6320_000000.tmp"
+{txt}
+{com}.         use     "$root/SEC_4B", clear
+{txt}
+{com}. 
+. * rename variables of interest
+.         rename          zaocode crop_code
+{res}{txt}
+{com}. 
+. * generate unique identifier
+.         generate                        plot_id = hhid + " " + plotnum
+{txt}
+{com}.         tostring                        crop_code, generate(crop_num)
+{txt}crop_num generated as {res:str3}
+
+{com}.         gen str21                       crop_id = hhid + " " + plotnum + " " + crop_num
+{txt}
+{com}.         duplicates report       crop_id
+
+{p 0 4}{txt}Duplicates in terms of {res} crop_id{p_end}
+
+{txt}{hline 10}{c TT}{hline 27}
+   copies {c |} observations       surplus
+{hline 10}{c +}{hline 27}
+        1 {c |}         {res}2028             0
+{txt}{hline 10}{c BT}{hline 27}
+
+{com}. * no duplicates!
+.         isid                            crop_id
+{txt}
+{com}. 
+{txt}end of do-file
+
+{com}. do "C:\Users\THEMAC~1\AppData\Local\Temp\STD6320_000000.tmp"
+{txt}
+{com}. 
+. * load data
+.         use     "$root/SEC_4B", clear
+{txt}
+{com}. 
+. * rename variables of interest
+.         rename          zaocode crop_code
+{res}{txt}
+{com}. 
+. * generate unique identifier
+.         generate                        plot_id = hhid + " " + plotnum
+{txt}
+{com}.         tostring                        crop_code, generate(crop_num)
+{txt}crop_num generated as {res:str3}
+
+{com}.         gen str21                       crop_id = hhid + " " + plotnum + " " + crop_num
+{txt}
+{com}.         duplicates report       crop_id
+
+{p 0 4}{txt}Duplicates in terms of {res} crop_id{p_end}
+
+{txt}{hline 10}{c TT}{hline 27}
+   copies {c |} observations       surplus
+{hline 10}{c +}{hline 27}
+        1 {c |}         {res}2028             0
+{txt}{hline 10}{c BT}{hline 27}
+
+{com}. * no duplicates!
+.         isid                            crop_id
+{txt}
+{com}. 
+. * generating mixed crop variable
+.         rename          s4bq3 purestand
+{res}{txt}
+{com}.         generate        mixedcrop_pct = .
+{txt}(2,028 missing values generated)
+
+{com}.         replace         mixedcrop_pct = 100 if purestand == 1
+{txt}(626 real changes made)
+
+{com}.         replace         mixedcrop_pct = 75 if s4bq4 == 3
+{txt}(55 real changes made)
+
+{com}.         replace         mixedcrop_pct = 50 if s4bq4 == 2
+{txt}(183 real changes made)
+
+{com}.         replace         mixedcrop_pct = 25 if s4bq4 == 1
+{txt}(242 real changes made)
+
+{com}.         tab                     mixedcrop_pct, missing
+
+{txt}mixedcrop_p {c |}
+         ct {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+         25 {c |}{res}        242       11.93       11.93
+{txt}         50 {c |}{res}        183        9.02       20.96
+{txt}         75 {c |}{res}         55        2.71       23.67
+{txt}        100 {c |}{res}        625       30.82       54.49
+{txt}          . {c |}{res}        923       45.51      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      2,028      100.00
+{txt}
+{com}. * there are 923 obs missing mixedcrop_pct here
+.         tab             mixedcrop_pct crop_code, missing
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}     Maize      Paddy    Sorghum  Bulrush M {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}        54          7          4          0 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}        69          4          2          0 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}        26          1          1          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}       251         35          9          0 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}       381         31         26          1 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}       781         78         42          1 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |} Finger Mi      Wheat    Cassava  Sweet Pot {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         2          0          6         32 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         1          0          1         16 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          0          0          3 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         1          1         38         31 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         4          0         39         41 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         8          1         84        123 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |} Irish pot       Yams   Cocoyams     Onions {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         6          3          5          3 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         1          1          0          0 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         1          0          0          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         4          1          2          0 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         5          3         25          0 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}        17          8         32          3 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}     Beans    Cowpeas  Green gra  Pigeon pe {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}        52          9          1          0 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}        53          7          3          0 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}        12          2          2          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}       133         23          6          4 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}        97         20         13         11 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}       347         61         25         15 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |} Chick pea  Bambara n  Field pea  Sunflower {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         0          2          0          2 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         0          0          2          3 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          0          0          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         0          0          8          4 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         1         11          1         15 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         1         13         11         24 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}    Simsim  Groundnut   Palm Oil    Coconut {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         0         20          0          0 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         1          7          0          0 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          3          0          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         1         27          0          0 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         2         90          1          1 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         4        147          1          1 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |} Cashewnut  Soyabeans     Cotton    Tobacco {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         0          0          3          0 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         0          0          4          0 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          0          2          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         0          0         14          1 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         1          1         48         10 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         1          1         71         11 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}    Rubber     Banana    Cabbage   Tomatoes {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         0          0          0          5 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         0          0          0          2 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          0          0          1 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         0          4          1          7 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         1          2          0          6 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         1          6          1         21 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}   Spinach     Carrot   Chillies  Amaranths {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         2          0          0          9 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         0          0          0          1 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          0          0          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         0          2          4          2 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         0          0          0          0 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         2          2          4         12 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}  Pumpkins   Cucumber  Water Mel   Rambutan {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         8          3          0          0 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         1          1          1          1 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          0          0          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         2          4          0          0 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}        28          1          0          0 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}        39          9          1          1 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}      Okra       Fiwi      Other          . {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         2          0          2          0 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         1          0          0          0 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         1          0          0          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         0          0          5          0 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         1          3          0          2 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         5          3          7          2 {txt}{c |}{res}     2,028 
+{txt}
+{com}. * only 2 of that 923 is missing a crop code
+.         sort            crop_code
+{txt}
+{com}. * this is an issue
+. 
+. * other variables of interest
+.         rename          s4bq11_1 harvest_month
+{res}{txt}
+{com}.         rename          s4bq15 wgt_hvsted
+{res}{txt}
+{com}.         label           variable wgt_hvsted "What was the quanitity harvested? (kg)"
+{txt}
+{com}.         rename          s4bq20 value_seed_purch
+{res}{txt}
+{com}.         generate        season = 1
+{txt}
+{com}. * see if you can find quantity purchased and quantity of old seeds used to derive total value seeds used
+. 
+. * keep what we want, get rid of what we don't
+.         keep            hhid plotnum plot_id crop_id crop_code mixedcrop_pct harvest_month ///
+>                                 wgt_hvsted value_seed_purch season
+{txt}
+{com}. 
+{txt}end of do-file
+
+{com}. tab mixedcrop_pct, missing
+
+{txt}mixedcrop_p {c |}
+         ct {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+         25 {c |}{res}        242       11.93       11.93
+{txt}         50 {c |}{res}        183        9.02       20.96
+{txt}         75 {c |}{res}         55        2.71       23.67
+{txt}        100 {c |}{res}        625       30.82       54.49
+{txt}          . {c |}{res}        923       45.51      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      2,028      100.00
+
+{com}. tab mixedcrop_pct crop_code, missing
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}     Maize      Paddy    Sorghum  Bulrush M {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}        54          7          4          0 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}        69          4          2          0 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}        26          1          1          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}       251         35          9          0 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}       381         31         26          1 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}       781         78         42          1 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |} Finger Mi      Wheat    Cassava  Sweet Pot {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         2          0          6         32 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         1          0          1         16 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          0          0          3 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         1          1         38         31 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         4          0         39         41 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         8          1         84        123 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |} Irish pot       Yams   Cocoyams     Onions {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         6          3          5          3 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         1          1          0          0 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         1          0          0          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         4          1          2          0 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         5          3         25          0 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}        17          8         32          3 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}     Beans    Cowpeas  Green gra  Pigeon pe {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}        52          9          1          0 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}        53          7          3          0 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}        12          2          2          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}       133         23          6          4 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}        97         20         13         11 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}       347         61         25         15 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |} Chick pea  Bambara n  Field pea  Sunflower {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         0          2          0          2 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         0          0          2          3 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          0          0          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         0          0          8          4 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         1         11          1         15 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         1         13         11         24 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}    Simsim  Groundnut   Palm Oil    Coconut {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         0         20          0          0 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         1          7          0          0 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          3          0          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         1         27          0          0 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         2         90          1          1 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         4        147          1          1 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |} Cashewnut  Soyabeans     Cotton    Tobacco {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         0          0          3          0 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         0          0          4          0 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          0          2          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         0          0         14          1 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         1          1         48         10 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         1          1         71         11 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}    Rubber     Banana    Cabbage   Tomatoes {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         0          0          0          5 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         0          0          0          2 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          0          0          1 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         0          4          1          7 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         1          2          0          6 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         1          6          1         21 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}   Spinach     Carrot   Chillies  Amaranths {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         2          0          0          9 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         0          0          0          1 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          0          0          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         0          2          4          2 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         0          0          0          0 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         2          2          4         12 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}  Pumpkins   Cucumber  Water Mel   Rambutan {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         8          3          0          0 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         1          1          1          1 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          0          0          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         2          4          0          0 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}        28          1          0          0 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}        39          9          1          1 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}      Okra       Fiwi      Other          . {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         2          0          2          0 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         1          0          0          0 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         1          0          0          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         0          0          5          0 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         1          3          0          2 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         5          3          7          2 {txt}{c |}{res}     2,028 
+
+{com}. do "C:\Users\THEMAC~1\AppData\Local\Temp\STD6320_000000.tmp"
+{txt}
+{com}. **********************************************************************************
+. 
+. * load data
+.         use     "$root/SEC_4B", clear
+{txt}
+{com}. 
+. * rename variables of interest
+.         rename          zaocode crop_code
+{res}{txt}
+{com}. 
+. * generate unique identifier
+.         generate                        plot_id = hhid + " " + plotnum
+{txt}
+{com}.         tostring                        crop_code, generate(crop_num)
+{txt}crop_num generated as {res:str3}
+
+{com}.         gen str21                       crop_id = hhid + " " + plotnum + " " + crop_num
+{txt}
+{com}.         duplicates report       crop_id
+
+{p 0 4}{txt}Duplicates in terms of {res} crop_id{p_end}
+
+{txt}{hline 10}{c TT}{hline 27}
+   copies {c |} observations       surplus
+{hline 10}{c +}{hline 27}
+        1 {c |}         {res}2028             0
+{txt}{hline 10}{c BT}{hline 27}
+
+{com}. * no duplicates!
+.         isid                            crop_id
+{txt}
+{com}. 
+. * generating mixed crop variable
+.         rename          s4bq3 purestand
+{res}{txt}
+{com}.         generate        mixedcrop_pct = .
+{txt}(2,028 missing values generated)
+
+{com}.         replace         mixedcrop_pct = 100 if purestand == 1
+{txt}(626 real changes made)
+
+{com}.         replace         mixedcrop_pct = 75 if s4bq4 == 3
+{txt}(55 real changes made)
+
+{com}.         replace         mixedcrop_pct = 50 if s4bq4 == 2
+{txt}(183 real changes made)
+
+{com}.         replace         mixedcrop_pct = 25 if s4bq4 == 1
+{txt}(242 real changes made)
+
+{com}.         tab                     mixedcrop_pct, missing
+
+{txt}mixedcrop_p {c |}
+         ct {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+         25 {c |}{res}        242       11.93       11.93
+{txt}         50 {c |}{res}        183        9.02       20.96
+{txt}         75 {c |}{res}         55        2.71       23.67
+{txt}        100 {c |}{res}        625       30.82       54.49
+{txt}          . {c |}{res}        923       45.51      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      2,028      100.00
+{txt}
+{com}. * there are 923 obs missing mixedcrop_pct here
+.         tab             mixedcrop_pct crop_code, missing
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}     Maize      Paddy    Sorghum  Bulrush M {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}        54          7          4          0 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}        69          4          2          0 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}        26          1          1          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}       251         35          9          0 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}       381         31         26          1 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}       781         78         42          1 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |} Finger Mi      Wheat    Cassava  Sweet Pot {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         2          0          6         32 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         1          0          1         16 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          0          0          3 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         1          1         38         31 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         4          0         39         41 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         8          1         84        123 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |} Irish pot       Yams   Cocoyams     Onions {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         6          3          5          3 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         1          1          0          0 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         1          0          0          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         4          1          2          0 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         5          3         25          0 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}        17          8         32          3 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}     Beans    Cowpeas  Green gra  Pigeon pe {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}        52          9          1          0 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}        53          7          3          0 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}        12          2          2          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}       133         23          6          4 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}        97         20         13         11 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}       347         61         25         15 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |} Chick pea  Bambara n  Field pea  Sunflower {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         0          2          0          2 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         0          0          2          3 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          0          0          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         0          0          8          4 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         1         11          1         15 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         1         13         11         24 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}    Simsim  Groundnut   Palm Oil    Coconut {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         0         20          0          0 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         1          7          0          0 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          3          0          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         1         27          0          0 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         2         90          1          1 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         4        147          1          1 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |} Cashewnut  Soyabeans     Cotton    Tobacco {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         0          0          3          0 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         0          0          4          0 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          0          2          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         0          0         14          1 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         1          1         48         10 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         1          1         71         11 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}    Rubber     Banana    Cabbage   Tomatoes {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         0          0          0          5 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         0          0          0          2 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          0          0          1 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         0          4          1          7 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         1          2          0          6 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         1          6          1         21 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}   Spinach     Carrot   Chillies  Amaranths {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         2          0          0          9 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         0          0          0          1 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          0          0          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         0          2          4          2 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         0          0          0          0 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         2          2          4         12 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}  Pumpkins   Cucumber  Water Mel   Rambutan {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         8          3          0          0 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         1          1          1          1 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          0          0          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         2          4          0          0 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}        28          1          0          0 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}        39          9          1          1 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}      Okra       Fiwi      Other          . {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         2          0          2          0 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         1          0          0          0 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         1          0          0          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         0          0          5          0 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         1          3          0          2 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         5          3          7          2 {txt}{c |}{res}     2,028 
+{txt}
+{com}. * only 2 of that 923 is missing a crop code
+. * 381 of these for maize
+.         sort            crop_code
+{txt}
+{com}. * this is an issue
+. 
+. * other variables of interest
+.         rename          s4bq11_1 harvest_month
+{res}{txt}
+{com}.         rename          s4bq15 wgt_hvsted
+{res}{txt}
+{com}.         label           variable wgt_hvsted "What was the quanitity harvested? (kg)"
+{txt}
+{com}.         rename          s4bq20 value_seed_purch
+{res}{txt}
+{com}.         generate        season = 1
+{txt}
+{com}. * see if you can find quantity purchased and quantity of old seeds used to derive total value seeds used
+. 
+. * keep what we want, get rid of what we don't
+.         keep            hhid plotnum plot_id crop_id crop_code mixedcrop_pct harvest_month ///
+>                                 wgt_hvsted value_seed_purch season
+{txt}
+{com}. 
+. * prepare for export
+. compress
+  {txt}variable {bf}mixedcrop_pct{sf} was {bf}{res}float{sf}{txt} now {bf}{res}byte{sf}
+  {txt}variable {bf}season{sf} was {bf}{res}float{sf}{txt} now {bf}{res}byte{sf}
+{txt}  (12,168 bytes saved)
+
+{com}. describe
+
+{txt}Contains data from {res}G:/My Drive/weather_project/household_data/tanzania/wave_1/raw/SEC_4B.dta
+{txt}  obs:{res}         2,028                          
+{txt} vars:{res}            10                          28 May 2011 14:43
+{txt}{hline}
+              storage   display    value
+variable name   type    format     label      variable label
+{hline}
+{p 0 48}{res}{bind:hhid           }{txt}{bind: str14   }{bind:{txt}%14s      }{space 1}{bind:         }{bind:  }{res}{res}Unique HH Identifier{p_end}
+{p 0 48}{bind:plotnum        }{txt}{bind: str2    }{bind:{txt}%9s       }{space 1}{bind:         }{bind:  }{res}{res}PLOT NUMBER{p_end}
+{p 0 48}{bind:crop_code      }{txt}{bind: int     }{bind:{txt}%27.0g    }{space 1}{txt}S4BZAOCODE{p_end}
+{p 0 48}{space 44}{bind:  }{res}{res}CROP ID{p_end}
+{p 0 48}{bind:harvest_month  }{txt}{bind: byte    }{bind:{txt}%8.0g     }{space 1}{bind:         }{bind:  }{res}{res}S4BQ11_1. First month of the harvest period{p_end}
+{p 0 48}{bind:wgt_hvsted     }{txt}{bind: int     }{bind:{txt}%12.0g    }{space 1}{bind:         }{bind:  }{res}{res}What was the quanitity harvested? (kg){p_end}
+{p 0 48}{bind:value_seed_pu~h}{txt}{bind: long    }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}S4BQ20. Total value of seeds purchased{p_end}
+{p 0 48}{bind:plot_id        }{txt}{bind: str17   }{bind:{txt}%17s      }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{p 0 48}{bind:crop_id        }{txt}{bind: str21   }{bind:{txt}%21s      }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{p 0 48}{bind:mixedcrop_pct  }{txt}{bind: byte    }{bind:{txt}%9.0g     }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{p 0 48}{bind:season         }{txt}{bind: byte    }{bind:{txt}%9.0g     }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{txt}{hline}
+Sorted by: {res}crop_code
+     Note: Dataset has changed since last saved.
+{txt}
+{com}. summarize 
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 8}hhid {c |}{res}          0
+{txt}{space 5}plotnum {c |}{res}          0
+{txt}{space 3}crop_code {c |}{res}      2,026    29.36032    60.24798         11        998
+{txt}harvest_mo~h {c |}{res}      1,105    4.844344    3.598413          0         12
+{txt}{space 2}wgt_hvsted {c |}{res}      1,105     284.752     1030.93          0      25000
+{txt}{hline 13}{c +}{hline 57}
+value_seed~h {c |}{res}        750    6827.427    9413.749        100     120000
+{txt}{space 5}plot_id {c |}{res}          0
+{txt}{space 5}crop_id {c |}{res}          0
+{txt}mixedcrop_~t {c |}{res}      1,105    74.04977    31.69434         25        100
+{txt}{space 6}season {c |}{res}      2,028           1           0          1          1
+{txt}
+{com}. sort crop_id
+{txt}
+{com}. customsave , idvar(crop_id) filename(AG_SEC4B.dta) path("$export") dofile(2008_AGSEC4B) user($user)
+ with do file 2008_AGSEC4B by user themacfreezie using computer Torbit
+
+{txt}
+{com}. 
+. * close the log
+.         log     close
+      {txt}name:  {res}<unnamed>
+       {txt}log:  {res}C:/Users/themacfreezie/git/weather_project/tanzania/household_code/logs/wv1_AGSEC5B.smcl
+  {txt}log type:  {res}smcl
+ {txt}closed on:  {res} 9 May 2020, 22:00:38
+{txt}{.-}
+{smcl}
+{txt}{sf}{ul off}{smcl}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}C:/Users/themacfreezie/git/weather_project/tanzania/household_code/logs/wv1_AGSEC5B.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res} 9 May 2020, 22:00:43
+{txt}
+{com}. 
+. **********************************************************************************
+. **      TZA 2008 (Wave 1) - Agriculture Section 4B 
+. **********************************************************************************
+. 
+. * load data
+.         use     "$root/SEC_4B", clear
+{txt}
+{com}. 
+. * rename variables of interest
+.         rename          zaocode crop_code
+{res}{txt}
+{com}. 
+. * generate unique identifier
+.         generate                        plot_id = hhid + " " + plotnum
+{txt}
+{com}.         tostring                        crop_code, generate(crop_num)
+{txt}crop_num generated as {res:str3}
+
+{com}.         gen str21                       crop_id = hhid + " " + plotnum + " " + crop_num
+{txt}
+{com}.         duplicates report       crop_id
+
+{p 0 4}{txt}Duplicates in terms of {res} crop_id{p_end}
+
+{txt}{hline 10}{c TT}{hline 27}
+   copies {c |} observations       surplus
+{hline 10}{c +}{hline 27}
+        1 {c |}         {res}2028             0
+{txt}{hline 10}{c BT}{hline 27}
+
+{com}. * no duplicates!
+.         isid                            crop_id
+{txt}
+{com}. 
+. * generating mixed crop variable
+.         rename          s4bq3 purestand
+{res}{txt}
+{com}.         generate        mixedcrop_pct = .
+{txt}(2,028 missing values generated)
+
+{com}.         replace         mixedcrop_pct = 100 if purestand == 1
+{txt}(626 real changes made)
+
+{com}.         replace         mixedcrop_pct = 75 if s4bq4 == 3
+{txt}(55 real changes made)
+
+{com}.         replace         mixedcrop_pct = 50 if s4bq4 == 2
+{txt}(183 real changes made)
+
+{com}.         replace         mixedcrop_pct = 25 if s4bq4 == 1
+{txt}(242 real changes made)
+
+{com}.         tab                     mixedcrop_pct, missing
+
+{txt}mixedcrop_p {c |}
+         ct {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+         25 {c |}{res}        242       11.93       11.93
+{txt}         50 {c |}{res}        183        9.02       20.96
+{txt}         75 {c |}{res}         55        2.71       23.67
+{txt}        100 {c |}{res}        625       30.82       54.49
+{txt}          . {c |}{res}        923       45.51      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}      2,028      100.00
+{txt}
+{com}. * there are 923 obs missing mixedcrop_pct here
+.         tab             mixedcrop_pct crop_code, missing
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}     Maize      Paddy    Sorghum  Bulrush M {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}        54          7          4          0 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}        69          4          2          0 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}        26          1          1          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}       251         35          9          0 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}       381         31         26          1 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}       781         78         42          1 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |} Finger Mi      Wheat    Cassava  Sweet Pot {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         2          0          6         32 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         1          0          1         16 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          0          0          3 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         1          1         38         31 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         4          0         39         41 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         8          1         84        123 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |} Irish pot       Yams   Cocoyams     Onions {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         6          3          5          3 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         1          1          0          0 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         1          0          0          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         4          1          2          0 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         5          3         25          0 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}        17          8         32          3 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}     Beans    Cowpeas  Green gra  Pigeon pe {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}        52          9          1          0 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}        53          7          3          0 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}        12          2          2          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}       133         23          6          4 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}        97         20         13         11 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}       347         61         25         15 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |} Chick pea  Bambara n  Field pea  Sunflower {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         0          2          0          2 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         0          0          2          3 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          0          0          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         0          0          8          4 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         1         11          1         15 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         1         13         11         24 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}    Simsim  Groundnut   Palm Oil    Coconut {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         0         20          0          0 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         1          7          0          0 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          3          0          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         1         27          0          0 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         2         90          1          1 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         4        147          1          1 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |} Cashewnut  Soyabeans     Cotton    Tobacco {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         0          0          3          0 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         0          0          4          0 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          0          2          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         0          0         14          1 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         1          1         48         10 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         1          1         71         11 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}    Rubber     Banana    Cabbage   Tomatoes {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         0          0          0          5 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         0          0          0          2 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          0          0          1 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         0          4          1          7 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         1          2          0          6 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         1          6          1         21 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}   Spinach     Carrot   Chillies  Amaranths {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         2          0          0          9 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         0          0          0          1 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          0          0          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         0          2          4          2 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         0          0          0          0 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         2          2          4         12 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}  Pumpkins   Cucumber  Water Mel   Rambutan {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         8          3          0          0 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         1          1          1          1 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         0          0          0          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         2          4          0          0 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}        28          1          0          0 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}        39          9          1          1 {txt}{c |}{res}     2,028 
+
+
+{txt}mixedcrop_ {c |}                   CROP ID
+       pct {c |}      Okra       Fiwi      Other          . {c |}     Total
+{hline 11}{c +}{hline 44}{c +}{hline 10}
+        25 {c |}{res}         2          0          2          0 {txt}{c |}{res}       242 
+{txt}        50 {c |}{res}         1          0          0          0 {txt}{c |}{res}       183 
+{txt}        75 {c |}{res}         1          0          0          0 {txt}{c |}{res}        55 
+{txt}       100 {c |}{res}         0          0          5          0 {txt}{c |}{res}       625 
+{txt}         . {c |}{res}         1          3          0          2 {txt}{c |}{res}       923 
+{txt}{hline 11}{c +}{hline 44}{c +}{hline 10}
+     Total {c |}{res}         5          3          7          2 {txt}{c |}{res}     2,028 
+{txt}
+{com}. * only 2 of that 923 is missing a crop code
+. * 381 of these for maize
+.         sort            crop_code
+{txt}
+{com}. * this is an issue
+. 
+. * other variables of interest
+.         rename          s4bq11_1 harvest_month
+{res}{txt}
+{com}.         rename          s4bq15 wgt_hvsted
+{res}{txt}
+{com}.         label           variable wgt_hvsted "What was the quanitity harvested? (kg)"
+{txt}
+{com}.         rename          s4bq20 value_seed_purch
+{res}{txt}
+{com}.         generate        season = 1
+{txt}
+{com}. * see if you can find quantity purchased and quantity of old seeds used to derive total value seeds used
+. 
+. * keep what we want, get rid of what we don't
+.         keep            hhid plotnum plot_id crop_id crop_code mixedcrop_pct harvest_month ///
+>                                 wgt_hvsted value_seed_purch season
+{txt}
+{com}. 
+. * prepare for export
+. compress
+  {txt}variable {bf}mixedcrop_pct{sf} was {bf}{res}float{sf}{txt} now {bf}{res}byte{sf}
+  {txt}variable {bf}season{sf} was {bf}{res}float{sf}{txt} now {bf}{res}byte{sf}
+{txt}  (12,168 bytes saved)
+
+{com}. describe
+
+{txt}Contains data from {res}G:/My Drive/weather_project/household_data/tanzania/wave_1/raw/SEC_4B.dta
+{txt}  obs:{res}         2,028                          
+{txt} vars:{res}            10                          28 May 2011 14:43
+{txt}{hline}
+              storage   display    value
+variable name   type    format     label      variable label
+{hline}
+{p 0 48}{res}{bind:hhid           }{txt}{bind: str14   }{bind:{txt}%14s      }{space 1}{bind:         }{bind:  }{res}{res}Unique HH Identifier{p_end}
+{p 0 48}{bind:plotnum        }{txt}{bind: str2    }{bind:{txt}%9s       }{space 1}{bind:         }{bind:  }{res}{res}PLOT NUMBER{p_end}
+{p 0 48}{bind:crop_code      }{txt}{bind: int     }{bind:{txt}%27.0g    }{space 1}{txt}S4BZAOCODE{p_end}
+{p 0 48}{space 44}{bind:  }{res}{res}CROP ID{p_end}
+{p 0 48}{bind:harvest_month  }{txt}{bind: byte    }{bind:{txt}%8.0g     }{space 1}{bind:         }{bind:  }{res}{res}S4BQ11_1. First month of the harvest period{p_end}
+{p 0 48}{bind:wgt_hvsted     }{txt}{bind: int     }{bind:{txt}%12.0g    }{space 1}{bind:         }{bind:  }{res}{res}What was the quanitity harvested? (kg){p_end}
+{p 0 48}{bind:value_seed_pu~h}{txt}{bind: long    }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}S4BQ20. Total value of seeds purchased{p_end}
+{p 0 48}{bind:plot_id        }{txt}{bind: str17   }{bind:{txt}%17s      }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{p 0 48}{bind:crop_id        }{txt}{bind: str21   }{bind:{txt}%21s      }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{p 0 48}{bind:mixedcrop_pct  }{txt}{bind: byte    }{bind:{txt}%9.0g     }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{p 0 48}{bind:season         }{txt}{bind: byte    }{bind:{txt}%9.0g     }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{txt}{hline}
+Sorted by: {res}crop_code
+     Note: Dataset has changed since last saved.
+{txt}
+{com}. summarize 
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 8}hhid {c |}{res}          0
+{txt}{space 5}plotnum {c |}{res}          0
+{txt}{space 3}crop_code {c |}{res}      2,026    29.36032    60.24798         11        998
+{txt}harvest_mo~h {c |}{res}      1,105    4.844344    3.598413          0         12
+{txt}{space 2}wgt_hvsted {c |}{res}      1,105     284.752     1030.93          0      25000
+{txt}{hline 13}{c +}{hline 57}
+value_seed~h {c |}{res}        750    6827.427    9413.749        100     120000
+{txt}{space 5}plot_id {c |}{res}          0
+{txt}{space 5}crop_id {c |}{res}          0
+{txt}mixedcrop_~t {c |}{res}      1,105    74.04977    31.69434         25        100
+{txt}{space 6}season {c |}{res}      2,028           1           0          1          1
+{txt}
+{com}. sort crop_id
+{txt}
+{com}. customsave , idvar(crop_id) filename(AG_SEC4B.dta) path("$export") dofile(2008_AGSEC4B) user($user)
+ with do file 2008_AGSEC4B by user themacfreezie using computer Torbit
+
+{txt}
+{com}. 
+. * close the log
+.         log     close
+      {txt}name:  {res}<unnamed>
+       {txt}log:  {res}C:/Users/themacfreezie/git/weather_project/tanzania/household_code/logs/wv1_AGSEC5B.smcl
+  {txt}log type:  {res}smcl
+ {txt}closed on:  {res} 9 May 2020, 22:00:44
+{txt}{.-}
+{smcl}
+{txt}{sf}{ul off}{smcl}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}C:/Users/themacfreezie/git/weather_project/tanzania/household_code/logs/wv1_AGSEC5B.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res} 9 May 2020, 22:05:59
+{txt}
+{com}. 
+{txt}end of do-file
+
+{com}. 

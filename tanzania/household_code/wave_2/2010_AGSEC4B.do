@@ -1,55 +1,89 @@
-clear all
+* Project: WB Weather
+* Created on: April 2020
+* Created by: McG
+* Stata v.16
 
-*attempting to clean Tanzania household variables
-global user "themacfreezie"
+* does
+	* cleans Tanzania household variables, wave 2 Ag sec4b
+	* kind of a crop roster, with harvest weights, short rainy season
+	
+* assumes
+	* customsave.ado
 
-**********************************************************************************
-**	TZA 2010 (Wave 2) - Agriculture Section 4B 
-**********************************************************************************
+* TO DO:
+	* completed
 
-* For household data
-loc root = "C:\Users/$user\Dropbox\Weather_Project\Data\Tanzania\analysis_datasets\Tanzania_raw\TZA_2010"
-* To export results
-loc export = "C:\Users/$user\Dropbox\Weather_Project\Data\Tanzania\analysis_datasets\Tanzania_refined\TZA_2010"
+	
+* **********************************************************************
+* 0 - setup
+* **********************************************************************
 
-use "`root'/AG_SEC4B", clear
+* set user
+	global user "themacfreezie"
 
-*	Kind of a crop roster, with harvest weights, short rainy season
+* define paths
+	global root = "G:/My Drive/weather_project/household_data/tanzania/wave_2/raw"
+	global export = "G:/My Drive/weather_project/household_data/tanzania/wave_2/refined"
+	global logout = "G:/My Drive/weather_project/household_data/tanzania/logs"
 
-rename y2_hhid hhid
-rename zaocode crop_code
+* open log
+	log using "$logout/wv2_AGSE4B", append
 
-tostring crop_code, generate(crop_num) format(%03.0g) force
+* ***********************************************************************
+* 1 - TZA 2010 (Wave 2) - Agriculture Section 4B
+* *********************1*************************************************
 
-generate crop_id = hhid + " " + plotnum + " " + crop_num
-isid crop_id
+* load data
+	use "$root/AG_SEC4B", clear
 
-rename ag4b_01 purestand
-generate mixedcrop_pct = .
-replace mixedcrop_pct = 100 if purestand == 1
-replace mixedcrop_pct = 75 if ag4b_02 == 3
-replace mixedcrop_pct = 50 if ag4b_02 == 2
-replace mixedcrop_pct = 25 if ag4b_02 == 1
-tab purestand ag4b_02, missing
-*	There are 4,951 missing obs here
-tab mixedcrop_pct crop_code, missing
-*	Each of these is also missing a crop code
-*	Assuming these fields are fallow, that's a lot!
-*	Only 1,791 obs remain. Does this make sense for short rainy season?
-sort crop_code
-* 	Should they be dropped? All these obs seem to have no other info
-*	Probably so
+* rename variables of interest
+	rename 		y2_hhid hhid
+	rename 		zaocode crop_code
 
-rename ag4b_11_1 harvest_month
-rename ag4b_15 wgt_hvsted
-label variable wgt_hvsted "What was the quanitity harvested? (kg)"
-rename ag4b_21 value_seed_purch
+* generate unique identifier
+	generate 			plot_id = hhid + " " + plotnum
+	tostring 			crop_code, generate(crop_num)
+	gen str23 			crop_id = hhid + " " + plotnum + " " + crop_num
+	duplicates report 	crop_id
+* no duplicates!
+	isid 				crop_id
 
-keep hhid plotnum crop_id crop_code mixedcrop_pct harvest_month wgt_hvsted value_seed_purch
+* generating mixed crop variable
+	rename 		ag4b_01 purestand
+	generate 	mixedcrop_pct = .
+	replace 	mixedcrop_pct = 100 if purestand == 1
+	replace 	mixedcrop_pct = 75 if ag4b_02 == 3
+	replace 	mixedcrop_pct = 50 if ag4b_02 == 2
+	replace 	mixedcrop_pct = 25 if ag4b_02 == 1
+* there are 4,951 missing obs here
+	tab 		mixedcrop_pct crop_code, missing
+* all of these are also missing crop codes
+* assuming these fields are fallow
+	sort 		crop_code
+* should they be dropped? All these obs seem to have no other info
+* probably so
+	drop 		if crop_code == . 
 
-*	Prepare for export
+* other variables of interest
+	rename 		ag4b_11_1 harvest_month
+	rename 		ag4b_15 wgt_hvsted
+	label 		variable wgt_hvsted "What was the quanitity harvested? (kg)"
+	rename 		ag4b_21 value_seed_purch
+	generate 	season = 1
+* see if you can find quantity purchased and quantity of old seeds used to derive total value seeds used
+
+* keep what we want, get rid of what we don't
+	keep 		hhid plotnum plot_id crop_id crop_code mixedcrop_pct harvest_month ///
+				wgt_hvsted value_seed_purch season
+
+* prepare for export
 compress
 describe
 summarize 
 sort crop_id
-save "`export'/AG_SEC4B", replace
+customsave , idvar(crop_id) filename(AG_SEC4B.dta) path("$export") dofile(2010_AGSEC4B) user($user)
+
+* close the log
+	log	close
+
+/* END */

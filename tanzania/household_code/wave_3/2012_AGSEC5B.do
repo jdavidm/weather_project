@@ -45,7 +45,7 @@
 	gen str20 			crop_id = hhid + " " + crop_num
 	duplicates report	crop_id
 * no duplicates
-	duplicates drop 	crop_id, force
+*	duplicates drop 	crop_id, force
 	isid 				crop_id
 
 * renaming sales variables
