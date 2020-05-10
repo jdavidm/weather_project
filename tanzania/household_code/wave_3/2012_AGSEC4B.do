@@ -41,10 +41,12 @@
 	rename 		zaocode crop_code
 
 * generate unique identifier
-	generate 	plot_id = hhid + " " + plotnum
-	tostring 	crop_code, generate(crop_num) format(%03.0g) force
-	generate 	crop_id = hhid + " " + plotnum + " " + crop_num
-	isid 		crop_id
+	generate 			plot_id = hhid + " " + plotnum
+	tostring 			crop_code, generate(crop_num)
+	gen str20 			crop_id = hhid + " " + plotnum + " " + crop_num
+	duplicates report crop_id
+* no duplicates!
+	isid 				crop_id
 
 * generating mixed crop variable
 	rename 		ag4b_01 purestand

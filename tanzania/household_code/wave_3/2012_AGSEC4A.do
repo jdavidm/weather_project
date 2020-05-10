@@ -40,14 +40,15 @@
 	rename 				y3_hhid hhid
 	rename				zaocode crop_code
 
-* generate unique identifier 
+* generate unique identifier
 	generate 			plot_id = hhid + " " + plotnum
-	tostring 			crop_code, generate(crop_num) format(%03.0g) force
-	generate 			crop_id = hhid + " " + plotnum + " " + crop_num
-	duplicates report	 crop_id
-* crop_id not unique, 6 duplicates 
-	duplicates drop 	crop_id, force
-	isid 				crop_id
+	tostring 			crop_code, generate(crop_num)
+	gen str20 			crop_id = hhid + " " + plotnum + " " + crop_num
+	duplicates report crop_id
+* six duplicate crop_ids
+*	duplicates drop 	crop_id, force
+*	isid 				crop_id
+* crop_id not unique, observations look different
 	
 * generating mixed crop variable
 	rename 				ag4a_01 purestand

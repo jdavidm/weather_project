@@ -41,9 +41,12 @@
 	rename 		zaocode crop_code
 
 * generate unique ob id
-	tostring 	crop_code, generate(crop_num) format(%03.0g) force
-	generate 	crop_id = hhid + " " + crop_num
-* crop_id not unique, 5 duplicate obs
+	tostring 			crop_code, generate(crop_num)
+	gen str20 			crop_id = hhid + " " + crop_num
+	duplicates report	crop_id
+* no duplicates
+	duplicates drop 	crop_id, force
+	isid 				crop_id
 
 * renaming sales variables
 	rename 		ag5b_02 wgt_sold

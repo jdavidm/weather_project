@@ -41,10 +41,10 @@
 	rename 		zaocode crop_code
 
 * generate unique identifier
-	generate 	plot_id = hhid + " " + plotnum
-	tostring 	crop_code, generate(crop_num) format(%03.0g) force
-	generate 	crop_id = hhid + " " + plotnum + " " + crop_num
-	duplicates drop crop_id, force
+	generate 			plot_id = hhid + " " + plotnum
+	tostring 			crop_code, generate(crop_num)
+	gen str20 			crop_id = hhid + " " + plotnum + " " + crop_num
+	duplicates drop 	crop_id, force
 * dropping one dupicate observation
 	isid 		crop_id
 
