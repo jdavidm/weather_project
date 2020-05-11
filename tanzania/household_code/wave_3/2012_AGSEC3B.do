@@ -48,6 +48,8 @@
 	rename 		ag3b_47 fert_any
 	rename 		ag3b_49 kilo_fert
 	rename 		ag3b_60 pesticide_any
+	label 		define pesticide_anyl 1 "Yes" 2 "No"
+	label 		values pesticide_any pesticide_anyl
 
 * compiling labor inputs
 	egen 		hh_labor_days = rsum(ag3b_72_1 ag3b_72_2 ag3b_72_3 ag3b_72_4 ///

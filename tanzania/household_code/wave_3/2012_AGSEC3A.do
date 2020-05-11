@@ -31,7 +31,7 @@
 
 * ***********************************************************************
 * 1 - TZA 2012 (Wave 3) - Agriculture Section 3A 
-* *********************1*************************************************
+* ***********************************************************************
 
 * load data
 	use 		"$root/AG_SEC_3A", clear
@@ -48,6 +48,8 @@
 	rename 		ag3a_47 fert_any
 	rename 		ag3a_49 kilo_fert
 	rename 		ag3a_60 pesticide_any
+	label 		define pesticide_anyl 1 "Yes" 2 "No"
+	label 		values pesticide_any pesticide_anyl
 
 * compiling labor inputs
 	egen 		hh_labor_days = rsum(ag3a_72_1 ag3a_72_2 ag3a_72_3 ag3a_72_4 ///

@@ -53,6 +53,8 @@
 	replace 	pesticide_any = ag3b_60 if ag3b_60 == 1
 	replace		pesticide_any = ag3b_65a if pesticide_any == . & ag3b_65a == 1
 	replace		pesticide_any = 2 if ag3b_60 == 2 & ag3b_65a == 2 & pesticide_any == .
+	label 		define pesticide_anyl 1 "Yes" 2 "No"
+	label 		values pesticide_any pesticide_anyl
 
 * compiling labor inputs
 	egen 		hh_labor_days = rsum(ag3b_72_1 ag3b_72_2 ag3b_72_3 ag3b_72_4 ///

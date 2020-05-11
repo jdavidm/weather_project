@@ -1,0 +1,385 @@
+{smcl}
+{txt}{sf}{ul off}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}C:/Users/themacfreezie/git/weather_project/tanzania/household_code/logs/wv1_AGSEC3A.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res}10 May 2020, 23:15:39
+{txt}
+{com}. 
+. 
+. **********************************************************************************
+. **      TZA 2008 (Wave 1) - Agriculture Section 3A 
+. **********************************************************************************
+. 
+. * load data
+.         use             "$root/SEC_3A", clear
+{txt}
+{com}. 
+. * renaming variables of interest
+.         generate        plot_id = hhid + " " + plotnum
+{txt}
+{com}.         isid            plot_id
+{txt}
+{com}. 
+. * renaming inputs
+.         rename          s3aq3 status
+{res}{txt}
+{com}.         rename          s3aq5code crop_code
+{res}{txt}
+{com}.         rename          s3aq15 irrigated 
+{res}{txt}
+{com}.         rename          s3aq43 fert_any
+{res}{txt}
+{com}.         rename          s3aq45 kilo_fert
+{res}{txt}
+{com}.         rename          s3aq49 pesticide_any
+{res}{txt}
+{com}.         label           define pesticide_anyl 1 "Yes" 2 "No"
+{txt}
+{com}.         label           values pesticide_any pesticide_anyl
+{txt}
+{com}. 
+. *       labor inputs
+.         egen            hh_labor_days = rsum(s3aq61_1 s3aq61_2 s3aq61_3 s3aq61_4 s3aq61_5 s3aq61_6 s3aq61_7 ///
+>                                 s3aq61_8 s3aq61_9 s3aq61_10 s3aq61_11 s3aq61_12 s3aq61_13 s3aq61_14 s3aq61_15 s3aq61_16 ///
+>                                 s3aq61_17  s3aq61_18 s3aq61_19 s3aq61_20 s3aq61_21 s3aq61_22 s3aq61_23 s3aq61_24 s3aq61_25 ///
+>                                 s3aq61_26 s3aq61_27 s3aq61_28 s3aq61_29 s3aq61_30 s3aq61_31 s3aq61_32 s3aq61_33 s3aq61_34 ///
+>                                 s3aq61_35 s3aq61_36)
+{txt}
+{com}. 
+.         egen            hired_labor_days = rsum(s3aq63_1 s3aq63_2 s3aq63_4 s3aq63_5 s3aq63_7 s3aq63_8)
+{txt}
+{com}.  
+.         generate        labor_days = hh_labor_days + hired_labor_days
+{txt}
+{com}.         
+. * generate seasonal variable
+.         generate        season = 0
+{txt}
+{com}. 
+. * keep what we want, get rid of the rest
+.         keep            hhid plot_id status crop_code irrigated fert_any kilo_fert pesticide_any labor_days season plotnum
+{txt}
+{com}. 
+. *       Prepare for export
+. compress
+  {txt}variable {bf}labor_days{sf} was {bf}{res}float{sf}{txt} now {bf}{res}int{sf}
+  {txt}variable {bf}season{sf} was {bf}{res}float{sf}{txt} now {bf}{res}byte{sf}
+{txt}  (25,630 bytes saved)
+
+{com}. describe
+
+{txt}Contains data from {res}G:/My Drive/weather_project/household_data/tanzania/wave_1/raw/SEC_3A.dta
+{txt}  obs:{res}         5,126                          
+{txt} vars:{res}            11                          28 May 2011 14:43
+{txt}{hline}
+              storage   display    value
+variable name   type    format     label      variable label
+{hline}
+{p 0 48}{res}{bind:hhid           }{txt}{bind: str14   }{bind:{txt}%14s      }{space 1}{bind:         }{bind:  }{res}{res}Unique HH Identifier{p_end}
+{p 0 48}{bind:plotnum        }{txt}{bind: str3    }{bind:{txt}%9s       }{space 1}{bind:         }{bind:  }{res}{res}PLOT NUMBER{p_end}
+{p 0 48}{bind:status         }{txt}{bind: byte    }{bind:{txt}%10.0g    }{space 1}{bind:S3AQ3    }{bind:  }{res}{res}S3AQ3. Use of this plot during the LongRainy08{p_end}
+{p 0 48}{bind:crop_code      }{txt}{bind: int     }{bind:{txt}%27.0g    }{space 1}{txt}S3AQ5CODE{p_end}
+{p 0 48}{space 44}{bind:  }{res}{res}S3AQ5code. Main crop cultivated on this plot in LongRainy08?: CODE{p_end}
+{p 0 48}{bind:irrigated      }{txt}{bind: byte    }{bind:{txt}%8.0g     }{space 1}{bind:S3AQ15   }{bind:  }{res}{res}S3AQ15. Was this plot irrigated in LongRainy08?{p_end}
+{p 0 48}{bind:fert_any       }{txt}{bind: byte    }{bind:{txt}%8.0g     }{space 1}{bind:S3AQ43   }{bind:  }{res}{res}S3AQ43. Did you use any INORGANIC FERTILIZER on [PLOT] in LongRainy08?{p_end}
+{p 0 48}{bind:kilo_fert      }{txt}{bind: long    }{bind:{txt}%12.0g    }{space 1}{bind:         }{bind:  }{res}{res}S3AQ45. Quantity of inorganic fertilizer used{p_end}
+{p 0 48}{bind:pesticide_any  }{txt}{bind: byte    }{bind:{txt}%8.0g     }{space 1}{txt}pesticide_anyl{p_end}
+{p 0 48}{space 44}{bind:  }{res}{res}S3AQ49. Did you use any pesticide/ herbicide on [PLOT] in LongRainy08?{p_end}
+{p 0 48}{bind:plot_id        }{txt}{bind: str18   }{bind:{txt}%18s      }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{p 0 48}{bind:labor_days     }{txt}{bind: int     }{bind:{txt}%9.0g     }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{p 0 48}{bind:season         }{txt}{bind: byte    }{bind:{txt}%9.0g     }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{txt}{hline}
+Sorted by: {res}hhid  plotnum
+     Note: Dataset has changed since last saved.
+{txt}
+{com}. summarize 
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 8}hhid {c |}{res}          0
+{txt}{space 5}plotnum {c |}{res}          0
+{txt}{space 6}status {c |}{res}      5,126    1.434452    1.112718          1          6
+{txt}{space 3}crop_code {c |}{res}      4,187    27.59064    71.10733         11        998
+{txt}{space 3}irrigated {c |}{res}      4,252      1.9746    .1573546          1          2
+{txt}{hline 13}{c +}{hline 57}
+{space 4}fert_any {c |}{res}      4,185    1.891039     .311627          1          2
+{txt}{space 3}kilo_fert {c |}{res}        456    510.4605    7396.272          1     150000
+{txt}pesticide_~y {c |}{res}      4,185    1.892473     .309819          1          2
+{txt}{space 5}plot_id {c |}{res}          0
+{txt}{space 2}labor_days {c |}{res}      5,126     83.2382    105.3881          0       1363
+{txt}{hline 13}{c +}{hline 57}
+{space 6}season {c |}{res}      5,126           0           0          0          0
+{txt}
+{com}. sort plot_id
+{txt}
+{com}. customsave , idvar(plot_id) filename(AG_SEC3A.dta) path("$export") dofile(2008_AGSEC3A) user($user)
+ with do file 2008_AGSEC3A by user themacfreezie using computer Torbit
+
+{txt}
+{com}. 
+. * close the log
+.         log     close
+      {txt}name:  {res}<unnamed>
+       {txt}log:  {res}C:/Users/themacfreezie/git/weather_project/tanzania/household_code/logs/wv1_AGSEC3A.smcl
+  {txt}log type:  {res}smcl
+ {txt}closed on:  {res}10 May 2020, 23:15:40
+{txt}{.-}
+{smcl}
+{txt}{sf}{ul off}{smcl}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}C:/Users/themacfreezie/git/weather_project/tanzania/household_code/logs/wv1_AGSEC3A.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res}10 May 2020, 23:41:00
+{txt}
+{com}. 
+. 
+. **********************************************************************************
+. **      TZA 2008 (Wave 1) - Agriculture Section 3A 
+. **********************************************************************************
+. 
+. * load data
+.         use             "$root/SEC_3A", clear
+{txt}
+{com}. 
+. * renaming variables of interest
+.         generate        plot_id = hhid + " " + plotnum
+{txt}
+{com}.         isid            plot_id
+{txt}
+{com}. 
+. * renaming inputs
+.         rename          s3aq3 status
+{res}{txt}
+{com}.         rename          s3aq5code crop_code
+{res}{txt}
+{com}.         rename          s3aq15 irrigated 
+{res}{txt}
+{com}.         rename          s3aq43 fert_any
+{res}{txt}
+{com}.         rename          s3aq45 kilo_fert
+{res}{txt}
+{com}.         rename          s3aq49 pesticide_any
+{res}{txt}
+{com}.         label           define pesticide_anyl 1 "Yes" 2 "No"
+{txt}
+{com}.         label           values pesticide_any pesticide_anyl
+{txt}
+{com}. 
+. *       labor inputs
+.         egen            hh_labor_days = rsum(s3aq61_1 s3aq61_2 s3aq61_3 s3aq61_4 s3aq61_5 s3aq61_6 s3aq61_7 ///
+>                                 s3aq61_8 s3aq61_9 s3aq61_10 s3aq61_11 s3aq61_12 s3aq61_13 s3aq61_14 s3aq61_15 s3aq61_16 ///
+>                                 s3aq61_17  s3aq61_18 s3aq61_19 s3aq61_20 s3aq61_21 s3aq61_22 s3aq61_23 s3aq61_24 s3aq61_25 ///
+>                                 s3aq61_26 s3aq61_27 s3aq61_28 s3aq61_29 s3aq61_30 s3aq61_31 s3aq61_32 s3aq61_33 s3aq61_34 ///
+>                                 s3aq61_35 s3aq61_36)
+{txt}
+{com}. 
+.         egen            hired_labor_days = rsum(s3aq63_1 s3aq63_2 s3aq63_4 s3aq63_5 s3aq63_7 s3aq63_8)
+{txt}
+{com}.  
+.         generate        labor_days = hh_labor_days + hired_labor_days
+{txt}
+{com}.         
+. * generate seasonal variable
+.         generate        season = 0
+{txt}
+{com}. 
+. * keep what we want, get rid of the rest
+.         keep            hhid plot_id status crop_code irrigated fert_any kilo_fert pesticide_any labor_days season plotnum
+{txt}
+{com}. 
+. *       Prepare for export
+. compress
+  {txt}variable {bf}labor_days{sf} was {bf}{res}float{sf}{txt} now {bf}{res}int{sf}
+  {txt}variable {bf}season{sf} was {bf}{res}float{sf}{txt} now {bf}{res}byte{sf}
+{txt}  (25,630 bytes saved)
+
+{com}. describe
+
+{txt}Contains data from {res}G:/My Drive/weather_project/household_data/tanzania/wave_1/raw/SEC_3A.dta
+{txt}  obs:{res}         5,126                          
+{txt} vars:{res}            11                          28 May 2011 14:43
+{txt}{hline}
+              storage   display    value
+variable name   type    format     label      variable label
+{hline}
+{p 0 48}{res}{bind:hhid           }{txt}{bind: str14   }{bind:{txt}%14s      }{space 1}{bind:         }{bind:  }{res}{res}Unique HH Identifier{p_end}
+{p 0 48}{bind:plotnum        }{txt}{bind: str3    }{bind:{txt}%9s       }{space 1}{bind:         }{bind:  }{res}{res}PLOT NUMBER{p_end}
+{p 0 48}{bind:status         }{txt}{bind: byte    }{bind:{txt}%10.0g    }{space 1}{bind:S3AQ3    }{bind:  }{res}{res}S3AQ3. Use of this plot during the LongRainy08{p_end}
+{p 0 48}{bind:crop_code      }{txt}{bind: int     }{bind:{txt}%27.0g    }{space 1}{txt}S3AQ5CODE{p_end}
+{p 0 48}{space 44}{bind:  }{res}{res}S3AQ5code. Main crop cultivated on this plot in LongRainy08?: CODE{p_end}
+{p 0 48}{bind:irrigated      }{txt}{bind: byte    }{bind:{txt}%8.0g     }{space 1}{bind:S3AQ15   }{bind:  }{res}{res}S3AQ15. Was this plot irrigated in LongRainy08?{p_end}
+{p 0 48}{bind:fert_any       }{txt}{bind: byte    }{bind:{txt}%8.0g     }{space 1}{bind:S3AQ43   }{bind:  }{res}{res}S3AQ43. Did you use any INORGANIC FERTILIZER on [PLOT] in LongRainy08?{p_end}
+{p 0 48}{bind:kilo_fert      }{txt}{bind: long    }{bind:{txt}%12.0g    }{space 1}{bind:         }{bind:  }{res}{res}S3AQ45. Quantity of inorganic fertilizer used{p_end}
+{p 0 48}{bind:pesticide_any  }{txt}{bind: byte    }{bind:{txt}%8.0g     }{space 1}{txt}pesticide_anyl{p_end}
+{p 0 48}{space 44}{bind:  }{res}{res}S3AQ49. Did you use any pesticide/ herbicide on [PLOT] in LongRainy08?{p_end}
+{p 0 48}{bind:plot_id        }{txt}{bind: str18   }{bind:{txt}%18s      }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{p 0 48}{bind:labor_days     }{txt}{bind: int     }{bind:{txt}%9.0g     }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{p 0 48}{bind:season         }{txt}{bind: byte    }{bind:{txt}%9.0g     }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{txt}{hline}
+Sorted by: {res}hhid  plotnum
+     Note: Dataset has changed since last saved.
+{txt}
+{com}. summarize 
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 8}hhid {c |}{res}          0
+{txt}{space 5}plotnum {c |}{res}          0
+{txt}{space 6}status {c |}{res}      5,126    1.434452    1.112718          1          6
+{txt}{space 3}crop_code {c |}{res}      4,187    27.59064    71.10733         11        998
+{txt}{space 3}irrigated {c |}{res}      4,252      1.9746    .1573546          1          2
+{txt}{hline 13}{c +}{hline 57}
+{space 4}fert_any {c |}{res}      4,185    1.891039     .311627          1          2
+{txt}{space 3}kilo_fert {c |}{res}        456    510.4605    7396.272          1     150000
+{txt}pesticide_~y {c |}{res}      4,185    1.892473     .309819          1          2
+{txt}{space 5}plot_id {c |}{res}          0
+{txt}{space 2}labor_days {c |}{res}      5,126     83.2382    105.3881          0       1363
+{txt}{hline 13}{c +}{hline 57}
+{space 6}season {c |}{res}      5,126           0           0          0          0
+{txt}
+{com}. sort plot_id
+{txt}
+{com}. customsave , idvar(plot_id) filename(AG_SEC3A.dta) path("$export") dofile(2008_AGSEC3A) user($user)
+ with do file 2008_AGSEC3A by user themacfreezie using computer Torbit
+
+{txt}
+{com}. 
+. * close the log
+.         log     close
+      {txt}name:  {res}<unnamed>
+       {txt}log:  {res}C:/Users/themacfreezie/git/weather_project/tanzania/household_code/logs/wv1_AGSEC3A.smcl
+  {txt}log type:  {res}smcl
+ {txt}closed on:  {res}10 May 2020, 23:41:01
+{txt}{.-}
+{smcl}
+{txt}{sf}{ul off}{smcl}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}C:/Users/themacfreezie/git/weather_project/tanzania/household_code/logs/wv1_AGSEC3A.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res}11 May 2020, 00:04:01
+{txt}
+{com}. 
+. 
+. **********************************************************************************
+. **      TZA 2008 (Wave 1) - Agriculture Section 3A 
+. **********************************************************************************
+. 
+. * load data
+.         use             "$root/SEC_3A", clear
+{txt}
+{com}. 
+. * renaming variables of interest
+.         generate        plot_id = hhid + " " + plotnum
+{txt}
+{com}.         isid            plot_id
+{txt}
+{com}. 
+. * renaming inputs
+.         rename          s3aq3 status
+{res}{txt}
+{com}.         rename          s3aq5code crop_code
+{res}{txt}
+{com}.         rename          s3aq15 irrigated 
+{res}{txt}
+{com}.         rename          s3aq43 fert_any
+{res}{txt}
+{com}.         rename          s3aq45 kilo_fert
+{res}{txt}
+{com}.         rename          s3aq49 pesticide_any
+{res}{txt}
+{com}.         label           define pesticide_anyl 1 "Yes" 2 "No"
+{txt}
+{com}.         label           values pesticide_any pesticide_anyl
+{txt}
+{com}. 
+. *       labor inputs
+.         egen            hh_labor_days = rsum(s3aq61_1 s3aq61_2 s3aq61_3 s3aq61_4 s3aq61_5 s3aq61_6 s3aq61_7 ///
+>                                 s3aq61_8 s3aq61_9 s3aq61_10 s3aq61_11 s3aq61_12 s3aq61_13 s3aq61_14 s3aq61_15 s3aq61_16 ///
+>                                 s3aq61_17  s3aq61_18 s3aq61_19 s3aq61_20 s3aq61_21 s3aq61_22 s3aq61_23 s3aq61_24 s3aq61_25 ///
+>                                 s3aq61_26 s3aq61_27 s3aq61_28 s3aq61_29 s3aq61_30 s3aq61_31 s3aq61_32 s3aq61_33 s3aq61_34 ///
+>                                 s3aq61_35 s3aq61_36)
+{txt}
+{com}. 
+.         egen            hired_labor_days = rsum(s3aq63_1 s3aq63_2 s3aq63_4 s3aq63_5 s3aq63_7 s3aq63_8)
+{txt}
+{com}.  
+.         generate        labor_days = hh_labor_days + hired_labor_days
+{txt}
+{com}.         
+. * generate seasonal variable
+.         generate        season = 0
+{txt}
+{com}. 
+. * keep what we want, get rid of the rest
+.         keep            hhid plot_id status crop_code irrigated fert_any kilo_fert pesticide_any labor_days season plotnum
+{txt}
+{com}. 
+. *       Prepare for export
+. compress
+  {txt}variable {bf}labor_days{sf} was {bf}{res}float{sf}{txt} now {bf}{res}int{sf}
+  {txt}variable {bf}season{sf} was {bf}{res}float{sf}{txt} now {bf}{res}byte{sf}
+{txt}  (25,630 bytes saved)
+
+{com}. describe
+
+{txt}Contains data from {res}G:/My Drive/weather_project/household_data/tanzania/wave_1/raw/SEC_3A.dta
+{txt}  obs:{res}         5,126                          
+{txt} vars:{res}            11                          28 May 2011 14:43
+{txt}{hline}
+              storage   display    value
+variable name   type    format     label      variable label
+{hline}
+{p 0 48}{res}{bind:hhid           }{txt}{bind: str14   }{bind:{txt}%14s      }{space 1}{bind:         }{bind:  }{res}{res}Unique HH Identifier{p_end}
+{p 0 48}{bind:plotnum        }{txt}{bind: str3    }{bind:{txt}%9s       }{space 1}{bind:         }{bind:  }{res}{res}PLOT NUMBER{p_end}
+{p 0 48}{bind:status         }{txt}{bind: byte    }{bind:{txt}%10.0g    }{space 1}{bind:S3AQ3    }{bind:  }{res}{res}S3AQ3. Use of this plot during the LongRainy08{p_end}
+{p 0 48}{bind:crop_code      }{txt}{bind: int     }{bind:{txt}%27.0g    }{space 1}{txt}S3AQ5CODE{p_end}
+{p 0 48}{space 44}{bind:  }{res}{res}S3AQ5code. Main crop cultivated on this plot in LongRainy08?: CODE{p_end}
+{p 0 48}{bind:irrigated      }{txt}{bind: byte    }{bind:{txt}%8.0g     }{space 1}{bind:S3AQ15   }{bind:  }{res}{res}S3AQ15. Was this plot irrigated in LongRainy08?{p_end}
+{p 0 48}{bind:fert_any       }{txt}{bind: byte    }{bind:{txt}%8.0g     }{space 1}{bind:S3AQ43   }{bind:  }{res}{res}S3AQ43. Did you use any INORGANIC FERTILIZER on [PLOT] in LongRainy08?{p_end}
+{p 0 48}{bind:kilo_fert      }{txt}{bind: long    }{bind:{txt}%12.0g    }{space 1}{bind:         }{bind:  }{res}{res}S3AQ45. Quantity of inorganic fertilizer used{p_end}
+{p 0 48}{bind:pesticide_any  }{txt}{bind: byte    }{bind:{txt}%8.0g     }{space 1}{txt}pesticide_anyl{p_end}
+{p 0 48}{space 44}{bind:  }{res}{res}S3AQ49. Did you use any pesticide/ herbicide on [PLOT] in LongRainy08?{p_end}
+{p 0 48}{bind:plot_id        }{txt}{bind: str18   }{bind:{txt}%18s      }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{p 0 48}{bind:labor_days     }{txt}{bind: int     }{bind:{txt}%9.0g     }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{p 0 48}{bind:season         }{txt}{bind: byte    }{bind:{txt}%9.0g     }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{txt}{hline}
+Sorted by: {res}hhid  plotnum
+     Note: Dataset has changed since last saved.
+{txt}
+{com}. summarize 
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 8}hhid {c |}{res}          0
+{txt}{space 5}plotnum {c |}{res}          0
+{txt}{space 6}status {c |}{res}      5,126    1.434452    1.112718          1          6
+{txt}{space 3}crop_code {c |}{res}      4,187    27.59064    71.10733         11        998
+{txt}{space 3}irrigated {c |}{res}      4,252      1.9746    .1573546          1          2
+{txt}{hline 13}{c +}{hline 57}
+{space 4}fert_any {c |}{res}      4,185    1.891039     .311627          1          2
+{txt}{space 3}kilo_fert {c |}{res}        456    510.4605    7396.272          1     150000
+{txt}pesticide_~y {c |}{res}      4,185    1.892473     .309819          1          2
+{txt}{space 5}plot_id {c |}{res}          0
+{txt}{space 2}labor_days {c |}{res}      5,126     83.2382    105.3881          0       1363
+{txt}{hline 13}{c +}{hline 57}
+{space 6}season {c |}{res}      5,126           0           0          0          0
+{txt}
+{com}. sort plot_id
+{txt}
+{com}. customsave , idvar(plot_id) filename(AG_SEC3A.dta) path("$export") dofile(2008_AGSEC3A) user($user)
+ with do file 2008_AGSEC3A by user themacfreezie using computer Torbit
+
+{txt}
+{com}. 
+. * close the log
+.         log     close
+      {txt}name:  {res}<unnamed>
+       {txt}log:  {res}C:/Users/themacfreezie/git/weather_project/tanzania/household_code/logs/wv1_AGSEC3A.smcl
+  {txt}log type:  {res}smcl
+ {txt}closed on:  {res}11 May 2020, 00:04:02
+{txt}{.-}
+{smcl}
+{txt}{sf}{ul off}
