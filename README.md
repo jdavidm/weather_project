@@ -38,6 +38,8 @@ The code in `masterDoFile.do` (to be done) replicates
     1. `weather_command`
     2. `blindschemes`
     3. `estout`
+    4. `customsave`
+    5. `winsor2`
 
 
 #### Folder structure
