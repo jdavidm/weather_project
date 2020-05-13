@@ -10,8 +10,8 @@
 	* reads in Nigeria, WAVE 1, POST HARVEST, NGA SECTA3 AG 
 	* determines primary and secondary crops, cleans harvest (quantity, hecatres)
 	* converts to hectares and kilograms, as appropriate
-	* need to include conversion to Naria 
-	* maybe more who knows
+	* produces value of harvest (Naria) - need to include conversion to Naria 
+	* renames variables to align with standardization (see OSF)
 	* outputs clean data file ready for combination with wave 1 hh data
 
 * assumes
@@ -19,13 +19,9 @@
 	* harvconv.dta conversion file
 	* land_conversion.dta conversion file 
 	
-* other notes: 
-	* still includes some notes from Alison Conley's work in spring 2020
-	
 * TO DO:
-	* convert harvest quantities (???? - seems like this may be done - ????) and Naira to USD
-	* unsure - incomplete, runs but maybe not right? 
-	* clarify "does" section
+	* convert Naira to USD
+	* rename variables to be in line with standard practice in other rounds
 	
 * **********************************************************************
 * 0 - setup
@@ -55,7 +51,9 @@
 
 rename sa3q2 cropcode
 tab cropcode
-*main crop is "cassava old"
+*main crop is "cassava old" 
+*cassava is continuous cropping, so not using that as a main crop
+*going to use maize instead, which is second
 
 rename sa3q1 cropname
 
@@ -76,23 +74,6 @@ rename sa3q5b area_unit
 * define new paths for conversions	
 	loc root = "G:/My Drive/weather_project/household_data/nigeria/conversion_files/"
 
-merge m:1 zone using "`root'/land-conversion"
-* all matched
-drop _merge
-
-tab area_unit
-tab area_unit, nolabel
-*converting land area
-gen crop_area_hec = . 
-replace crop_area_hec = crop_area*heapcon if area_unit==1
-replace crop_area_hec = crop_area*ridgecon if area_unit==2
-replace crop_area_hec = crop_area*standcon if area_unit==3
-replace crop_area_hec = crop_area*plotcon if area_unit==4
-replace crop_area_hec = crop_area*acrecon if area_unit==5
-replace crop_area_hec = crop_area*sqmcon if area_unit==7
-replace crop_area_hec = crop_area if area_unit == 6
-label variable crop_area_hec "land area of crop harvested since last unit, converted to hectares"
-
 *units of harvest
 rename sa3q6b harv_unit
 tab harv_unit
@@ -100,7 +81,10 @@ tab harv_unit, nolabel
 
 merge m:1 cropcode harv_unit using "`root'/harvconv"
 *matched 9,917 but didn't match 5,212 (from master 3,101 and using 2,111)
+*drop these unmatched - either not producing or coming from merge conversion file 
 *values not matched from master usually had issue which prevented harvest e.g. lost crop
+keep if _merge == 3
+drop _merge
 
 *we will also use this measure to get yield
 gen harvestq = sa3q6a
@@ -115,23 +99,23 @@ order harvestq harv_unit harv_conversion harv_kg
 
 rename sa3q3 cultivated
 
+gen cp_hrv = harv_kg if cropcode == 1080 
+
 * **********************************************************************
-* 3 - conversion factors - Naria to USD
+* 3 - value of harvest 
 * **********************************************************************
 *STILL NEEDS TO BE CONVERTED TO USD
 
 gen crop_value = sa3q18
 label variable crop_value "if you had sold all crop harvested since the last visit, what would be the total value in Naira?"
-
+rename crop_value tf_hrv 
 
 * **********************************************************************
-* 4 - end matter, clean up to save
+* 4 - end matter, collapse, clean up to save
 * **********************************************************************
 
-
-drop _merge
-
-keep zone ///
+keep hhid ///
+zone ///
 state ///
 lga ///
 sector ///
@@ -140,15 +124,8 @@ ea ///
 plotid ///
 cropid ///
 cropcode ///
-crop_area ///
-area_unit ///
-harvestq ///
-harv_unit ///
-cultivated ///
-crop_value ///
-harvestq ///
-harv_conversion ///
-harv_kg ///
+cp_hrv ///
+tf_hrv ///
 
 compress
 describe
@@ -157,10 +134,7 @@ summarize
 * save file
 		customsave , idvar(hhid) filename("ph_secta3.dta") ///
 			path("`export'/`folder'") dofile(ph_secta3) user($user)
-			
-			*2111 observation(s) are missing the ID variable hhid.
-
-			
+						
 * close the log
 	log	close
 

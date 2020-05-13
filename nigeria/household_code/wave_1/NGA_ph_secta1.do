@@ -5,10 +5,9 @@
 
 * does
 	* reads in Nigeria, WAVE 1 POST HARVEST, NGA SECTA1 AG
+	* DRY SEASON FILE - drop from analysis due to no production of anything but cassava (effecitvely)
 	* determines primary and secondary crops, cleans production (quantity, hecatres)
 	* converts to hectares and kilograms, as appropriate
-	* maybe more who knows
-	* outputs clean data file ready for combination with wave 1 hh data
 
 * assumes
 	* customsave.ado
@@ -19,8 +18,7 @@
 	* still includes some notes from Alison Conley's work in spring 2020
 	
 * TO DO:
-	* unsure - incomplete, runs but maybe not right? 
-	* clarify "does" section
+	* complete 
 
 * **********************************************************************
 * 0 - setup
@@ -54,9 +52,6 @@ describe
 sort hhid plotid
 isid hhid plotid, missok
 
-gen plot_mgr = sa1q2
-label variable plot_mgr "who manages this plot?"
-
 rename sa1q3 new_plot
 label variable new_plot "is this a new plot?"
 
@@ -70,14 +65,10 @@ label variable plot_size_GPS "GPS measure in square meters"
 gen plot_label = sa1q10c
 label variable plot_label "save plot label as household number and plotid"
 
-gen plot_owner = sa1q14
-label variable plot_owner "who is the owner of this plot? hhid"
-
-rename sa1q23 transfer_mgr
-label variable transfer_mgr "has the manager of this plot changed since the last interview?"
-
 rename sa1q26 planted
 label variable planted "did you plant any crops on this plot during the dry season (since the last interview)?"
+
+*MAIN CROP 
 
 rename sa1q27 main_crop
 label variable main_crop "what crop did you mainly plant on this plot during the dry season?"
@@ -99,6 +90,8 @@ rename sa1q31a harvestq_1
 
 *first unit given for main crop 
 generate harv1_unit = sa1q31b
+
+*SECONDARY CROP
 
 *the secondary crop harvested
 rename sa1q33 secondcrop
