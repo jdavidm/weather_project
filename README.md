@@ -56,20 +56,16 @@ weather_project
 │    
 ├────country             /* one dir for each country */
 │    ├──household_code
-│    │  ├──wave          /* one dir for each wave */
-│    │  └──logs
+│    │  └──wave          /* one dir for each wave */
 │    ├──weather_code
-│    │  ├──wave          /* one dir for each wave */
-│    │  └──logs
+│    │  └──wave          /* one dir for each wave */
 │    ├──regression_code
-│    │  └──logs
 │    └──output
 │       ├──tables
 │       └──figures
 │
 │────Analysis            /* overall analysis */
 │    ├──code
-│    │  └──logs
 │    └──output
 │       ├──tables
 │       └──figures
