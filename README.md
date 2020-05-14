@@ -20,6 +20,7 @@ Contributors:
 * Siobhan Murray
 * Brian McGreal
 * Alison Conley
+* Emil Kee-Tui
 
 As described in more detail below, scripts various
 go through each step, from cleaning raw data to analysis.
