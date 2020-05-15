@@ -5,20 +5,14 @@
 
 * does
 	* reads in Nigeria, WAVE 1 POST PLANTING, NIGERIA SECT 11B AG
-	* determines if plot is cultivated
 	* determines if plot is irrigated
-	* maybe more who knows
 	* outputs clean data file ready for combination with wave 1 hh data
 
 * assumes
 	* customsave.ado
 	
-* other notes: 
-	* still includes some notes from Alison Conley's work in spring 2020
-	
 * TO DO:
-	* unsure - incomplete, runs but maybe not right? 
-	* clarify "does" section
+	* complete 
 
 * **********************************************************************
 * 0 - setup
@@ -54,13 +48,16 @@ label variable cultivated_plot "since beginning of year did anyone in hh cultiva
 
 generate irrigated = s11bq24
 label variable irrigated "is this plot irrigated?"
+replace irrigated = 0 if irrigated == 1
+replace irrigated = 1 if irrigated == 2
 
 * **********************************************************************
 * 2 - end matter, clean up to save
 * **********************************************************************
 
 
-keep zone ///
+keep hhid ///
+zone ///
 state ///
 lga ///
 ea ///

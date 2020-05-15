@@ -28,7 +28,7 @@
 	loc logout = "G:/My Drive/weather_project/household_data/nigeria/logs"
 
 * close log (in case still open)
-	log close
+	*log close
 	
 * open log	
 	log using "`logout'/create_yld", append
@@ -47,7 +47,7 @@
 	***not matched - using 88, master 940
 sort _merge
 	***umatched master 940 observations with some plotsize but maybe did not produce - or had no output in the rainy season
-	***unmatched user no plot size reported - unclear why ... but not very many...
+	***unmatched user no plot size reported - unclear why no plot size reported... but not very many...
 keep if _merge == 3
 drop _merge
 
