@@ -72,7 +72,20 @@
 		
 		rename		rsmz_irrigationany cp_irr
 		lab var		cp_irr "Irrigation for maize (=1)"
-	
+
+	* conver kwacha into 2010 USD
+	* exchange rates come from world_bank_exchange_rates.xlsx
+		replace		rs_harvest_valueimp = rs_harvest_valueimp/124.3845647 ///
+											if year == 2008
+		replace		rs_harvest_valueimp = rs_harvest_valueimp/134.2107246 ///
+											if year == 2009
+		replace		rs_harvest_valueimp = rs_harvest_valueimp/201.9788745 ///
+											if year == 2012
+		replace		rs_harvest_valueimp = rs_harvest_valueimp/310.8160671 ///
+											if year == 2014
+		replace		rs_harvest_valueimp = rs_harvest_valueimp/374.6410851 ///
+											if year == 2015
+		
 	* create or rename variables for total farm production (seed rate mising)
 		rename		rs_harvest_valueimp tf_hrv
 		lab var 	tf_hrv "Harvest of all crops (2010 USD)"
@@ -116,11 +129,7 @@
 		label val 	dtype dtype
 
 	* drop temperature bins (for now)
-		drop		if varname = "v23*"
-		drop		if varname = "v24*"
-		drop		if varname = "v25*"
-		drop		if varname = "v26*"
-		drop		if varname = "v27*"
+		drop		v23* v24* v25* v26* v27*
 		
 	* create locals for sets of variables
 		loc		output		tf_yld cp_yld
@@ -147,12 +156,9 @@
 * 2 - regressions on weather data
 * **********************************************************************
 
-* set panel as **cluster**
-	xtset		case_id
-
 * create locals for total farm and just for maize
-	loc 	inputscp 	cp_lab cp_frt cp_pst cp_hrb cp_irr
-	loc		inputstf 	tf_lab tf_frt tf_pst tf_hrb tf_irr
+	loc 	inputscp 	lncp_lab lncp_frt cp_pst cp_hrb cp_irr
+	loc		inputstf 	lntf_lab lntf_frt tf_pst tf_hrb tf_irr
 	loc		weather 	v*
 
 * create file to post results to
@@ -165,6 +171,20 @@
 levelsof 	dtype		, local(levels)
 foreach l of local levels {
 	
+	* set panel id so it varies by dtype
+		if 		dtype == 0 {
+					xtset		case_id
+					loc			hhid case_id
+			else if		dtype == 1 {
+					xtset		lpid
+					loc			hhid lpid
+			}
+			else if		dtype == 2 {
+					xtset		spid
+					loc			hhid spid
+			}
+		}
+	
 	* rainfall			
 		foreach 	v of varlist `weather' { 
 
@@ -176,37 +196,37 @@ foreach l of local levels {
 		* 2.1: Value of Harvest
 		
 		* weather
-			qui: reg 	tf_yld `v' if dtype == `l', vce(cluster case_id)
+			reg 		lntf_yld `v' if dtype == `l', vce(cluster `hhid')
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("tf") ("reg1") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 
 		* weather and fe	
-			qui: xtreg 	tf_yld `v' i.intyear if dtype == `l', fe vce(cluster case_id)
+			xtreg 		lntf_yld `v' i.intyear if dtype == `l', fe vce(cluster `hhid')
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("tf") ("reg2") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 
 		* weather and inputs and fe
-			qui: xtreg 	tf_yld `v' `inputsrs' i.year if dtype == `l', fe vce(cluster case_id)
+			xtreg 		lntf_yld `v' `inputsrs' i.year if dtype == `l', fe vce(cluster `hhid')
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("tf") ("reg3") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 			
 		* weather and squared weather
-			qui: reg 	tf_yld c.`v'##c.`v' if dtype == `l', vce(cluster case_id)
+			reg 		lntf_yld c.`v'##c.`v' if dtype == `l', vce(cluster case_id)
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("tf") ("reg4") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 		
 		* weather and squared weather and fe
-			qui: xtreg 	tf_yld c.`v'##c.`v' i.year if dtype == `l', fe vce(cluster case_id)
+			xtreg 		lntf_yld c.`v'##c.`v' i.year if dtype == `l', fe vce(cluster `hhid')
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("tf") ("reg5") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 		
 		* weather and squared weather and inputs and fe
-			qui: xtreg 	tf_yld c.`v'##c.`v' `inputsrs' i.year if dtype == `l', fe vce(cluster case_id)
+			xtreg 		lntf_yld c.`v'##c.`v' `inputsrs' i.year if dtype == `l', fe vce(cluster `hhid')
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("tf") ("reg6") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
@@ -214,37 +234,37 @@ foreach l of local levels {
 		* 2.2: Quantity of Maize
 		
 		* weather
-			qui: reg 	cp_yld `v' if dtype == `l', vce(cluster case_id)
+			reg 		lncp_yld `v' if dtype == `l', vce(cluster `hhid')
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("cp") ("reg1") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 
 		* weather and fe	
-			qui: xtreg 	cp_yld `v' i.intyear if dtype == `l', fe vce(cluster case_id)
+			xtreg 		lncp_yld `v' i.intyear if dtype == `l', fe vce(cluster `hhid')
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("cp") ("reg2") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 
 		* weather and inputs and fe
-			qui: xtreg 	cp_yld `v' `inputsrs' i.year if dtype == `l', fe vce(cluster case_id)
+			xtreg 		lncp_yld `v' `inputsrs' i.year if dtype == `l', fe vce(cluster `hhid')
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("cp") ("reg3") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 			
 		* weather and squared weather
-			qui: reg 	cp_yld c.`v'##c.`v' if dtype == `l', vce(cluster case_id)
+			reg 		lncp_yld c.`v'##c.`v' if dtype == `l', vce(cluster `hhid')
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("cp") ("reg4") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 		
 		* weather and squared weather and fe
-			qui: xtreg 	cp_yld c.`v'##c.`v' i.year if dtype == `l', fe vce(cluster case_id)
+			xtreg 		lncp_yld c.`v'##c.`v' i.year if dtype == `l', fe vce(cluster `hhid')
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("cp") ("reg5") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 		
 		* weather and squared weather and inputs and fe
-			qui: xtreg 	cp_yld c.`v'##c.`v' `inputsrs' i.year if dtype == `l', fe vce(cluster case_id)
+			xtreg 		lncp_yld c.`v'##c.`v' `inputsrs' i.year if dtype == `l', fe vce(cluster `hhid')
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("cp") ("reg6") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')

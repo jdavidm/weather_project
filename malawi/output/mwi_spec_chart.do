@@ -103,7 +103,7 @@
 	 
 
 	scatter k1 k2 k3 k4 k5  sk, msize(vtiny vtiny vtiny vtiny vtiny vtiny) title("$title") ///
-			xlab(0(1000)72) xsize(10) ysize(6) ylab(0(1)$gheight ) ylabel( , angle(0) labsize(tiny) tstyle(notick)) legend(off)  || ///
+			xlab(0(1000)10080) xsize(10) ysize(6) ylab(0(1)$gheight ) ylabel( , angle(0) labsize(tiny) tstyle(notick)) legend(off)  || ///
 	scatter b_ns  sk, yaxis(2) mcolor(eltblue) msize(vtiny) ytitle("{bf:% difference}",axis(2) placement(north)) 	|| ///
 	scatter b_sig sk,yaxis(2) mcolor(black) msize(vtiny)  ylab(, axis(2) labsize(tiny) angle(0) ) yscale(range($from_y $bmax) axis(2)) ///
 		yline(0, axis(2) lw(thin) lcolor(gray))  yline(3 4 11 12 23 24 31 32 47 48, lw(thick) lcolor(white) lpattern(solid)) ///

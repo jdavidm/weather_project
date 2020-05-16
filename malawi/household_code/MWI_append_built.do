@@ -15,6 +15,7 @@
 * assumes
 	* all Malawi data has been cleaned and merged with rainfall
 	* customsave.ado
+	* xfill.ado
 
 * TO DO:
 	* complete
@@ -103,6 +104,9 @@
 	drop		dup
 
 * create household, country, and data identifiers
+	egen		spid = group(case_id)
+	lab var		spid "Short panel household id"
+	
 	egen		sp_id = seq()
 	lab var		sp_id "Short panel unique id"
 
@@ -120,7 +124,7 @@
 	
 * order variables
 	order		country dtype region district urban ta strata cluster ///
-				ea_id sp_id case_id y2_hhid hhweight
+				ea_id spid sp_id case_id y2_hhid hhweight
 	
 * save file
 	qui: compress
@@ -135,15 +139,27 @@
 * import the first long panel file
 	use 		"`root'/wave_1/lp1_merged.dta", clear
 
-* append the second and third long panel file
+* append the second long panel file
 	append		using "`root'/wave_2/lp2_merged.dta", force	
-	append		using "`root'/wave_4/lp3_merged.dta", force	
-
+	
 * reformat case_id
 	format %15.0g case_id
+	
+* create household panel id for lp1 and lp2 using case_id
+	egen		lpid = group(case_id)
+	lab var		lpid "Long panel household id"	
+	
+* append the third long panel file	
+	append		using "`root'/wave_4/lp3_merged.dta", force	
 
+* fill in missing lpid for third long panel using y2_hhid
+	egen		aux_id = group(y2_hhid)
+	xtset 		aux_id
+	xfill 		lpid if aux_id != ., i(aux_id)
+	drop		aux_id
+	
 * drop split-off households, keep only original households
-	duplicates 	tag case_id year, generate(dup)
+	duplicates 	tag lpid year, generate(dup)
 	drop if		dup > 0 & mover_R1R2R3 == 1
 	drop		dup
 	duplicates 	tag case_id year, generate(dup)
@@ -155,7 +171,7 @@
 	drop		dup
 
 * create household, country, and data identifiers
-	sort		case_id year
+	sort		lpid year
 	egen		lp_id = seq()
 	lab var		lp_id "Long panel unique id"
 
@@ -175,7 +191,7 @@
 	
 * order variables
 	order		country dtype region district urban ta strata cluster ///
-				ea_id lp_id case_id y2_hhid y3_hhid hhweight
+				ea_id lpid lp_id case_id y2_hhid y3_hhid hhweight
 	
 * save file
 	qui: compress
@@ -192,7 +208,10 @@
 * append the two panel files
 	append		using "`export'/mwi_sp.dta", force	
 	append		using "`export'/mwi_lp.dta", force	
-	
+
+* order variables
+	order		country dtype region district urban ta strata cluster ///
+				ea_id case_id spid- y3_hhid hhweight	
 * save file
 	qui: compress
 	customsave 	, idvarname(case_id) filename("mwi_complete.dta") ///
