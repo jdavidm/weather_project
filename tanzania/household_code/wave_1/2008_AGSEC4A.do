@@ -67,7 +67,7 @@
 	rename 		s4aq15 wgt_hvsted
 	label 		variable wgt_hvsted "What was the quanitity harvested? (kg)"
 	rename 		s4aq20 value_seed_purch
-	generate 	season = 1
+	generate 	season = 0
 * see if you can find quantity purchased and quantity of old seeds used to derive total value seeds used
 
 * keep what we want, get rid of what we don't

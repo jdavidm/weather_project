@@ -69,7 +69,7 @@
 	generate 	labor_days = hh_labor_days + hired_labor_days
 	
 * generate seasonal variable
-	generate 	season = 0
+	generate 	season = 1
 
 * keep what we want, get rid of the rest
 	keep 		hhid plot_id status crop_code irrigated fert_any kilo_fert ///

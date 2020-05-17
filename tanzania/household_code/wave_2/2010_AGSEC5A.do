@@ -57,7 +57,7 @@
 	label 		variable price "Price per kg"
 
 *generate seasonal variable
-	generate 	season = 1	
+	generate 	season = 0	
 	
 * keep what we want, get rid of what we don't
 	keep 		hhid crop_code wgt_sold value_sold crop_id price season
