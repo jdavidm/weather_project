@@ -1886,3 +1886,124 @@ value_seed~h {c |}{res}        750    6827.427    9413.749        100     120000
 {txt}end of do-file
 
 {com}. exit, clear
+{smcl}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}C:/Users/themacfreezie/git/weather_project/tanzania/household_code/logs/wv1_AGSEC5B.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res}17 May 2020, 15:55:30
+{txt}
+{com}. 
+. 
+. **********************************************************************************
+. **      TZA 2008 (Wave 1) - Agriculture Section 5B 
+. **********************************************************************************
+. 
+. * load data
+.         use             "$root/SEC_5B", clear
+{txt}
+{com}. 
+. * rename variables of interest
+.         rename          zaocode crop_code
+{res}{txt}
+{com}. 
+. * generate unique ob id
+.         tostring                        crop_code, generate(crop_num)
+{txt}crop_num generated as {res:str3}
+
+{com}.         gen str20                       crop_id = hhid + " " + crop_num
+{txt}
+{com}.         duplicates report       crop_id
+
+{p 0 4}{txt}Duplicates in terms of {res} crop_id{p_end}
+
+{txt}{hline 10}{c TT}{hline 27}
+   copies {c |} observations       surplus
+{hline 10}{c +}{hline 27}
+        1 {c |}         {res}1029             0
+{txt}{hline 10}{c BT}{hline 27}
+
+{com}. * no duplicates
+. *       duplicates drop         crop_id, force
+.         isid                            crop_id
+{txt}
+{com}. 
+. * renaming sales variables
+.         rename          s5bq2 wgt_sold
+{res}{txt}
+{com}.         label           variable wgt_sold "What was the quanitity sold? (kg)"
+{txt}
+{com}.         rename          s5bq3 value_sold
+{res}{txt}
+{com}.         label           variable value_sold "What was the total value of the sales? (T-shillings)"
+{txt}
+{com}.         generate        price = value_sold/wgt_sold
+{txt}(791 missing values generated)
+
+{com}.         label           variable price "Price per kg"
+{txt}
+{com}. 
+. *generate seasonal variable
+.         generate        season = 1      
+{txt}
+{com}.         
+. * keep what we want, get rid of what we don't
+.         keep            hhid crop_code wgt_sold value_sold crop_id price season
+{txt}
+{com}. 
+. * prepare for export
+. compress
+  {txt}variable {bf}season{sf} was {bf}{res}float{sf}{txt} now {bf}{res}byte{sf}
+  {txt}variable {bf}crop_id{sf} was {bf}{res}str20{sf}{txt} now {bf}{res}str18{sf}
+{txt}  (5,145 bytes saved)
+
+{com}. describe
+
+{txt}Contains data from {res}G:/My Drive/weather_project/household_data/tanzania/wave_1/raw/SEC_5B.dta
+{txt}  obs:{res}         1,029                          
+{txt} vars:{res}             7                          28 May 2011 14:43
+{txt}{hline}
+              storage   display    value
+variable name   type    format     label      variable label
+{hline}
+{p 0 48}{res}{bind:hhid           }{txt}{bind: str14   }{bind:{txt}%14s      }{space 1}{bind:         }{bind:  }{res}{res}Unique HH Identifier{p_end}
+{p 0 48}{bind:crop_code      }{txt}{bind: int     }{bind:{txt}%27.0g    }{space 1}{txt}S5BZAOCODE{p_end}
+{p 0 48}{space 44}{bind:  }{res}{res}CROP ID{p_end}
+{p 0 48}{bind:wgt_sold       }{txt}{bind: double  }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}What was the quanitity sold? (kg){p_end}
+{p 0 48}{bind:value_sold     }{txt}{bind: long    }{bind:{txt}%10.0g    }{space 1}{bind:         }{bind:  }{res}{res}What was the total value of the sales? (T-shillings){p_end}
+{p 0 48}{bind:crop_id        }{txt}{bind: str18   }{bind:{txt}%18s      }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{p 0 48}{bind:price          }{txt}{bind: float   }{bind:{txt}%9.0g     }{space 1}{bind:         }{bind:  }{res}{res}Price per kg{p_end}
+{p 0 48}{bind:season         }{txt}{bind: byte    }{bind:{txt}%9.0g     }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{txt}{hline}
+Sorted by: 
+{res}     Note: Dataset has changed since last saved.
+{txt}
+{com}. summarize 
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 8}hhid {c |}{res}          0
+{txt}{space 3}crop_code {c |}{res}      1,029    32.98445     82.2621         11        998
+{txt}{space 4}wgt_sold {c |}{res}        238    11192.56    30279.67        3.6     279000
+{txt}{space 2}value_sold {c |}{res}        238    127647.1    235212.4       1000    1430000
+{txt}{space 5}crop_id {c |}{res}          0
+{txt}{hline 13}{c +}{hline 57}
+{space 7}price {c |}{res}        238    279.1126    488.6343   .1666667   6203.704
+{txt}{space 6}season {c |}{res}      1,029           1           0          1          1
+{txt}
+{com}. sort crop_id
+{txt}
+{com}. customsave , idvar(crop_id) filename(AG_SEC5B.dta) path("$export") dofile(2008_AGSEC5B) user($user)
+ with do file 2008_AGSEC5B by user themacfreezie using computer Torbit
+
+{txt}
+{com}. 
+. * close the log
+.         log     close
+      {txt}name:  {res}<unnamed>
+       {txt}log:  {res}C:/Users/themacfreezie/git/weather_project/tanzania/household_code/logs/wv1_AGSEC5B.smcl
+  {txt}log type:  {res}smcl
+ {txt}closed on:  {res}17 May 2020, 15:55:31
+{txt}{.-}
+{smcl}
+{txt}{sf}{ul off}
