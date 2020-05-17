@@ -118,6 +118,7 @@
 	drop 		reg_num dist_num
 	
 * impute missing + irregular plot sizes using predictive mean matching
+* including plotsize_self as control
 	mi set 		wide 	// declare the data to be wide.
 	mi xtset, clear 	// this is a precautinary step to clear any xtset that the analyst may have had in place previously
 	mi register	imputed plotsize_gps // identify plotsize_GPS as the variable being imputed
