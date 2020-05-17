@@ -1,0 +1,2939 @@
+{smcl}
+{txt}{sf}{ul off}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}C:/Users/themacfreezie/git/weather_project/tanzania/household_code/logs/wv2_AGSEC2B.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res}17 May 2020, 01:02:22
+{txt}
+{com}. 
+. 
+. **********************************************************************************
+. **      TZA 2010 (Wave 2) - Agriculture Section 2B 
+. **********************************************************************************
+. 
+. * load data
+.         use             "$root/AG_SEC2B", clear
+{txt}
+{com}. 
+{txt}end of do-file
+
+{com}. do "C:\Users\THEMAC~1\AppData\Local\Temp\STD3114_000000.tmp"
+{txt}
+{com}. * load data
+.         use             "$root/AG_SEC2B", clear
+{txt}
+{com}. 
+. * rename variables of interest
+.         rename          y2_hhid hhid
+{res}{txt}
+{com}.         rename          ag2b_15 plotsize_self_ac
+{res}{txt}
+{com}.         rename          ag2b_20 plotsize_gps_ac
+{res}{txt}
+{com}.         
+. * convert from acres to hectares
+.         generate        plotsize_self = plotsize_self_ac * 0.404686
+{txt}
+{com}.         label           var plotsize_self "Self-reported Area (Hectares)"
+{txt}
+{com}.         generate        plotsize_gps = plotsize_gps_ac * 0.404686
+{txt}(22 missing values generated)
+
+{com}.         label           var plotsize_gps "GPS Measured Area (Hectares)"
+{txt}
+{com}.         drop            plotsize_gps_ac plotsize_self_ac
+{txt}
+{com}. 
+. * generate unique ob id
+.         generate        plot_id = hhid + " " + plotnum
+{txt}
+{com}.         isid            plot_id 
+{txt}
+{com}.         
+. * must merge in regional identifiers from 2008_HHSECA to impute
+.         merge           m:1 hhid using "$export/HH_SECA"
+{res}
+{txt}{col 5}Result{col 38}# of obs.
+{col 5}{hline 41}
+{col 5}not matched{col 30}{res}           3,891
+{txt}{col 9}from master{col 30}{res}               0{txt}  (_merge==1)
+{col 9}from using{col 30}{res}           3,891{txt}  (_merge==2)
+
+{col 5}matched{col 30}{res}              38{txt}  (_merge==3)
+{col 5}{hline 41}
+
+{com}.         tab                     _merge
+
+                 {txt}_merge {c |}      Freq.     Percent        Cum.
+{hline 24}{c +}{hline 35}
+         using only (2) {c |}{res}      3,891       99.03       99.03
+{txt}            matched (3) {c |}{res}         38        0.97      100.00
+{txt}{hline 24}{c +}{hline 35}
+                  Total {c |}{res}      3,929      100.00
+{txt}
+{com}. 
+{txt}end of do-file
+
+{com}. do "C:\Users\THEMAC~1\AppData\Local\Temp\STD3114_000000.tmp"
+{txt}
+{com}. 
+. * load data
+.         use             "$root/AG_SEC2B", clear
+{txt}
+{com}. 
+{txt}end of do-file
+
+{com}. do "C:\Users\THEMAC~1\AppData\Local\Temp\STD3114_000000.tmp"
+{txt}
+{com}. * load data
+.         use             "$root/AG_SEC2B", clear
+{txt}
+{com}. 
+. * rename variables of interest
+.         rename          y2_hhid hhid
+{res}{txt}
+{com}.         rename          ag2b_15 plotsize_self_ac
+{res}{txt}
+{com}.         rename          ag2b_20 plotsize_gps_ac
+{res}{txt}
+{com}.         
+. * convert from acres to hectares
+.         generate        plotsize_self = plotsize_self_ac * 0.404686
+{txt}
+{com}.         label           var plotsize_self "Self-reported Area (Hectares)"
+{txt}
+{com}.         generate        plotsize_gps = plotsize_gps_ac * 0.404686
+{txt}(22 missing values generated)
+
+{com}.         label           var plotsize_gps "GPS Measured Area (Hectares)"
+{txt}
+{com}.         drop            plotsize_gps_ac plotsize_self_ac
+{txt}
+{com}. 
+. * generate unique ob id
+.         generate        plot_id = hhid + " " + plotnum
+{txt}
+{com}.         isid            plot_id 
+{txt}
+{com}.         
+. * must merge in regional identifiers from 2008_HHSECA to impute
+.         merge           m:1 hhid using "$export/HH_SECA"
+{res}
+{txt}{col 5}Result{col 38}# of obs.
+{col 5}{hline 41}
+{col 5}not matched{col 30}{res}           3,891
+{txt}{col 9}from master{col 30}{res}               0{txt}  (_merge==1)
+{col 9}from using{col 30}{res}           3,891{txt}  (_merge==2)
+
+{col 5}matched{col 30}{res}              38{txt}  (_merge==3)
+{col 5}{hline 41}
+
+{com}.         tab                     _merge
+
+                 {txt}_merge {c |}      Freq.     Percent        Cum.
+{hline 24}{c +}{hline 35}
+         using only (2) {c |}{res}      3,891       99.03       99.03
+{txt}            matched (3) {c |}{res}         38        0.97      100.00
+{txt}{hline 24}{c +}{hline 35}
+                  Total {c |}{res}      3,929      100.00
+{txt}
+{com}.  *** all obs in master are matched
+.         drop            if _merge == 2
+{txt}(3,891 observations deleted)
+
+{com}.         drop            _merge
+{txt}
+{com}. * interrogating regional identifiers
+.         sort            region
+{txt}
+{com}.         by region:      distinct district
+
+{txt}{hline}
+-> region = 3
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        4          2
+
+{txt}{hline}
+-> region = 6
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        1          1
+
+{txt}{hline}
+-> region = 7
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        6          3
+
+{txt}{hline}
+-> region = 12
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        2          1
+
+{txt}{hline}
+-> region = 13
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        1          1
+
+{txt}{hline}
+-> region = 16
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        1          1
+
+{txt}{hline}
+-> region = 17
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}       12          5
+
+{txt}{hline}
+-> region = 18
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        6          3
+
+{txt}{hline}
+-> region = 19
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        2          2
+
+{txt}{hline}
+-> region = 20
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        2          1
+
+{txt}{hline}
+-> region = 53
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        1          1
+{txt}
+{com}.  *** 129 distinct districts
+. * unique district id
+.         tostring        region, generate(reg_num) 
+{txt}reg_num generated as {res:str2}
+
+{com}.         tostring        district, generate(dist_num)
+{txt}dist_num generated as {res:str1}
+
+{com}.         generate        uq_dist = reg_num + dist_num
+{txt}
+{com}.         distinct        uq_dist
+
+{txt}{col 10}{c |}        Observations
+{col 10}{c |}      total   distinct
+{hline 9}{c +}{hline 22}
+ uq_dist {c |}  {res}       38         21
+{txt}
+{com}. 
+{txt}end of do-file
+
+{com}. do "C:\Users\THEMAC~1\AppData\Local\Temp\STD3114_000000.tmp"
+{txt}
+{com}. * load data
+.         use             "$root/AG_SEC2B", clear
+{txt}
+{com}. 
+. * rename variables of interest
+.         rename          y2_hhid hhid
+{res}{txt}
+{com}.         rename          ag2b_15 plotsize_self_ac
+{res}{txt}
+{com}.         rename          ag2b_20 plotsize_gps_ac
+{res}{txt}
+{com}.         
+. * convert from acres to hectares
+.         generate        plotsize_self = plotsize_self_ac * 0.404686
+{txt}
+{com}.         label           var plotsize_self "Self-reported Area (Hectares)"
+{txt}
+{com}.         generate        plotsize_gps = plotsize_gps_ac * 0.404686
+{txt}(22 missing values generated)
+
+{com}.         label           var plotsize_gps "GPS Measured Area (Hectares)"
+{txt}
+{com}.         drop            plotsize_gps_ac plotsize_self_ac
+{txt}
+{com}. 
+. * generate unique ob id
+.         generate        plot_id = hhid + " " + plotnum
+{txt}
+{com}.         isid            plot_id 
+{txt}
+{com}.         
+. * must merge in regional identifiers from 2008_HHSECA to impute
+.         merge           m:1 hhid using "$export/HH_SECA"
+{res}
+{txt}{col 5}Result{col 38}# of obs.
+{col 5}{hline 41}
+{col 5}not matched{col 30}{res}           3,891
+{txt}{col 9}from master{col 30}{res}               0{txt}  (_merge==1)
+{col 9}from using{col 30}{res}           3,891{txt}  (_merge==2)
+
+{col 5}matched{col 30}{res}              38{txt}  (_merge==3)
+{col 5}{hline 41}
+
+{com}.         tab                     _merge
+
+                 {txt}_merge {c |}      Freq.     Percent        Cum.
+{hline 24}{c +}{hline 35}
+         using only (2) {c |}{res}      3,891       99.03       99.03
+{txt}            matched (3) {c |}{res}         38        0.97      100.00
+{txt}{hline 24}{c +}{hline 35}
+                  Total {c |}{res}      3,929      100.00
+{txt}
+{com}.  *** all obs in master are matched
+.         drop            if _merge == 2
+{txt}(3,891 observations deleted)
+
+{com}.         drop            _merge
+{txt}
+{com}. * interrogating regional identifiers
+.         sort            region
+{txt}
+{com}.         by region:      distinct district
+
+{txt}{hline}
+-> region = 3
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        4          2
+
+{txt}{hline}
+-> region = 6
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        1          1
+
+{txt}{hline}
+-> region = 7
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        6          3
+
+{txt}{hline}
+-> region = 12
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        2          1
+
+{txt}{hline}
+-> region = 13
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        1          1
+
+{txt}{hline}
+-> region = 16
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        1          1
+
+{txt}{hline}
+-> region = 17
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}       12          5
+
+{txt}{hline}
+-> region = 18
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        6          3
+
+{txt}{hline}
+-> region = 19
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        2          2
+
+{txt}{hline}
+-> region = 20
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        2          1
+
+{txt}{hline}
+-> region = 53
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        1          1
+{txt}
+{com}.  *** 21 distinct districts
+. * unique district id
+.         tostring        region, generate(reg_num) 
+{txt}reg_num generated as {res:str2}
+
+{com}.         tostring        district, generate(dist_num)
+{txt}dist_num generated as {res:str1}
+
+{com}.         generate        uq_dist = reg_num + dist_num
+{txt}
+{com}.         distinct        uq_dist
+
+{txt}{col 10}{c |}        Observations
+{col 10}{c |}      total   distinct
+{hline 9}{c +}{hline 22}
+ uq_dist {c |}  {res}       38         21
+{txt}
+{com}.         sort            region district
+{txt}
+{com}.         destring        uq_dist, replace
+{txt}uq_dist: all characters numeric; {res}replaced {txt}as {res}int
+{txt}
+{com}.  *** 21 once again, good deal
+.         drop            reg_num dist_num
+{txt}
+{com}. 
+{txt}end of do-file
+
+{com}. do "C:\Users\THEMAC~1\AppData\Local\Temp\STD3114_000000.tmp"
+{txt}
+{com}. * interrogating plotsize variables
+.         count           if plotsize_gps != . & plotsize_self != .
+  {res}16
+{txt}
+{com}.  *** 4,723 not mising, out of 6,038
+.         pwcorr          plotsize_gps plotsize_self
+
+             {txt}{c |} plotsi~s plotsi~f
+{hline 13}{c +}{hline 18}
+plotsize_gps {c |} {res}  1.0000 
+{txt}plotsize_s~f {c |} {res}  0.6565   1.0000 
+{txt}
+{com}. 
+{txt}end of do-file
+
+{com}. do "C:\Users\THEMAC~1\AppData\Local\Temp\STD3114_000000.tmp"
+{txt}
+{com}. * interrogating plotsize variables
+.         count           if plotsize_gps != . & plotsize_self != .
+  {res}16
+{txt}
+{com}.  *** 4,723 not mising, out of 6,038
+.         pwcorr          plotsize_gps plotsize_self
+
+             {txt}{c |} plotsi~s plotsi~f
+{hline 13}{c +}{hline 18}
+plotsize_gps {c |} {res}  1.0000 
+{txt}plotsize_s~f {c |} {res}  0.6565   1.0000 
+{txt}
+{com}.  *** decently high correlation (0.6565)
+. * inverstingating the high and low end of gps measurments
+.         * high end
+.                 tab                     plotsize_gps
+
+        {txt}GPS {c |}
+   Measured {c |}
+       Area {c |}
+ (Hectares) {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+    .056656 {c |}{res}          1        6.25        6.25
+{txt}   .1133121 {c |}{res}          1        6.25       12.50
+{txt}   .2185304 {c |}{res}          1        6.25       18.75
+{txt}   .2468585 {c |}{res}          1        6.25       25.00
+{txt}   .2792333 {c |}{res}          1        6.25       31.25
+{txt}   .2832802 {c |}{res}          1        6.25       37.50
+{txt}   .3075614 {c |}{res}          1        6.25       43.75
+{txt}   .4451546 {c |}{res}          1        6.25       50.00
+{txt}   .4937169 {c |}{res}          1        6.25       56.25
+{txt}   .5665604 {c |}{res}          1        6.25       62.50
+{txt}   .7284348 {c |}{res}          1        6.25       68.75
+{txt}   .8538874 {c |}{res}          1        6.25       75.00
+{txt}   .9510121 {c |}{res}          1        6.25       81.25
+{txt}   1.157402 {c |}{res}          1        6.25       87.50
+{txt}   7.741643 {c |}{res}          1        6.25       93.75
+{txt}   14.36635 {c |}{res}          1        6.25      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}         16      100.00
+{txt}
+{com}.                 histogram       plotsize_gps if plotsize_gps > 2
+{txt}(bin={res}1{txt}, start={res}7.741643{txt}, width={res}6.6247101{txt})
+{res}{txt}
+{com}.                 sum                     plotsize_gps, detail
+
+                {txt}GPS Measured Area (Hectares)
+{hline 61}
+      Percentiles      Smallest
+ 1%    {res}  .056656        .056656
+{txt} 5%    {res}  .056656       .1133121
+{txt}10%    {res} .1133121       .2185304       {txt}Obs         {res}         16
+{txt}25%    {res} .2630459       .2468585       {txt}Sum of Wgt. {res}         16
+
+{txt}50%    {res} .4694358                      {txt}Mean          {res}   1.8006
+                        {txt}Largest       Std. Dev.     {res} 3.821822
+{txt}75%    {res} .9024498       .9510121
+{txt}90%    {res} 7.741643       1.157402       {txt}Variance      {res} 14.60632
+{txt}95%    {res} 14.36635       7.741643       {txt}Skewness      {res} 2.659359
+{txt}99%    {res} 14.36635       14.36635       {txt}Kurtosis      {res} 8.744252
+{txt}
+{com}. 
+{txt}end of do-file
+
+{com}. do "C:\Users\THEMAC~1\AppData\Local\Temp\STD3114_000000.tmp"
+{txt}
+{com}.                 tab                     plotsize_gps
+
+        {txt}GPS {c |}
+   Measured {c |}
+       Area {c |}
+ (Hectares) {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+    .056656 {c |}{res}          1        6.25        6.25
+{txt}   .1133121 {c |}{res}          1        6.25       12.50
+{txt}   .2185304 {c |}{res}          1        6.25       18.75
+{txt}   .2468585 {c |}{res}          1        6.25       25.00
+{txt}   .2792333 {c |}{res}          1        6.25       31.25
+{txt}   .2832802 {c |}{res}          1        6.25       37.50
+{txt}   .3075614 {c |}{res}          1        6.25       43.75
+{txt}   .4451546 {c |}{res}          1        6.25       50.00
+{txt}   .4937169 {c |}{res}          1        6.25       56.25
+{txt}   .5665604 {c |}{res}          1        6.25       62.50
+{txt}   .7284348 {c |}{res}          1        6.25       68.75
+{txt}   .8538874 {c |}{res}          1        6.25       75.00
+{txt}   .9510121 {c |}{res}          1        6.25       81.25
+{txt}   1.157402 {c |}{res}          1        6.25       87.50
+{txt}   7.741643 {c |}{res}          1        6.25       93.75
+{txt}   14.36635 {c |}{res}          1        6.25      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}         16      100.00
+{txt}
+{com}.                 *histogram      plotsize_gps if plotsize_gps > 2
+.                 sum                     plotsize_gps, detail
+
+                {txt}GPS Measured Area (Hectares)
+{hline 61}
+      Percentiles      Smallest
+ 1%    {res}  .056656        .056656
+{txt} 5%    {res}  .056656       .1133121
+{txt}10%    {res} .1133121       .2185304       {txt}Obs         {res}         16
+{txt}25%    {res} .2630459       .2468585       {txt}Sum of Wgt. {res}         16
+
+{txt}50%    {res} .4694358                      {txt}Mean          {res}   1.8006
+                        {txt}Largest       Std. Dev.     {res} 3.821822
+{txt}75%    {res} .9024498       .9510121
+{txt}90%    {res} 7.741643       1.157402       {txt}Variance      {res} 14.60632
+{txt}95%    {res} 14.36635       7.741643       {txt}Skewness      {res} 2.659359
+{txt}99%    {res} 14.36635       14.36635       {txt}Kurtosis      {res} 8.744252
+{txt}
+{com}. 
+{txt}end of do-file
+
+{com}. do "C:\Users\THEMAC~1\AppData\Local\Temp\STD3114_000000.tmp"
+{txt}
+{com}.                 sort            plotsize_gps
+{txt}
+{com}.                 sum             plotsize_gps if plotsize_gps>7.7
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+plotsize_gps {c |}{res}          2      11.054    4.684377   7.741643   14.36635
+{txt}
+{com}. 
+{txt}end of do-file
+
+{com}. do "C:\Users\THEMAC~1\AppData\Local\Temp\STD3114_000000.tmp"
+{txt}
+{com}.                 list            plotsize_gps plotsize_self if plotsize_gps>7.7 & !missing(plotsize_gps), sep(0)
+{txt}
+     {c TLC}{hline 10}{c -}{hline 10}{c TRC}
+     {c |} {res}plotsi~s   plotsi~f {txt}{c |}
+     {c LT}{hline 10}{c -}{hline 10}{c RT}
+ 15. {c |} {res}7.741643   2.428116 {txt}{c |}
+ 16. {c |} {res}14.36635   1.214058 {txt}{c |}
+     {c BLC}{hline 10}{c -}{hline 10}{c BRC}
+
+{com}.                 pwcorr          plotsize_gps plotsize_self if plotsize_gps>7.7 & !missing(plotsize_gps)
+
+             {txt}{c |} plotsi~s plotsi~f
+{hline 13}{c +}{hline 18}
+plotsize_gps {c |} {res}  1.0000 
+{txt}plotsize_s~f {c |} {res} -1.0000   1.0000 
+{txt}
+{com}. 
+{txt}end of do-file
+
+{com}. do "C:\Users\THEMAC~1\AppData\Local\Temp\STD3114_000000.tmp"
+{txt}
+{com}.                 tab                     plotsize_gps
+
+        {txt}GPS {c |}
+   Measured {c |}
+       Area {c |}
+ (Hectares) {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+    .056656 {c |}{res}          1        6.25        6.25
+{txt}   .1133121 {c |}{res}          1        6.25       12.50
+{txt}   .2185304 {c |}{res}          1        6.25       18.75
+{txt}   .2468585 {c |}{res}          1        6.25       25.00
+{txt}   .2792333 {c |}{res}          1        6.25       31.25
+{txt}   .2832802 {c |}{res}          1        6.25       37.50
+{txt}   .3075614 {c |}{res}          1        6.25       43.75
+{txt}   .4451546 {c |}{res}          1        6.25       50.00
+{txt}   .4937169 {c |}{res}          1        6.25       56.25
+{txt}   .5665604 {c |}{res}          1        6.25       62.50
+{txt}   .7284348 {c |}{res}          1        6.25       68.75
+{txt}   .8538874 {c |}{res}          1        6.25       75.00
+{txt}   .9510121 {c |}{res}          1        6.25       81.25
+{txt}   1.157402 {c |}{res}          1        6.25       87.50
+{txt}   7.741643 {c |}{res}          1        6.25       93.75
+{txt}   14.36635 {c |}{res}          1        6.25      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}         16      100.00
+{txt}
+{com}. 
+{txt}end of do-file
+
+{com}. do "C:\Users\THEMAC~1\AppData\Local\Temp\STD3114_000000.tmp"
+{txt}
+{com}.         * high end
+.                 tab                     plotsize_gps
+
+        {txt}GPS {c |}
+   Measured {c |}
+       Area {c |}
+ (Hectares) {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+    .056656 {c |}{res}          1        6.25        6.25
+{txt}   .1133121 {c |}{res}          1        6.25       12.50
+{txt}   .2185304 {c |}{res}          1        6.25       18.75
+{txt}   .2468585 {c |}{res}          1        6.25       25.00
+{txt}   .2792333 {c |}{res}          1        6.25       31.25
+{txt}   .2832802 {c |}{res}          1        6.25       37.50
+{txt}   .3075614 {c |}{res}          1        6.25       43.75
+{txt}   .4451546 {c |}{res}          1        6.25       50.00
+{txt}   .4937169 {c |}{res}          1        6.25       56.25
+{txt}   .5665604 {c |}{res}          1        6.25       62.50
+{txt}   .7284348 {c |}{res}          1        6.25       68.75
+{txt}   .8538874 {c |}{res}          1        6.25       75.00
+{txt}   .9510121 {c |}{res}          1        6.25       81.25
+{txt}   1.157402 {c |}{res}          1        6.25       87.50
+{txt}   7.741643 {c |}{res}          1        6.25       93.75
+{txt}   14.36635 {c |}{res}          1        6.25      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}         16      100.00
+{txt}
+{com}.                 *histogram      plotsize_gps if plotsize_gps > 2
+.                 sum                     plotsize_gps, detail
+
+                {txt}GPS Measured Area (Hectares)
+{hline 61}
+      Percentiles      Smallest
+ 1%    {res}  .056656        .056656
+{txt} 5%    {res}  .056656       .1133121
+{txt}10%    {res} .1133121       .2185304       {txt}Obs         {res}         16
+{txt}25%    {res} .2630459       .2468585       {txt}Sum of Wgt. {res}         16
+
+{txt}50%    {res} .4694358                      {txt}Mean          {res}   1.8006
+                        {txt}Largest       Std. Dev.     {res} 3.821822
+{txt}75%    {res} .9024498       .9510121
+{txt}90%    {res} 7.741643       1.157402       {txt}Variance      {res} 14.60632
+{txt}95%    {res} 14.36635       7.741643       {txt}Skewness      {res} 2.659359
+{txt}99%    {res} 14.36635       14.36635       {txt}Kurtosis      {res} 8.744252
+{txt}
+{com}.          *** mean = 1.8
+.          *** 90% of obs < 7.7
+.                 sort            plotsize_gps
+{txt}
+{com}.                 sum             plotsize_gps if plotsize_gps>1.1
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+plotsize_gps {c |}{res}          3    7.755133    6.604486   1.157402   14.36635
+{txt}
+{com}.          *** 3 obs > 1.1
+.                 list            plotsize_gps plotsize_self if plotsize_gps>1.1 & !missing(plotsize_gps), sep(0)
+{txt}
+     {c TLC}{hline 10}{c -}{hline 10}{c TRC}
+     {c |} {res}plotsi~s   plotsi~f {txt}{c |}
+     {c LT}{hline 10}{c -}{hline 10}{c RT}
+ 14. {c |} {res}1.157402    .809372 {txt}{c |}
+ 15. {c |} {res}7.741643   2.428116 {txt}{c |}
+ 16. {c |} {res}14.36635   1.214058 {txt}{c |}
+     {c BLC}{hline 10}{c -}{hline 10}{c BRC}
+
+{com}.                 pwcorr          plotsize_gps plotsize_self if plotsize_gps>1.1 & !missing(plotsize_gps)
+
+             {txt}{c |} plotsi~s plotsi~f
+{hline 13}{c +}{hline 18}
+plotsize_gps {c |} {res}  1.0000 
+{txt}plotsize_s~f {c |} {res}  0.2385   1.0000 
+{txt}
+{com}.          *** corr = 0.6637 (still not terrible)
+. 
+{txt}end of do-file
+
+{com}. do "C:\Users\THEMAC~1\AppData\Local\Temp\STD3114_000000.tmp"
+{txt}
+{com}. * interrogating plotsize variables
+.         count           if plotsize_gps != . & plotsize_self != .
+  {res}16
+{txt}
+{com}.  *** 4,723 not mising, out of 6,038
+. 
+{txt}end of do-file
+
+{com}. do "C:\Users\THEMAC~1\AppData\Local\Temp\STD3114_000000.tmp"
+{txt}
+{com}.                 tab                     plotsize_gps
+
+        {txt}GPS {c |}
+   Measured {c |}
+       Area {c |}
+ (Hectares) {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+    .056656 {c |}{res}          1        6.25        6.25
+{txt}   .1133121 {c |}{res}          1        6.25       12.50
+{txt}   .2185304 {c |}{res}          1        6.25       18.75
+{txt}   .2468585 {c |}{res}          1        6.25       25.00
+{txt}   .2792333 {c |}{res}          1        6.25       31.25
+{txt}   .2832802 {c |}{res}          1        6.25       37.50
+{txt}   .3075614 {c |}{res}          1        6.25       43.75
+{txt}   .4451546 {c |}{res}          1        6.25       50.00
+{txt}   .4937169 {c |}{res}          1        6.25       56.25
+{txt}   .5665604 {c |}{res}          1        6.25       62.50
+{txt}   .7284348 {c |}{res}          1        6.25       68.75
+{txt}   .8538874 {c |}{res}          1        6.25       75.00
+{txt}   .9510121 {c |}{res}          1        6.25       81.25
+{txt}   1.157402 {c |}{res}          1        6.25       87.50
+{txt}   7.741643 {c |}{res}          1        6.25       93.75
+{txt}   14.36635 {c |}{res}          1        6.25      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}         16      100.00
+{txt}
+{com}. 
+{txt}end of do-file
+
+{com}. do "C:\Users\THEMAC~1\AppData\Local\Temp\STD3114_000000.tmp"
+{txt}
+{com}.                 list            plotsize_gps plotsize_self if plotsize_gps<7 & !missing(plotsize_gps), sep(0)
+{txt}
+     {c TLC}{hline 10}{c -}{hline 10}{c TRC}
+     {c |} {res}plotsi~s   plotsi~f {txt}{c |}
+     {c LT}{hline 10}{c -}{hline 10}{c RT}
+  1. {c |} {res} .056656   .1011715 {txt}{c |}
+  2. {c |} {res}.1133121    .202343 {txt}{c |}
+  3. {c |} {res}.2185304    .404686 {txt}{c |}
+  4. {c |} {res}.2468585   .1011715 {txt}{c |}
+  5. {c |} {res}.2792333   1.011715 {txt}{c |}
+  6. {c |} {res}.2832802    .404686 {txt}{c |}
+  7. {c |} {res}.3075614    .404686 {txt}{c |}
+  8. {c |} {res}.4451546    .404686 {txt}{c |}
+  9. {c |} {res}.4937169    .404686 {txt}{c |}
+ 10. {c |} {res}.5665604   .3237488 {txt}{c |}
+ 11. {c |} {res}.7284348    .607029 {txt}{c |}
+ 12. {c |} {res}.8538874    .809372 {txt}{c |}
+ 13. {c |} {res}.9510121    .809372 {txt}{c |}
+ 14. {c |} {res}1.157402    .809372 {txt}{c |}
+     {c BLC}{hline 10}{c -}{hline 10}{c BRC}
+
+{com}.                 pwcorr          plotsize_gps plotsize_self if plotsize_gps<7 & !missing(plotsize_gps)           
+
+             {txt}{c |} plotsi~s plotsi~f
+{hline 13}{c +}{hline 18}
+plotsize_gps {c |} {res}  1.0000 
+{txt}plotsize_s~f {c |} {res}  0.6645   1.0000 
+{txt}
+{com}. 
+{txt}end of do-file
+
+{com}. do "C:\Users\THEMAC~1\AppData\Local\Temp\STD3114_000000.tmp"
+{txt}
+{com}.         * low end
+.                 tab                     plotsize_gps
+
+        {txt}GPS {c |}
+   Measured {c |}
+       Area {c |}
+ (Hectares) {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+    .056656 {c |}{res}          1        6.25        6.25
+{txt}   .1133121 {c |}{res}          1        6.25       12.50
+{txt}   .2185304 {c |}{res}          1        6.25       18.75
+{txt}   .2468585 {c |}{res}          1        6.25       25.00
+{txt}   .2792333 {c |}{res}          1        6.25       31.25
+{txt}   .2832802 {c |}{res}          1        6.25       37.50
+{txt}   .3075614 {c |}{res}          1        6.25       43.75
+{txt}   .4451546 {c |}{res}          1        6.25       50.00
+{txt}   .4937169 {c |}{res}          1        6.25       56.25
+{txt}   .5665604 {c |}{res}          1        6.25       62.50
+{txt}   .7284348 {c |}{res}          1        6.25       68.75
+{txt}   .8538874 {c |}{res}          1        6.25       75.00
+{txt}   .9510121 {c |}{res}          1        6.25       81.25
+{txt}   1.157402 {c |}{res}          1        6.25       87.50
+{txt}   7.741643 {c |}{res}          1        6.25       93.75
+{txt}   14.36635 {c |}{res}          1        6.25      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}         16      100.00
+{txt}
+{com}.                 *histogram      plotsize_gps if plotsize_gps < 0.5
+.                 sum                     plotsize_gps, detail
+
+                {txt}GPS Measured Area (Hectares)
+{hline 61}
+      Percentiles      Smallest
+ 1%    {res}  .056656        .056656
+{txt} 5%    {res}  .056656       .1133121
+{txt}10%    {res} .1133121       .2185304       {txt}Obs         {res}         16
+{txt}25%    {res} .2630459       .2468585       {txt}Sum of Wgt. {res}         16
+
+{txt}50%    {res} .4694358                      {txt}Mean          {res}   1.8006
+                        {txt}Largest       Std. Dev.     {res} 3.821822
+{txt}75%    {res} .9024498       .9510121
+{txt}90%    {res} 7.741643       1.157402       {txt}Variance      {res} 14.60632
+{txt}95%    {res} 14.36635       7.741643       {txt}Skewness      {res} 2.659359
+{txt}99%    {res} 14.36635       14.36635       {txt}Kurtosis      {res} 8.744252
+{txt}
+{com}. 
+{txt}end of do-file
+
+{com}. do "C:\Users\THEMAC~1\AppData\Local\Temp\STD3114_000000.tmp"
+{txt}
+{com}.         * low end
+.                 tab                     plotsize_gps
+
+        {txt}GPS {c |}
+   Measured {c |}
+       Area {c |}
+ (Hectares) {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+    .056656 {c |}{res}          1        6.25        6.25
+{txt}   .1133121 {c |}{res}          1        6.25       12.50
+{txt}   .2185304 {c |}{res}          1        6.25       18.75
+{txt}   .2468585 {c |}{res}          1        6.25       25.00
+{txt}   .2792333 {c |}{res}          1        6.25       31.25
+{txt}   .2832802 {c |}{res}          1        6.25       37.50
+{txt}   .3075614 {c |}{res}          1        6.25       43.75
+{txt}   .4451546 {c |}{res}          1        6.25       50.00
+{txt}   .4937169 {c |}{res}          1        6.25       56.25
+{txt}   .5665604 {c |}{res}          1        6.25       62.50
+{txt}   .7284348 {c |}{res}          1        6.25       68.75
+{txt}   .8538874 {c |}{res}          1        6.25       75.00
+{txt}   .9510121 {c |}{res}          1        6.25       81.25
+{txt}   1.157402 {c |}{res}          1        6.25       87.50
+{txt}   7.741643 {c |}{res}          1        6.25       93.75
+{txt}   14.36635 {c |}{res}          1        6.25      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}         16      100.00
+{txt}
+{com}.                 *histogram      plotsize_gps if plotsize_gps < 0.5
+.                 sum                     plotsize_gps, detail
+
+                {txt}GPS Measured Area (Hectares)
+{hline 61}
+      Percentiles      Smallest
+ 1%    {res}  .056656        .056656
+{txt} 5%    {res}  .056656       .1133121
+{txt}10%    {res} .1133121       .2185304       {txt}Obs         {res}         16
+{txt}25%    {res} .2630459       .2468585       {txt}Sum of Wgt. {res}         16
+
+{txt}50%    {res} .4694358                      {txt}Mean          {res}   1.8006
+                        {txt}Largest       Std. Dev.     {res} 3.821822
+{txt}75%    {res} .9024498       .9510121
+{txt}90%    {res} 7.741643       1.157402       {txt}Variance      {res} 14.60632
+{txt}95%    {res} 14.36635       7.741643       {txt}Skewness      {res} 2.659359
+{txt}99%    {res} 14.36635       14.36635       {txt}Kurtosis      {res} 8.744252
+{txt}
+{com}.          *** mean = 1.8
+.          *** 3 obs < 0.22
+.                 sum             plotsize_gps if plotsize_gps<0.22
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+plotsize_gps {c |}{res}          3    .1294995    .0821423    .056656   .2185304
+{txt}
+{com}. 
+{txt}end of do-file
+
+{com}. do "C:\Users\THEMAC~1\AppData\Local\Temp\STD3114_000000.tmp"
+{txt}
+{com}.          *** 3 obs < 0.22
+.                 sum             plotsize_gps if plotsize_gps<0.22
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+plotsize_gps {c |}{res}          3    .1294995    .0821423    .056656   .2185304
+{txt}
+{com}.                 list            plotsize_gps plotsize_self if plotsize_gps<0.22 & !missing(plotsize_gps), sep(0)
+{txt}
+     {c TLC}{hline 10}{c -}{hline 10}{c TRC}
+     {c |} {res}plotsi~s   plotsi~f {txt}{c |}
+     {c LT}{hline 10}{c -}{hline 10}{c RT}
+  1. {c |} {res} .056656   .1011715 {txt}{c |}
+  2. {c |} {res}.1133121    .202343 {txt}{c |}
+  3. {c |} {res}.2185304    .404686 {txt}{c |}
+     {c BLC}{hline 10}{c -}{hline 10}{c BRC}
+
+{com}.                 pwcorr          plotsize_gps plotsize_self if plotsize_gps<0.22 & !missing(plotsize_gps)
+
+             {txt}{c |} plotsi~s plotsi~f
+{hline 13}{c +}{hline 18}
+plotsize_gps {c |} {res}  1.0000 
+{txt}plotsize_s~f {c |} {res}  0.9998   1.0000 
+{txt}
+{com}. 
+{txt}end of do-file
+
+{com}. do "C:\Users\THEMAC~1\AppData\Local\Temp\STD3114_000000.tmp"
+{txt}
+{com}.                 replace         plotsize_gps = . if plotsize_gps == 0
+{txt}(0 real changes made)
+
+{com}.                 
+. 
+{txt}end of do-file
+
+{com}. do "C:\Users\THEMAC~1\AppData\Local\Temp\STD3114_000000.tmp"
+{txt}
+{com}.         * low end
+.                 tab                     plotsize_gps
+
+        {txt}GPS {c |}
+   Measured {c |}
+       Area {c |}
+ (Hectares) {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+    .056656 {c |}{res}          1        6.25        6.25
+{txt}   .1133121 {c |}{res}          1        6.25       12.50
+{txt}   .2185304 {c |}{res}          1        6.25       18.75
+{txt}   .2468585 {c |}{res}          1        6.25       25.00
+{txt}   .2792333 {c |}{res}          1        6.25       31.25
+{txt}   .2832802 {c |}{res}          1        6.25       37.50
+{txt}   .3075614 {c |}{res}          1        6.25       43.75
+{txt}   .4451546 {c |}{res}          1        6.25       50.00
+{txt}   .4937169 {c |}{res}          1        6.25       56.25
+{txt}   .5665604 {c |}{res}          1        6.25       62.50
+{txt}   .7284348 {c |}{res}          1        6.25       68.75
+{txt}   .8538874 {c |}{res}          1        6.25       75.00
+{txt}   .9510121 {c |}{res}          1        6.25       81.25
+{txt}   1.157402 {c |}{res}          1        6.25       87.50
+{txt}   7.741643 {c |}{res}          1        6.25       93.75
+{txt}   14.36635 {c |}{res}          1        6.25      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}         16      100.00
+{txt}
+{com}.                 *histogram      plotsize_gps if plotsize_gps < 0.5
+.                 sum                     plotsize_gps, detail
+
+                {txt}GPS Measured Area (Hectares)
+{hline 61}
+      Percentiles      Smallest
+ 1%    {res}  .056656        .056656
+{txt} 5%    {res}  .056656       .1133121
+{txt}10%    {res} .1133121       .2185304       {txt}Obs         {res}         16
+{txt}25%    {res} .2630459       .2468585       {txt}Sum of Wgt. {res}         16
+
+{txt}50%    {res} .4694358                      {txt}Mean          {res}   1.8006
+                        {txt}Largest       Std. Dev.     {res} 3.821822
+{txt}75%    {res} .9024498       .9510121
+{txt}90%    {res} 7.741643       1.157402       {txt}Variance      {res} 14.60632
+{txt}95%    {res} 14.36635       7.741643       {txt}Skewness      {res} 2.659359
+{txt}99%    {res} 14.36635       14.36635       {txt}Kurtosis      {res} 8.744252
+{txt}
+{com}.          *** mean = 1.8
+.          *** 3 obs < 0.22
+.                 sum             plotsize_gps if plotsize_gps<0.22
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+plotsize_gps {c |}{res}          3    .1294995    .0821423    .056656   .2185304
+{txt}
+{com}.                 list            plotsize_gps plotsize_self if plotsize_gps<0.22 & !missing(plotsize_gps), sep(0)
+{txt}
+     {c TLC}{hline 10}{c -}{hline 10}{c TRC}
+     {c |} {res}plotsi~s   plotsi~f {txt}{c |}
+     {c LT}{hline 10}{c -}{hline 10}{c RT}
+  1. {c |} {res} .056656   .1011715 {txt}{c |}
+  2. {c |} {res}.1133121    .202343 {txt}{c |}
+  3. {c |} {res}.2185304    .404686 {txt}{c |}
+     {c BLC}{hline 10}{c -}{hline 10}{c BRC}
+
+{com}.                 pwcorr          plotsize_gps plotsize_self if plotsize_gps<0.22 & !missing(plotsize_gps)
+
+             {txt}{c |} plotsi~s plotsi~f
+{hline 13}{c +}{hline 18}
+plotsize_gps {c |} {res}  1.0000 
+{txt}plotsize_s~f {c |} {res}  0.9998   1.0000 
+{txt}
+{com}.          *** corr = 0.9998 (whoa! no problem here I guess)
+. 
+{txt}end of do-file
+
+{com}. do "C:\Users\THEMAC~1\AppData\Local\Temp\STD3114_000000.tmp"
+{txt}
+{com}. * impute missing + irregular plot sizes using predictive mean matching
+.         mi set          wide    // declare the data to be wide.
+{txt}
+{com}.         mi xtset, clear         // this is a precautinary step to clear any xtset that the analyst may have had in place previously
+{res}{txt}
+{com}.         mi register     imputed plotsize_gps // identify plotsize_GPS as the variable being imputed
+{res}{txt}
+{com}.         mi impute       pmm plotsize_gps plotsize_self i.uq_dist, add(1) rseed(245780) noisily dots force knn(5) bootstrap
+{res}
+{txt}Imputing {it:m}=1:
+{col 3}{res}
+{txt}Running {bf:regress} on bootstrap sample:
+
+
+      Source {c |}       SS           df       MS      Number of obs   ={res}        16
+{txt}{hline 13}{c +}{hline 34}   F(7, 8)         = {res}        .
+{txt}       Model {c |} {res} 183.533632         7  26.2190903   {txt}Prob > F        ={res}         .
+{txt}    Residual {c |} {res}          0         8           0   {txt}R-squared       ={res}    1.0000
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    1.0000
+{txt}       Total {c |} {res} 183.533632        15  12.2355755   {txt}Root MSE        =   {res}      0
+
+{txt}{hline 14}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1} plotsize_gps{col 15}{c |}      Coef.{col 27}   Std. Err.{col 39}      t{col 47}   P>|t|{col 55}     [95% Con{col 68}f. Interval]
+{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+plotsize_self {c |}{col 15}{res}{space 2}-3.199999{col 27}{space 2}        .{col 38}{space 1}       .{col 47}{space 3}    .{col 55}{space 4}        .{col 68}{space 3}        .
+{txt}{space 13} {c |}
+{space 6}uq_dist {c |}
+{space 10}72  {c |}{col 15}{res}{space 2}-1.222152{col 27}{space 2}        .{col 38}{space 1}       .{col 47}{space 3}    .{col 55}{space 4}        .{col 68}{space 3}        .
+{txt}{space 9}133  {c |}{col 15}{res}{space 2} 16.64878{col 27}{space 2}        .{col 38}{space 1}       .{col 47}{space 3}    .{col 55}{space 4}        .{col 68}{space 3}        .
+{txt}{space 9}175  {c |}{col 15}{res}{space 2} 1.841321{col 27}{space 2}        .{col 38}{space 1}       .{col 47}{space 3}    .{col 55}{space 4}        .{col 68}{space 3}        .
+{txt}{space 9}176  {c |}{col 15}{res}{space 2} .1861556{col 27}{space 2}        .{col 38}{space 1}       .{col 47}{space 3}    .{col 55}{space 4}        .{col 68}{space 3}        .
+{txt}{space 9}181  {c |}{col 15}{res}{space 2}-1.031949{col 27}{space 2}        .{col 38}{space 1}       .{col 47}{space 3}    .{col 55}{space 4}        .{col 68}{space 3}        .
+{txt}{space 9}196  {c |}{col 15}{res}{space 2}-.0242812{col 27}{space 2}        .{col 38}{space 1}       .{col 47}{space 3}    .{col 55}{space 4}        .{col 68}{space 3}        .
+{txt}{space 13} {c |}
+{space 8}_cons {c |}{col 15}{res}{space 2} 1.602556{col 27}{space 2}        .{col 38}{space 1}       .{col 47}{space 3}    .{col 55}{space 4}        .{col 68}{space 3}        .
+{txt}{hline 14}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}. done
+{res}{txt}
+Univariate imputation{txt}{col 45}{ralign 12:Imputations }= {res}       1
+{txt}Predictive mean matching{txt}{col 45}{ralign 12:added }= {res}       1
+{txt}Imputed: {it:m}=1{txt}{col 45}{ralign 12:updated }= {res}       0
+
+{txt}{col 39}{ralign 12:Nearest neighbors }= {res}       5
+
+{txt}{hline 19}{c TT}{hline 35}{hline 11}
+{txt}{col 20}{c |}{center 46:  Observations per {it:m}}
+{txt}{col 20}{c LT}{hline 35}{c TT}{hline 10}
+{txt}{col 11}Variable {c |}{ralign 12:Complete }{ralign 13:Incomplete }{ralign 10:Imputed }{c |}{ralign 10:Total}
+{hline 19}{c +}{hline 35}{c +}{hline 10}
+{txt}{ralign 19:plotsize_gps }{c |}{res}         16           22        22 {txt}{c |}{res}        38
+{txt}{hline 19}{c BT}{hline 35}{c BT}{hline 10}
+{p 0 1 1 66}(complete + incomplete = total; imputed is the minimum across {it:m}
+ of the number of filled-in observations.){p_end}
+
+{txt}Note: Posterior parameters obtained using {help mi_boot_note:sampling with replacement}.
+{res}{txt}
+{com}.         mi                      unset
+
+{txt}{col 13}variables
+{col 5}original{col 23}new{col 42}meaning
+    {hline 71}
+{col 5}_mi_miss{col 23}mi_miss{col 42}0=orig-complete, 1=orig-incomplete
+{col 5}_#_plotsize_gps{col 23}plotsize_gps_#_{col 42}imputed values of plotsize_gps
+    {hline 71}
+{col 5}# = 1
+
+{com}. 
+{txt}end of do-file
+
+{com}. do "C:\Users\THEMAC~1\AppData\Local\Temp\STD3114_000000.tmp"
+{txt}
+{com}. * how did the imputation go?
+.         tab                     mi_miss
+
+ {txt}Incomplete {c |}
+observation {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          0 {c |}{res}         16       42.11       42.11
+{txt}          1 {c |}{res}         22       57.89      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}         38      100.00
+{txt}
+{com}.         pwcorr          plotsize_gps plotsize_gps_1_ if plotsize_gps != .
+
+             {txt}{c |} plotsi~s plots~1_
+{hline 13}{c +}{hline 18}
+plotsize_gps {c |} {res}  1.0000 
+{txt}plotsize_~1_ {c |} {res}  1.0000   1.0000 
+{txt}
+{com}.         tabstat         plotsize_gps plotsize_self plotsize_gps_1_, by(mi_miss) statistics(n mean min max) columns(statistics) longstub format(%9.3g) 
+
+{txt}{lalign 8:mi_miss} {...}
+{ralign 12:variable} {...}
+{c |}         N      mean       min       max
+{hline 22}{c +}{hline 40}
+{lalign 8:0} {...}
+{ralign 12:plotsize_gps} {...}
+{c |}{...}
+ {res}       16       1.8     .0567      14.4
+{space 8} {...}
+{txt}{ralign 12:plotsize_s~f} {...}
+{c |}{...}
+ {res}       16      .653      .101      2.43
+{space 8} {...}
+{txt}{ralign 12:plotsize_~1_} {...}
+{c |}{...}
+ {res}       16       1.8     .0567      14.4
+{txt}{hline 22}{c +}{hline 40}
+{lalign 8:1} {...}
+{ralign 12:plotsize_gps} {...}
+{c |}{...}
+ {res}        0         .         .         .
+{space 8} {...}
+{txt}{ralign 12:plotsize_s~f} {...}
+{c |}{...}
+ {res}       22       1.4      .101      16.2
+{space 8} {...}
+{txt}{ralign 12:plotsize_~1_} {...}
+{c |}{...}
+ {res}       22      1.27     .0567      7.74
+{txt}{hline 22}{c +}{hline 40}
+{lalign 8:Total} {...}
+{ralign 12:plotsize_gps} {...}
+{c |}{...}
+ {res}       16       1.8     .0567      14.4
+{space 8} {...}
+{txt}{ralign 12:plotsize_s~f} {...}
+{c |}{...}
+ {res}       38      1.09      .101      16.2
+{space 8} {...}
+{txt}{ralign 12:plotsize_~1_} {...}
+{c |}{...}
+ {res}       38       1.5     .0567      14.4
+{txt}{hline 22}{c BT}{hline 40}
+
+{com}.         rename          plotsize_gps_1_ plotsize
+{res}{txt}
+{com}. 
+{txt}end of do-file
+
+{com}. do "C:\Users\THEMAC~1\AppData\Local\Temp\STD3114_000000.tmp"
+{txt}
+{com}. * generate seasonal variable
+.         generate        season = 1
+{txt}
+{com}.         
+. * keep what we want, get rid of the rest
+.         keep            hhid plot_id plotsize season
+{txt}
+{com}. 
+. *       Prepare for export
+. compress
+  {txt}variable {bf}season{sf} was {bf}{res}float{sf}{txt} now {bf}{res}byte{sf}
+{txt}  (114 bytes saved)
+
+{com}. describe
+
+{txt}Contains data from {res}G:/My Drive/weather_project/household_data/tanzania/wave_2/raw/AG_SEC2B.dta
+{txt}  obs:{res}            38                          
+{txt} vars:{res}             4                          01 May 2014 17:45
+                                              (_dta has notes)
+{txt}{hline}
+              storage   display    value
+variable name   type    format     label      variable label
+{hline}
+{p 0 48}{res}{bind:hhid           }{txt}{bind: str16   }{bind:{txt}%-16s     }{space 1}{bind:         }{bind:  }{res}{res}Unique Household Indentifier{p_end}
+{p 0 48}{bind:plot_id        }{txt}{bind: str19   }{bind:{txt}%19s      }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{p 0 48}{bind:plotsize       }{txt}{bind: float   }{bind:{txt}%9.0g     }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{p 0 48}{bind:season         }{txt}{bind: byte    }{bind:{txt}%9.0g     }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{txt}{hline}
+Sorted by: 
+{res}     Note: Dataset has changed since last saved.
+{txt}
+{com}. summarize 
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 8}hhid {c |}{res}          0
+{txt}{space 5}plot_id {c |}{res}          0
+{txt}{space 4}plotsize {c |}{res}         38    1.495421     2.92262    .056656   14.36635
+{txt}{space 6}season {c |}{res}         38           1           0          1          1
+{txt}
+{com}. sort plot_id
+{txt}
+{com}. customsave , idvar(plot_id) filename(AG_SEC2B.dta) path("$export") dofile(2010_AGSEC2B) user($user)
+ with do file 2010_AGSEC2B by user themacfreezie using computer Torbit
+
+{txt}
+{com}. 
+. * close the log
+.         log     close
+      {txt}name:  {res}<unnamed>
+       {txt}log:  {res}C:/Users/themacfreezie/git/weather_project/tanzania/household_code/logs/wv2_AGSEC2B.smcl
+  {txt}log type:  {res}smcl
+ {txt}closed on:  {res}17 May 2020, 01:18:19
+{txt}{.-}
+{smcl}
+{txt}{sf}{ul off}{smcl}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}C:/Users/themacfreezie/git/weather_project/tanzania/household_code/logs/wv2_AGSEC2B.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res}17 May 2020, 01:18:24
+{txt}
+{com}. 
+. 
+. **********************************************************************************
+. **      TZA 2010 (Wave 2) - Agriculture Section 2B 
+. **********************************************************************************
+. 
+. * load data
+.         use             "$root/AG_SEC2B", clear
+{txt}
+{com}. 
+. * rename variables of interest
+.         rename          y2_hhid hhid
+{res}{txt}
+{com}.         rename          ag2b_15 plotsize_self_ac
+{res}{txt}
+{com}.         rename          ag2b_20 plotsize_gps_ac
+{res}{txt}
+{com}.         
+. * convert from acres to hectares
+.         generate        plotsize_self = plotsize_self_ac * 0.404686
+{txt}
+{com}.         label           var plotsize_self "Self-reported Area (Hectares)"
+{txt}
+{com}.         generate        plotsize_gps = plotsize_gps_ac * 0.404686
+{txt}(22 missing values generated)
+
+{com}.         label           var plotsize_gps "GPS Measured Area (Hectares)"
+{txt}
+{com}.         drop            plotsize_gps_ac plotsize_self_ac
+{txt}
+{com}. 
+. * generate unique ob id
+.         generate        plot_id = hhid + " " + plotnum
+{txt}
+{com}.         isid            plot_id 
+{txt}
+{com}.         
+. * must merge in regional identifiers from 2008_HHSECA to impute
+.         merge           m:1 hhid using "$export/HH_SECA"
+{res}
+{txt}{col 5}Result{col 38}# of obs.
+{col 5}{hline 41}
+{col 5}not matched{col 30}{res}           3,891
+{txt}{col 9}from master{col 30}{res}               0{txt}  (_merge==1)
+{col 9}from using{col 30}{res}           3,891{txt}  (_merge==2)
+
+{col 5}matched{col 30}{res}              38{txt}  (_merge==3)
+{col 5}{hline 41}
+
+{com}.         tab                     _merge
+
+                 {txt}_merge {c |}      Freq.     Percent        Cum.
+{hline 24}{c +}{hline 35}
+         using only (2) {c |}{res}      3,891       99.03       99.03
+{txt}            matched (3) {c |}{res}         38        0.97      100.00
+{txt}{hline 24}{c +}{hline 35}
+                  Total {c |}{res}      3,929      100.00
+{txt}
+{com}.  *** all obs in master are matched
+.         drop            if _merge == 2
+{txt}(3,891 observations deleted)
+
+{com}.         drop            _merge
+{txt}
+{com}. * interrogating regional identifiers
+.         sort            region
+{txt}
+{com}.         by region:      distinct district
+
+{txt}{hline}
+-> region = 3
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        4          2
+
+{txt}{hline}
+-> region = 6
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        1          1
+
+{txt}{hline}
+-> region = 7
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        6          3
+
+{txt}{hline}
+-> region = 12
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        2          1
+
+{txt}{hline}
+-> region = 13
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        1          1
+
+{txt}{hline}
+-> region = 16
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        1          1
+
+{txt}{hline}
+-> region = 17
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}       12          5
+
+{txt}{hline}
+-> region = 18
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        6          3
+
+{txt}{hline}
+-> region = 19
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        2          2
+
+{txt}{hline}
+-> region = 20
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        2          1
+
+{txt}{hline}
+-> region = 53
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        1          1
+{txt}
+{com}.  *** 21 distinct districts
+. * unique district id
+.         tostring        region, generate(reg_num) 
+{txt}reg_num generated as {res:str2}
+
+{com}.         tostring        district, generate(dist_num)
+{txt}dist_num generated as {res:str1}
+
+{com}.         generate        uq_dist = reg_num + dist_num
+{txt}
+{com}.         distinct        uq_dist
+
+{txt}{col 10}{c |}        Observations
+{col 10}{c |}      total   distinct
+{hline 9}{c +}{hline 22}
+ uq_dist {c |}  {res}       38         21
+{txt}
+{com}.         sort            region district
+{txt}
+{com}.         destring        uq_dist, replace
+{txt}uq_dist: all characters numeric; {res}replaced {txt}as {res}int
+{txt}
+{com}.  *** 21 once again, good deal
+.         drop            reg_num dist_num
+{txt}
+{com}.         
+. * interrogating plotsize variables
+.         count           if plotsize_gps != . & plotsize_self != .
+  {res}16
+{txt}
+{com}.  *** 16 not mising, out of 38
+.         pwcorr          plotsize_gps plotsize_self
+
+             {txt}{c |} plotsi~s plotsi~f
+{hline 13}{c +}{hline 18}
+plotsize_gps {c |} {res}  1.0000 
+{txt}plotsize_s~f {c |} {res}  0.6565   1.0000 
+{txt}
+{com}.  *** decently high correlation (0.6565)
+. * inverstingating the high and low end of gps measurments
+.         * high end
+.                 tab                     plotsize_gps
+
+        {txt}GPS {c |}
+   Measured {c |}
+       Area {c |}
+ (Hectares) {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+    .056656 {c |}{res}          1        6.25        6.25
+{txt}   .1133121 {c |}{res}          1        6.25       12.50
+{txt}   .2185304 {c |}{res}          1        6.25       18.75
+{txt}   .2468585 {c |}{res}          1        6.25       25.00
+{txt}   .2792333 {c |}{res}          1        6.25       31.25
+{txt}   .2832802 {c |}{res}          1        6.25       37.50
+{txt}   .3075614 {c |}{res}          1        6.25       43.75
+{txt}   .4451546 {c |}{res}          1        6.25       50.00
+{txt}   .4937169 {c |}{res}          1        6.25       56.25
+{txt}   .5665604 {c |}{res}          1        6.25       62.50
+{txt}   .7284348 {c |}{res}          1        6.25       68.75
+{txt}   .8538874 {c |}{res}          1        6.25       75.00
+{txt}   .9510121 {c |}{res}          1        6.25       81.25
+{txt}   1.157402 {c |}{res}          1        6.25       87.50
+{txt}   7.741643 {c |}{res}          1        6.25       93.75
+{txt}   14.36635 {c |}{res}          1        6.25      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}         16      100.00
+{txt}
+{com}.                 *histogram      plotsize_gps if plotsize_gps > 2
+.                 sum                     plotsize_gps, detail
+
+                {txt}GPS Measured Area (Hectares)
+{hline 61}
+      Percentiles      Smallest
+ 1%    {res}  .056656        .056656
+{txt} 5%    {res}  .056656       .1133121
+{txt}10%    {res} .1133121       .2185304       {txt}Obs         {res}         16
+{txt}25%    {res} .2630459       .2468585       {txt}Sum of Wgt. {res}         16
+
+{txt}50%    {res} .4694358                      {txt}Mean          {res}   1.8006
+                        {txt}Largest       Std. Dev.     {res} 3.821822
+{txt}75%    {res} .9024498       .9510121
+{txt}90%    {res} 7.741643       1.157402       {txt}Variance      {res} 14.60632
+{txt}95%    {res} 14.36635       7.741643       {txt}Skewness      {res} 2.659359
+{txt}99%    {res} 14.36635       14.36635       {txt}Kurtosis      {res} 8.744252
+{txt}
+{com}.          *** mean = 1.8
+.          *** 3 obs > 1.1
+.                 sort            plotsize_gps
+{txt}
+{com}.                 sum             plotsize_gps if plotsize_gps>1.1
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+plotsize_gps {c |}{res}          3    7.755133    6.604486   1.157402   14.36635
+{txt}
+{com}.                 list            plotsize_gps plotsize_self if plotsize_gps>1.1 & !missing(plotsize_gps), sep(0)
+{txt}
+     {c TLC}{hline 10}{c -}{hline 10}{c TRC}
+     {c |} {res}plotsi~s   plotsi~f {txt}{c |}
+     {c LT}{hline 10}{c -}{hline 10}{c RT}
+ 14. {c |} {res}1.157402    .809372 {txt}{c |}
+ 15. {c |} {res}7.741643   2.428116 {txt}{c |}
+ 16. {c |} {res}14.36635   1.214058 {txt}{c |}
+     {c BLC}{hline 10}{c -}{hline 10}{c BRC}
+
+{com}.                 pwcorr          plotsize_gps plotsize_self if plotsize_gps>1.1 & !missing(plotsize_gps)
+
+             {txt}{c |} plotsi~s plotsi~f
+{hline 13}{c +}{hline 18}
+plotsize_gps {c |} {res}  1.0000 
+{txt}plotsize_s~f {c |} {res}  0.2385   1.0000 
+{txt}
+{com}.          *** corr = 0.0.2385 (not great)
+.          *** corr above is chiefly low due to the top 2 observations (when sorted by plotsize_gps)
+.          *** should these be dropped? that would leave only 14 obs w/ plotsize_gps
+. *-->    replace         plotsize_gps = . if plotsize_gps >= 7.7 
+.                 list            plotsize_gps plotsize_self if plotsize_gps<7 & !missing(plotsize_gps), sep(0)
+{txt}
+     {c TLC}{hline 10}{c -}{hline 10}{c TRC}
+     {c |} {res}plotsi~s   plotsi~f {txt}{c |}
+     {c LT}{hline 10}{c -}{hline 10}{c RT}
+  1. {c |} {res} .056656   .1011715 {txt}{c |}
+  2. {c |} {res}.1133121    .202343 {txt}{c |}
+  3. {c |} {res}.2185304    .404686 {txt}{c |}
+  4. {c |} {res}.2468585   .1011715 {txt}{c |}
+  5. {c |} {res}.2792333   1.011715 {txt}{c |}
+  6. {c |} {res}.2832802    .404686 {txt}{c |}
+  7. {c |} {res}.3075614    .404686 {txt}{c |}
+  8. {c |} {res}.4451546    .404686 {txt}{c |}
+  9. {c |} {res}.4937169    .404686 {txt}{c |}
+ 10. {c |} {res}.5665604   .3237488 {txt}{c |}
+ 11. {c |} {res}.7284348    .607029 {txt}{c |}
+ 12. {c |} {res}.8538874    .809372 {txt}{c |}
+ 13. {c |} {res}.9510121    .809372 {txt}{c |}
+ 14. {c |} {res}1.157402    .809372 {txt}{c |}
+     {c BLC}{hline 10}{c -}{hline 10}{c BRC}
+
+{com}.                 pwcorr          plotsize_gps plotsize_self if plotsize_gps<7 & !missing(plotsize_gps)
+
+             {txt}{c |} plotsi~s plotsi~f
+{hline 13}{c +}{hline 18}
+plotsize_gps {c |} {res}  1.0000 
+{txt}plotsize_s~f {c |} {res}  0.6645   1.0000 
+{txt}
+{com}.          *** corr = 0.6645 when those top two obs are omitted
+.         * the high end seems mostly okay, except for the last 2 obs
+.         ///////////////////////////////////////////////////////////////////////////
+>         * low end
+.                 tab                     plotsize_gps
+
+        {txt}GPS {c |}
+   Measured {c |}
+       Area {c |}
+ (Hectares) {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+    .056656 {c |}{res}          1        6.25        6.25
+{txt}   .1133121 {c |}{res}          1        6.25       12.50
+{txt}   .2185304 {c |}{res}          1        6.25       18.75
+{txt}   .2468585 {c |}{res}          1        6.25       25.00
+{txt}   .2792333 {c |}{res}          1        6.25       31.25
+{txt}   .2832802 {c |}{res}          1        6.25       37.50
+{txt}   .3075614 {c |}{res}          1        6.25       43.75
+{txt}   .4451546 {c |}{res}          1        6.25       50.00
+{txt}   .4937169 {c |}{res}          1        6.25       56.25
+{txt}   .5665604 {c |}{res}          1        6.25       62.50
+{txt}   .7284348 {c |}{res}          1        6.25       68.75
+{txt}   .8538874 {c |}{res}          1        6.25       75.00
+{txt}   .9510121 {c |}{res}          1        6.25       81.25
+{txt}   1.157402 {c |}{res}          1        6.25       87.50
+{txt}   7.741643 {c |}{res}          1        6.25       93.75
+{txt}   14.36635 {c |}{res}          1        6.25      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}         16      100.00
+{txt}
+{com}.                 *histogram      plotsize_gps if plotsize_gps < 0.5
+.                 sum                     plotsize_gps, detail
+
+                {txt}GPS Measured Area (Hectares)
+{hline 61}
+      Percentiles      Smallest
+ 1%    {res}  .056656        .056656
+{txt} 5%    {res}  .056656       .1133121
+{txt}10%    {res} .1133121       .2185304       {txt}Obs         {res}         16
+{txt}25%    {res} .2630459       .2468585       {txt}Sum of Wgt. {res}         16
+
+{txt}50%    {res} .4694358                      {txt}Mean          {res}   1.8006
+                        {txt}Largest       Std. Dev.     {res} 3.821822
+{txt}75%    {res} .9024498       .9510121
+{txt}90%    {res} 7.741643       1.157402       {txt}Variance      {res} 14.60632
+{txt}95%    {res} 14.36635       7.741643       {txt}Skewness      {res} 2.659359
+{txt}99%    {res} 14.36635       14.36635       {txt}Kurtosis      {res} 8.744252
+{txt}
+{com}.          *** mean = 1.8
+.          *** 3 obs < 0.22
+.                 sum             plotsize_gps if plotsize_gps<0.22
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+plotsize_gps {c |}{res}          3    .1294995    .0821423    .056656   .2185304
+{txt}
+{com}.                 list            plotsize_gps plotsize_self if plotsize_gps<0.22 & !missing(plotsize_gps), sep(0)
+{txt}
+     {c TLC}{hline 10}{c -}{hline 10}{c TRC}
+     {c |} {res}plotsi~s   plotsi~f {txt}{c |}
+     {c LT}{hline 10}{c -}{hline 10}{c RT}
+  1. {c |} {res} .056656   .1011715 {txt}{c |}
+  2. {c |} {res}.1133121    .202343 {txt}{c |}
+  3. {c |} {res}.2185304    .404686 {txt}{c |}
+     {c BLC}{hline 10}{c -}{hline 10}{c BRC}
+
+{com}.                 pwcorr          plotsize_gps plotsize_self if plotsize_gps<0.22 & !missing(plotsize_gps)
+
+             {txt}{c |} plotsi~s plotsi~f
+{hline 13}{c +}{hline 18}
+plotsize_gps {c |} {res}  1.0000 
+{txt}plotsize_s~f {c |} {res}  0.9998   1.0000 
+{txt}
+{com}.          *** corr = 0.9998 (whoa! no problem here I guess)
+.          * for robustness, although no zero values in this set
+.                 replace         plotsize_gps = . if plotsize_gps == 0
+{txt}(0 real changes made)
+
+{com}.                 
+. * impute missing + irregular plot sizes using predictive mean matching
+.         mi set          wide    // declare the data to be wide.
+{txt}
+{com}.         mi xtset, clear         // this is a precautinary step to clear any xtset that the analyst may have had in place previously
+{res}{txt}
+{com}.         mi register     imputed plotsize_gps // identify plotsize_GPS as the variable being imputed
+{res}{txt}
+{com}.         mi impute       pmm plotsize_gps plotsize_self i.uq_dist, add(1) rseed(245780) noisily dots force knn(5) bootstrap
+{res}
+{txt}Imputing {it:m}=1:
+{col 3}{res}
+{txt}Running {bf:regress} on bootstrap sample:
+
+
+      Source {c |}       SS           df       MS      Number of obs   ={res}        16
+{txt}{hline 13}{c +}{hline 34}   F(7, 8)         = {res}        .
+{txt}       Model {c |} {res} 183.533632         7  26.2190903   {txt}Prob > F        ={res}         .
+{txt}    Residual {c |} {res}          0         8           0   {txt}R-squared       ={res}    1.0000
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    1.0000
+{txt}       Total {c |} {res} 183.533632        15  12.2355755   {txt}Root MSE        =   {res}      0
+
+{txt}{hline 14}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1} plotsize_gps{col 15}{c |}      Coef.{col 27}   Std. Err.{col 39}      t{col 47}   P>|t|{col 55}     [95% Con{col 68}f. Interval]
+{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+plotsize_self {c |}{col 15}{res}{space 2}-3.199999{col 27}{space 2}        .{col 38}{space 1}       .{col 47}{space 3}    .{col 55}{space 4}        .{col 68}{space 3}        .
+{txt}{space 13} {c |}
+{space 6}uq_dist {c |}
+{space 10}72  {c |}{col 15}{res}{space 2}-1.222152{col 27}{space 2}        .{col 38}{space 1}       .{col 47}{space 3}    .{col 55}{space 4}        .{col 68}{space 3}        .
+{txt}{space 9}133  {c |}{col 15}{res}{space 2} 16.64878{col 27}{space 2}        .{col 38}{space 1}       .{col 47}{space 3}    .{col 55}{space 4}        .{col 68}{space 3}        .
+{txt}{space 9}175  {c |}{col 15}{res}{space 2} 1.841321{col 27}{space 2}        .{col 38}{space 1}       .{col 47}{space 3}    .{col 55}{space 4}        .{col 68}{space 3}        .
+{txt}{space 9}176  {c |}{col 15}{res}{space 2} .1861556{col 27}{space 2}        .{col 38}{space 1}       .{col 47}{space 3}    .{col 55}{space 4}        .{col 68}{space 3}        .
+{txt}{space 9}181  {c |}{col 15}{res}{space 2}-1.031949{col 27}{space 2}        .{col 38}{space 1}       .{col 47}{space 3}    .{col 55}{space 4}        .{col 68}{space 3}        .
+{txt}{space 9}196  {c |}{col 15}{res}{space 2}-.0242812{col 27}{space 2}        .{col 38}{space 1}       .{col 47}{space 3}    .{col 55}{space 4}        .{col 68}{space 3}        .
+{txt}{space 13} {c |}
+{space 8}_cons {c |}{col 15}{res}{space 2} 1.602556{col 27}{space 2}        .{col 38}{space 1}       .{col 47}{space 3}    .{col 55}{space 4}        .{col 68}{space 3}        .
+{txt}{hline 14}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}. done
+{res}{txt}
+Univariate imputation{txt}{col 45}{ralign 12:Imputations }= {res}       1
+{txt}Predictive mean matching{txt}{col 45}{ralign 12:added }= {res}       1
+{txt}Imputed: {it:m}=1{txt}{col 45}{ralign 12:updated }= {res}       0
+
+{txt}{col 39}{ralign 12:Nearest neighbors }= {res}       5
+
+{txt}{hline 19}{c TT}{hline 35}{hline 11}
+{txt}{col 20}{c |}{center 46:  Observations per {it:m}}
+{txt}{col 20}{c LT}{hline 35}{c TT}{hline 10}
+{txt}{col 11}Variable {c |}{ralign 12:Complete }{ralign 13:Incomplete }{ralign 10:Imputed }{c |}{ralign 10:Total}
+{hline 19}{c +}{hline 35}{c +}{hline 10}
+{txt}{ralign 19:plotsize_gps }{c |}{res}         16           22        22 {txt}{c |}{res}        38
+{txt}{hline 19}{c BT}{hline 35}{c BT}{hline 10}
+{p 0 1 1 66}(complete + incomplete = total; imputed is the minimum across {it:m}
+ of the number of filled-in observations.){p_end}
+
+{txt}Note: Posterior parameters obtained using {help mi_boot_note:sampling with replacement}.
+{res}{txt}
+{com}.         mi                      unset
+
+{txt}{col 13}variables
+{col 5}original{col 23}new{col 42}meaning
+    {hline 71}
+{col 5}_mi_miss{col 23}mi_miss{col 42}0=orig-complete, 1=orig-incomplete
+{col 5}_#_plotsize_gps{col 23}plotsize_gps_#_{col 42}imputed values of plotsize_gps
+    {hline 71}
+{col 5}# = 1
+
+{com}.         
+. * how did the imputation go?
+.         tab                     mi_miss
+
+ {txt}Incomplete {c |}
+observation {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          0 {c |}{res}         16       42.11       42.11
+{txt}          1 {c |}{res}         22       57.89      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}         38      100.00
+{txt}
+{com}.         pwcorr          plotsize_gps plotsize_gps_1_ if plotsize_gps != .
+
+             {txt}{c |} plotsi~s plots~1_
+{hline 13}{c +}{hline 18}
+plotsize_gps {c |} {res}  1.0000 
+{txt}plotsize_~1_ {c |} {res}  1.0000   1.0000 
+{txt}
+{com}.         tabstat         plotsize_gps plotsize_self plotsize_gps_1_, by(mi_miss) statistics(n mean min max) columns(statistics) longstub format(%9.3g) 
+
+{txt}{lalign 8:mi_miss} {...}
+{ralign 12:variable} {...}
+{c |}         N      mean       min       max
+{hline 22}{c +}{hline 40}
+{lalign 8:0} {...}
+{ralign 12:plotsize_gps} {...}
+{c |}{...}
+ {res}       16       1.8     .0567      14.4
+{space 8} {...}
+{txt}{ralign 12:plotsize_s~f} {...}
+{c |}{...}
+ {res}       16      .653      .101      2.43
+{space 8} {...}
+{txt}{ralign 12:plotsize_~1_} {...}
+{c |}{...}
+ {res}       16       1.8     .0567      14.4
+{txt}{hline 22}{c +}{hline 40}
+{lalign 8:1} {...}
+{ralign 12:plotsize_gps} {...}
+{c |}{...}
+ {res}        0         .         .         .
+{space 8} {...}
+{txt}{ralign 12:plotsize_s~f} {...}
+{c |}{...}
+ {res}       22       1.4      .101      16.2
+{space 8} {...}
+{txt}{ralign 12:plotsize_~1_} {...}
+{c |}{...}
+ {res}       22      .744     .0567      7.74
+{txt}{hline 22}{c +}{hline 40}
+{lalign 8:Total} {...}
+{ralign 12:plotsize_gps} {...}
+{c |}{...}
+ {res}       16       1.8     .0567      14.4
+{space 8} {...}
+{txt}{ralign 12:plotsize_s~f} {...}
+{c |}{...}
+ {res}       38      1.09      .101      16.2
+{space 8} {...}
+{txt}{ralign 12:plotsize_~1_} {...}
+{c |}{...}
+ {res}       38      1.19     .0567      14.4
+{txt}{hline 22}{c BT}{hline 40}
+
+{com}.         rename          plotsize_gps_1_ plotsize
+{res}{txt}
+{com}.         
+. * generate seasonal variable
+.         generate        season = 1
+{txt}
+{com}.         
+. * keep what we want, get rid of the rest
+.         keep            hhid plot_id plotsize season
+{txt}
+{com}. 
+. *       Prepare for export
+. compress
+  {txt}variable {bf}season{sf} was {bf}{res}float{sf}{txt} now {bf}{res}byte{sf}
+{txt}  (114 bytes saved)
+
+{com}. describe
+
+{txt}Contains data from {res}G:/My Drive/weather_project/household_data/tanzania/wave_2/raw/AG_SEC2B.dta
+{txt}  obs:{res}            38                          
+{txt} vars:{res}             4                          01 May 2014 17:45
+                                              (_dta has notes)
+{txt}{hline}
+              storage   display    value
+variable name   type    format     label      variable label
+{hline}
+{p 0 48}{res}{bind:hhid           }{txt}{bind: str16   }{bind:{txt}%-16s     }{space 1}{bind:         }{bind:  }{res}{res}Unique Household Indentifier{p_end}
+{p 0 48}{bind:plot_id        }{txt}{bind: str19   }{bind:{txt}%19s      }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{p 0 48}{bind:plotsize       }{txt}{bind: float   }{bind:{txt}%9.0g     }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{p 0 48}{bind:season         }{txt}{bind: byte    }{bind:{txt}%9.0g     }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{txt}{hline}
+Sorted by: 
+{res}     Note: Dataset has changed since last saved.
+{txt}
+{com}. summarize 
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 8}hhid {c |}{res}          0
+{txt}{space 5}plot_id {c |}{res}          0
+{txt}{space 4}plotsize {c |}{res}         38    1.188925    2.765258    .056656   14.36635
+{txt}{space 6}season {c |}{res}         38           1           0          1          1
+{txt}
+{com}. sort plot_id
+{txt}
+{com}. customsave , idvar(plot_id) filename(AG_SEC2B.dta) path("$export") dofile(2010_AGSEC2B) user($user)
+ with do file 2010_AGSEC2B by user themacfreezie using computer Torbit
+
+{txt}
+{com}. 
+. * close the log
+.         log     close
+      {txt}name:  {res}<unnamed>
+       {txt}log:  {res}C:/Users/themacfreezie/git/weather_project/tanzania/household_code/logs/wv2_AGSEC2B.smcl
+  {txt}log type:  {res}smcl
+ {txt}closed on:  {res}17 May 2020, 01:18:24
+{txt}{.-}
+{smcl}
+{txt}{sf}{ul off}{smcl}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}C:/Users/themacfreezie/git/weather_project/tanzania/household_code/logs/wv2_AGSEC2B.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res}17 May 2020, 01:18:26
+{txt}
+{com}. 
+. 
+. **********************************************************************************
+. **      TZA 2010 (Wave 2) - Agriculture Section 2B 
+. **********************************************************************************
+. 
+. * load data
+.         use             "$root/AG_SEC2B", clear
+{txt}
+{com}. 
+. * rename variables of interest
+.         rename          y2_hhid hhid
+{res}{txt}
+{com}.         rename          ag2b_15 plotsize_self_ac
+{res}{txt}
+{com}.         rename          ag2b_20 plotsize_gps_ac
+{res}{txt}
+{com}.         
+. * convert from acres to hectares
+.         generate        plotsize_self = plotsize_self_ac * 0.404686
+{txt}
+{com}.         label           var plotsize_self "Self-reported Area (Hectares)"
+{txt}
+{com}.         generate        plotsize_gps = plotsize_gps_ac * 0.404686
+{txt}(22 missing values generated)
+
+{com}.         label           var plotsize_gps "GPS Measured Area (Hectares)"
+{txt}
+{com}.         drop            plotsize_gps_ac plotsize_self_ac
+{txt}
+{com}. 
+. * generate unique ob id
+.         generate        plot_id = hhid + " " + plotnum
+{txt}
+{com}.         isid            plot_id 
+{txt}
+{com}.         
+. * must merge in regional identifiers from 2008_HHSECA to impute
+.         merge           m:1 hhid using "$export/HH_SECA"
+{res}
+{txt}{col 5}Result{col 38}# of obs.
+{col 5}{hline 41}
+{col 5}not matched{col 30}{res}           3,891
+{txt}{col 9}from master{col 30}{res}               0{txt}  (_merge==1)
+{col 9}from using{col 30}{res}           3,891{txt}  (_merge==2)
+
+{col 5}matched{col 30}{res}              38{txt}  (_merge==3)
+{col 5}{hline 41}
+
+{com}.         tab                     _merge
+
+                 {txt}_merge {c |}      Freq.     Percent        Cum.
+{hline 24}{c +}{hline 35}
+         using only (2) {c |}{res}      3,891       99.03       99.03
+{txt}            matched (3) {c |}{res}         38        0.97      100.00
+{txt}{hline 24}{c +}{hline 35}
+                  Total {c |}{res}      3,929      100.00
+{txt}
+{com}.  *** all obs in master are matched
+.         drop            if _merge == 2
+{txt}(3,891 observations deleted)
+
+{com}.         drop            _merge
+{txt}
+{com}. * interrogating regional identifiers
+.         sort            region
+{txt}
+{com}.         by region:      distinct district
+
+{txt}{hline}
+-> region = 3
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        4          2
+
+{txt}{hline}
+-> region = 6
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        1          1
+
+{txt}{hline}
+-> region = 7
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        6          3
+
+{txt}{hline}
+-> region = 12
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        2          1
+
+{txt}{hline}
+-> region = 13
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        1          1
+
+{txt}{hline}
+-> region = 16
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        1          1
+
+{txt}{hline}
+-> region = 17
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}       12          5
+
+{txt}{hline}
+-> region = 18
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        6          3
+
+{txt}{hline}
+-> region = 19
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        2          2
+
+{txt}{hline}
+-> region = 20
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        2          1
+
+{txt}{hline}
+-> region = 53
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        1          1
+{txt}
+{com}.  *** 21 distinct districts
+. * unique district id
+.         tostring        region, generate(reg_num) 
+{txt}reg_num generated as {res:str2}
+
+{com}.         tostring        district, generate(dist_num)
+{txt}dist_num generated as {res:str1}
+
+{com}.         generate        uq_dist = reg_num + dist_num
+{txt}
+{com}.         distinct        uq_dist
+
+{txt}{col 10}{c |}        Observations
+{col 10}{c |}      total   distinct
+{hline 9}{c +}{hline 22}
+ uq_dist {c |}  {res}       38         21
+{txt}
+{com}.         sort            region district
+{txt}
+{com}.         destring        uq_dist, replace
+{txt}uq_dist: all characters numeric; {res}replaced {txt}as {res}int
+{txt}
+{com}.  *** 21 once again, good deal
+.         drop            reg_num dist_num
+{txt}
+{com}.         
+. * interrogating plotsize variables
+.         count           if plotsize_gps != . & plotsize_self != .
+  {res}16
+{txt}
+{com}.  *** 16 not mising, out of 38
+.         pwcorr          plotsize_gps plotsize_self
+
+             {txt}{c |} plotsi~s plotsi~f
+{hline 13}{c +}{hline 18}
+plotsize_gps {c |} {res}  1.0000 
+{txt}plotsize_s~f {c |} {res}  0.6565   1.0000 
+{txt}
+{com}.  *** decently high correlation (0.6565)
+. * inverstingating the high and low end of gps measurments
+.         * high end
+.                 tab                     plotsize_gps
+
+        {txt}GPS {c |}
+   Measured {c |}
+       Area {c |}
+ (Hectares) {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+    .056656 {c |}{res}          1        6.25        6.25
+{txt}   .1133121 {c |}{res}          1        6.25       12.50
+{txt}   .2185304 {c |}{res}          1        6.25       18.75
+{txt}   .2468585 {c |}{res}          1        6.25       25.00
+{txt}   .2792333 {c |}{res}          1        6.25       31.25
+{txt}   .2832802 {c |}{res}          1        6.25       37.50
+{txt}   .3075614 {c |}{res}          1        6.25       43.75
+{txt}   .4451546 {c |}{res}          1        6.25       50.00
+{txt}   .4937169 {c |}{res}          1        6.25       56.25
+{txt}   .5665604 {c |}{res}          1        6.25       62.50
+{txt}   .7284348 {c |}{res}          1        6.25       68.75
+{txt}   .8538874 {c |}{res}          1        6.25       75.00
+{txt}   .9510121 {c |}{res}          1        6.25       81.25
+{txt}   1.157402 {c |}{res}          1        6.25       87.50
+{txt}   7.741643 {c |}{res}          1        6.25       93.75
+{txt}   14.36635 {c |}{res}          1        6.25      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}         16      100.00
+{txt}
+{com}.                 *histogram      plotsize_gps if plotsize_gps > 2
+.                 sum                     plotsize_gps, detail
+
+                {txt}GPS Measured Area (Hectares)
+{hline 61}
+      Percentiles      Smallest
+ 1%    {res}  .056656        .056656
+{txt} 5%    {res}  .056656       .1133121
+{txt}10%    {res} .1133121       .2185304       {txt}Obs         {res}         16
+{txt}25%    {res} .2630459       .2468585       {txt}Sum of Wgt. {res}         16
+
+{txt}50%    {res} .4694358                      {txt}Mean          {res}   1.8006
+                        {txt}Largest       Std. Dev.     {res} 3.821822
+{txt}75%    {res} .9024498       .9510121
+{txt}90%    {res} 7.741643       1.157402       {txt}Variance      {res} 14.60632
+{txt}95%    {res} 14.36635       7.741643       {txt}Skewness      {res} 2.659359
+{txt}99%    {res} 14.36635       14.36635       {txt}Kurtosis      {res} 8.744252
+{txt}
+{com}.          *** mean = 1.8
+.          *** 3 obs > 1.1
+.                 sort            plotsize_gps
+{txt}
+{com}.                 sum             plotsize_gps if plotsize_gps>1.1
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+plotsize_gps {c |}{res}          3    7.755133    6.604486   1.157402   14.36635
+{txt}
+{com}.                 list            plotsize_gps plotsize_self if plotsize_gps>1.1 & !missing(plotsize_gps), sep(0)
+{txt}
+     {c TLC}{hline 10}{c -}{hline 10}{c TRC}
+     {c |} {res}plotsi~s   plotsi~f {txt}{c |}
+     {c LT}{hline 10}{c -}{hline 10}{c RT}
+ 14. {c |} {res}1.157402    .809372 {txt}{c |}
+ 15. {c |} {res}7.741643   2.428116 {txt}{c |}
+ 16. {c |} {res}14.36635   1.214058 {txt}{c |}
+     {c BLC}{hline 10}{c -}{hline 10}{c BRC}
+
+{com}.                 pwcorr          plotsize_gps plotsize_self if plotsize_gps>1.1 & !missing(plotsize_gps)
+
+             {txt}{c |} plotsi~s plotsi~f
+{hline 13}{c +}{hline 18}
+plotsize_gps {c |} {res}  1.0000 
+{txt}plotsize_s~f {c |} {res}  0.2385   1.0000 
+{txt}
+{com}.          *** corr = 0.0.2385 (not great)
+.          *** corr above is chiefly low due to the top 2 observations (when sorted by plotsize_gps)
+.          *** should these be dropped? that would leave only 14 obs w/ plotsize_gps
+. *-->    replace         plotsize_gps = . if plotsize_gps >= 7.7 
+.                 list            plotsize_gps plotsize_self if plotsize_gps<7 & !missing(plotsize_gps), sep(0)
+{txt}
+     {c TLC}{hline 10}{c -}{hline 10}{c TRC}
+     {c |} {res}plotsi~s   plotsi~f {txt}{c |}
+     {c LT}{hline 10}{c -}{hline 10}{c RT}
+  1. {c |} {res} .056656   .1011715 {txt}{c |}
+  2. {c |} {res}.1133121    .202343 {txt}{c |}
+  3. {c |} {res}.2185304    .404686 {txt}{c |}
+  4. {c |} {res}.2468585   .1011715 {txt}{c |}
+  5. {c |} {res}.2792333   1.011715 {txt}{c |}
+  6. {c |} {res}.2832802    .404686 {txt}{c |}
+  7. {c |} {res}.3075614    .404686 {txt}{c |}
+  8. {c |} {res}.4451546    .404686 {txt}{c |}
+  9. {c |} {res}.4937169    .404686 {txt}{c |}
+ 10. {c |} {res}.5665604   .3237488 {txt}{c |}
+ 11. {c |} {res}.7284348    .607029 {txt}{c |}
+ 12. {c |} {res}.8538874    .809372 {txt}{c |}
+ 13. {c |} {res}.9510121    .809372 {txt}{c |}
+ 14. {c |} {res}1.157402    .809372 {txt}{c |}
+     {c BLC}{hline 10}{c -}{hline 10}{c BRC}
+
+{com}.                 pwcorr          plotsize_gps plotsize_self if plotsize_gps<7 & !missing(plotsize_gps)
+
+             {txt}{c |} plotsi~s plotsi~f
+{hline 13}{c +}{hline 18}
+plotsize_gps {c |} {res}  1.0000 
+{txt}plotsize_s~f {c |} {res}  0.6645   1.0000 
+{txt}
+{com}.          *** corr = 0.6645 when those top two obs are omitted
+.         * the high end seems mostly okay, except for the last 2 obs
+.         ///////////////////////////////////////////////////////////////////////////
+>         * low end
+.                 tab                     plotsize_gps
+
+        {txt}GPS {c |}
+   Measured {c |}
+       Area {c |}
+ (Hectares) {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+    .056656 {c |}{res}          1        6.25        6.25
+{txt}   .1133121 {c |}{res}          1        6.25       12.50
+{txt}   .2185304 {c |}{res}          1        6.25       18.75
+{txt}   .2468585 {c |}{res}          1        6.25       25.00
+{txt}   .2792333 {c |}{res}          1        6.25       31.25
+{txt}   .2832802 {c |}{res}          1        6.25       37.50
+{txt}   .3075614 {c |}{res}          1        6.25       43.75
+{txt}   .4451546 {c |}{res}          1        6.25       50.00
+{txt}   .4937169 {c |}{res}          1        6.25       56.25
+{txt}   .5665604 {c |}{res}          1        6.25       62.50
+{txt}   .7284348 {c |}{res}          1        6.25       68.75
+{txt}   .8538874 {c |}{res}          1        6.25       75.00
+{txt}   .9510121 {c |}{res}          1        6.25       81.25
+{txt}   1.157402 {c |}{res}          1        6.25       87.50
+{txt}   7.741643 {c |}{res}          1        6.25       93.75
+{txt}   14.36635 {c |}{res}          1        6.25      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}         16      100.00
+{txt}
+{com}.                 *histogram      plotsize_gps if plotsize_gps < 0.5
+.                 sum                     plotsize_gps, detail
+
+                {txt}GPS Measured Area (Hectares)
+{hline 61}
+      Percentiles      Smallest
+ 1%    {res}  .056656        .056656
+{txt} 5%    {res}  .056656       .1133121
+{txt}10%    {res} .1133121       .2185304       {txt}Obs         {res}         16
+{txt}25%    {res} .2630459       .2468585       {txt}Sum of Wgt. {res}         16
+
+{txt}50%    {res} .4694358                      {txt}Mean          {res}   1.8006
+                        {txt}Largest       Std. Dev.     {res} 3.821822
+{txt}75%    {res} .9024498       .9510121
+{txt}90%    {res} 7.741643       1.157402       {txt}Variance      {res} 14.60632
+{txt}95%    {res} 14.36635       7.741643       {txt}Skewness      {res} 2.659359
+{txt}99%    {res} 14.36635       14.36635       {txt}Kurtosis      {res} 8.744252
+{txt}
+{com}.          *** mean = 1.8
+.          *** 3 obs < 0.22
+.                 sum             plotsize_gps if plotsize_gps<0.22
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+plotsize_gps {c |}{res}          3    .1294995    .0821423    .056656   .2185304
+{txt}
+{com}.                 list            plotsize_gps plotsize_self if plotsize_gps<0.22 & !missing(plotsize_gps), sep(0)
+{txt}
+     {c TLC}{hline 10}{c -}{hline 10}{c TRC}
+     {c |} {res}plotsi~s   plotsi~f {txt}{c |}
+     {c LT}{hline 10}{c -}{hline 10}{c RT}
+  1. {c |} {res} .056656   .1011715 {txt}{c |}
+  2. {c |} {res}.1133121    .202343 {txt}{c |}
+  3. {c |} {res}.2185304    .404686 {txt}{c |}
+     {c BLC}{hline 10}{c -}{hline 10}{c BRC}
+
+{com}.                 pwcorr          plotsize_gps plotsize_self if plotsize_gps<0.22 & !missing(plotsize_gps)
+
+             {txt}{c |} plotsi~s plotsi~f
+{hline 13}{c +}{hline 18}
+plotsize_gps {c |} {res}  1.0000 
+{txt}plotsize_s~f {c |} {res}  0.9998   1.0000 
+{txt}
+{com}.          *** corr = 0.9998 (whoa! no problem here I guess)
+.          * for robustness, although no zero values in this set
+.                 replace         plotsize_gps = . if plotsize_gps == 0
+{txt}(0 real changes made)
+
+{com}.                 
+. * impute missing + irregular plot sizes using predictive mean matching
+.         mi set          wide    // declare the data to be wide.
+{txt}
+{com}.         mi xtset, clear         // this is a precautinary step to clear any xtset that the analyst may have had in place previously
+{res}{txt}
+{com}.         mi register     imputed plotsize_gps // identify plotsize_GPS as the variable being imputed
+{res}{txt}
+{com}.         mi impute       pmm plotsize_gps plotsize_self i.uq_dist, add(1) rseed(245780) noisily dots force knn(5) bootstrap
+{res}
+{txt}Imputing {it:m}=1:
+{col 3}{res}
+{txt}Running {bf:regress} on bootstrap sample:
+
+
+      Source {c |}       SS           df       MS      Number of obs   ={res}        16
+{txt}{hline 13}{c +}{hline 34}   F(7, 8)         = {res}        .
+{txt}       Model {c |} {res} 183.533632         7  26.2190903   {txt}Prob > F        ={res}         .
+{txt}    Residual {c |} {res}          0         8           0   {txt}R-squared       ={res}    1.0000
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    1.0000
+{txt}       Total {c |} {res} 183.533632        15  12.2355755   {txt}Root MSE        =   {res}      0
+
+{txt}{hline 14}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1} plotsize_gps{col 15}{c |}      Coef.{col 27}   Std. Err.{col 39}      t{col 47}   P>|t|{col 55}     [95% Con{col 68}f. Interval]
+{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+plotsize_self {c |}{col 15}{res}{space 2}-3.199999{col 27}{space 2}        .{col 38}{space 1}       .{col 47}{space 3}    .{col 55}{space 4}        .{col 68}{space 3}        .
+{txt}{space 13} {c |}
+{space 6}uq_dist {c |}
+{space 10}72  {c |}{col 15}{res}{space 2}-1.222152{col 27}{space 2}        .{col 38}{space 1}       .{col 47}{space 3}    .{col 55}{space 4}        .{col 68}{space 3}        .
+{txt}{space 9}133  {c |}{col 15}{res}{space 2} 16.64878{col 27}{space 2}        .{col 38}{space 1}       .{col 47}{space 3}    .{col 55}{space 4}        .{col 68}{space 3}        .
+{txt}{space 9}175  {c |}{col 15}{res}{space 2} 1.841321{col 27}{space 2}        .{col 38}{space 1}       .{col 47}{space 3}    .{col 55}{space 4}        .{col 68}{space 3}        .
+{txt}{space 9}176  {c |}{col 15}{res}{space 2} .1861556{col 27}{space 2}        .{col 38}{space 1}       .{col 47}{space 3}    .{col 55}{space 4}        .{col 68}{space 3}        .
+{txt}{space 9}181  {c |}{col 15}{res}{space 2}-1.031949{col 27}{space 2}        .{col 38}{space 1}       .{col 47}{space 3}    .{col 55}{space 4}        .{col 68}{space 3}        .
+{txt}{space 9}196  {c |}{col 15}{res}{space 2}-.0242812{col 27}{space 2}        .{col 38}{space 1}       .{col 47}{space 3}    .{col 55}{space 4}        .{col 68}{space 3}        .
+{txt}{space 13} {c |}
+{space 8}_cons {c |}{col 15}{res}{space 2} 1.602556{col 27}{space 2}        .{col 38}{space 1}       .{col 47}{space 3}    .{col 55}{space 4}        .{col 68}{space 3}        .
+{txt}{hline 14}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}. done
+{res}{txt}
+Univariate imputation{txt}{col 45}{ralign 12:Imputations }= {res}       1
+{txt}Predictive mean matching{txt}{col 45}{ralign 12:added }= {res}       1
+{txt}Imputed: {it:m}=1{txt}{col 45}{ralign 12:updated }= {res}       0
+
+{txt}{col 39}{ralign 12:Nearest neighbors }= {res}       5
+
+{txt}{hline 19}{c TT}{hline 35}{hline 11}
+{txt}{col 20}{c |}{center 46:  Observations per {it:m}}
+{txt}{col 20}{c LT}{hline 35}{c TT}{hline 10}
+{txt}{col 11}Variable {c |}{ralign 12:Complete }{ralign 13:Incomplete }{ralign 10:Imputed }{c |}{ralign 10:Total}
+{hline 19}{c +}{hline 35}{c +}{hline 10}
+{txt}{ralign 19:plotsize_gps }{c |}{res}         16           22        22 {txt}{c |}{res}        38
+{txt}{hline 19}{c BT}{hline 35}{c BT}{hline 10}
+{p 0 1 1 66}(complete + incomplete = total; imputed is the minimum across {it:m}
+ of the number of filled-in observations.){p_end}
+
+{txt}Note: Posterior parameters obtained using {help mi_boot_note:sampling with replacement}.
+{res}{txt}
+{com}.         mi                      unset
+
+{txt}{col 13}variables
+{col 5}original{col 23}new{col 42}meaning
+    {hline 71}
+{col 5}_mi_miss{col 23}mi_miss{col 42}0=orig-complete, 1=orig-incomplete
+{col 5}_#_plotsize_gps{col 23}plotsize_gps_#_{col 42}imputed values of plotsize_gps
+    {hline 71}
+{col 5}# = 1
+
+{com}.         
+. * how did the imputation go?
+.         tab                     mi_miss
+
+ {txt}Incomplete {c |}
+observation {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          0 {c |}{res}         16       42.11       42.11
+{txt}          1 {c |}{res}         22       57.89      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}         38      100.00
+{txt}
+{com}.         pwcorr          plotsize_gps plotsize_gps_1_ if plotsize_gps != .
+
+             {txt}{c |} plotsi~s plots~1_
+{hline 13}{c +}{hline 18}
+plotsize_gps {c |} {res}  1.0000 
+{txt}plotsize_~1_ {c |} {res}  1.0000   1.0000 
+{txt}
+{com}.         tabstat         plotsize_gps plotsize_self plotsize_gps_1_, by(mi_miss) statistics(n mean min max) columns(statistics) longstub format(%9.3g) 
+
+{txt}{lalign 8:mi_miss} {...}
+{ralign 12:variable} {...}
+{c |}         N      mean       min       max
+{hline 22}{c +}{hline 40}
+{lalign 8:0} {...}
+{ralign 12:plotsize_gps} {...}
+{c |}{...}
+ {res}       16       1.8     .0567      14.4
+{space 8} {...}
+{txt}{ralign 12:plotsize_s~f} {...}
+{c |}{...}
+ {res}       16      .653      .101      2.43
+{space 8} {...}
+{txt}{ralign 12:plotsize_~1_} {...}
+{c |}{...}
+ {res}       16       1.8     .0567      14.4
+{txt}{hline 22}{c +}{hline 40}
+{lalign 8:1} {...}
+{ralign 12:plotsize_gps} {...}
+{c |}{...}
+ {res}        0         .         .         .
+{space 8} {...}
+{txt}{ralign 12:plotsize_s~f} {...}
+{c |}{...}
+ {res}       22       1.4      .101      16.2
+{space 8} {...}
+{txt}{ralign 12:plotsize_~1_} {...}
+{c |}{...}
+ {res}       22      .448     .0567      1.16
+{txt}{hline 22}{c +}{hline 40}
+{lalign 8:Total} {...}
+{ralign 12:plotsize_gps} {...}
+{c |}{...}
+ {res}       16       1.8     .0567      14.4
+{space 8} {...}
+{txt}{ralign 12:plotsize_s~f} {...}
+{c |}{...}
+ {res}       38      1.09      .101      16.2
+{space 8} {...}
+{txt}{ralign 12:plotsize_~1_} {...}
+{c |}{...}
+ {res}       38      1.02     .0567      14.4
+{txt}{hline 22}{c BT}{hline 40}
+
+{com}.         rename          plotsize_gps_1_ plotsize
+{res}{txt}
+{com}.         
+. * generate seasonal variable
+.         generate        season = 1
+{txt}
+{com}.         
+. * keep what we want, get rid of the rest
+.         keep            hhid plot_id plotsize season
+{txt}
+{com}. 
+. *       Prepare for export
+. compress
+  {txt}variable {bf}season{sf} was {bf}{res}float{sf}{txt} now {bf}{res}byte{sf}
+{txt}  (114 bytes saved)
+
+{com}. describe
+
+{txt}Contains data from {res}G:/My Drive/weather_project/household_data/tanzania/wave_2/raw/AG_SEC2B.dta
+{txt}  obs:{res}            38                          
+{txt} vars:{res}             4                          01 May 2014 17:45
+                                              (_dta has notes)
+{txt}{hline}
+              storage   display    value
+variable name   type    format     label      variable label
+{hline}
+{p 0 48}{res}{bind:hhid           }{txt}{bind: str16   }{bind:{txt}%-16s     }{space 1}{bind:         }{bind:  }{res}{res}Unique Household Indentifier{p_end}
+{p 0 48}{bind:plot_id        }{txt}{bind: str19   }{bind:{txt}%19s      }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{p 0 48}{bind:plotsize       }{txt}{bind: float   }{bind:{txt}%9.0g     }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{p 0 48}{bind:season         }{txt}{bind: byte    }{bind:{txt}%9.0g     }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{txt}{hline}
+Sorted by: 
+{res}     Note: Dataset has changed since last saved.
+{txt}
+{com}. summarize 
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 8}hhid {c |}{res}          0
+{txt}{space 5}plot_id {c |}{res}          0
+{txt}{space 4}plotsize {c |}{res}         38    1.017253    2.536396    .056656   14.36635
+{txt}{space 6}season {c |}{res}         38           1           0          1          1
+{txt}
+{com}. sort plot_id
+{txt}
+{com}. customsave , idvar(plot_id) filename(AG_SEC2B.dta) path("$export") dofile(2010_AGSEC2B) user($user)
+ with do file 2010_AGSEC2B by user themacfreezie using computer Torbit
+
+{txt}
+{com}. 
+. * close the log
+.         log     close
+      {txt}name:  {res}<unnamed>
+       {txt}log:  {res}C:/Users/themacfreezie/git/weather_project/tanzania/household_code/logs/wv2_AGSEC2B.smcl
+  {txt}log type:  {res}smcl
+ {txt}closed on:  {res}17 May 2020, 01:18:26
+{txt}{.-}
+{smcl}
+{txt}{sf}{ul off}{smcl}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}C:/Users/themacfreezie/git/weather_project/tanzania/household_code/logs/wv2_AGSEC2B.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res}17 May 2020, 01:19:32
+{txt}
+{com}. 
+. 
+. **********************************************************************************
+. **      TZA 2010 (Wave 2) - Agriculture Section 2B 
+. **********************************************************************************
+. 
+. * load data
+.         use             "$root/AG_SEC2B", clear
+{txt}
+{com}. 
+. * rename variables of interest
+.         rename          y2_hhid hhid
+{res}{txt}
+{com}.         rename          ag2b_15 plotsize_self_ac
+{res}{txt}
+{com}.         rename          ag2b_20 plotsize_gps_ac
+{res}{txt}
+{com}.         
+. * convert from acres to hectares
+.         generate        plotsize_self = plotsize_self_ac * 0.404686
+{txt}
+{com}.         label           var plotsize_self "Self-reported Area (Hectares)"
+{txt}
+{com}.         generate        plotsize_gps = plotsize_gps_ac * 0.404686
+{txt}(22 missing values generated)
+
+{com}.         label           var plotsize_gps "GPS Measured Area (Hectares)"
+{txt}
+{com}.         drop            plotsize_gps_ac plotsize_self_ac
+{txt}
+{com}. 
+. * generate unique ob id
+.         generate        plot_id = hhid + " " + plotnum
+{txt}
+{com}.         isid            plot_id 
+{txt}
+{com}.         
+. * must merge in regional identifiers from 2008_HHSECA to impute
+.         merge           m:1 hhid using "$export/HH_SECA"
+{res}
+{txt}{col 5}Result{col 38}# of obs.
+{col 5}{hline 41}
+{col 5}not matched{col 30}{res}           3,891
+{txt}{col 9}from master{col 30}{res}               0{txt}  (_merge==1)
+{col 9}from using{col 30}{res}           3,891{txt}  (_merge==2)
+
+{col 5}matched{col 30}{res}              38{txt}  (_merge==3)
+{col 5}{hline 41}
+
+{com}.         tab                     _merge
+
+                 {txt}_merge {c |}      Freq.     Percent        Cum.
+{hline 24}{c +}{hline 35}
+         using only (2) {c |}{res}      3,891       99.03       99.03
+{txt}            matched (3) {c |}{res}         38        0.97      100.00
+{txt}{hline 24}{c +}{hline 35}
+                  Total {c |}{res}      3,929      100.00
+{txt}
+{com}.  *** all obs in master are matched
+.         drop            if _merge == 2
+{txt}(3,891 observations deleted)
+
+{com}.         drop            _merge
+{txt}
+{com}. * interrogating regional identifiers
+.         sort            region
+{txt}
+{com}.         by region:      distinct district
+
+{txt}{hline}
+-> region = 3
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        4          2
+
+{txt}{hline}
+-> region = 6
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        1          1
+
+{txt}{hline}
+-> region = 7
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        6          3
+
+{txt}{hline}
+-> region = 12
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        2          1
+
+{txt}{hline}
+-> region = 13
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        1          1
+
+{txt}{hline}
+-> region = 16
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        1          1
+
+{txt}{hline}
+-> region = 17
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}       12          5
+
+{txt}{hline}
+-> region = 18
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        6          3
+
+{txt}{hline}
+-> region = 19
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        2          2
+
+{txt}{hline}
+-> region = 20
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        2          1
+
+{txt}{hline}
+-> region = 53
+
+{col 11}{c |}        Observations
+{col 11}{c |}      total   distinct
+{hline 10}{c +}{hline 22}
+ district {c |}  {res}        1          1
+{txt}
+{com}.  *** 21 distinct districts
+. * unique district id
+.         tostring        region, generate(reg_num) 
+{txt}reg_num generated as {res:str2}
+
+{com}.         tostring        district, generate(dist_num)
+{txt}dist_num generated as {res:str1}
+
+{com}.         generate        uq_dist = reg_num + dist_num
+{txt}
+{com}.         distinct        uq_dist
+
+{txt}{col 10}{c |}        Observations
+{col 10}{c |}      total   distinct
+{hline 9}{c +}{hline 22}
+ uq_dist {c |}  {res}       38         21
+{txt}
+{com}.         sort            region district
+{txt}
+{com}.         destring        uq_dist, replace
+{txt}uq_dist: all characters numeric; {res}replaced {txt}as {res}int
+{txt}
+{com}.  *** 21 once again, good deal
+.         drop            reg_num dist_num
+{txt}
+{com}.         
+. * interrogating plotsize variables
+.         count           if plotsize_gps != . & plotsize_self != .
+  {res}16
+{txt}
+{com}.  *** 16 not mising, out of 38
+.         pwcorr          plotsize_gps plotsize_self
+
+             {txt}{c |} plotsi~s plotsi~f
+{hline 13}{c +}{hline 18}
+plotsize_gps {c |} {res}  1.0000 
+{txt}plotsize_s~f {c |} {res}  0.6565   1.0000 
+{txt}
+{com}.  *** decently high correlation (0.6565)
+. * inverstingating the high and low end of gps measurments
+.         * high end
+.                 tab                     plotsize_gps
+
+        {txt}GPS {c |}
+   Measured {c |}
+       Area {c |}
+ (Hectares) {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+    .056656 {c |}{res}          1        6.25        6.25
+{txt}   .1133121 {c |}{res}          1        6.25       12.50
+{txt}   .2185304 {c |}{res}          1        6.25       18.75
+{txt}   .2468585 {c |}{res}          1        6.25       25.00
+{txt}   .2792333 {c |}{res}          1        6.25       31.25
+{txt}   .2832802 {c |}{res}          1        6.25       37.50
+{txt}   .3075614 {c |}{res}          1        6.25       43.75
+{txt}   .4451546 {c |}{res}          1        6.25       50.00
+{txt}   .4937169 {c |}{res}          1        6.25       56.25
+{txt}   .5665604 {c |}{res}          1        6.25       62.50
+{txt}   .7284348 {c |}{res}          1        6.25       68.75
+{txt}   .8538874 {c |}{res}          1        6.25       75.00
+{txt}   .9510121 {c |}{res}          1        6.25       81.25
+{txt}   1.157402 {c |}{res}          1        6.25       87.50
+{txt}   7.741643 {c |}{res}          1        6.25       93.75
+{txt}   14.36635 {c |}{res}          1        6.25      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}         16      100.00
+{txt}
+{com}.                 *histogram      plotsize_gps if plotsize_gps > 2
+.                 sum                     plotsize_gps, detail
+
+                {txt}GPS Measured Area (Hectares)
+{hline 61}
+      Percentiles      Smallest
+ 1%    {res}  .056656        .056656
+{txt} 5%    {res}  .056656       .1133121
+{txt}10%    {res} .1133121       .2185304       {txt}Obs         {res}         16
+{txt}25%    {res} .2630459       .2468585       {txt}Sum of Wgt. {res}         16
+
+{txt}50%    {res} .4694358                      {txt}Mean          {res}   1.8006
+                        {txt}Largest       Std. Dev.     {res} 3.821822
+{txt}75%    {res} .9024498       .9510121
+{txt}90%    {res} 7.741643       1.157402       {txt}Variance      {res} 14.60632
+{txt}95%    {res} 14.36635       7.741643       {txt}Skewness      {res} 2.659359
+{txt}99%    {res} 14.36635       14.36635       {txt}Kurtosis      {res} 8.744252
+{txt}
+{com}.          *** mean = 1.8
+.          *** 3 obs > 1.1
+.                 sort            plotsize_gps
+{txt}
+{com}.                 sum             plotsize_gps if plotsize_gps>1.1
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+plotsize_gps {c |}{res}          3    7.755133    6.604486   1.157402   14.36635
+{txt}
+{com}.                 list            plotsize_gps plotsize_self if plotsize_gps>1.1 & !missing(plotsize_gps), sep(0)
+{txt}
+     {c TLC}{hline 10}{c -}{hline 10}{c TRC}
+     {c |} {res}plotsi~s   plotsi~f {txt}{c |}
+     {c LT}{hline 10}{c -}{hline 10}{c RT}
+ 14. {c |} {res}1.157402    .809372 {txt}{c |}
+ 15. {c |} {res}7.741643   2.428116 {txt}{c |}
+ 16. {c |} {res}14.36635   1.214058 {txt}{c |}
+     {c BLC}{hline 10}{c -}{hline 10}{c BRC}
+
+{com}.                 pwcorr          plotsize_gps plotsize_self if plotsize_gps>1.1 & !missing(plotsize_gps)
+
+             {txt}{c |} plotsi~s plotsi~f
+{hline 13}{c +}{hline 18}
+plotsize_gps {c |} {res}  1.0000 
+{txt}plotsize_s~f {c |} {res}  0.2385   1.0000 
+{txt}
+{com}.          *** corr = 0.0.2385 (not great)
+.          *** corr above is chiefly low due to the top 2 observations (when sorted by plotsize_gps)
+.          *** should these be dropped? that would leave only 14 obs w/ plotsize_gps
+. *-->    replace         plotsize_gps = . if plotsize_gps >= 7.7 
+.                 list            plotsize_gps plotsize_self if plotsize_gps<7 & !missing(plotsize_gps), sep(0)
+{txt}
+     {c TLC}{hline 10}{c -}{hline 10}{c TRC}
+     {c |} {res}plotsi~s   plotsi~f {txt}{c |}
+     {c LT}{hline 10}{c -}{hline 10}{c RT}
+  1. {c |} {res} .056656   .1011715 {txt}{c |}
+  2. {c |} {res}.1133121    .202343 {txt}{c |}
+  3. {c |} {res}.2185304    .404686 {txt}{c |}
+  4. {c |} {res}.2468585   .1011715 {txt}{c |}
+  5. {c |} {res}.2792333   1.011715 {txt}{c |}
+  6. {c |} {res}.2832802    .404686 {txt}{c |}
+  7. {c |} {res}.3075614    .404686 {txt}{c |}
+  8. {c |} {res}.4451546    .404686 {txt}{c |}
+  9. {c |} {res}.4937169    .404686 {txt}{c |}
+ 10. {c |} {res}.5665604   .3237488 {txt}{c |}
+ 11. {c |} {res}.7284348    .607029 {txt}{c |}
+ 12. {c |} {res}.8538874    .809372 {txt}{c |}
+ 13. {c |} {res}.9510121    .809372 {txt}{c |}
+ 14. {c |} {res}1.157402    .809372 {txt}{c |}
+     {c BLC}{hline 10}{c -}{hline 10}{c BRC}
+
+{com}.                 pwcorr          plotsize_gps plotsize_self if plotsize_gps<7 & !missing(plotsize_gps)
+
+             {txt}{c |} plotsi~s plotsi~f
+{hline 13}{c +}{hline 18}
+plotsize_gps {c |} {res}  1.0000 
+{txt}plotsize_s~f {c |} {res}  0.6645   1.0000 
+{txt}
+{com}.          *** corr = 0.6645 when those top two obs are omitted
+.         * the high end seems mostly okay, except for the last 2 obs
+.         ///////////////////////////////////////////////////////////////////////////
+>         * low end
+.                 tab                     plotsize_gps
+
+        {txt}GPS {c |}
+   Measured {c |}
+       Area {c |}
+ (Hectares) {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+    .056656 {c |}{res}          1        6.25        6.25
+{txt}   .1133121 {c |}{res}          1        6.25       12.50
+{txt}   .2185304 {c |}{res}          1        6.25       18.75
+{txt}   .2468585 {c |}{res}          1        6.25       25.00
+{txt}   .2792333 {c |}{res}          1        6.25       31.25
+{txt}   .2832802 {c |}{res}          1        6.25       37.50
+{txt}   .3075614 {c |}{res}          1        6.25       43.75
+{txt}   .4451546 {c |}{res}          1        6.25       50.00
+{txt}   .4937169 {c |}{res}          1        6.25       56.25
+{txt}   .5665604 {c |}{res}          1        6.25       62.50
+{txt}   .7284348 {c |}{res}          1        6.25       68.75
+{txt}   .8538874 {c |}{res}          1        6.25       75.00
+{txt}   .9510121 {c |}{res}          1        6.25       81.25
+{txt}   1.157402 {c |}{res}          1        6.25       87.50
+{txt}   7.741643 {c |}{res}          1        6.25       93.75
+{txt}   14.36635 {c |}{res}          1        6.25      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}         16      100.00
+{txt}
+{com}.                 *histogram      plotsize_gps if plotsize_gps < 0.5
+.                 sum                     plotsize_gps, detail
+
+                {txt}GPS Measured Area (Hectares)
+{hline 61}
+      Percentiles      Smallest
+ 1%    {res}  .056656        .056656
+{txt} 5%    {res}  .056656       .1133121
+{txt}10%    {res} .1133121       .2185304       {txt}Obs         {res}         16
+{txt}25%    {res} .2630459       .2468585       {txt}Sum of Wgt. {res}         16
+
+{txt}50%    {res} .4694358                      {txt}Mean          {res}   1.8006
+                        {txt}Largest       Std. Dev.     {res} 3.821822
+{txt}75%    {res} .9024498       .9510121
+{txt}90%    {res} 7.741643       1.157402       {txt}Variance      {res} 14.60632
+{txt}95%    {res} 14.36635       7.741643       {txt}Skewness      {res} 2.659359
+{txt}99%    {res} 14.36635       14.36635       {txt}Kurtosis      {res} 8.744252
+{txt}
+{com}.          *** mean = 1.8
+.          *** 3 obs < 0.22
+.                 sum             plotsize_gps if plotsize_gps<0.22
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+plotsize_gps {c |}{res}          3    .1294995    .0821423    .056656   .2185304
+{txt}
+{com}.                 list            plotsize_gps plotsize_self if plotsize_gps<0.22 & !missing(plotsize_gps), sep(0)
+{txt}
+     {c TLC}{hline 10}{c -}{hline 10}{c TRC}
+     {c |} {res}plotsi~s   plotsi~f {txt}{c |}
+     {c LT}{hline 10}{c -}{hline 10}{c RT}
+  1. {c |} {res} .056656   .1011715 {txt}{c |}
+  2. {c |} {res}.1133121    .202343 {txt}{c |}
+  3. {c |} {res}.2185304    .404686 {txt}{c |}
+     {c BLC}{hline 10}{c -}{hline 10}{c BRC}
+
+{com}.                 pwcorr          plotsize_gps plotsize_self if plotsize_gps<0.22 & !missing(plotsize_gps)
+
+             {txt}{c |} plotsi~s plotsi~f
+{hline 13}{c +}{hline 18}
+plotsize_gps {c |} {res}  1.0000 
+{txt}plotsize_s~f {c |} {res}  0.9998   1.0000 
+{txt}
+{com}.          *** corr = 0.9998 (whoa! no problem here I guess)
+.          * for robustness, although no zero values in this set
+.                 replace         plotsize_gps = . if plotsize_gps == 0
+{txt}(0 real changes made)
+
+{com}.                 
+. * impute missing + irregular plot sizes using predictive mean matching
+.         mi set          wide    // declare the data to be wide.
+{txt}
+{com}.         mi xtset, clear         // this is a precautinary step to clear any xtset that the analyst may have had in place previously
+{res}{txt}
+{com}.         mi register     imputed plotsize_gps // identify plotsize_GPS as the variable being imputed
+{res}{txt}
+{com}.         mi impute       pmm plotsize_gps plotsize_self i.uq_dist, add(1) rseed(245780) noisily dots force knn(5) bootstrap
+{res}
+{txt}Imputing {it:m}=1:
+{col 3}{res}
+{txt}Running {bf:regress} on bootstrap sample:
+
+
+      Source {c |}       SS           df       MS      Number of obs   ={res}        16
+{txt}{hline 13}{c +}{hline 34}   F(7, 8)         = {res}        .
+{txt}       Model {c |} {res} 183.533632         7  26.2190903   {txt}Prob > F        ={res}         .
+{txt}    Residual {c |} {res}          0         8           0   {txt}R-squared       ={res}    1.0000
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    1.0000
+{txt}       Total {c |} {res} 183.533632        15  12.2355755   {txt}Root MSE        =   {res}      0
+
+{txt}{hline 14}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1} plotsize_gps{col 15}{c |}      Coef.{col 27}   Std. Err.{col 39}      t{col 47}   P>|t|{col 55}     [95% Con{col 68}f. Interval]
+{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+plotsize_self {c |}{col 15}{res}{space 2}-3.199999{col 27}{space 2}        .{col 38}{space 1}       .{col 47}{space 3}    .{col 55}{space 4}        .{col 68}{space 3}        .
+{txt}{space 13} {c |}
+{space 6}uq_dist {c |}
+{space 10}72  {c |}{col 15}{res}{space 2}-1.222152{col 27}{space 2}        .{col 38}{space 1}       .{col 47}{space 3}    .{col 55}{space 4}        .{col 68}{space 3}        .
+{txt}{space 9}133  {c |}{col 15}{res}{space 2} 16.64878{col 27}{space 2}        .{col 38}{space 1}       .{col 47}{space 3}    .{col 55}{space 4}        .{col 68}{space 3}        .
+{txt}{space 9}175  {c |}{col 15}{res}{space 2} 1.841321{col 27}{space 2}        .{col 38}{space 1}       .{col 47}{space 3}    .{col 55}{space 4}        .{col 68}{space 3}        .
+{txt}{space 9}176  {c |}{col 15}{res}{space 2} .1861556{col 27}{space 2}        .{col 38}{space 1}       .{col 47}{space 3}    .{col 55}{space 4}        .{col 68}{space 3}        .
+{txt}{space 9}181  {c |}{col 15}{res}{space 2}-1.031949{col 27}{space 2}        .{col 38}{space 1}       .{col 47}{space 3}    .{col 55}{space 4}        .{col 68}{space 3}        .
+{txt}{space 9}196  {c |}{col 15}{res}{space 2}-.0242812{col 27}{space 2}        .{col 38}{space 1}       .{col 47}{space 3}    .{col 55}{space 4}        .{col 68}{space 3}        .
+{txt}{space 13} {c |}
+{space 8}_cons {c |}{col 15}{res}{space 2} 1.602556{col 27}{space 2}        .{col 38}{space 1}       .{col 47}{space 3}    .{col 55}{space 4}        .{col 68}{space 3}        .
+{txt}{hline 14}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}{txt}. done
+{res}{txt}
+Univariate imputation{txt}{col 45}{ralign 12:Imputations }= {res}       1
+{txt}Predictive mean matching{txt}{col 45}{ralign 12:added }= {res}       1
+{txt}Imputed: {it:m}=1{txt}{col 45}{ralign 12:updated }= {res}       0
+
+{txt}{col 39}{ralign 12:Nearest neighbors }= {res}       5
+
+{txt}{hline 19}{c TT}{hline 35}{hline 11}
+{txt}{col 20}{c |}{center 46:  Observations per {it:m}}
+{txt}{col 20}{c LT}{hline 35}{c TT}{hline 10}
+{txt}{col 11}Variable {c |}{ralign 12:Complete }{ralign 13:Incomplete }{ralign 10:Imputed }{c |}{ralign 10:Total}
+{hline 19}{c +}{hline 35}{c +}{hline 10}
+{txt}{ralign 19:plotsize_gps }{c |}{res}         16           22        22 {txt}{c |}{res}        38
+{txt}{hline 19}{c BT}{hline 35}{c BT}{hline 10}
+{p 0 1 1 66}(complete + incomplete = total; imputed is the minimum across {it:m}
+ of the number of filled-in observations.){p_end}
+
+{txt}Note: Posterior parameters obtained using {help mi_boot_note:sampling with replacement}.
+{res}{txt}
+{com}.         mi                      unset
+
+{txt}{col 13}variables
+{col 5}original{col 23}new{col 42}meaning
+    {hline 71}
+{col 5}_mi_miss{col 23}mi_miss{col 42}0=orig-complete, 1=orig-incomplete
+{col 5}_#_plotsize_gps{col 23}plotsize_gps_#_{col 42}imputed values of plotsize_gps
+    {hline 71}
+{col 5}# = 1
+
+{com}.         
+. * how did the imputation go?
+.         tab                     mi_miss
+
+ {txt}Incomplete {c |}
+observation {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          0 {c |}{res}         16       42.11       42.11
+{txt}          1 {c |}{res}         22       57.89      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}         38      100.00
+{txt}
+{com}.         pwcorr          plotsize_gps plotsize_gps_1_ if plotsize_gps != .
+
+             {txt}{c |} plotsi~s plots~1_
+{hline 13}{c +}{hline 18}
+plotsize_gps {c |} {res}  1.0000 
+{txt}plotsize_~1_ {c |} {res}  1.0000   1.0000 
+{txt}
+{com}.         tabstat         plotsize_gps plotsize_self plotsize_gps_1_, by(mi_miss) statistics(n mean min max) columns(statistics) longstub format(%9.3g) 
+
+{txt}{lalign 8:mi_miss} {...}
+{ralign 12:variable} {...}
+{c |}         N      mean       min       max
+{hline 22}{c +}{hline 40}
+{lalign 8:0} {...}
+{ralign 12:plotsize_gps} {...}
+{c |}{...}
+ {res}       16       1.8     .0567      14.4
+{space 8} {...}
+{txt}{ralign 12:plotsize_s~f} {...}
+{c |}{...}
+ {res}       16      .653      .101      2.43
+{space 8} {...}
+{txt}{ralign 12:plotsize_~1_} {...}
+{c |}{...}
+ {res}       16       1.8     .0567      14.4
+{txt}{hline 22}{c +}{hline 40}
+{lalign 8:1} {...}
+{ralign 12:plotsize_gps} {...}
+{c |}{...}
+ {res}        0         .         .         .
+{space 8} {...}
+{txt}{ralign 12:plotsize_s~f} {...}
+{c |}{...}
+ {res}       22       1.4      .101      16.2
+{space 8} {...}
+{txt}{ralign 12:plotsize_~1_} {...}
+{c |}{...}
+ {res}       22       .68     .0567      7.74
+{txt}{hline 22}{c +}{hline 40}
+{lalign 8:Total} {...}
+{ralign 12:plotsize_gps} {...}
+{c |}{...}
+ {res}       16       1.8     .0567      14.4
+{space 8} {...}
+{txt}{ralign 12:plotsize_s~f} {...}
+{c |}{...}
+ {res}       38      1.09      .101      16.2
+{space 8} {...}
+{txt}{ralign 12:plotsize_~1_} {...}
+{c |}{...}
+ {res}       38      1.15     .0567      14.4
+{txt}{hline 22}{c BT}{hline 40}
+
+{com}.         rename          plotsize_gps_1_ plotsize
+{res}{txt}
+{com}.         
+. * generate seasonal variable
+.         generate        season = 1
+{txt}
+{com}.         
+. * keep what we want, get rid of the rest
+.         keep            hhid plot_id plotsize season
+{txt}
+{com}. 
+. *       Prepare for export
+. compress
+  {txt}variable {bf}season{sf} was {bf}{res}float{sf}{txt} now {bf}{res}byte{sf}
+{txt}  (114 bytes saved)
+
+{com}. describe
+
+{txt}Contains data from {res}G:/My Drive/weather_project/household_data/tanzania/wave_2/raw/AG_SEC2B.dta
+{txt}  obs:{res}            38                          
+{txt} vars:{res}             4                          01 May 2014 17:45
+                                              (_dta has notes)
+{txt}{hline}
+              storage   display    value
+variable name   type    format     label      variable label
+{hline}
+{p 0 48}{res}{bind:hhid           }{txt}{bind: str16   }{bind:{txt}%-16s     }{space 1}{bind:         }{bind:  }{res}{res}Unique Household Indentifier{p_end}
+{p 0 48}{bind:plot_id        }{txt}{bind: str19   }{bind:{txt}%19s      }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{p 0 48}{bind:plotsize       }{txt}{bind: float   }{bind:{txt}%9.0g     }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{p 0 48}{bind:season         }{txt}{bind: byte    }{bind:{txt}%9.0g     }{space 1}{bind:         }{bind:  }{res}{res}{p_end}
+{txt}{hline}
+Sorted by: 
+{res}     Note: Dataset has changed since last saved.
+{txt}
+{com}. summarize 
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 8}hhid {c |}{res}          0
+{txt}{space 5}plot_id {c |}{res}          0
+{txt}{space 4}plotsize {c |}{res}         38    1.151758    2.774899    .056656   14.36635
+{txt}{space 6}season {c |}{res}         38           1           0          1          1
+{txt}
+{com}. sort plot_id
+{txt}
+{com}. customsave , idvar(plot_id) filename(AG_SEC2B.dta) path("$export") dofile(2010_AGSEC2B) user($user)
+ with do file 2010_AGSEC2B by user themacfreezie using computer Torbit
+
+{txt}
+{com}. 
+. * close the log
+.         log     close
+      {txt}name:  {res}<unnamed>
+       {txt}log:  {res}C:/Users/themacfreezie/git/weather_project/tanzania/household_code/logs/wv2_AGSEC2B.smcl
+  {txt}log type:  {res}smcl
+ {txt}closed on:  {res}17 May 2020, 01:19:33
+{txt}{.-}
+{smcl}
+{txt}{sf}{ul off}

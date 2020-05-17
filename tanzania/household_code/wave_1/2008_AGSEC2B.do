@@ -81,19 +81,19 @@
 		tab			plotsize_gps
 		sum			plotsize_gps, detail
 		*histogram	plotsize_gps if plotsize_gps < 0.11
-	 *** mean = 0.478
-	 *** 10% of obs < 0.11
+	  *** mean = 0.478
+	  *** 10% of obs < 0.11
 		sum 		plotsize_gps if plotsize_gps<0.11
-	 *** 2 obs < 0.11
+	  *** 2 obs < 0.11
 		list		plotsize_gps plotsize_self if plotsize_gps<0.11 & !missing(plotsize_gps), sep(0)
 		pwcorr		plotsize_gps plotsize_self if plotsize_gps<0.11 & !missing(plotsize_gps)
-	 *** corr = 1.000(again, 2 obs)
+	  *** corr = 1.000(again, 2 obs)
 		sum 		plotsize_gps if plotsize_gps<0.15
-	 *** 3 < 0.15
+	  *** 3 < 0.15
 		list		plotsize_gps plotsize_self if plotsize_gps<0.15 & !missing(plotsize_gps), sep(0)
 		pwcorr		plotsize_gps plotsize_self if plotsize_gps<0.15 & !missing(plotsize_gps)
-	 *** corr = 0.3633 (a real value!)
-	 *** again, won't be dropping anything
+	  *** corr = 0.3633 (a real value!)
+	  *** again, won't be dropping anything
 	 * for robustness, although no zero values in this set
 		replace 	plotsize_gps = . if plotsize_gps == 0
 	
@@ -132,7 +132,7 @@
 	rename		plotsize_gps_1_ plotsize	
 	
 * generate seasonal variable
-	generate 	season = 0
+	generate 	season = 1
 
 * keep what we want, get rid of the rest
 	keep 		hhid plot_id plotsize season
