@@ -58,22 +58,43 @@
 	pwcorr 		plotsize_gps plotsize_self
  *** very high correlation (0.8027)
 * inverstingating the high and low end of gps measurments
-	tab			plotsize_gps
-	histogram	plotsize_gps
-	sum			plotsize_gps, detail
- *** mean = 0.935
- *** 90% of obs < 2.18
-	sort		plotsize_gps
-	sum 		plotsize_gps if plotsize_gps>2
- *** 101 obs > 2
-	list		plotsize_gps plotsize_self if plotsize_gps>2 & !missing(plotsize_gps), sep(0)
-	pwcorr		plotsize_gps plotsize_self if plotsize_gps>2 & !missing(plotsize_gps)
- *** corr = 0.6891 (not terrible)
-	sum 		plotsize_gps if plotsize_gps>3
- *** 54 obs > 2
-	list		plotsize_gps plotsize_self if plotsize_gps>3 & !missing(plotsize_gps), sep(0)
-	pwcorr		plotsize_gps plotsize_self if plotsize_gps>3 & !missing(plotsize_gps)
- *** corr = 0.6461 (still not terrible)
+	* high end
+		tab			plotsize_gps
+		histogram	plotsize_gps
+		sum			plotsize_gps, detail
+	 *** mean = 0.935
+	 *** 90% of obs < 2.18
+		sort		plotsize_gps
+		sum 		plotsize_gps if plotsize_gps>2
+	 *** 101 obs > 2
+		list		plotsize_gps plotsize_self if plotsize_gps>2 & !missing(plotsize_gps), sep(0)
+		pwcorr		plotsize_gps plotsize_self if plotsize_gps>2 & !missing(plotsize_gps)
+	 *** corr = 0.6891 (not terrible)
+		sum 		plotsize_gps if plotsize_gps>3
+	 *** 54 obs > 2
+		list		plotsize_gps plotsize_self if plotsize_gps>3 & !missing(plotsize_gps), sep(0)
+		pwcorr		plotsize_gps plotsize_self if plotsize_gps>3 & !missing(plotsize_gps)
+	 *** corr = 0.6461 (still not terrible)
+	 *** the high end seems okay, maybe not dropping anything here...
+	///////////////////////////////////////////////////////////////////////////
+	* low end
+		tab			plotsize_gps
+		histogram	plotsize_gps
+		sum			plotsize_gps, detail
+	 *** mean = 0.935
+	 *** 10% of obs < 0.084
+		sum 		plotsize_gps if plotsize_gps<0.085
+	 *** 88 obs < 0.085
+		list		plotsize_gps plotsize_self if plotsize_gps<0.085 & !missing(plotsize_gps), sep(0)
+		pwcorr		plotsize_gps plotsize_self if plotsize_gps<0.085 & !missing(plotsize_gps)
+	 *** corr = -0.3194 (inverse correlation! interesting! but not completely useless)
+		sum 		plotsize_gps if plotsize_gps<0.05
+	 *** 43 obs < 0.085
+		list		plotsize_gps plotsize_self if plotsize_gps<0.05 & !missing(plotsize_gps), sep(0)
+		pwcorr		plotsize_gps plotsize_self if plotsize_gps<0.05 & !missing(plotsize_gps)
+	 *** corr = -0.5301 (even higher inverse correlation)
+	 *** inverse correlation seems like it could be useful in imputing values
+	 *** ut the values just seem goofy low, espcially if selfreport is getting higher as they go lower
 	
 * must merge in regional identifiers from 2008_HHSECA to impute
 	merge		m:1 hhid using "$export/HH_SECA"
