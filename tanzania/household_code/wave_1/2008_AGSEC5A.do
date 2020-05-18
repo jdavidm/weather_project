@@ -24,7 +24,7 @@
 * define paths
 	global root = "G:/My Drive/weather_project/household_data/tanzania/wave_1/raw"
 	global export = "G:/My Drive/weather_project/household_data/tanzania/wave_1/refined"
-	global logout = "C:/Users/$user/git/weather_project/tanzania/household_code/logs"
+	global logout = "G:/My Drive/weather_project/household_data/tanzania/logs"
 
 * open log
 	log using "$logout/wv1_AGSEC5A", append
