@@ -41,11 +41,12 @@
 	order		hhid region district ward locality ea
 	
 * prepare for export
-compress
-describe
-summarize 
-sort hhid
-customsave , idvar(hhid) filename(HH_SECA.dta) path("$export") dofile(2008_HHSECA) user($user)
+	compress
+	describe
+	summarize 
+	sort hhid
+	customsave , idvar(hhid) filename(HH_SECA.dta) ///
+		path("$export") dofile(2008_HHSECA) user($user)
 
 * close the log
 	log	close

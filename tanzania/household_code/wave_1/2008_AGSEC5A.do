@@ -30,9 +30,9 @@
 	log using "$logout/wv1_AGSEC5A", append
 
 
-**********************************************************************************
-**	TZA 2008 (Wave 1) - Agriculture Section 5A 
-**********************************************************************************
+* **********************************************************************
+* 1 - TZA 2008 (Wave 1) - Agriculture Section 5A 
+* **********************************************************************
 
 * load data
 	use 		"$root/SEC_5A", clear
@@ -42,11 +42,13 @@
 
 * generate unique ob id
 	tostring 			crop_code, generate(crop_num)
- *** small issue, this is doing that weird thing again with stringing the crop code
- *** not doing it in 5b and the code looks exactly the same! what's with that?
+	*** small issue, this is doing that weird thing again with stringing the crop code
+	*** not doing it in 5b and the code looks exactly the same! what's with that?
+	
 	gen str20 			crop_id = hhid + " " + crop_num
 	duplicates report	crop_id
-* no duplicates
+	*** no duplicates
+	
 	isid 				crop_id
 
 * renaming sales variables
@@ -57,18 +59,19 @@
 	generate 	price = value_sold/wgt_sold
 	label 		variable price "Price per kg"
 
-*generate seasonal variable
+* generate seasonal variable
 	generate 	season = 0	
 	
 * keep what we want, get rid of what we don't
 	keep 		hhid crop_code wgt_sold value_sold crop_id price season
 
 * prepare for export
-compress
-describe
-summarize 
-sort crop_id
-customsave , idvar(crop_id) filename(AG_SEC5A.dta) path("$export") dofile(2008_AGSEC5A) user($user)
+	compress
+	describe
+	summarize 
+	sort crop_id
+	customsave , idvar(crop_id) filename(AG_SEC5A.dta) ///
+		path("$export") dofile(2008_AGSEC5A) user($user)
 
 * close the log
 	log	close

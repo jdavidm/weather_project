@@ -1,10 +1,10 @@
 * Project: WB Weather
 * Created on: May 2020
 * Created by: McG
-* Stata v.15
+* Stata v.16
 
 * does
-	*cleans Tanzania household variables, wave 1 Ag sec4b
+	* cleans Tanzania household variables, wave 1 Ag sec4b
 	* kind of a crop roster, with harvest weights, short rainy season
 	
 * assumes
@@ -29,9 +29,10 @@
 * open log
 	log using "$logout/wv1_AGSEC4B", append
 
-**********************************************************************************
-**	TZA 2008 (Wave 1) - Agriculture Section 4B 
-**********************************************************************************
+		
+* **********************************************************************
+* 1 - TZA 2008 (Wave 1) - Agriculture Section 4B 	
+* **********************************************************************
 
 * load data
 	use 	"$root/SEC_4B", clear
@@ -55,10 +56,12 @@
 	replace 	mixedcrop_pct = 50 if s4bq4 == 2
 	replace 	mixedcrop_pct = 25 if s4bq4 == 1
 	tab			mixedcrop_pct, missing
-* there are 923 obs missing mixedcrop_pct here
+	*** there are 923 obs missing mixedcrop_pct here
+	
 	tab 		mixedcrop_pct crop_code, missing
-* only 2 of that 923 is missing a crop code
-* 381 of these for maize
+	*** only 2 of that 923 is missing a crop code
+	*** 381 of these for maize
+	
 	sort 		crop_code
 * this is an issue
 
@@ -75,11 +78,12 @@
 				wgt_hvsted value_seed_purch season
 
 * prepare for export
-compress
-describe
-summarize 
-sort crop_id
-customsave , idvar(crop_id) filename(AG_SEC4B.dta) path("$export") dofile(2008_AGSEC4B) user($user)
+	compress
+	describe
+	summarize 
+	sort crop_id
+	customsave , idvar(crop_id) filename(AG_SEC4B.dta) ///
+		path("$export") dofile(2008_AGSEC4B) user($user)
 
 * close the log
 	log	close

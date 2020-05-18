@@ -1,7 +1,7 @@
 * Project: WB Weather
 * Created on: May 2020
 * Created by: McG
-* Stata v.15
+* Stata v.16
 
 * does
 	* cleans Tanzania household variables, wave 1 Ag sec2a
@@ -54,59 +54,72 @@
 	
 * interrogating plotsize variables
 	count 		if plotsize_gps != . & plotsize_self != .
- *** only 856 not mising, out of 5,128
+	*** only 856 not mising, out of 5,128
 	pwcorr 		plotsize_gps plotsize_self
- *** high correlation (0.8027)
-* inverstingating the high and low end of gps measurments
+	*** high correlation (0.8027)
+ 
+* investigating the high and low end of gps measurments
 	* high end
 		tab			plotsize_gps
 		histogram	plotsize_gps if plotsize_gps > 2
 		sum			plotsize_gps, detail
-	 *** mean = 0.935
-	 *** 90% of obs < 2.18
+		*** mean = 0.935
+		*** 90% of obs < 2.18
+		
 		sort		plotsize_gps
 		sum 		plotsize_gps if plotsize_gps>2
-	 *** 101 obs > 2
+		*** 101 obs > 2
+		
 		list		plotsize_gps plotsize_self if plotsize_gps>2 & !missing(plotsize_gps), sep(0)
 		pwcorr		plotsize_gps plotsize_self if plotsize_gps>2 & !missing(plotsize_gps)
-	 *** corr = 0.6891 (not terrible)
+		*** corr = 0.6891 (not terrible)
+		
 		sum 		plotsize_gps if plotsize_gps>3
-	 *** 54 obs > 2
+		*** 54 obs > 2
+		
 		list		plotsize_gps plotsize_self if plotsize_gps>3 & !missing(plotsize_gps), sep(0)
 		pwcorr		plotsize_gps plotsize_self if plotsize_gps>3 & !missing(plotsize_gps)
-	 *** corr = 0.6461 (still not terrible)
-	 *** the high end seems okay, maybe not dropping anything here...
-	///////////////////////////////////////////////////////////////////////////
+		*** corr = 0.6461 (still not terrible)
+		*** the high end seems okay, maybe not dropping anything here...
+
 	* low end
 		tab			plotsize_gps
 		histogram	plotsize_gps if plotsize_gps < 0.5
 		sum			plotsize_gps, detail
-	 *** mean = 0.935
-	 *** 10% of obs < 0.084
+		*** mean = 0.935
+		*** 10% of obs < 0.084
+		
 		sum 		plotsize_gps if plotsize_gps<0.085
-	 *** 88 obs < 0.085
+		*** 88 obs < 0.085
+		
 		list		plotsize_gps plotsize_self if plotsize_gps<0.085 & !missing(plotsize_gps), sep(0)
 		pwcorr		plotsize_gps plotsize_self if plotsize_gps<0.085 & !missing(plotsize_gps)
-	 *** corr = -0.3194 (inverse correlation! interesting! but not completely useless)
+		*** corr = -0.3194 (inverse correlation! interesting! but not completely useless)
+		
 		sum 		plotsize_gps if plotsize_gps<0.05
-	 *** 43 obs < 0.05
+		*** 43 obs < 0.05
+		
 		list		plotsize_gps plotsize_self if plotsize_gps<0.05 & !missing(plotsize_gps), sep(0)
 		pwcorr		plotsize_gps plotsize_self if plotsize_gps<0.05 & !missing(plotsize_gps)
-	 *** corr = -0.5301 (even higher inverse correlation)
-	 *** inverse correlation seems like it could be useful in imputing values
+		*** corr = -0.5301 (even higher inverse correlation)
+		*** inverse correlation seems like it could be useful in imputing values
+	 
 	* will drop the lone '0' value, to be imputed later
 		replace 	plotsize_gps = . if plotsize_gps == 0
 	
 * must merge in regional identifiers from 2008_HHSECA to impute
 	merge		m:1 hhid using "$export/HH_SECA"
 	tab			_merge
- *** all obs in master are matched
+	*** all obs in master are matched
+	
 	drop		if _merge == 2
 	drop		_merge
+	
 * interrogating regional identifiers
 	sort 		region
 	by region: 	distinct district
- *** 126 distinct districts
+	*** 126 distinct districts
+	
 * unique district id
 	tostring	region, generate(reg_num) 
 	tostring	district, generate(dist_num)
@@ -114,7 +127,8 @@
 	distinct	uq_dist
 	sort 		region district
 	destring	uq_dist, replace
- *** 126 once again, good deal
+	*** 126 once again, good deal
+	
 	drop 		reg_num dist_num
 	
 * impute missing + irregular plot sizes using predictive mean matching
@@ -137,12 +151,13 @@
 * keep what we want, get rid of the rest
 	keep 		hhid plot_id plotsize season
 
-*	Prepare for export
-compress
-describe
-summarize 
-sort plot_id
-customsave , idvar(plot_id) filename(AG_SEC2A.dta) path("$export") dofile(2008_AGSEC2A) user($user)
+* prepare for export
+	compress
+	describe
+	summarize 
+	sort plot_id
+	customsave , idvar(plot_id) filename(AG_SEC2A.dta) ///
+		path("$export") dofile(2008_AGSEC2A) user($user)
 
 * close the log
 	log	close

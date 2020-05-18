@@ -30,9 +30,9 @@
 	log using "$logout/wv1_AGSEC5B", append
 
 
-**********************************************************************************
-**	TZA 2008 (Wave 1) - Agriculture Section 5B 
-**********************************************************************************
+* **********************************************************************
+* 1 - TZA 2008 (Wave 1) - Agriculture Section 5B 
+* **********************************************************************
 
 * load data
 	use 		"$root/SEC_5B", clear
@@ -44,8 +44,8 @@
 	tostring 			crop_code, generate(crop_num)
 	gen str20 			crop_id = hhid + " " + crop_num
 	duplicates report	crop_id
-* no duplicates
-*	duplicates drop 	crop_id, force
+	*** no duplicates
+
 	isid 				crop_id
 
 * renaming sales variables
@@ -56,18 +56,19 @@
 	generate 	price = value_sold/wgt_sold
 	label 		variable price "Price per kg"
 
-*generate seasonal variable
+* generate seasonal variable
 	generate 	season = 1	
 	
 * keep what we want, get rid of what we don't
 	keep 		hhid crop_code wgt_sold value_sold crop_id price season
 
 * prepare for export
-compress
-describe
-summarize 
-sort crop_id
-customsave , idvar(crop_id) filename(AG_SEC5B.dta) path("$export") dofile(2008_AGSEC5B) user($user)
+	compress
+	describe
+	summarize 
+	sort crop_id
+	customsave , idvar(crop_id) filename(AG_SEC5B.dta) ///
+		path("$export") dofile(2008_AGSEC5B) user($user)
 
 * close the log
 	log	close
