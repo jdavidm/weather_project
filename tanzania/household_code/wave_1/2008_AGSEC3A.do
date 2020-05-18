@@ -13,7 +13,7 @@
 * TO DO:
 	* completed
 
-	
+
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
@@ -30,9 +30,9 @@
 	log using "$logout/wv1_AGSEC3A", append
 
 
-**********************************************************************************
-**	TZA 2008 (Wave 1) - Agriculture Section 3A 
-**********************************************************************************
+* **********************************************************************
+* 1- TZA 2008 (Wave 1) - Agriculture Section 3A 
+* **********************************************************************
 
 * load data
 	use 		"$root/SEC_3A", clear
@@ -44,7 +44,7 @@
 * renaming inputs
 	rename 		s3aq3 status
 	rename 		s3aq5code crop_code
-	rename 		s3aq15 irrigated 
+	rename 		s3aq15 irrigated
 	rename 		s3aq43 fert_any
 	rename 		s3aq45 kilo_fert
 	rename 		s3aq49 pesticide_any
@@ -61,9 +61,9 @@
 				s3aq61_35 s3aq61_36)
 
 	egen 		hired_labor_days = rsum(s3aq63_1 s3aq63_2 s3aq63_4 s3aq63_5 s3aq63_7 s3aq63_8)
- 
+
 	generate 	labor_days = hh_labor_days + hired_labor_days
-	
+
 * generate seasonal variable
 	generate 	season = 0
 
@@ -74,7 +74,7 @@
 *	Prepare for export
 	compress
 	describe
-	summarize 
+	summarize
 	sort plot_id
 	customsave , idvar(plot_id) filename(AG_SEC3A.dta) ///
 		path("$export") dofile(2008_AGSEC3A) user($user)
