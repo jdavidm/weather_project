@@ -21,6 +21,9 @@
 * 0 - setup
 * **********************************************************************
 
+* set $pack to 0 to skip package installation
+	global 			pack 	0
+		
 * User initials:
     * Jeff		jdm
     * Anna	 	alj
@@ -28,7 +31,7 @@
     * Emil      etk
 
 * Set this value to the user currently using this file
-    global user "jdm"
+    global 			user 	"jdm"
 
 * Specify Stata version in use
     global stataVersion 16.1    // set Stata version
@@ -63,51 +66,52 @@
 * 0 (b) - Check if any required packages are installed:
 * **********************************************************************
 
-* for packages/commands, make a local containing any required packages
-	loc userpack "blindschemes estout xfill reghdfe ftools weather customsave distinct winsor2"
+* install packages if global is set to 1
+if $pack == 1 {
 	
-* install packages that are on ssc	
-	foreach package in `userpack' {
-		capture : which `package', all
-		if (_rc) {
+	* for packages/commands, make a local containing any required packages
+		loc userpack "blindschemes estout xfill reghdfe ftools weather customsave distinct winsor2"
+	
+	* install packages that are on ssc	
+		foreach package in `userpack' {
+			capture : which `package', all
+			if (_rc) {
+				capture window stopbox rusure "You are missing some packages." "Do you want to install `package'?"
+				if _rc == 0 {
+					capture ssc install `package', replace
+					if (_rc) {
+						window stopbox rusure `"This package is not on SSC. Do you want to proceed without it?"'
+					}
+				}
+				else {
+					exit 199
+				}
+			}
+		}
+
+	* the package -xfill- is not on ssc so installing here
+		which xfill
+		if _rc != 0 {
 			capture window stopbox rusure "You are missing some packages." "Do you want to install `package'?"
 			if _rc == 0 {
-				capture ssc install `package', replace
-				if (_rc) {
-					window stopbox rusure `"This package is not on SSC. Do you want to proceed without it?"'
-				}
+				qui: net install xfill, replace from(https://www.sealedenvelope.com/)
 			}
 			else {
 				exit 199
 			}
 		}
-	}
 
-* The package -xfill- is not on ssc so installing here
-	which xfill
-	if _rc != 0 {
-        capture window stopbox rusure "You are missing some packages." "Do you want to install `package'?"
-        if _rc == 0 {
-            qui: net install xfill, replace from(https://www.sealedenvelope.com/)
-        }
-        else {
-        	exit 199
-        }
-	}
+	* update all ado files
+		ado update, update
 
-* Update all ado files
-	ado update, update
+	* install metadata .do file
+		net install StataConfig, ///
+		from(https://raw.githubusercontent.com/etjernst/Materials/master/stata/) replace
 
-* **********************************************************************
-* Install my metadata .do file
-    net install StataConfig, ///
-    from(https://raw.githubusercontent.com/etjernst/Materials/master/stata/) replace
-
-* **********************************************************************
-* Set graph and Stata preferences
-    set scheme plotplain
-    set more off
-
+	* set graph and Stata preferences
+		set scheme plotplain
+		set more off
+}
 	
 * **********************************************************************
 * 1 - run weather data cleaning .do file
