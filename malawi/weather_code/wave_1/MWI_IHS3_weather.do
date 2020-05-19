@@ -21,20 +21,17 @@
 * TO DO:
 	* completed
 
-	
+
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
 
-* set global user
-	*global user "jdmichler" // global user set in masterdo
-	
-* define paths	
-	loc root = "G:/My Drive/weather_project/weather_data/malawi/wave_1/daily"
-	loc export = "G:/My Drive/weather_project/weather_data/malawi/wave_1/refined"
-	loc logout = "G:/My Drive/weather_project/weather_data/malawi/logs"
+* define paths
+	loc root = "$data/weather_data/malawi/wave_1/daily"
+	loc export = "$data/weather_data/malawi/wave_1/refined"
+	loc logout = "$data/weather_data/malawi/logs"
 
-* open log	
+* open log
 	log using "`logout'/mwi_ihs3_weather"
 
 
@@ -47,27 +44,27 @@
 
 * loop through each of the sub-folders in the above local
 foreach folder of local folderList {
-	
+
 	* create directories to write output to
 	qui: capture mkdir "`export'/`folder'/"
-	
+
 	* define local with all files in each sub-folder
 		loc fileList : dir "`root'/`folder'" files "*.dta"
-	
+
 	* loop through each file in the above local
 	foreach file in `fileList' {
-		
+
 		* import the daily data file
 		use "`root'/`folder'/`file'", clear
-		
+
 		* define locals to govern file naming
 			loc dat = substr("`file'", 1, 4)
 			loc ext = substr("`file'", 6, 2)
 			loc sat = substr("`file'", 9, 3)
-		
+
 		* run the user written weather command - this takes a while
 		weather rf_ , rain_data ini_month(1) fin_month(8) day_month(1) keep(case_id)
-		
+
 		* save file
 		customsave , idvar(case_id) filename("`dat'_`ext'_`sat'.dta") ///
 			path("`export'/`folder'") dofile(MWI_IHS3_weather) user($user)
@@ -84,27 +81,27 @@ foreach folder of local folderList {
 
 * loop through each of the sub-folders in the above local
 foreach folder of local folderList {
-	
+
 	* create directories to write output to
 	qui: capture mkdir "`export'/`folder'/"
 
-	* define local with all files in each sub-folder	
+	* define local with all files in each sub-folder
 	loc fileList : dir "`root'/`folder'" files "*.dta"
-	
+
 	* loop through each file in the above local
 	foreach file in `fileList' {
-		
-		* import the daily data file		
+
+		* import the daily data file
 		use "`root'/`folder'/`file'", clear
-		
-		* define locals to govern file naming		
+
+		* define locals to govern file naming
 		loc dat = substr("`file'", 1, 4)
 		loc ext = substr("`file'", 6, 2)
 		loc sat = substr("`file'", 9, 2)
-		
-		* run the user written weather command - this takes a while		
+
+		* run the user written weather command - this takes a while
 		weather tmp_ , temperature_data growbase_low(10) growbase_high(30) ini_month(1) fin_month(8) day_month(1) keep(case_id)
-		
+
 		* save file
 		customsave , idvar(case_id) filename("`dat'_`ext'_`sat'.dta") ///
 			path("`export'/`folder'") dofile(MWI_IHS3_weather) user($user)
