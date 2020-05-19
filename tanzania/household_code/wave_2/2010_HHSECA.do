@@ -18,23 +18,20 @@
 * 0 - setup
 * **********************************************************************
 
-* set user
-	global user "themacfreezie"
-
 * define paths
-	global root = "G:/My Drive/weather_project/household_data/tanzania/wave_2/raw"
-	global export = "G:/My Drive/weather_project/household_data/tanzania/wave_2/refined"
-	global logout = "G:/My Drive/weather_project/household_data/tanzania/logs"
+	loc root = "$data/household_data/tanzania/wave_2/raw"
+	loc export = "$data/household_data/tanzania/wave_2/refined"
+	loc logout = "$data/household_data/tanzania/logs"
 
 * open log
-	log using "$logout/wv2_HHSECA", append
+	log using "`logout'/wv2_HHSECA", append
 
 * ***********************************************************************
 * 1 - TZA 2010 (Wave 2) - Household Section A
 * *********************1*************************************************
 
 * load data
-	use 		"$root/HH_SEC_A", clear
+	use 		"`root'/HH_SEC_A", clear
 
 * rename variables of interest
 	rename		y2_hhid hhid
@@ -49,7 +46,7 @@
 	summarize
 	sort hhid
 	customsave , idvar(hhid) filename(HH_SECA.dta) ///
-		path("$export") dofile(2010_HHSECA) user($user)
+		path("`export'") dofile(2010_HHSECA) user($user)
 
 * close the log
 	log	close
