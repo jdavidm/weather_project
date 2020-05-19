@@ -37,7 +37,7 @@
 	loc logout = "G:/My Drive/weather_project/weather_data/nigeria/logs"
 
 * open log	
-	log using "`logout'/nga_ghsy1_weather", replace
+	log using "`logout'/nga_ghsy1_weather", append
 
 
 * **********************************************************************

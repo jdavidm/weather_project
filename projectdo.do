@@ -31,7 +31,7 @@
     * Emil      etk
 
 * Set this value to the user currently using this file
-    global 			user 	"jdm"
+    global 			user 	"mcg"
 
 * Specify Stata version in use
     global stataVersion 16.1    // set Stata version
@@ -53,7 +53,7 @@
     }
 
     if "$user" == "mcg" {
-        global 		code  	"C:/Users/jdmichler/git/weather_project"
+        global 		code  	"C:/Users/themacfreezie/git/weather_project"
 		global 		data		"G:/My Drive/weather_project"
     }
 
@@ -112,7 +112,7 @@ if $pack == 1 {
 		set scheme plotplain
 		set more off
 }
-	
+
 
 * **********************************************************************
 * 1 - run weather data cleaning .do file
