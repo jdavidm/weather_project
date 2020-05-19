@@ -8,6 +8,8 @@
 	* reads in Nigeria, WAVE 3, POST HARVEST, NIGERIA SECTA3i 
 	* determines harvest information (area and quantity) and that maize is the second most widely cultivated crop///
 	* outputs clean data file ready for combination with wave 3 hh data
+	
+	* WILL WANT TO DROP INFORMATION ON LAND AREA
 
 * assumes
 	* customsave.ado
