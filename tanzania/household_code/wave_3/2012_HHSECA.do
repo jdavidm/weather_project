@@ -6,14 +6,14 @@
 * does
 	* cleans Tanzania household variables, wave 3 hh secA
 	* pulls regional identifiers
-	
+
 * assumes
 	* customsave.ado
 
 * TO DO:
 	* completed
 
-	
+
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
@@ -34,11 +34,11 @@
 * *********************1*************************************************
 
 * load data
-	use 		"$root/HH_SEC_A", clear
+	use 			"$root/HH_SEC_A", clear
 
 * keep variables of interest
-	keep 		occ- hh_a12_1
-	
+	keep 			occ- hh_a12_1
+
 * renaming some variables
 	rename		y3_hhid hhid
 	rename		hh_a01_1 region
@@ -47,11 +47,12 @@
 	rename		hh_a04_1 village
 
 * prepare for export
-compress
-describe
-summarize 
-sort hhid
-customsave , idvar(hhid) filename(HH_SECA.dta) path("$export") dofile(2012_HHSECA) user($user)
+	compress
+	describe
+	summarize
+	sort hhid
+	customsave , idvar(hhid) filename(HH_SECA.dta) ///
+		path("$export") dofile(2012_HHSECA) user($user)
 
 * close the log
 	log	close

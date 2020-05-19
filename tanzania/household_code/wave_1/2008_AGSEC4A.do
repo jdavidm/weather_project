@@ -1,12 +1,11 @@
 * Project: WB Weather
 * Created on: May 2020
 * Created by: McG
-* Stata v.15
+* Stata v.16
 
 * does
 	* cleans Tanzania household variables, wave 1 Ag sec4a
 	* kind of a crop roster, with harvest weights, long rainy season
-	* generates weight harvested, harvest month, percentage of plot planted with given crop, value of seed purchases
 	
 * assumes
 	* customsave.ado
@@ -20,23 +19,23 @@
 * **********************************************************************
 
 * set user
-*	global user "themacfreezie"
+	global user "themacfreezie"
 
 * define paths
-	loc root = "G:/My Drive/weather_project/household_data/tanzania/wave_1/raw"
-	loc export = "G:/My Drive/weather_project/household_data/tanzania/wave_1/refined"
-	loc logout = "G:/My Drive/weather_project/household_data/tanzania/logs"
+	global root = "G:/My Drive/weather_project/household_data/tanzania/wave_1/raw"
+	global export = "G:/My Drive/weather_project/household_data/tanzania/wave_1/refined"
+	global logout = "G:/My Drive/weather_project/household_data/tanzania/logs"
 
 * open log
-	log using "`logout'/wv1_AGSEC4A", append
-
+	log using "$logout/wv1_AGSEC4A", append
+	
 	
 * **********************************************************************
-* 1 - TZA 2008 (Wave 1) - Agriculture Section 4A 
+* 1 - TZA 2008 (Wave 1) - Agriculture Section 4A
 * **********************************************************************
 
 * load data
-	use 		"`root'/SEC_4A", clear
+	use 	"$root/SEC_4A", clear
 
 * rename variables of interest
 	rename 		zaocode crop_code
@@ -46,7 +45,8 @@
 	tostring 			crop_code, generate(crop_num)
 	gen str21 			crop_id = hhid + " " + plotnum + " " + crop_num
 	duplicates report 	crop_id
-* no duplicates!
+	*** no duplicates!
+	
 	isid 				crop_id
 
 * generating mixed crop variable
@@ -57,10 +57,12 @@
 	replace 	mixedcrop_pct = 50 if s4aq4 == 2
 	replace 	mixedcrop_pct = 25 if s4aq4 == 1
 	tab			mixedcrop_pct, missing
-* there are 519 obs missing mixedcrop_pct here
+	*** there are 519 obs missing mixedcrop_pct here
+	
 	tab 		mixedcrop_pct crop_code, missing
-* only 1 of that 923 is missing a crop code
-* 137 of these for maize
+	*** only 1 of that 923 is missing a crop code
+	*** 137 of these for maize
+	
 	sort 		crop_code
 * this is an issue
 
@@ -69,18 +71,20 @@
 	rename 		s4aq15 wgt_hvsted
 	label 		variable wgt_hvsted "What was the quanitity harvested? (kg)"
 	rename 		s4aq20 value_seed_purch
-* see if you can find quantity purchased and quantity of old seeds used to derive total value seeds used
+	generate 	season = 0
+	*** see if you can find quantity purchased and quantity of old seeds used to derive total value seeds used
 
 * keep what we want, get rid of what we don't
 	keep 		hhid plotnum plot_id crop_id crop_code mixedcrop_pct harvest_month ///
-				wgt_hvsted value_seed_purch
+				wgt_hvsted value_seed_purch season
 
 * prepare for export
-compress
-describe
-summarize 
-sort crop_id
-customsave , idvar(crop_id) filename(AG_SEC4A.dta) path("`export'") dofile(2008_AGSEC4A) user($user)
+	compress
+	describe
+	summarize 
+	sort crop_id
+	customsave , idvar(crop_id) filename(AG_SEC4A.dta) ///
+		path("$export") dofile(2008_AGSEC4A) user($user)
 
 * close the log
 	log	close
