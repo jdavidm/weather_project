@@ -18,19 +18,15 @@
 * TO DO:
 	* completed
 
-	
+
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
 
-* set user
-	*global user "jdmichler"
-	*global user set in masterdo
-
 * define paths
-	loc root = "G:/My Drive/weather_project/weather_data/malawi/wave_3/raw"
-	loc export = "G:/My Drive/weather_project/weather_data/malawi/wave_3/daily"
-	loc logout = "G:/My Drive/weather_project/weather_data/malawi/logs"
+	loc root = "$data/weather_data/malawi/wave_3/raw"
+	loc export = "$data/weather_data/malawi/wave_3/daily"
+	loc logout = "$data/weather_data/malawi/logs"
 
 * open log
 	log using "`logout'/mwi_ihs4_converter", replace
@@ -45,16 +41,16 @@
 
 * define local with all files in each sub-folder
 foreach folder of local folderList {
-	
+
 	* create directories to write output to
 	qui: capture mkdir "`export'/`folder'/"
-	
+
 	* loop through each file in the above local
 		loc fileList : dir "`root'/`folder'" files "*.csv"
-	
+
 	* loop through each file in the above local
 	foreach file in `fileList' {
-		
+
 		* import the .csv files - this takes time
 		import delimited "`root'/`folder'/`file'", varnames (1) clear
 
@@ -77,7 +73,7 @@ foreach folder of local folderList {
 			loc cyear = `year'-1
 			if `month' < 10 rename `var' rf_`cyear'`month'`day'
 		}
-		* rename the five early month variables				
+		* rename the five early month variables
 		foreach var of varlist rf_* {
 			loc year = substr("`var'", 4, 4)
 			loc month = substr("`var'", 8, 2)
@@ -113,7 +109,7 @@ foreach folder of local folderList {
 			loc nmonth = `month'+3
 			if `month' == 01 rename `var' rf_`year'0`nmonth'`day'
 		}
-		* rename the three later month variables				
+		* rename the three later month variables
 		foreach var of varlist rf_* {
 			loc year = substr("`var'", 4, 4)
 			loc month = substr("`var'", 8, 2)
@@ -139,7 +135,7 @@ foreach folder of local folderList {
 			loc dat = substr("`file'", 1, 4)
 			loc ext = substr("`file'", 6, 2)
 			loc sat = substr("`file'", 9, 3)
-		
+
 	* save file
 	customsave , idvar(hhid) filename("`dat'_`ext'_`sat'_daily.dta") ///
 		path("`export'/`folder'") dofile(MWI_IHS4_converter) user($user)
@@ -156,16 +152,16 @@ foreach folder of local folderList {
 
 * loop through each of the sub-folders in the above local
 foreach folder of local folderList {
-	
+
 	*create directories to write output to
 	qui: capture mkdir "`export'/`folder'/"
-	
+
 	* define local with all files in each sub-folder
 		loc fileList : dir "`root'/`folder'" files "*.csv"
-		
-	* loop through each file in the above local	
+
+	* loop through each file in the above local
 	foreach file in `fileList' {
-		
+
 		* import the .csv files - this takes time
 		import delimited "`root'/`folder'/`file'", varnames (1) clear
 
@@ -188,7 +184,7 @@ foreach folder of local folderList {
 			loc cyear = `year'-1
 			if `month' < 10 rename `var' tmp_`cyear'`month'`day'
 		}
-		* rename the five early month variables					
+		* rename the five early month variables
 		foreach var of varlist tmp_* {
 			loc year = substr("`var'", 5, 4)
 			loc month = substr("`var'", 9, 2)
@@ -224,7 +220,7 @@ foreach folder of local folderList {
 			loc nmonth = `month'+3
 			if `month' == 01 rename `var' tmp_`year'0`nmonth'`day'
 		}
-		* rename the three later month variables	
+		* rename the three later month variables
 		foreach var of varlist tmp_* {
 			loc year = substr("`var'", 5, 4)
 			loc month = substr("`var'", 9, 2)
@@ -250,13 +246,13 @@ foreach folder of local folderList {
 			loc dat = substr("`file'", 1, 4)
 			loc ext = substr("`file'", 6, 2)
 			loc sat = substr("`file'", 9, 2)
-	
-		
+
+
 	* save file
 	customsave , idvar(hhid) filename("`dat'_`ext'_`sat'_daily.dta") ///
 		path("`export'/`folder'") dofile(MWI_IHS4_converter) user($user)
 	}
-}	
+}
 
 * close the log
 	log	close
