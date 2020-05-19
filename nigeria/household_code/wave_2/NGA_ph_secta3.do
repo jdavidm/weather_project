@@ -1,6 +1,7 @@
-* Project: WB Weather
+ * Project: WB Weather
 * Created on: May 2020
-* Created by: ek
+* Created by: alj
+* Edited by: ek
 * Stata v.16
 
 * does
@@ -21,119 +22,105 @@
 	
 * TO DO:
 	* need to convert Naira to USD
-	* unsure - incomplete, runs but maybe not right? 
 	* clarify "does" section
-	* Root not working with calling file
 
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
 
-* set global user
-	global user "emilk"
+	* set global user
+		global 		user 	"emilk"
 	
-* define paths	
-	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_2/raw"
-	loc export = "G:/My Drive/weather_project/household_data/nigeria/wave_2/refined"
-	loc logout = "G:/My Drive/weather_project/household_data/nigeria/logs"
+	* define paths	
+		loc 	root 	= 	"G:/My Drive/weather_project/household_data/nigeria/wave_2/raw"
+		loc 	export 	= 	"G:/My Drive/weather_project/household_data/nigeria/wave_2/refined"
+		loc 	logout 	= 	"G:/My Drive/weather_project/household_data/nigeria/logs"
 
-* close log (in case still open)
-	*log close
 	
-* open log	
-	log using "`logout'/ph_secta3", append
+	* open log	
+		log 	using 	"`logout'/ph_secta3", append
 
 * **********************************************************************
 * 1 - general clean up, renaming, etc. 
 * **********************************************************************
 		
-* import the first relevant data file
-		use "G:\My Drive\weather_project\household_data\nigeria\wave_2\raw\secta3_harvestw2.dta" , clear 	
+	* import the first relevant data file
+		use 		"G:\My Drive\weather_project\household_data\nigeria\wave_2\raw\secta3_harvestw2.dta" , clear 	
 
-tab cropcode
+		tab 		cropcode
 	***main crop is "cassava old"
-*not going to use cassava
+	*not going to use cassava instead we use maize
 
-describe
-sort hhid plotid cropid cropcode
-isid hhid plotid cropid cropcode, missok
+		describe
+		sort 		hhid plotid cropid cropcode
+		isid 		hhid plotid cropid cropcode, missok
 
 * **********************************************************************
 * 2 - harvested amount, land area, conversions, etc.
 * **********************************************************************
 	
 
-*we will also use this measure to get yield
-gen harvestq = sa3q6a1
-label variable harvestq "quantity harvested since last interview, not in standardized unit"
-*units of harvest
+	*we will also use this measure to get yield
+		gen 		harvestq = sa3q6a1
+		label 		variable harvestq "quantity harvested since last interview, not in standardized unit"
 
-*units of harvest
-rename sa3q6a2 harv_unit
-tab harv_unit
-tab harv_unit, nolabel
+	*units of harvest
+		rename 		sa3q6a2 harv_unit
+		tab			harv_unit, nolabel
+		rename 		sa3q3 cultivated
 
-rename sa3q3 cultivated
-
-* Naria needs to be converted to USD
-gen crop_value = sa3q18
-label variable crop_value "if you had sold all crop harvested since the last visit, what would be the total value in Naira?"
-rename crop_value tf_hrv 
+	* Naria needs to be converted to USD
+		gen 		crop_value = sa3q18
+		label 		variable crop_value 	"if you had sold all crop harvested since the last visit, what would be the total value in Naira?"
+		rename 		crop_value tf_hrv 
 
 
-* define new paths for conversions	
-	loc root = "G:/My Drive/weather_project/household_data/nigeria/conversion_files/"
+	* define new paths for conversions	
+		loc 	root = 	"G:/My Drive/weather_project/household_data/nigeria/conversion_files/"
+		merge m:1 cropcode harv_unit using "`root'/harvconv"
+		*matched 8673 but didn't match 6399 (from master 4275 and using 2124)
 
+		keep 		if	 	_merge==3
+		drop 				_merge
 
+	*converting harvest quantities to kgs
+		gen 		harv_kg = harvestq*harv_conversion
+		order 		harvestq harv_unit harv_conversion harv_kg
+		tab 		harv_kg, missing
+		*6407 missing
 
-merge m:1 cropcode harv_unit using "`root'/harvconv"
-*matched 8673 but didn't match 6399 (from master 4275 and using 2124)
+		tab 		cultivated
+		*yes = 9960 no = 2962 - could explain some of the data that didnt match ^^^
 
-keep if _merge==3
-drop _merge
-
-
-*converting harvest quantities to kgs
-gen harv_kg = harvestq*harv_conversion
-
-order harvestq harv_unit harv_conversion harv_kg
-
-tab harv_kg, missing
-*6407 missing
-
-tab cultivated
-*yes = 9960 no = 2962 - could explain some of the data that didnt match ^^^
-
-gen cp_hrv = harv_kg if cropcode == 1080 
-
+		gen 		cp_hrv = harv_kg	 if 	cropcode == 1080 
 
 * **********************************************************************
 * 3 - end matter, clean up to save
 * **********************************************************************
 
-keep hhid ///
-zone ///
-state ///
-lga ///
-sector ///
-hhid ///
-ea ///
-plotid ///
-cropid ///
-cropcode ///
-cp_hrv ///
-tf_hrv ///
+	keep hhid ///
+		zone ///
+		state ///
+		lga ///
+		sector ///
+		hhid ///
+		ea ///
+		plotid ///
+		cropid ///
+		cropcode ///
+		cp_hrv ///
+		tf_hrv ///
 
 
-compress
-describe
-summarize 
+	compress
+	describe
+	summarize 
 
-* save file
+	* save file
 		customsave , idvar(hhid) filename("ph_secta3.dta") ///
 			path("`export'/`folder'") dofile(ph_secta3) user($user)
 
-* close the log
-	log	close
+	* close the log
+		log		close
 
 /* END */
