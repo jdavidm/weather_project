@@ -17,7 +17,6 @@
 * assumes
 	* customsave.ado
 	* harvconv.dta conversion file
-	* land_conversion.dta conversion file 
 	
 * TO DO:
 	* convert Naira to USD
@@ -51,9 +50,9 @@
 
 rename sa3q2 cropcode
 tab cropcode
-*main crop is "cassava old" 
-*cassava is continuous cropping, so not using that as a main crop
-*going to use maize instead, which is second
+	*** main crop is "cassava old" 
+	*** cassava is continuous cropping, so not using that as a main crop
+	*** going to use maize instead, which is second
 
 rename sa3q1 cropname
 
@@ -80,9 +79,9 @@ tab harv_unit
 tab harv_unit, nolabel
 
 merge m:1 cropcode harv_unit using "`root'/harvconv"
-*matched 9,917 but didn't match 5,212 (from master 3,101 and using 2,111)
-*drop these unmatched - either not producing or coming from merge conversion file 
-*values not matched from master usually had issue which prevented harvest e.g. lost crop
+	*** matched 9,917 but didn't match 5,212 (from master 3,101 and using 2,111)
+	*** drop these unmatched - either not producing, no unit collected, or coming from merge conversion file 
+	*** values not matched from master usually had issue which prevented harvest e.g. lost crop
 keep if _merge == 3
 drop _merge
 
@@ -94,8 +93,8 @@ label variable harvestq "quantity harvested since last interview, not in standar
 gen harv_kg = harvestq*harv_conversion
 
 order harvestq harv_unit harv_conversion harv_kg
-
-*5272 missing values generated in harv_kg - looks like either missing unit or missing harvest quantity
+tab harv_kg, missing
+	*5272 missing values generated in harv_kg - looks like either missing unit or missing harvest quantity
 
 rename sa3q3 cultivated
 

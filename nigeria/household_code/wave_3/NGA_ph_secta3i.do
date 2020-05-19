@@ -8,6 +8,8 @@
 	* determines harvest information (area and quantity)
 	* maybe more who knows
 	* outputs clean data file ready for combination with wave 3 hh data
+	
+	* WILL WANT TO DROP INFORMATION ON LAND AREA
 
 * assumes
 	* customsave.ado
