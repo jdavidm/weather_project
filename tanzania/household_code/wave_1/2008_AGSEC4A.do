@@ -43,7 +43,8 @@
 	tostring 			crop_code, generate(crop_num)
 	gen str21 			crop_id = hhid + " " + plotnum + " " + crop_num
 	duplicates report 	crop_id
-* no duplicates!
+	*** no duplicates!
+	
 	isid 				crop_id
 
 * generating mixed crop variable
@@ -54,12 +55,12 @@
 	replace 	mixedcrop_pct = 50 if s4aq4 == 2
 	replace 	mixedcrop_pct = 25 if s4aq4 == 1
 	tab			mixedcrop_pct, missing
-* there are 519 obs missing mixedcrop_pct here
+	*** there are 519 obs missing mixedcrop_pct here
+	
 	tab 		mixedcrop_pct crop_code, missing
-* only 1 of that 923 is missing a crop code
-* 137 of these for maize
-	sort 		crop_code
-* this is an issue
+	by 			s4aq1, sort: tab mixedcrop_pct
+	drop		if mixedcrop_pct == .
+	*** all values missing were not harvested
 
 * other variables of interest
 	rename 		s4aq11_1 harvest_month

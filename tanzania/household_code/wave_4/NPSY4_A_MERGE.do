@@ -23,8 +23,8 @@
 	global user "themacfreezie"
 
 * define paths
-	global root = "G:/My Drive/weather_project/household_data/tanzania/wave_4/refined"
-	global export = "G:/My Drive/weather_project/household_data/tanzania/wave_4/refined"
+	global root = "$data/household_data/tanzania/wave_4/refined"
+	global export = "$data/weather_project/household_data/tanzania/wave_4/refined"
 	global logout = "G:/My Drive/weather_project/household_data/tanzania/logs"
 
 * open log
