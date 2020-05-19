@@ -9,6 +9,7 @@
 	* converts to hectares and kilograms, as appropriate
 	* maybe more who knows
 	* outputs clean data file ready for combination with wave 2 hh data
+	*dry season only not going to include in analysis
 
 * assumes
 	* customsave.ado
@@ -28,7 +29,7 @@
 * **********************************************************************
 
 * set global user
-	global user "aljosephson"
+	global user "ek"
 	
 * define paths	
 	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_2/raw"
