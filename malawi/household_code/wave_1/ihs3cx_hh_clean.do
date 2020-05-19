@@ -19,9 +19,6 @@
 * 0 - setup
 * **********************************************************************
 
-* set global user
-	*global	user		"jdmichler" // global managed by masterdo, turn on to run single file
-
 * define paths
 	loc		source 	= 	"$data/household_data/malawi/wb_raw_data/data/ihs3cx/ag"
 	loc		root 		= 	"$data/household_data/malawi/wave_1/raw"
