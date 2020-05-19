@@ -6,6 +6,7 @@
 * does
 	* cleans Tanzania household variables, wave 3 Ag sec4a
 	* kind of a crop roster, with harvest weights, long rainy season
+	* generates weight harvested, harvest month, percentage of plot planted with given crop, value of seed purchases
 	
 * assumes
 	* customsave.ado
@@ -19,22 +20,23 @@
 * **********************************************************************
 
 * set user
-	global user "themacfreezie"
+*	global user "themacfreezie"
 
 * define paths
-	global root = "G:/My Drive/weather_project/household_data/tanzania/wave_3/raw"
-	global export = "G:/My Drive/weather_project/household_data/tanzania/wave_3/refined"
-	global logout = "G:/My Drive/weather_project/household_data/tanzania/logs"
+	loc root = "G:/My Drive/weather_project/household_data/tanzania/wave_3/raw"
+	loc export = "G:/My Drive/weather_project/household_data/tanzania/wave_3/refined"
+	loc logout = "G:/My Drive/weather_project/household_data/tanzania/logs"
 
 * open log
-	log using "$logout/wv3_AGSE4A", append
+	log using "`logout'/wv3_AGSEC4A", append
 
+	
 * ***********************************************************************
 * 1 - TZA 2012 (Wave 3) - Agriculture Section 4A 
 * *********************1*************************************************
 
 * load data
-	use 				"$root/AG_SEC_4A", clear
+	use 				"`root'/AG_SEC_4A", clear
 
 * rename variables of interest
 	rename 				y3_hhid hhid
@@ -70,20 +72,18 @@
 	rename 				ag4a_28 wgt_hvsted
 	label 				variable wgt_hvsted "What was the quanitity harvested? (kg)"
 	rename 				ag4a_12 value_seed_purch
-	generate 			season = 0
 * see if you can find quantity purchased and quantity of old seeds used to derive total value seeds used
 
 * keep what we want, get rid of what we don't
 	keep 				hhid plotnum crop_id crop_code mixedcrop_pct ///
-						harvest_month wgt_hvsted value_seed_purch season
-
+						harvest_month wgt_hvsted value_seed_purch
 
 * prepare for export
 compress
 describe
 summarize 
 sort crop_id
-customsave , idvar(crop_id) filename(AG_SEC4A.dta) path("$export") dofile(2012_AGSEC4A) user($user)
+customsave , idvar(crop_id) filename(AG_SEC4A.dta) path("`export'") dofile(2012_AGSEC4A) user($user)
 
 * close the log
 	log	close

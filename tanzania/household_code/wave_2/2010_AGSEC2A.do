@@ -6,6 +6,7 @@
 * does
 	* cleans Tanzania household variables, wave 2 Ag sec2a
     * looks like a parcel roster, long rainy season
+	* generates imputed plot sizes
 
 * assumes
 	* customsave.ado
@@ -19,23 +20,23 @@
 * **********************************************************************
 
 * set user
-	global user "themacfreezie"
+*	global user "themacfreezie"
 
 * define paths
-	global root = "G:/My Drive/weather_project/household_data/tanzania/wave_2/raw"
-	global export = "G:/My Drive/weather_project/household_data/tanzania/wave_2/refined"
-	global logout = "C:/Users/$user/git/weather_project/tanzania/household_code/logs"
+	loc root = "G:/My Drive/weather_project/household_data/tanzania/wave_2/raw"
+	loc export = "G:/My Drive/weather_project/household_data/tanzania/wave_2/refined"
+	loc logout = "G:/My Drive/weather_project/household_data/tanzania/logs"
 
-*Open log
-	log using "$logout/wv2_AGSEC2A", append
+* open log
+	log using "`logout'/wv2_AGSEC2A", append
 
 
-**********************************************************************************
-**	TZA 2010 (Wave 2) - Agriculture Section 2A 
-**********************************************************************************
+* **********************************************************************
+* 1 - TZA 2010 (Wave 2) - Agriculture Section 2A 
+* **********************************************************************
 
 * load data
-	use 		"$root/AG_SEC2A", clear
+	use 		"`root'/AG_SEC2A", clear
 
 * rename variables of interest
 	rename 		y2_hhid hhid
@@ -54,7 +55,7 @@
 	isid 		plot_id	
 	
 * must merge in regional identifiers from 2008_HHSECA to impute
-	merge		m:1 hhid using "$export/HH_SECA"
+	merge		m:1 hhid using "`export'/HH_SECA"
 	tab			_merge
  *** all obs in master are matched
 	drop		if _merge == 2
@@ -130,6 +131,8 @@
 		replace 	plotsize_gps = . if plotsize_gps == 0
 		
 * impute missing + irregular plot sizes using predictive mean matching
+* imputing 1,319 observations (out of 6,038) - 21.85% 
+* including plotsize_self as control
 	mi set 		wide 	// declare the data to be wide.
 	mi xtset, clear 	// this is a precautinary step to clear any xtset that the analyst may have had in place previously
 	mi register	imputed plotsize_gps // identify plotsize_GPS as the variable being imputed
@@ -142,18 +145,15 @@
 	tabstat 	plotsize_gps plotsize_self plotsize_gps_1_, by(mi_miss) statistics(n mean min max) columns(statistics) longstub format(%9.3g) 
 	rename		plotsize_gps_1_ plotsize
 	
-* generate seasonal variable
-	generate 	season = 0
-	
 * keep what we want, get rid of the rest
-	keep 		hhid plot_id plotsize season
+	keep 		hhid plot_id plotsize
 
 *	Prepare for export
 compress
 describe
 summarize 
 sort plot_id
-customsave , idvar(plot_id) filename(AG_SEC2A.dta) path("$export") dofile(2010_AGSEC2A) user($user)
+customsave , idvar(plot_id) filename(AG_SEC2A.dta) path("`export'") dofile(2010_AGSEC2A) user($user)
 
 * close the log
 	log	close

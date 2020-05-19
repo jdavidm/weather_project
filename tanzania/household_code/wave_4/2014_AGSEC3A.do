@@ -6,6 +6,7 @@
 * does
 	* cleans Tanzania household variables, wave 4 Ag sec3a
 	* plot details, inputs, 2014 long rainy season
+	* generates irrigation and pesticide dummies, fertilizer variables, and labor variables 
 	
 * assumes
 	* customsave.ado
@@ -19,22 +20,22 @@
 * **********************************************************************
 
 * set user
-	global user "themacfreezie"
+*	global user "themacfreezie"
 
 * define paths
-	global root = "G:/My Drive/weather_project/household_data/tanzania/wave_4/raw"
-	global export = "G:/My Drive/weather_project/household_data/tanzania/wave_4/refined"
-	global logout = "G:/My Drive/weather_project/household_data/tanzania/logs"
+	loc root = "G:/My Drive/weather_project/household_data/tanzania/wave_4/raw"
+	loc export = "G:/My Drive/weather_project/household_data/tanzania/wave_4/refined"
+	loc logout = "G:/My Drive/weather_project/household_data/tanzania/logs"
 
 * open log
-	log using "$logout/wv4_AGSEC3A", append
+	log using "`logout'/wv4_AGSEC3A", append
 
 * ***********************************************************************
 * 1 - TZA 2014 (Wave 4) - Agriculture Section 3A 
 * *********************1*************************************************
 
 * load data
-	use 		"$root/ag_sec_3a", clear
+	use 		"`root'/ag_sec_3a", clear
 
 * renaming variables of interest
 	rename 		y4_hhid hhid
@@ -66,20 +67,17 @@
 				ag3a_74_6 ag3a_74_7 ag3a_74_13 ag3a_74_14 ag3a_74_15)
 	
 	generate 	labor_days = hh_labor_days + hired_labor_days
-	
-* generate seasonal variable
-	generate 	season = 0
 
 * keep what we want, get rid of the rest
 	keep 		hhid plot_id status crop_code irrigated fert_any kilo_fert ///
-				pesticide_any labor_days plotnum season
+				pesticide_any labor_days plotnum
 
 * prepare for export
 compress
 describe
 summarize 
 sort plot_id
-customsave , idvar(plot_id) filename(AG_SEC3A.dta) path("$export") dofile(2014_AGSEC3A) user($user)
+customsave , idvar(plot_id) filename(AG_SEC3A.dta) path("`export'") dofile(2014_AGSEC3A) user($user)
 
 * close the log
 	log	close

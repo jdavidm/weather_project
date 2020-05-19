@@ -4,8 +4,9 @@
 * Stata v.15
 
 * does
-	*cleans Tanzania household variables, wave 1 Ag sec3a
+	* cleans Tanzania household variables, wave 1 Ag sec3a
 	* plot details, inputs, 2008 long rainy season
+	* generates irrigation and pesticide dummies, fertilizer variables, and labor variables 
 
 * assumes
 	* customsave.ado
@@ -19,23 +20,23 @@
 * **********************************************************************
 
 * set user
-	global user "themacfreezie"
+*	global user "themacfreezie"
 
 * define paths
-	global root = "G:/My Drive/weather_project/household_data/tanzania/wave_1/raw"
-	global export = "G:/My Drive/weather_project/household_data/tanzania/wave_1/refined"
-	global logout = "C:/Users/$user/git/weather_project/tanzania/household_code/logs"
+	loc root = "G:/My Drive/weather_project/household_data/tanzania/wave_1/raw"
+	loc export = "G:/My Drive/weather_project/household_data/tanzania/wave_1/refined"
+	loc logout = "G:/My Drive/weather_project/household_data/tanzania/logs"
 
-*Open log
-	log using "$logout/wv1_AGSEC3A", append
+* open log
+	log using "`logout'/wv1_AGSEC3A", append
 
 
-**********************************************************************************
-**	TZA 2008 (Wave 1) - Agriculture Section 3A 
-**********************************************************************************
+* **********************************************************************
+* 1 - TZA 2008 (Wave 1) - Agriculture Section 3A 
+* **********************************************************************
 
 * load data
-	use 		"$root/SEC_3A", clear
+	use 		"`root'/SEC_3A", clear
 
 * renaming variables of interest
 	generate 	plot_id = hhid + " " + plotnum
@@ -61,19 +62,16 @@
 	egen 		hired_labor_days = rsum(s3aq63_1 s3aq63_2 s3aq63_4 s3aq63_5 s3aq63_7 s3aq63_8)
  
 	generate 	labor_days = hh_labor_days + hired_labor_days
-	
-* generate seasonal variable
-	generate 	season = 0
 
 * keep what we want, get rid of the rest
-	keep 		hhid plot_id status crop_code irrigated fert_any kilo_fert pesticide_any labor_days season plotnum
+	keep 		hhid plot_id status crop_code irrigated fert_any kilo_fert pesticide_any labor_days plotnum
 
 *	Prepare for export
 compress
 describe
 summarize 
 sort plot_id
-customsave , idvar(plot_id) filename(AG_SEC3A.dta) path("$export") dofile(2008_AGSEC3A) user($user)
+customsave , idvar(plot_id) filename(AG_SEC3A.dta) path("`export'") dofile(2008_AGSEC3A) user($user)
 
 * close the log
 	log	close
