@@ -44,29 +44,28 @@
 * Define root folder globals
     if "$user" == "jdm" {
         global 		code  	"C:/Users/jdmichler/git/weather_project"
-				global 		data		"G:/My Drive/weather_project"
+		global 		data		"G:/My Drive/weather_project"
     }
 
     if "$user" == "alj" {
         global 		code  	"C:/Users/aljosephson/git/weather_project"
-				global 		data		"G:/My Drive/weather_project"
+		global 		data		"G:/My Drive/weather_project"
     }
 
     if "$user" == "mcg" {
         global 		code  	"C:/Users/jdmichler/git/weather_project"
-				global 		data		"G:/My Drive/weather_project"
+		global 		data		"G:/My Drive/weather_project"
     }
 
     if "$user" == "etk" {
         global 		code  	"C:/Users/jdmichler/git/weather_project"
-				global 		data		"G:/My Drive/weather_project"
+		global 		data		"G:/My Drive/weather_project"
     }
 
 * **********************************************************************
 * 0 (b) - Check if any required packages are installed:
 * **********************************************************************
 
-<<<<<<< Updated upstream
 * install packages if global is set to 1
 if $pack == 1 {
 	
@@ -93,15 +92,6 @@ if $pack == 1 {
 	* the package -xfill- is not on ssc so installing here
 		which xfill
 		if _rc != 0 {
-=======
-* for packages/commands, make a local containing any required packages
-	loc userpack "blindschemes estout xfill reghdfe ftools weather customsave distinct winsor2"
-
-* install packages that are on ssc
-	foreach package in `userpack' {
-		capture : which `package', all
-		if (_rc) {
->>>>>>> Stashed changes
 			capture window stopbox rusure "You are missing some packages." "Do you want to install `package'?"
 			if _rc == 0 {
 				qui: net install xfill, replace from(https://www.sealedenvelope.com/)
@@ -118,15 +108,12 @@ if $pack == 1 {
 		net install StataConfig, ///
 		from(https://raw.githubusercontent.com/etjernst/Materials/master/stata/) replace
 
-<<<<<<< Updated upstream
 	* set graph and Stata preferences
 		set scheme plotplain
 		set more off
 }
 	
-=======
 
->>>>>>> Stashed changes
 * **********************************************************************
 * 1 - run weather data cleaning .do file
 * **********************************************************************
