@@ -31,7 +31,8 @@
     * Emil      etk
 
 * Set this value to the user currently using this file
-    global 			user 	"mcg"
+
+    global 			user 	"alj"
 
 * Specify Stata version in use
     global stataVersion 16.1    // set Stata version
@@ -58,7 +59,7 @@
     }
 
     if "$user" == "etk" {
-        global 		code  	"C:/Users/jdmichler/git/weather_project"
+        global 		code  	"C:/Users/emilk/git/weather_project"
 		global 		data		"G:/My Drive/weather_project"
     }
 
