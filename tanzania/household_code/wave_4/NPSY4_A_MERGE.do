@@ -19,26 +19,23 @@
 * 0 - setup
 * **********************************************************************
 
-* set user
-	global user "themacfreezie"
-
 * define paths
-	global root = "$data/household_data/tanzania/wave_4/refined"
-	global export = "$data/weather_project/household_data/tanzania/wave_4/refined"
-	global logout = "G:/My Drive/weather_project/household_data/tanzania/logs"
+	loc root = "$data/household_data/tanzania/wave_4/refined"
+	loc export = "$data/weather_project/household_data/tanzania/wave_4/refined"
+	loc logout = "$data/household_data/tanzania/logs"
 
 * open log
-	log using "$logout/NPSY4_A_MERGE", append
+	log using "`logout'/NPSY4_MERGE", append
 
 * **********************************************************************
 * 1 - merging sections 2A and 3A and 4A
 * **********************************************************************
 
 * load data
-	use 		"$root/AG_SEC4A", clear
+	use 		"`root'/AG_SEC4A", clear
 
 * merging in section 3A & 2A
-	merge		m:1 plot_id using "$root/AG_SEC3A"
+	merge		m:1 plot_id using "`root'/AG_SEC3A"
 	*** 70% of obs matched, most unmatched are missing values, fruits, or continuous crops
 
 	tab			_merge
@@ -48,7 +45,7 @@
 	drop		if wgt_hvsted == .
 	drop		if _merge != 3
 	drop		_merge
-	merge		m:1 plot_id using "$root/AG_SEC2A"
+	merge		m:1 plot_id using "`root'/AG_SEC2A"
 	tab			_merge
 	drop		if _merge != 3
 	drop 		_merge
@@ -56,19 +53,19 @@
 	drop		status mixedcrop_pct
 
 * saving production dataset
-	customsave , idvar(crop_id) filename(INT_PROD_A.dta) path("$export") ///
-		dofile(NPSY4_A_MERGE) 	user($user) ///
+	customsave , idvar(crop_id) filename(INT_PROD.dta) path("`export'") ///
+		dofile(NPSY4_MERGE) 	user($user) ///
 		description(Intermediate file containing production data to be deleted later.)
 
 * **********************************************************************
-* 2 - collapsing section 5A to merge with INT_PROD_A
+* 2 - collapsing section 5A to merge with INT_PROD
 * **********************************************************************
 
 * load data
-	use 		"$root/AG_SEC5A", clear
+	use 		"`root'/AG_SEC5A", clear
 
 * merging in regional identifiers
-	merge		m:1 hhid using "$root/HH_SECA"
+	merge		m:1 hhid using "`root'/HH_SECA"
 	tab			_merge
 	drop		_merge
 
@@ -84,7 +81,7 @@
 
 * collapse to district level to generate region average prices
 * tried generating dist-evel averages, not enough observations for each crop type
-	collapse (mean)		price, by(region crop_code)
+	collapse (p50)		price, by(region crop_code)
 
 * generate country average prices
 	egen				tza_price = mean(price), by(crop_code)

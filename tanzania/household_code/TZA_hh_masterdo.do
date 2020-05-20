@@ -38,24 +38,14 @@
 	foreach folder of loc folderList {
 
 * loop through each long rainy season file in the above local
-	loc fileList : dir "`root'/`folder'" files "*AGSEC*A.do"
+	loc fileList : dir "`root'/`folder'" files "*AGSEC*.do"
 	
 * loop through each file in the above local
 	foreach file in `fileList' {
 	    
 	* run each individual file
 		do "`root'/`folder'/`file'"		
-	}
-	
-* loop through each short rainy season file in the above local
-	loc fileList : dir "`root'/`folder'" files "*AGSEC*B.do"
-	
-* loop through each file in the above local
-	foreach file in `fileList' {
-	    
-	* run each individual file
-		do "`root'/`folder'/`file'"			
-	}
+	}		
 	}
 	
 /* END */
