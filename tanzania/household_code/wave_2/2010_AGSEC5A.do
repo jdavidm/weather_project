@@ -1,34 +1,71 @@
-clear all
+* Project: WB Weather
+* Created on: April 2020
+* Created by: McG
+* Stata v.16
 
-*attempting to clean Tanzania household variables
-global user "themacfreezie"
+* does
+	* cleans Tanzania household variables, wave 2 Ag sec5a
+	* crop sales data, long rainy season
+	* generates weight sold, value sold, price
+	
+* assumes
+	* customsave.ado
 
-**********************************************************************************
-**	TZA 2010 (Wave 2) - Agriculture Section 5A
-**********************************************************************************
+* TO DO:
+	* completed
 
-* For household data
-loc root = "C:\Users/$user\Dropbox\Weather_Project\Data\Tanzania\analysis_datasets\Tanzania_raw\TZA_2010"
-* To export results
-loc export = "C:\Users/$user\Dropbox\Weather_Project\Data\Tanzania\analysis_datasets\Tanzania_refined\TZA_2010"
+	
+* **********************************************************************
+* 0 - setup
+* **********************************************************************
 
-use "`root'/AG_SEC5A", clear
+* define paths
+	loc root = "$data/household_data/tanzania/wave_2/raw"
+	loc export = "$data/household_data/tanzania/wave_2/refined"
+	loc logout = "$data/household_data/tanzania/logs"
 
-*	Crop sales data, long rainy season
+* open log
+	log using "`logout'/wv2_AGSEC5A", append
 
-rename y2_hhid hhid
-rename zaocode crop_code
+	
+* ***********************************************************************
+* 1 - TZA 2010 (Wave 2) - Agriculture Section 5A
+* *********************1*************************************************
 
-rename ag5a_02 wgt_sold
-label variable wgt_sold "What was the quanitity sold? (kg)"
-rename ag5a_03 value_sold
-label variable value_sold "What was the total value of the sales? (T-shillings)"
+* load data
+	use 		"`root'/AG_SEC5A", clear
 
-keep hhid crop_code wgt_sold value_sold
+* rename variables of interest
+	rename 		y2_hhid hhid
+	rename 		zaocode crop_code
 
-*	Prepare for export
+* generate unique ob id
+	tostring 			crop_code, generate(crop_num)
+	gen str20 			crop_id = hhid + " " + crop_num
+	duplicates report	crop_id
+* no duplicates
+*	duplicates drop 	crop_id, force
+	isid 				crop_id
+
+* renaming sales variables
+	rename 		ag5a_02 wgt_sold
+	label 		variable wgt_sold "What was the quanitity sold? (kg)"
+	rename 		ag5a_03 value_sold
+	label 		variable value_sold "What was the total value of the sales? (T-shillings)"
+	generate 	price = value_sold/wgt_sold
+	label 		variable price "Price per kg"
+	
+* keep what we want, get rid of what we don't
+	keep 		hhid crop_code wgt_sold value_sold crop_id price
+
+* prepare for export
 compress
 describe
 summarize 
 sort hhid
-save "`export'/AG_SEC5A", replace
+customsave , idvar(crop_id) filename(AG_SEC5A.dta) path("`export'") dofile(2010_AGSEC5A) user($user)
+
+* close the log
+	log	close
+
+/* END */

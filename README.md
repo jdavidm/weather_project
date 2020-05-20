@@ -20,6 +20,7 @@ Contributors:
 * Siobhan Murray
 * Brian McGreal
 * Alison Conley
+* Emil Kee-Tui
 
 As described in more detail below, scripts various
 go through each step, from cleaning raw data to analysis.
@@ -38,6 +39,8 @@ The code in `masterDoFile.do` (to be done) replicates
     1. `weather_command`
     2. `blindschemes`
     3. `estout`
+    4. `customsave`
+    5. `winsor2`
 
 
 #### Folder structure
@@ -53,20 +56,16 @@ weather_project
 │    
 ├────country             /* one dir for each country */
 │    ├──household_code
-│    │  ├──wave          /* one dir for each wave */
-│    │  └──logs
+│    │  └──wave          /* one dir for each wave */
 │    ├──weather_code
-│    │  ├──wave          /* one dir for each wave */
-│    │  └──logs
+│    │  └──wave          /* one dir for each wave */
 │    ├──regression_code
-│    │  └──logs
 │    └──output
 │       ├──tables
 │       └──figures
 │
 │────Analysis            /* overall analysis */
 │    ├──code
-│    │  └──logs
 │    └──output
 │       ├──tables
 │       └──figures
