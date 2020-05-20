@@ -21,7 +21,7 @@
 
 * define paths
 	loc		source 	= 	"$data/household_data/malawi/wb_raw_data/data/ihs4cx/hh"
-	loc		root 		= 	"$data/household_data/malawi/wave_3/raw"
+	loc		root 	= 	"$data/household_data/malawi/wave_3/raw"
 	loc		export 	= 	"$data/household_data/malawi/wave_3/refined"
 	loc		logout 	= 	"$data/household_data/malawi/logs"
 

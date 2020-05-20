@@ -20,7 +20,7 @@
 * **********************************************************************
 
 * define paths
-	loc		root 		= 	"$data/household_data/malawi/wave_2/raw"
+	loc		root 	= 	"$data/household_data/malawi/wave_2/raw"
 	loc		export 	= 	"$data/household_data/malawi/wave_2/refined"
 	loc		logout 	= 	"$data/household_data/malawi/logs"
 

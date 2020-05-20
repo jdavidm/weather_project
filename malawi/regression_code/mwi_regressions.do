@@ -22,17 +22,13 @@
 * 0 - setup
 * **********************************************************************
 
-* set global user
-	global	user		"jdmichler"
-
 * define paths
-	global		source	= 	"G:/My Drive/weather_project/regression_data/malawi"
-	global		export 	= 	"G:/My Drive/weather_project/results_data/malawi/individual_results"
-	global		results = 	"G:/My Drive/weather_project/results_data/malawi"
-	global		logout 	= 	"G:/My Drive/weather_project/regression_data/logs"
+	loc		source	= 	"$data/regression_data/malawi"
+	loc		results = 	"$data/results_data/malawi"
+	loc		logout 	= 	"$data/regression_data/logs"
 
 * open log	
-	log 	using 		"$logout/mwi_regressions", append
+	log 	using 		"`logout'/mwi_regressions", append
 
 	
 * **********************************************************************
@@ -40,7 +36,7 @@
 * **********************************************************************
 
 * read in data file
-	use			"$source/mwi_complete.dta", clear
+	use			"`source'/mwi_complete.dta", clear
 
 * drop dry season values - we just focus on the rainy season (rs)
 	drop		ds*
@@ -427,7 +423,7 @@ foreach l of local levels {
 
 * save complete results
 	customsave 	, idvarname(reg_id) filename("mwi_complete_results.dta") ///
-		path("$results") dofile(mwi_regression) user($user)
+		path("`results''") dofile(mwi_regression) user($user)
 
 * close the log
 	log	close

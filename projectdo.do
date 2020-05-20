@@ -53,12 +53,12 @@
     }
 
     if "$user" == "mcg" {
-        global 		code  	"C:/Users/jdmichler/git/weather_project"
+        global 		code  	"C:/Users/themacfreezie/git/weather_project"
 		global 		data		"G:/My Drive/weather_project"
     }
 
     if "$user" == "etk" {
-        global 		code  	"C:/Users/jdmichler/git/weather_project"
+        global 		code  	"C:/Users/emilk/git/weather_project"
 		global 		data		"G:/My Drive/weather_project"
     }
 

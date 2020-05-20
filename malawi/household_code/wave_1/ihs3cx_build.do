@@ -19,14 +19,11 @@
 * 0 - setup
 * **********************************************************************
 
-* set global user
-	global	user		"jdmichler" // global managed by masterdo, turn on to run single file
-
 * define paths
-	loc		rootw 	= 	"G:/My Drive/weather_project/weather_data/malawi/wave_1/refined"
-	loc		rooth 	= 	"G:/My Drive/weather_project/household_data/malawi/wave_1/refined"
-	loc		export 	= 	"G:/My Drive/weather_project/merged_data/malawi/wave_1"
-	loc		logout 	= 	"G:/My Drive/weather_project/merged_data/malawi/logs"
+	loc		rootw 	= 	"$data/weather_data/malawi/wave_1/refined"
+	loc		rooth 	= 	"$data/household_data/malawi/wave_1/refined"
+	loc		export 	= 	"$data/merged_data/malawi/wave_1"
+	loc		logout 	= 	"$data/merged_data/malawi/logs"
 
 * open log	
 	log 	using 		"`logout'/ihs3cx_build", append

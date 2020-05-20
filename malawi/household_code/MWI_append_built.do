@@ -25,13 +25,10 @@
 * 0 - setup
 * **********************************************************************
 
-* set global user
-	global	user		"jdmichler" // global managed by masterdo, turn on to run single file
-
 * define paths
-	loc		root 	= 	"G:/My Drive/weather_project/merged_data/malawi"
-	loc		export 	= 	"G:/My Drive/weather_project/regression_data/malawi"
-	loc		logout 	= 	"G:/My Drive/weather_project/merged_data/malawi/logs"
+	loc		root 	= 	"$data/merged_data/malawi"
+	loc		export 	= 	"$data/regression_data/malawi"
+	loc		logout 	= 	"$data/merged_data/malawi/logs"
 
 * open log	
 	log 	using 		"`logout'/mwi_append_built", append
