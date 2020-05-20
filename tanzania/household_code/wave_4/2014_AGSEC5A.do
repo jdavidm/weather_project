@@ -10,6 +10,7 @@
 	
 * assumes
 	* customsave.ado
+	* mdesc.ado
 
 * TO DO:
 	* completed
@@ -99,7 +100,6 @@
 	save 		"`export'/ag_i6.dta", replace 
 	restore
 
-
 * merge price data back into dataset
 	merge 		m:1 crop_id region_id district_id ward_id village_id ///
 				using "`export'/ag_i2.dta", assert(3) nogenerate
@@ -112,7 +112,7 @@
 	merge 		m:1 crop_id ///
 				using "`export'/ag_i6.dta", assert(3) nogenerate
 				
-*	make imputed price, using median price where we have at least 10 observations
+* make imputed price, using median price where we have at least 10 observations
 	generate 	pricei = .
 	replace 	pricei = p_v if n_v>=10 & missing(pricei)
 	replace 	pricei = p_w if n_w>=10 & missing(pricei)
@@ -120,9 +120,15 @@
 	replace 	pricei = p_r if n_r>=10 & missing(pricei)
 	replace 	pricei = p_crop if missing(pricei)
 	label 		variable pricei	"Imputed unit value of crop"
-
+	sum			pricei, detail
+	mdesc		pricei
+	*** missing almost 70% of observations
+	drop		if pricei == .
+* because we're missing so mny observations, we will create a location-based dataset
+* to be merged with crop production data
+	
 * generate country average prices
-	egen				tza_price = mean(price), by(crop_code)
+	egen		tza_price = mean(price), by(crop_code)
 
 * keep what we want, get rid of what we don't
 	keep 		hhid crop_code wgt_sold value_sold crop_id price
