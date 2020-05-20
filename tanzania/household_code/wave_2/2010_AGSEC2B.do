@@ -1,33 +1,50 @@
-clear all
+* Project: WB Weather
+* Created on: May 2020
+* Created by: McG
+* Stata v.16
 
-*attempting to clean Tanzania household variables
-global user "themacfreezie"
+* does
+	* examines parcel roster, 2010 short rainy season
+	* only 38 total observations so we will exclude all short rain data
 
-**********************************************************************************
-**	TZA 2010 (Wave 2) - Agriculture Section 2B
-**********************************************************************************
+* assumes
+	* nothing
 
-* For household data
-loc root = "C:\Users/$user\Dropbox\Weather_Project\Data\Tanzania\analysis_datasets\Tanzania_raw\TZA_2010"
-* To export results
-loc export = "C:\Users/$user\Dropbox\Weather_Project\Data\Tanzania\analysis_datasets\Tanzania_refined\TZA_2010"
+* TO DO:
+	* completed
 
-use "`root'/AG_SEC2B", clear
 
-*	looks like a parcel roster, "additional plots owned or cultivated by anyone in your household during the short rainy season (2010)"
+* **********************************************************************
+* 0 - setup
+* **********************************************************************
 
-rename y2_hhid hhid
-rename ag2b_15 plotsize_self
-rename ag2b_20 plotsize_gps
+* set user
+	*global	user		"jdmichler" // global managed by masterdo, turn on to run single file
 
-generate plot_id = hhid + " " + plotnum
-isid plot_id
+* define paths
+	loc 	root 		= 	"G:/My Drive/weather_project/household_data/tanzania/wave_2/raw"
+	loc 	export 	= 	"G:/My Drive/weather_project/household_data/tanzania/wave_2/refined"
+	loc 	logout 	= 	"G:/My Drive/weather_project/household_data/tanzania/logs"
 
-keep hhid plot_id plotsize_self plotsize_gps
+* open log
+	log 	using "`logout'/wv2_AGSEC2B", append
 
-*	Prepare for export
-compress
-describe
-summarize 
-sort plot_id
-save "`export'/AG_SEC2B", replace
+
+* **********************************************************************
+* 1 - TZA 2010 (Wave 2) - Agriculture Section 2B
+* **********************************************************************
+
+* load data
+	use 		"`root'/AG_SEC2B", clear
+
+* look to see how many plots there are
+	sum 		ag2b_15 ag2b_20
+	*** there are only 16 plots with GPS measures
+	*** there are only 38 total plots
+	*** this isn't enough observations to analyze
+	*** so we exclude the short rainy season for 2010
+
+* close the log
+	log	close
+
+/* END */
