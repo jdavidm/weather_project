@@ -46,45 +46,6 @@
 * import the first relevant data file
 		use "`root'/sect11f_plantingw2", clear 	
 
-describe
-sort hhid plotid cropid
-isid hhid plotid cropid, missok
-
-gen area_planted = s11fq1a 
-label variable area_planted "what was the total area planted on this plot with the crop since the beginning of the year?"
-rename s11fq1b area_planted_unit
-label variable area_planted_unit "unit of measurement reported"
-
-* define new paths for conversions	
-	loc root = "G:/My Drive/weather_project/household_data/nigeria/conversion_files/"
-
-merge m:1 zone using "`root'/land-conversion"
-
-tab area_planted_unit, nolabel
-tab area_planted_unit
-
-gen planted_area_hec = .
-*heaps conversion
-replace planted_area_hec = area_planted*heapcon if area_planted_unit == 1
-*ridges conversion
-replace planted_area_hec = area_planted*ridgecon if area_planted_unit == 2
-*stands conv
-replace planted_area_hec = area_planted*standcon if area_planted_unit == 3
-*plots conv
-replace planted_area_hec = area_planted*plotcon if area_planted_unit ==4
-*acre conv
-replace planted_area_hec = area_planted*acrecon if area_planted_unit == 5
-*sqm conv
-replace planted_area_hec = area_planted*sqmcon if area_planted_unit == 7
-*hec
-replace planted_area_hec = area_planted if area_planted_unit == 6
-**note: we lose 61 observations out of 10500 when we cut out the "other" units
-		*from ALJ this seems okay...
-***HELP when I converted, I wasn't able to get all the observations that were illustrated for each unit in the tab of area_planted_unit - not sure why?
-***HELP there is also a few really large numbers compared that seem to be extreme values
-		*from ALJ: need to figure out how this number differs from other plot area calculations???
-
-label variable planted_area_hec "SR total area planted on this plot with the crop since the beginning of the year converted to hectares"
 
 * **********************************************************************
 * 2 - determine crop method and planting year
