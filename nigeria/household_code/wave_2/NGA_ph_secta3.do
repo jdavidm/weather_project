@@ -29,7 +29,7 @@
 	loc 	logout		= 	"$data/household_data/nigeria/logs"
 
 * open log
-	*log 	using 		"`logout'/2013_ph_secta3", append
+	log 	using 		"`logout'/wave_2_ph_secta3", append
 
 * **********************************************************************
 * 1 - general clean up, renaming, etc.
@@ -93,7 +93,7 @@
 	tab 				harv_unit if _merge == 1
 	mdesc				harv_unit if _merge == 1
 	*** 22 unmatched missing harv_unit
-	*** 211 unmatched are already in kg, so these are okay
+	*** 211 unmatched are already in kgs, so these are okay
 	*** 73 unmatched have strange units
 
 * dropped unmatched with missing or strange units
@@ -121,7 +121,7 @@
 * check what the missing values have
 	tab 				tf_hrv if harv_kg == .
 	tab 				cropcode if harv_kg == .
-	*** all have harvest value, put all are minor crops
+	*** all have harvest value, but all are minor crops
 	*** we will replace missing harv_kg with zero
 	*** this allows us to collapse to plot while keeping tf_harv data
 
@@ -160,7 +160,7 @@
 
 * save file
 	customsave , idvar(plot_id) filename("ph_secta3.dta") ///
-		path("`export'/`folder'") dofile(ph_secta3) user($user)
+		path("`export'") dofile(ph_secta3) user($user)
 
 * close the log
 	log		close
