@@ -25,22 +25,72 @@
 	loc 	logout	=	"$data/household_data/nigeria/logs"
 
 * open log
-	log 	using 	"`logout'/NGA_wave_2_merge", append
+	*log 	using 	"`logout'/NGA_wave_2_merge", append
 
 	
 * **********************************************************************
-* 1 - merging sections 2A and 3A and 4A
+* 1 - merge plot level data sets together
 * **********************************************************************
 
-* load data
-	use 		"`root'/AG_SEC4A", clear
+* load plot size data
+	use 			"`root'/pp_sect11a1", clear
 
-* merging in section 3A & 2A
-	merge		m:1 plot_id using "`root'/AG_SEC3A"
-	*** 70% of obs matched, most unmatched are missing values, fruits, or continuous crops
+	isid			hhid plotid
+	
+* merging in irrigation data
+	merge			1:1 hhid plotid using "`root'/pp_sect11b1"
+	*** only 17 out of 5876 not merged (0.2%)
+	*** we assume these are plots without irrigation
+	
+	replace			irr_any = 2 if irr_any == .
+	*** 17 changes made
+	
+	drop			plot_id _merge
 
-	tab			_merge
+* mergining in planting labor data
+	merge		1:1 hhid plotid using "`root'/pp_sect11c1"
+	*** 221 from master and 4 from using not matched (4%)
+	*** not clear what to do with these, so we will keep them for the moment
 
+	rename			_merge merge_pplab
+	drop			plot_id
+
+* mergining in pesticide and herbicide use
+	merge		1:1 hhid plotid using "`root'/pp_sect11c2"
+	*** 101 from master not merged (2%)
+	*** we assume these are plots without pest or herb
+
+	replace			pest_any = 2 if pest_any == .
+	replace			herb_any = 2 if herb_any == .
+	*** 101 changes made
+	
+	drop			plot_id _merge
+
+* mergining in fertilizer use
+	merge		1:1 hhid plotid using "`root'/pp_sect11d"
+	*** 128 from master not merged (2%)
+	*** as above, since a majority don't use fert, we assume missing means no fert
+
+	replace			fert_any = 2 if fert_any == .
+	replace			fert_use = 2 if fert_use == .
+	*** 128 changes made
+	
+	drop			plot_id _merge
+
+* mergining in harvest labor data
+	merge		1:1 hhid plotid using "`root'/ph_secta2"
+	*** 201 from master and 223 from using not merged (7%)
+	*** like before, not clear is these are zero labor
+
+	rename			_merge merge_hvlab
+	drop			plot_id
+
+* mergining in harvest quantity and value
+	merge		1:1 hhid plotid using "`root'/ph_secta3"
+	*** 1020 from master and 2 from using not merged (20%)
+
+
+	
 * dropping anything that didn't merged
 * dropping any obs lacking harvest data
 	drop		if wgt_hvsted == .

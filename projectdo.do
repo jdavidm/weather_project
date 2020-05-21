@@ -32,7 +32,7 @@
 
 * Set this value to the user currently using this file
 
-    global 			user 	"etk"
+    global 			user 	"jdm"
 
 * Specify Stata version in use
     global stataVersion 16.1    // set Stata version
