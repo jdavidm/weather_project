@@ -45,8 +45,8 @@
 		use 					"`root'/secta3i_harvestw3", clear
 
 		describe
-		sort 					hhid plotid cropid
-		isid 					hhid plotid cropid, missok
+		sort 				hhid plotid cropid
+		isid 				hhid plotid cropid, missok
 
 * rename the important variables to match the variable names in pervious waves: harvested
 		rename 				sa3iq3 	harvested
@@ -63,26 +63,26 @@
 * **********************************************************************
 
 * area harvested needs to be converted to standard units
-		gen 					crop_area = sa3iq5a
+		gen 				crop_area = sa3iq5a
 		rename 				sa3iq5b 	area_unit
-		tab 					area_unit
+		tab 				area_unit
 
 * nerge in land converstion
 		merge	 	m:1 	zone using 	"`cnvrt'/land-conversion"
-		*** how many matched and didn't match?
+		*** All observations matched
 
-		keep 					if _merge == 3
+		keep 				if 	_merge == 3
 		drop 					_merge
 
 * converting land area
-		gen 					crop_area_hec 	= 	.
-		replace 			crop_area_hec 	= 	crop_area*heapcon		if 		area_unit == 1
+		gen 				crop_area_hec 	= 	.
+		replace 			crop_area_hec 	= 	crop_area*heapcon	if 		area_unit == 1
 		replace 			crop_area_hec 	= 	crop_area*ridgecon	if 		area_unit == 2
 		replace 			crop_area_hec 	= 	crop_area*standcon	if 		area_unit == 3
-		replace 			crop_area_hec 	= 	crop_area*plotcon		if 		area_unit == 4
-		replace 			crop_area_hec 	= 	crop_area*acrecon		if 		area_unit == 5
-		replace 			crop_area_hec 	= 	crop_area*sqmcon		if 		area_unit == 7
-		replace 			crop_area_hec 	= 	crop_area						if 		area_unit == 6
+		replace 			crop_area_hec 	= 	crop_area*plotcon	if 		area_unit == 4
+		replace 			crop_area_hec 	= 	crop_area*acrecon	if 		area_unit == 5
+		replace 			crop_area_hec 	= 	crop_area*sqmcon	if 		area_unit == 7
+		replace 			crop_area_hec 	= 	crop_area			if 		area_unit == 6
 		lab var				crop_area_hec 	"land area of crop harvested in hectares"
 		*** all converted appropriately (comparison of tabbed units to changes made)
 
@@ -92,11 +92,11 @@
 
 * survey: how much did you harvest during this ag season?
 		gen 					harvestq = sa3iq6i
-		rename 				sa3iq6ii 	harv_unit
+		rename 					sa3iq6ii 	harv_unit
 
 * merge in conversion for harvest quantities
-		merge 				m:1 zone cropcode harv_unit using	"`cnvrt'/ag_conv_w3_long"
-		*** how many matched and didn't match?
+		merge 				m:1 zone cropcode harv_unit using	"`cnvrt'/wave_3/ag_conv_w3_long"
+		*** 6452 did not match and 9069 matched
 
 		keep 					if _merge == 3
 		drop 					_merge

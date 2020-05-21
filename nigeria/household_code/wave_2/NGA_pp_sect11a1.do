@@ -28,11 +28,11 @@
 * define paths
 		loc		root		=		"$data/household_data/nigeria/wave_2/raw"
 		loc		cnvrt		=		"$data/household_data/nigeria/conversion_files"
-		loc		export	=		"$data/household_data/nigeria/wave_2/refined"
-		loc		logout	= 	"$data/household_data/nigeria/logs"
+		loc		export		=		"$data/household_data/nigeria/wave_2/refined"
+		loc		logout		= 		"$data/household_data/nigeria/logs"
 
 * open log
-		log 	using	 	"`logout'/pp_sect11a1", append
+		log 	using	 			"`logout'/pp_sect11a1", append
 
 * **********************************************************************
 * 1 - describing plot size, etc.
@@ -48,13 +48,13 @@
 
 * determine self reported plotsize
 		gen 					plot_size_SR = s11aq4a
-		rename 				s11aq4b plot_unit
-		lab	var				plot_size_SR "self reported size of plot, not standardized"
-		lab var				plot_unit "self reported unit of measure"
+		rename 					s11aq4b plot_unit
+		lab	var					plot_size_SR "self reported size of plot, not standardized"
+		lab var					plot_unit "self reported unit of measure"
 
 * determine GPS plotsize
 		gen 					plot_size_GPS = s11aq4c
-		lab var				plot_size_GPS 	"GPS plot size in sq. meters"
+		lab var					plot_size_GPS 	"GPS plot size in sq. meters"
 
 
 * **********************************************************************
@@ -63,15 +63,15 @@
 
 * merge in conversion file
 		merge 				m:1 	zone using 	"`cnvrt'/land-conversion.dta"
-		*** how many matched and didn't match?
+		*** All observations matched.
 
-		keep 					if _merge == 3
-		drop 					_merge
+		keep 				if 		_merge == 3
+		drop 						_merge
 
-		tab 					plot_unit
+		tab 						plot_unit
 
 * convert to hectares
-		gen 					plot_size_hec = .
+		gen 				plot_size_hec = .
 		replace 			plot_size_hec = plot_size_SR*ridgecon	if plot_unit == 2
 		*heaps
 		replace 			plot_size_hec = plot_size_SR*heapcon	if plot_unit == 1
@@ -84,23 +84,24 @@
 		*sqm
 		replace 			plot_size_hec = plot_size_SR*sqmcon		if plot_unit == 7
 		*hec
-		replace 			plot_size_hec = plot_size_SR					if plot_unit == 6
+		replace 			plot_size_hec = plot_size_SR			if plot_unit == 6
 
 * only losing 2 observations by not including "other" units
 		rename 				plot_size_hec plot_size_hec_SR
 		lab var				plot_size_hec_SR 	"SR plot size converted to hectares"
 
 * convert gps report to hectares
-		gen 					plot_size_2 = .
+		gen 				plot_size_2 = .
 		replace 			plot_size_2 = plot_size_GPS*sqmcon
 		rename 				plot_size_2 plot_size_hec_GPS
-		lab	var				plot_size_hec_GPS "GPS measured area of plot in hectares"
-		*** about 600 missing values from gps measurement area
+		lab		var			plot_size_hec_GPS "GPS measured area of plot in hectares"
+		*** 768 observations were failed to convert. Unexpected because all observations have a non-zero plot_size_GPS
 
+		count 					if plot_size_hec_SR !=.
+		*** 60 observations do not have plot_size_SR
 		count	 				if plot_size_hec_SR != . & plot_size_hec_GPS != .
-		*** 768 obersvations missing both plot size selfreported and plot size GPS measure
-		*** how does this square with the comment above?
-
+		*** 5125 observations have both self reported and GPS plot size in hectares. 768 observations lack either the plot_size_hec_GPS or the plot_size_hec_SR
+		
 		pwcorr 				plot_size_hec_SR plot_size_hec_GPS
 		*** low correlation, 0.12 between selfreported plot size and GPS
 

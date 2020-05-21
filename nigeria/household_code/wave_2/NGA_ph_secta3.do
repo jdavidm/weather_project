@@ -78,7 +78,9 @@
 		order 				harvestq harv_unit harv_conversion harv_kg
 		tab 					harv_kg, missing
 		*** 6407 missing
-		*** are any of these maize?
+		*** how many of these missing are maize?
+		tab hhid if harv_kg==. & cropcode == 1080
+		*** None of the missing observations are maize
 
 		tab 					cultivated
 		*** yes = 9960 no = 2962 - could explain some of the data that didnt match ^^^
