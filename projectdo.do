@@ -23,7 +23,7 @@
 
 * set $pack to 0 to skip package installation
 	global 			pack 	0
-		
+
 * User initials:
     * Jeff		jdm
     * Anna	 	alj
@@ -32,7 +32,7 @@
 
 * Set this value to the user currently using this file
 
-    global 			user 	"alj"
+    global 			user 	"jdm"
 
 * Specify Stata version in use
     global stataVersion 16.1    // set Stata version
@@ -69,11 +69,11 @@
 
 * install packages if global is set to 1
 if $pack == 1 {
-	
+
 	* for packages/commands, make a local containing any required packages
-		loc userpack "blindschemes estout xfill reghdfe ftools weather customsave distinct winsor2"
-	
-	* install packages that are on ssc	
+		loc userpack "blindschemes mdsec estout mdesc xfill reghdfe ftools weather customsave distinct winsor2"
+
+	* install packages that are on ssc
 		foreach package in `userpack' {
 			capture : which `package', all
 			if (_rc) {
@@ -95,7 +95,7 @@ if $pack == 1 {
 		if _rc != 0 {
 			capture window stopbox rusure "You are missing some packages." "Do you want to install `package'?"
 			if _rc == 0 {
-				qui: net install xfill, replace from(https://www.sealedenvelope.com/)
+				net install xfill, replace from(https://www.sealedenvelope.com/)
 			}
 			else {
 				exit 199
