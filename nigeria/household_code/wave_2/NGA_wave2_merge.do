@@ -1,11 +1,11 @@
 * Project: WB Weather
 * Created on: May 2020
-* Created by: McG
+* Created by: jdm
 * Stata v.16
 
 * does
-	* merges individual cleaned long rainy season household datasets together
-	* wave 4 - tza
+	* merges individual cleaned plot datasets together
+	* collapses to wave 2 plot level data to household level for combination with other waves
 
 * assumes
 	* previously cleaned household datasets
@@ -20,13 +20,14 @@
 * **********************************************************************
 
 * define paths
-	loc root = "$data/household_data/tanzania/wave_4/refined"
-	loc export = "$data/weather_project/household_data/tanzania/wave_4/refined"
-	loc logout = "$data/household_data/tanzania/logs"
+	loc		root	=	"$data/household_data/nigeria/wave_2/refined"
+	loc 	export	=	"$data/household_data/nigeria/wave_2/refined"
+	loc 	logout	=	"$data/household_data/nigeria/logs"
 
 * open log
-	log using "`logout'/NPSY4_MERGE", append
+	log 	using 	"`logout'/NGA_wave_2_merge", append
 
+	
 * **********************************************************************
 * 1 - merging sections 2A and 3A and 4A
 * **********************************************************************
