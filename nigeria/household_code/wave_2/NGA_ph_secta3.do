@@ -24,12 +24,12 @@
 
 * define paths
 		loc 	root		= 	"$data/household_data/nigeria/wave_2/raw"
-		loc		cnvrt		=		"$data/household_data/nigeria/conversion_files"
-		loc 	export	= 	"$data/household_data/nigeria/wave_2/refined"
-		loc 	logout	= 	"$data/household_data/nigeria/logs"
+		loc		cnvrt		=	"$data/household_data/nigeria/conversion_files/wave_2"
+		loc 	export		= 	"$data/household_data/nigeria/wave_2/refined"
+		loc 	logout		= 	"$data/household_data/nigeria/logs"
 
 * open log
-		log 	using 	"`logout'/ph_secta3", append
+		*log 	using 	"`logout'/ph_secta3", append
 
 * **********************************************************************
 * 1 - general clean up, renaming, etc.
@@ -41,6 +41,7 @@
 		tab 					cropcode
 	*** main crop is "cassava old"
 	*** not going to use cassava instead we use maize
+		drop if sa3q6a1 == . 
 
 		describe
 		sort 					hhid plotid cropid cropcode
@@ -67,8 +68,9 @@
 
 * merge harvest conversion file
 		merge 				m:1 cropcode harv_unit using "`cnvrt'/harvconv.dta"
-		*** matched 8673 but didn't match 6399 (from master 4275 and using 2124)
-		*** why didn't these merge? Is dropping the right thing to do?
+		*** matched 9634 but didn't match 2343 (from master 292 and using 2051)
+		*** okay with mismatch in using - not every crop and unit are used in the master 
+		*** check into 292
 
 		keep 					if _merge == 3
 		drop 					_merge
