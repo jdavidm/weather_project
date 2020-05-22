@@ -91,11 +91,11 @@
 
 * create value variable
 	gen 			crop_value = sa3q18
-	rename 			crop_value tf_hrv
+	rename 			crop_value vl_hrv
 
 * convert 2013 Naria to constant 2010 USD
-	replace			tf_hrv = tf_hrv/190.4143545
-	lab var			tf_hrv 	"total value of harvest in 2010 USD"
+	replace			vl_hrv = vl_hrv/190.4143545
+	lab var			vl_hrv 	"total value of harvest in 2010 USD"
 	*** value comes from World Bank: world_bank_exchange_rates.xlxs
 
 * merge harvest conversion file
@@ -137,17 +137,17 @@
 	*** no missing
 
 * generate new variable that measures maize (1080) harvest
-	gen 			cp_hrv = harv_kg 	if 	cropcode > 1079 & cropcode < 1084
-	replace			cp_hrv = 0 			if	cp_hrv == .
+	gen 			mz_hrv = harv_kg 	if 	cropcode > 1079 & cropcode < 1084
+	replace			mz_hrv = 0 			if	mz_hrv == .
 	*** replaces non-maize crop quantity with zero to allow for collapsing
 	
 * collapse crop level data to plot level
-	collapse (sum) 	cp_hrv tf_hrv, by(zone state lga sector ea hhid plotid)
+	collapse (sum) 	mz_hrv vl_hrv, by(zone state lga sector ea hhid plotid)
 	*** sum up cp_hrv and tf_hrv to the plot level, keeping spatial variables
 
 * relabel variables
-	lab var			tf_hrv 	"total value of harvest (2010 USD)"
-	lab var			cp_hrv	"quantity of maize harvested (kg)"
+	lab var			vl_hrv 	"total value of harvest (2010 USD)"
+	lab var			mz_hrv	"quantity of maize harvested (kg)"
 	
 * **********************************************************************
 * 3 - end matter, clean up to save
