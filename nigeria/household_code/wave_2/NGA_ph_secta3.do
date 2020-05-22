@@ -41,22 +41,27 @@
 	tab 			cropcode
 	*** main crop is "cassava old"
 	*** not going to use cassava instead we use maize
-	
-* drop observations in which household had no harvest
-	drop if 		sa3q3 == 2 | sa3q3 == . 
-	*** drops 2988 observations
 
+* find out who is harvesting and why
+	tab				sa3q3
+	tab				sa3q4
+	
+* drop observations in which it was not harvest season
+	drop if 		sa3q4 == 9 | sa3q4 == 10 | sa3q4 == 11
+	*** drops 2517 observations
+
+* convert missing harvest data to zero if harvest was lost to event
+	replace			sa3q6a1 = 0 if sa3q6a1 == . & sa3q4 < 9
+	replace			sa3q18  = 0 if sa3q18  == . & sa3q4 < 9
+	*** 443 missing changed to 0
+	
 * check to see if there are missing observations for quantity and value
 	mdesc 			sa3q6a1 sa3q18
-	*** 41 missing values for quantity, 99 missing for value
-
-* drop if missing both value and quantity
-	drop if			sa3q6a1 == . & sa3q18 == .
-	*** 20 observations deleted
+	*** no missing values
 	
 	describe
-	sort 			hhid plotid cropid cropcode
-	isid 			hhid plotid cropid cropcode, missok
+	sort 			hhid plotid cropid
+	isid 			hhid plotid cropid
 
 * **********************************************************************
 * 2 - harvested amount and conversions
