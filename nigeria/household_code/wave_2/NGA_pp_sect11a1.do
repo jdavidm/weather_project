@@ -43,7 +43,7 @@
 * need plot id to uniquely identify
 	describe
 	sort 			hhid plotid
-	isid 			hhid plotid, missok
+	isid 			hhid plotid
 
 * determine self reported plotsize
 	gen 			plot_size_SR = s11aq4a

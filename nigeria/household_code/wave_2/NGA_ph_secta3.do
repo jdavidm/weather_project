@@ -42,9 +42,10 @@
 	*** main crop is "cassava old"
 	*** not going to use cassava instead we use maize
 
-* find out who is harvesting and why
+* find out who is not harvesting and why
 	tab				sa3q3
 	tab				sa3q4
+	tab				sa3q4b
 	
 * drop observations in which it was not harvest season
 	drop if 		sa3q4 == 9 | sa3q4 == 10 | sa3q4 == 11
@@ -54,6 +55,18 @@
 	replace			sa3q6a1 = 0 if sa3q6a1 == . & sa3q4 < 9
 	replace			sa3q18  = 0 if sa3q18  == . & sa3q4 < 9
 	*** 443 missing changed to 0
+
+* drop if missing both quantity and values
+	drop			if sa3q6a1 == . & sa3q18 == .
+	*** dropped 49 observations
+
+* replace missing quantity if value is not missing
+	replace			sa3q6a1 = 0 if sa3q6a1 == . & sa3q18 != .
+	*** 21 missing changed to zero
+	
+* replace missing value if quantity is not missing
+	replace			sa3q18 = 0 if sa3q18 == . & sa3q6a1 != .
+	*** 79 missing changed to zero
 	
 * check to see if there are missing observations for quantity and value
 	mdesc 			sa3q6a1 sa3q18
@@ -87,7 +100,7 @@
 
 * merge harvest conversion file
 	merge 			m:1 cropcode harv_unit using "`cnvrt'/harvconv.dta"
-	*** matched 9634 but didn't match 2356 (from master 306 and using 2050)
+	*** matched 9633 but didn't match 2799 (from master 749 and using 2050)
 	*** okay with mismatch in using - not every crop and unit are used in the master 
 		
 * drop unmerged using
@@ -95,9 +108,9 @@
 	* dropped 2050
 
 * check into 306 unmatched from master
-	tab 			harv_unit if _merge == 1
 	mdesc			harv_unit if _merge == 1
-	*** 22 unmatched missing harv_unit
+	tab 			harv_unit if _merge == 1
+	*** 465 unmatched missing harv_unit, all but one are zeros (assume other is kg)
 	*** 211 unmatched are already in kgs, so these are okay
 	*** 73 unmatched have strange units
 
@@ -121,22 +134,10 @@
 * converting harvest quantities to kgs
 	gen 			harv_kg = harvestq*conversion
 	mdesc 			harv_kg
-	*** 7 missing
-
-* check what the missing values have
-	tab 			tf_hrv if harv_kg == .
-	tab 			cropcode if harv_kg == .
-	*** all have harvest value, but all are minor crops
-	*** we will replace missing harv_kg with zero
-	*** this allows us to collapse to plot while keeping tf_harv data
-
-* replace missing values with zero
-	replace			harv_kg = 0 if harv_kg == .
-	replace			tf_hrv = 0	if tf_hrv == .
-	*** replaced 7 values of kg and 72 for tf
+	*** no missing
 
 * generate new variable that measures maize (1080) harvest
-	gen 			cp_hrv = harv_kg 	if 	cropcode == 1080
+	gen 			cp_hrv = harv_kg 	if 	cropcode > 1079 & cropcode < 1084
 	replace			cp_hrv = 0 			if	cp_hrv == .
 	*** replaces non-maize crop quantity with zero to allow for collapsing
 	
