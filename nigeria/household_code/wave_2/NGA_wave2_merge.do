@@ -116,6 +116,8 @@
 	assert 			!missing(cp_yld) if !missing(cp_hrv)
 	label 			variable cp_yld	"maize yield (kg/ha)"
 
+*maybe imputing zero values	
+	
 * impute yield outliers
 	summarize 		cp_yld
 	bysort state : egen stddev = sd(cp_yld) if !inlist(cp_yld,.,0)
