@@ -1,10 +1,10 @@
 * Project: WB Weather
 * Created on: May 2020
-* Created by: McG
+* Created by: jdm
 * Stata v.16
 
 * does
-	* Executes all wave specific Tanzania hh .do files
+	* Executes all wave specific Nigeria hh .do files
 	* outputs finished houshold data set ready to merge with weather
 
 * assumes
@@ -19,11 +19,8 @@
 * 0 - setup
 * **********************************************************************
 
-* set global user
-	global user "themacfreezie"
-
 * define paths
-	loc root = "C:/Users/$user/git/weather_project/tanzania/household_code"
+	loc root = "$code/tanzania/household_code"
 
 
 * **********************************************************************
@@ -49,12 +46,3 @@
 	}
 	
 /* END */
-
-* some commentary:
-* 2A and 2B are same variables but in different seasons
-* merge all the As first, merge all the Bs first
-* start by merging sec3s into sec2s
-* sec4s can be pulled into the merged 2&3 (using plot_id)
-* sec5s must be collapsed down to the household level before merging (using hhid)
-* will need to merge household regional identifiers (HH_SEC_A) into sec 5 before merging with other sections
-* then append A big dataset with B big dataset
