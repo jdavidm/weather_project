@@ -15,7 +15,7 @@
 
 * TO DO:
 	* complete
-	
+
 
 * **********************************************************************
 * 0 - setup
@@ -27,11 +27,14 @@
 	loc		export	=		"$data/household_data/nigeria/wave_2/refined"
 	loc		logout	= 		"$data/household_data/nigeria/logs"
 
+* close log if open
+		*log 	close
+
 * open log
 	log 	using	"`logout'/pp_sect11a1", append
 
 * **********************************************************************
-* 1 - describing plot size, etc.
+* 1 - describing plot size - self-reported and GPS
 * **********************************************************************
 
 * import the first relevant data file
@@ -52,9 +55,8 @@
 	gen 			plot_size_GPS = s11aq4c
 	lab var			plot_size_GPS 	"GPS plot size in sq. meters"
 
-
 * **********************************************************************
-* 2 - conversions
+* 2 - conversion to hectares
 * **********************************************************************
 
 * merge in conversion file
@@ -95,11 +97,11 @@
 
 	count 			if plot_size_hec_SR !=.
 	*** 60 observations do not have plot_size_SR
-	
+
 	count	 		if plot_size_hec_SR != . & plot_size_hec_GPS != .
 	*** 5125 observations have both self reported and GPS plot size in hectares
 	*** 768 observations lack either the plot_size_hec_GPS or the plot_size_hec_SR
-		
+
 	pwcorr 			plot_size_hec_SR plot_size_hec_GPS
 	*** low correlation, 0.12 between selfreported plot size and GPS
 
@@ -185,14 +187,14 @@
 	sort				hhid plotid
 	egen				plot_id = group(hhid plotid)
 	lab var				plot_id "unique plot identifier"
-	
+
 	compress
 	describe
 	summarize
 
 * save file
-	customsave , idvar(plot_id) filename("pp_sect11a1.dta") ///
-		path("`export'/`folder'") dofile(pp_sect11a1) user($user)
+		customsave , idvar(hhid) filename("pp_sect11a1.dta") ///
+			path("`export'") dofile(pp_sect11a1) user($user)
 
 * close the log
 	log	close
