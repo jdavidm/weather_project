@@ -43,8 +43,8 @@
 	tostring 			crop_code, generate(crop_num)
 	gen str20 			crop_id = hhid + " " + crop_num
 	duplicates report	crop_id
+
 * no duplicates
-*	duplicates drop 	crop_id, force
 	isid 				crop_id
 	
 * renaming sales variables
@@ -62,6 +62,7 @@
 	tab			_merge
 	drop		if _merge !=3
 	*** 1,759 obs dropped, all using only(2)
+	
 	drop		_merge
 
 * generate unique set of regional unique ids

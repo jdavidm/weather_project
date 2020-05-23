@@ -150,7 +150,7 @@
 	drop		if plotsize == . & plotsize_self ==.
 	
 * keep what we want, get rid of the rest
-	keep 		hhid plot_id plotsize
+	keep 		hhid plotnum plot_id plotsize region district ward village
 
 * prepare for export
 compress

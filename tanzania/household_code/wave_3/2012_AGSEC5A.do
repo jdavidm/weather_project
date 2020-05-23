@@ -102,11 +102,11 @@
 	keep		crop_code crop_num region- ward village ///
 					region_id district_id ward_id village_id
 	duplicates 	drop
-	*** drops 2,740 duplicate observations
+	*** drops 2,767 duplicate observations
 	
 * drop observations with missing crop codes or crop code as "other"
 	drop		if crop_code == . | crop_code == 998
-	*** drops 1,585 observations
+	*** drops 1,559 observations
 
 
 * merge price data back into dataset

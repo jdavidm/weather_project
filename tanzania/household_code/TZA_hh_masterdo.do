@@ -31,6 +31,8 @@
 * **********************************************************************
 
 * loops through four waves of tza hh code
+
+* starting with running all individual hh data files
 * define local with all sub-folders in it
 	loc folderList : dir "`root'" dirs "wave_*"
 
@@ -38,7 +40,7 @@
 	foreach folder of loc folderList {
 
 * loop through each long rainy season file in the above local
-	loc fileList : dir "`root'/`folder'" files "*AGSEC*.do"
+	loc fileList : dir "`root'/`folder'" files "*SEC*.do"
 	
 * loop through each file in the above local
 	foreach file in `fileList' {

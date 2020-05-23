@@ -107,6 +107,7 @@
 	
 * drop observations with missing crop codes or crop code as "other"
 	drop		if crop_code == . | crop_code == 998
+	*** drops 343 observations
 
 
 * merge price data back into dataset

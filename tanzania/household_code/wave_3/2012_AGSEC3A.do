@@ -44,11 +44,22 @@
 	rename 		ag3a_03 status
 	rename 		ag3a_07_2 crop_code
 	rename 		ag3a_18 irrigated 
+	
+* constructing fertilizer variables
 	rename 		ag3a_47 fert_any
-	rename 		ag3a_49 kilo_fert
-	rename 		ag3a_60 pesticide_any
-	label 		define pesticide_anyl 1 "Yes" 2 "No"
-	label 		values pesticide_any pesticide_anyl
+	replace		ag3a_49 = 0 if ag3a_49 == .
+	replace		ag3a_56 = 0 if ag3a_56 == .
+	gen			kilo_fert = ag3a_49 + ag3a_56
+	replace		kilo_fert = . if fert_any == . 
+
+* constructing pesticide/herbicide variables
+	gen			pesticide_any = 2
+	gen			herbicide_any = 2
+	replace 	pesticide_any = 1 if ag3a_61 == 1 | ag3a_61 == 4
+	replace 	herbicide_any = 1 if ag3a_61 == 2 | ag3a_61 == 3
+	label 		define pesticide_any 1 "Yes" 2 "No"
+	label 		values pesticide_any pesticide_any
+	label 		values herbicide_any pesticide_any
 
 * compiling labor inputs
 	egen 		hh_labor_days = rsum(ag3a_72_1 ag3a_72_2 ag3a_72_3 ag3a_72_4 ///
@@ -65,7 +76,7 @@
 
 * keep what we want, get rid of the rest
 	keep 		hhid plot_id status crop_code irrigated fert_any kilo_fert ///
-				pesticide_any labor_days plotnum
+				pesticide_any herbicide_any labor_days plotnum
 
 * prepare for export
 compress

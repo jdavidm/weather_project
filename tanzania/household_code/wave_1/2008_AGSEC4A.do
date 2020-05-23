@@ -66,19 +66,18 @@
 	rename 		s4aq11_1 harvest_month
 	rename 		s4aq15 wgt_hvsted
 	label 		variable wgt_hvsted "What was the quanitity harvested? (kg)"
-	rename 		s4aq20 value_seed_purch
-* see if you can find quantity purchased and quantity of old seeds used to derive total value seeds used
 
 * keep what we want, get rid of what we don't
 	keep 		hhid plotnum plot_id crop_id crop_code mixedcrop_pct harvest_month ///
-				wgt_hvsted value_seed_purch
+				wgt_hvsted
 
 * prepare for export
-compress
-describe
-summarize 
-sort crop_id
-customsave , idvar(crop_id) filename(AG_SEC4A.dta) path("`export'") dofile(2008_AGSEC4A) user($user)
+	compress
+	describe
+	summarize 
+	sort crop_id
+	customsave , idvar(crop_id) filename(AG_SEC4A.dta) path("`export'") ///
+		dofile(2008_AGSEC4A) user($user)
 
 * close the log
 	log	close

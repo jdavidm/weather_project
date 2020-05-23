@@ -96,7 +96,7 @@
 		sum 				plotsize_gps if plotsize_gps < 0.085
 		*** 88 obs < 0.085
 
-		list				plotsize_gps plotsize_self if plotsize_gps < 0.085 //
+		list				plotsize_gps plotsize_self if plotsize_gps < 0.085 ///
 								& !missing(plotsize_gps), sep(0)
 		pwcorr				plotsize_gps plotsize_self if plotsize_gps < 0.085 ///
 								& !missing(plotsize_gps)
