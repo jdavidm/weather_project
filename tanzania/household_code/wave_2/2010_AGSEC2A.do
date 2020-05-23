@@ -60,10 +60,13 @@
 	drop		if _merge == 2
 	drop		_merge
 
-	* interrogating regional identifiers
+* interrogating regional identifiers
 	sort 		region
 	by region: 	distinct district
 	*** 129 distinct districts
+	
+* renaming village variables
+	rename		ea village
 
 * unique district id
 	tostring	region, generate(reg_num) 
@@ -176,7 +179,7 @@
 	rename		plotsize_gps_1_ plotsize
 	
 * keep what we want, get rid of the rest
-	keep 		hhid plot_id plotsize
+	keep 		hhid plotnum plot_id plotsize region district ward village
 
 * prepare for export
 	compress
