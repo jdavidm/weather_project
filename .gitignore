@@ -1,0 +1,8 @@
+# No version control for data files: .dta, .csv, and .sav
+# No version control for Stata project files
+
+*.dta
+*.sav
+*.csv
+*.rar
+*.stpr
