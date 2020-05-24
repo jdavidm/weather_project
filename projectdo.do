@@ -92,19 +92,20 @@ if $pack == 1 {
 			if _rc == 0 {
 				* install -xfill- package
 					net install xfill, replace from(https://www.sealedenvelope.com/)
-
-				* install -customsave package
-					net install StataConfig, ///
-					from(https://raw.githubusercontent.com/etjernst/Materials/master/stata/) replace
-
-				* install -weather- package
-					net install StataConfig, ///
-					from(https://jdavidm.github.io/) replace
 			}
 			else {
 				exit 199
 			}
 		}
+
+	* install -customsave package
+		net install StataConfig, ///
+		from(https://raw.githubusercontent.com/etjernst/Materials/master/stata/) replace
+
+	* install -weather- package
+		net install StataConfig, ///
+		from(https://github.com/jdavidm/weather_command/) replace
+	
 	* update all ado files
 		ado update, update
 
