@@ -67,9 +67,9 @@
 					pest_any herb_any tracked_obs
 	
 * create unique household-plot identifier
-	sort				hhid plotid
-	egen				plot_id = group(hhid plotid)
-	lab var				plot_id "unique plot identifier"
+	sort			hhid plotid
+	egen			plot_id = group(hhid plotid)
+	lab var			plot_id "unique plot identifier"
 	
 	compress
 	describe

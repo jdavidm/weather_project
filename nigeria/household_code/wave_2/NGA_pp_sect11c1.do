@@ -75,7 +75,7 @@
 	*** unlike harvest labor, this did not ask for unpaid/exchange labor
 
 * check for missing values
-	mdesc			pp_labor	
+	mdesc			pp_labor
 	*** no missing values
 		
 

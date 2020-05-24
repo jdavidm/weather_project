@@ -5,7 +5,7 @@
 * Stata v.16
 
 * does
-	* reads in Nigeria, WAVE 3, POST HARVEST, NIGERIA SECTA3i
+	* reads in Nigeria, WAVE 3, (2015-2016) POST HARVEST, NIGERIA SECTA3i
 	* determines harvest information (area and quantity) and that maize is the second most widely cultivated crop///
 	* outputs clean data file ready for combination with wave 3 hh data
 
@@ -67,7 +67,31 @@
 		rename 				sa3iq5b 	area_unit
 		tab 				area_unit
 
-* nerge in land converstion
+* dropping observations from households that did not harvest
+
+		tab harvested
+		
+		drop if harvested == 2
+		
+		*check for missing quantity and value
+		mdesc 			 sa3iq6ii sa3iq6a
+		*** 45 missing value, 22 missing quantity
+		
+		*drop if missing both value and quantity
+		drop if sa3iq6ii==. & sa3iq6a==.
+		*** 18 observations deleted
+		
+		drop if sa3iq6ii==. & sa3iq6a==0
+		*** 3 observations deleted
+		
+		count if sa3iq6a==.
+		*** 27 observations have a weight harvested but no value
+		
+		count if sa3iq6ii==.
+		*** 1 observation has no weight but a value harvested
+
+	
+* merge in land converstion
 		merge	 	m:1 	zone using 	"`cnvrt'/land-conversion"
 		*** All observations matched
 
@@ -92,11 +116,28 @@
 
 * survey: how much did you harvest during this ag season?
 		gen 					harvestq = sa3iq6i
+		label var 					harvestq "quantity harvested not in standardized units"
 		rename 					sa3iq6ii 	harv_unit
-
+		
+		rename 					sa3iq6a tf_hrv
+		replace 				tf_hrv=tf_hrv/224.5642303
+		label var					tf_hrv "total value of harvest in 2016 US$"
+		*** value comes from World Bank: world_bank_exchange_rates.xlxs
+		
+		
 * merge in conversion for harvest quantities
 		merge 				m:1 zone cropcode harv_unit using	"`cnvrt'/wave_3/ag_conv_w3_long"
-		*** 6452 did not match and 9069 matched
+		*** 1,188 did not match from master , 3,565 did not match from using  
+		*** matching failed because "`cnvrt'/wave_3/ag_conv_w3_long" is incomplete
+   
+   * drop unmerged using
+	drop if				_merge == 2
+	* dropped 3,565
+
+* check into 1,188 unmatched from master
+	tab 				harv_unit if _merge == 1
+	mdesc				harv_unit if _merge == 1
+
 
 		keep 					if _merge == 3
 		drop 					_merge
