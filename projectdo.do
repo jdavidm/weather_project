@@ -90,23 +90,23 @@ if $pack == 1 {
 		if _rc != 0 {
 			capture window stopbox rusure "You are missing some packages." "Do you want to install `package'?"
 			if _rc == 0 {
-				qui: net install xfill, replace from(https://www.sealedenvelope.com/)
+				* install -xfill- package
+					net install xfill, replace from(https://www.sealedenvelope.com/)
+
+				* install -customsave package
+					net install StataConfig, ///
+					from(https://raw.githubusercontent.com/etjernst/Materials/master/stata/) replace
+
+				* install -weather- package
+					net install StataConfig, ///
+					from(https://jdavidm.github.io/) replace
 			}
 			else {
 				exit 199
 			}
 		}
-
 	* update all ado files
 		ado update, update
-
-	* install metadata .ado file
-		net install StataConfig, ///
-		from(https://raw.githubusercontent.com/etjernst/Materials/master/stata/) replace
-
-	* install weather .ado file
-		net install StataConfig, ///
-		from(https://github.com/jdavidm/Materials/weather.ado?raw=true) replace
 
 	* set graph and Stata preferences
 		set scheme plotplain
