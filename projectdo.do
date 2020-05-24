@@ -85,26 +85,16 @@ if $pack == 1 {
 			}
 		}
 
-	* the package -xfill- is not on ssc so installing here
-		which xfill
-		if _rc != 0 {
-			capture window stopbox rusure "You are missing some packages." "Do you want to install `package'?"
-			if _rc == 0 {
-				* install -xfill- package
-					net install xfill, replace from(https://www.sealedenvelope.com/)
-			}
-			else {
-				exit 199
-			}
-		}
-
+	* install -xfill- package
+		net install xfill, replace from(https://www.sealedenvelope.com/)
+		
 	* install -customsave package
 		net install StataConfig, ///
 		from(https://raw.githubusercontent.com/etjernst/Materials/master/stata/) replace
 
 	* install -weather- package
 		net install StataConfig, ///
-		from(https://github.com/jdavidm/weather_command/) replace
+		from(https://jdavidm.github.io/) replace
 	
 	* update all ado files
 		ado update, update
