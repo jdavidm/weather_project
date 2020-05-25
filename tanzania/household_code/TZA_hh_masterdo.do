@@ -12,7 +12,7 @@
 	* subsidiary, wave-specific .do files
 
 * TO DO:
-	* everything
+	* write build.do and append-built.do files
 
 	
 * **********************************************************************
@@ -27,7 +27,7 @@
 
 
 * **********************************************************************
-* 1 - run individual hh_cleaning .do files
+* 1 - run individual HH and AG cleaning .do files
 * **********************************************************************
 
 * loops through four waves of tza hh code
@@ -39,24 +39,43 @@
 * define local with all files in each sub-folder
 	foreach folder of loc folderList {
 
-* loop through each long rainy season file in the above local
-	loc fileList : dir "`root'/`folder'" files "*SEC*.do"
+	* loop through each HHSEC file in the folder local
+		loc HHfile : dir "`root'/`folder'" files "*HHSEC*.do"
 	
-* loop through each file in the above local
-	foreach file in `fileList' {
+	* loop through each file in the above local
+		foreach file in `HHfile' {
 	    
-	* run each individual file
-		do "`root'/`folder'/`file'"		
-	}		
+		* run each individual file
+			do "`root'/`folder'/`file'"		
 	}
+	* loop through each AGSEC file in the folder local
+		loc AGfile : dir "`root'/`folder'" files "*AGSEC*.do"
+	
+	* loop through each file in the above local
+		foreach file in `AGfile' {
+	    
+		* run each individual file
+			do "`root'/`folder'/`file'"		
+	}		
+}
+
+
+* **********************************************************************
+* 2 - run wave specific .do files to merge with weather
+* **********************************************************************
+
+* do each IHS3 household cleaning files
+	do 			"`dofile'/wave_1/npsy1_build.do"			//	merges NPSY1 to weather
+	do 			"`dofile'/wave_2/npsy2_build.do"			//	merges NPSY2 to weather
+	do 			"`dofile'/wave_3/npsy3_build.do"			//	merges NPSY3 to weather
+	do 			"`dofile'/wave_4/npsy4_build.do"			//	merges NPSY4 to weather
+
+
+* **********************************************************************
+* 3 - run .do file to append each wave
+* **********************************************************************
+
+	do			"`dofile'/TZA_append_built.do"				// append waves
 	
 /* END */
 
-* some commentary:
-* 2A and 2B are same variables but in different seasons
-* merge all the As first, merge all the Bs first
-* start by merging sec3s into sec2s
-* sec4s can be pulled into the merged 2&3 (using plot_id)
-* sec5s must be collapsed down to the household level before merging (using hhid)
-* will need to merge household regional identifiers (HH_SEC_A) into sec 5 before merging with other sections
-* then append A big dataset with B big dataset
