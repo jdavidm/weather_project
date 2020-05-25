@@ -22,18 +22,8 @@
 * **********************************************************************
 
 * set $pack to 0 to skip package installation
-	global 			pack 	0
+	global 			pack 	1
 		
-* User initials:
-    * Jeff		jdm
-    * Anna	 	alj
-    * Brian		mcg
-    * Emil      etk
-
-* Set this value to the user currently using this file
-
-    global 			user 	"jdm"
-
 * Specify Stata version in use
     global stataVersion 16.1    // set Stata version
     version $stataVersion
@@ -42,25 +32,26 @@
 * 0 (a) - Create user specific paths
 * **********************************************************************
 
+
 * Define root folder globals
-    if "$user" == "jdm" {
+    if `"`c(username)'"' == "jdmichler" {
         global 		code  	"C:/Users/jdmichler/git/weather_project"
-		global 		data		"G:/My Drive/weather_project"
+		global 		data	"G:/My Drive/weather_project"
     }
 
-    if "$user" == "alj" {
+    if `"`c(username)'"' == "aljosephson" {
         global 		code  	"C:/Users/aljosephson/git/weather_project"
-		global 		data		"G:/My Drive/weather_project"
+		global 		data	"G:/My Drive/weather_project"
     }
 
-    if "$user" == "mcg" {
+    if `"`c(username)'"' == "themacfreezie" {
         global 		code  	"C:/Users/themacfreezie/git/weather_project"
-		global 		data		"G:/My Drive/weather_project"
+		global 		data	"G:/My Drive/weather_project"
     }
 
-    if "$user" == "etk" {
+    if `"`c(username)'"' == "emilk" {
         global 		code  	"C:/Users/emilk/git/weather_project"
-		global 		data		"G:/My Drive/weather_project"
+		global 		data	"G:/My Drive/weather_project"
     }
 
 * **********************************************************************
@@ -70,8 +61,11 @@
 * install packages if global is set to 1
 if $pack == 1 {
 	
+	* temporarily set delimiter to ; so can break the line
+		#delimit ;
 	* for packages/commands, make a local containing any required packages
-		loc userpack "blindschemes estout xfill reghdfe ftools weather customsave distinct winsor2"
+		loc userpack "blindschemes mdesc estout reghdfe ftools distinct winsor2" ;
+		#delimit cr
 	
 	* install packages that are on ssc	
 		foreach package in `userpack' {
@@ -90,24 +84,19 @@ if $pack == 1 {
 			}
 		}
 
-	* the package -xfill- is not on ssc so installing here
-		which xfill
-		if _rc != 0 {
-			capture window stopbox rusure "You are missing some packages." "Do you want to install `package'?"
-			if _rc == 0 {
-				qui: net install xfill, replace from(https://www.sealedenvelope.com/)
-			}
-			else {
-				exit 199
-			}
-		}
-
-	* update all ado files
-		ado update, update
-
-	* install metadata .do file
+	* install -xfill- package
+		net install xfill, replace from(https://www.sealedenvelope.com/)
+		
+	* install -customsave package
 		net install StataConfig, ///
 		from(https://raw.githubusercontent.com/etjernst/Materials/master/stata/) replace
+
+	* install -weather- package
+		net install StataConfig, ///
+		from(https://jdavidm.github.io/) replace
+	
+	* update all ado files
+		ado update, update
 
 	* set graph and Stata preferences
 		set scheme plotplain
