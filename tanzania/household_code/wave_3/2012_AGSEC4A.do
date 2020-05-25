@@ -61,12 +61,15 @@
 	tostring 			crop_code, generate(crop_num)
 	gen str20 			crop_id = hhid + " " + plotnum + " " + crop_num
 	duplicates report 	crop_id
-* six duplicate crop_ids
+	*** six duplicate crop_ids
 
 * other variables of interest
-	rename 				ag4a_24_1 harvest_month
 	rename 				ag4a_28 wgt_hvsted
 	rename				ag4a_29 hvst_value
+	tab					hvst_value, missing
+	*** hvst_value missing no observations
+
+* currency conversion
 	replace				hvst_value = hvst_value/1730.033187
 	*** Value comes from World Bank: world_bank_exchange_rates.xlxs
 
@@ -89,11 +92,12 @@
 	isid				plot_id
 	
 * prepare for export
-compress
-describe
-summarize 
-sort plot_id
-customsave , idvar(plot_id) filename(AG_SEC4A.dta) path("`export'") dofile(2012_AGSEC4A) user($user)
+	compress
+	describe
+	summarize 
+	sort plot_id
+	customsave , idvar(plot_id) filename(AG_SEC4A.dta) path("`export'") ///
+		dofile(2012_AGSEC4A) user($user)
 
 * close the log
 	log	close
