@@ -1,20 +1,19 @@
 * Project: WB Weather
 * Created on: May 2020
-* Created by: jdm
-* Edited by : alj
+* Created by: McG
 * Stata v.16
 
 * does
 	* merges individual cleaned plot datasets together
 	* imputes values for continuous variables
-	* collapses wave 3 plot level data to household level for combination with other waves
+	* collapses wave 2 plot level data to household level for combination with other waves
 
 * assumes
 	* previously cleaned household datasets
 	* customsave.ado
 
 * TO DO:
-	* complete
+	* complete 
 
 
 * **********************************************************************
@@ -22,14 +21,14 @@
 * **********************************************************************
 
 * define paths
-	loc root = "$data/household_data/tanzania/wave_3/refined"
-	loc export = "$data/household_data/tanzania/wave_3/refined"
+	loc root = "$data/household_data/tanzania/wave_2/refined"
+	loc export = "$data/household_data/tanzania/wave_2/refined"
 	loc logout = "$data/household_data/tanzania/logs"
 
 * open log
-	log using "`logout'/NPSY3_MERGE", append
+	log using "`logout'/NPSY2_MERGE", append
 
-	
+
 * **********************************************************************
 * 1a - merge plot level data sets together
 * **********************************************************************
@@ -41,7 +40,7 @@
 
 * merge in plot size data
 	merge 			1:1 plot_id using "`root'/AG_SEC2A", generate(_2A)
-	*** 0 out of 4702 missing in master 
+	*** 0 out of 3,705 missing in master 
 	*** all unmerged obs came from using data 
 	*** meaning we lacked production data
 	*** per Malawi (rs_plot) we drop all unmerged observations
@@ -50,20 +49,22 @@
 	
 * merging in production inputs data
 	merge			1:1 plot_id using "`root'/AG_SEC3A", generate(_3A)
-	*** 0 out of 4702 missing in master 
+	*** 0 out of 3,705 missing in master 
 	*** all unmerged obs came from using data 
 	*** meaning we lacked production data
-
+	*** stragnely, the same # of unmatched obs from using in 3A as in 2A
+	
 	drop			if _3A != 3
 	
 * fill in missing values
 	replace			irrigated = 2 if irrigated == .
-
+	*** 0 changes made
+	
 * drop observations missing values (not in continuous)
 	drop			if plotsize == .
 	drop			if irrigated == .
-	drop			if pesticide_any == .
 	drop			if herbicide_any == .
+	drop			if pesticide_any == .
 	*** no observations dropped
 
 	drop			_2A _3A
@@ -122,7 +123,7 @@
 					& !inlist(mz_yld,.,0) & !mi(maxrep)
 	tabstat 		mz_yld mz_yldimp, ///
 					f(%9.0f) s(n me min p1 p50 p95 p99 max) c(s) longstub
-	*** reduces mean from 857 to 683
+	*** reduces mean from 848 to 695
 					
 	drop 			stddev median replacement maxrep minrep
 	lab var 		mz_yldimp "maize yield (kg/ha), imputed"
@@ -159,7 +160,7 @@
 						& !inlist(vl_yld,.,0) & !mi(maxrep)
 	tabstat			vl_yld vl_yldimp, ///
 						f(%9.0f) s(n me min p1 p50 p95 p99 max) c(s) longstub
-	*** reduces mean from 388 to 269
+	*** reduces mean from 306 to 230
 						
 	drop			stddev median replacement maxrep minrep
 	lab var			vl_yldimp	"value of yield (2010USD/ha), imputed"
@@ -196,7 +197,7 @@
 						& !inlist(labordays_ha,.,0) & !mi(maxrep)
 	tabstat 		labordays_ha labordays_haimp, ///
 						f(%9.0f) s(n me min p1 p50 p95 p99 max) c(s) longstub
-	*** reduces mean from 298 to 219
+	*** reduces mean from 267 to 203
 	
 	drop			stddev median replacement maxrep minrep
 	lab var			labordays_haimp	"farm labor use (days/ha), imputed"
@@ -233,7 +234,7 @@
 	*** note that this code is slighlty different we don't use !inlist
 	tabstat 		fert_ha fert_haimp, ///
 						f(%9.0f) s(n me min p1 p50 p95 p99 max) c(s) longstub
-	*** reduces mean from 26 to 20
+	*** reduces mean from 163 to 26
 	
 	drop			stddev median replacement maxrep minrep
 	lab var			fert_haimp	"fertilizer use (kg/ha), imputed"
@@ -244,6 +245,8 @@
 	lab var			fert "fertilizer (kg)"
 
 	replace			fert_any = 1 if fertimp > 0
+	*** one change made
+	
 	replace			fert_any = 2 if fertimp == 0
 
 
@@ -370,7 +373,7 @@
 	}		
 	
 	collapse (sum)	tf_* cp_*, by(region district ward village hhid)
-	*** we went from 4,702 to 2,662 observations 
+	*** we went frm 3,705 to 2,116 observations 
 	
 * return non-maize production to missing
 	replace			cp_yld = . if cp_yld == 0
@@ -401,8 +404,8 @@
 	isid			hhid
 	
 * generate year identifier
-	gen				year = 2012
-	lab var		year "Year"
+	gen				year = 2010
+	lab var			year "Year"
 		
 	order 			region district ward village hhid year tf_hrv tf_lnd tf_yld ///
 						tf_lab tf_frt tf_pst tf_hrb tf_irr cp_hrv cp_lnd ///
@@ -412,8 +415,8 @@
 	summarize 
 	
 * saving production dataset
-	customsave , idvar(hhid) filename(hhfinal_npsy3.dta) path("`export'") ///
-			dofile(NPSY3_merge) user($user) 
+	customsave , idvar(hhid) filename(hhfinal_npsy2.dta) path("`export'") ///
+			dofile(NPSY2_merge) user($user) 
 
 * close the log
 	log	close
