@@ -5,7 +5,7 @@
 
 * does
 	* reads in Nigeria, WAVE 1 POST HARVEST, NGA SECTA1 AG
-	* DRY SEASON FILE - drop from analysis due to no production of anything but cassava (effecitvely)
+	* DRY SEASON FILE - drop from analysis due to no production of anything but cassava (effectively)
 	* determines primary and secondary crops, cleans production (quantity, hecatres)
 	* converts to hectares and kilograms, as appropriate
 

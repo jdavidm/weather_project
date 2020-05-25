@@ -118,6 +118,8 @@ twoway (kdensity lngps) (kdensity lnsr)
 sum plot_size_hec_GPS, detail
 sum plot_size_hec_SR, detail
 
+************************************************WORK THROUGH HERE 
+
 *check correlation within +/- 3sd of mean (GPS)
 sum plot_size_hec_GPS, detail
 pwcorr plot_size_hec_SR plot_size_hec_GPS if inrange(plot_size_hec_GPS,`r(p50)'-(3*`r(sd)'),`r(p50)'+(3*`r(sd)'))

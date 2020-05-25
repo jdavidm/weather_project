@@ -1,153 +1,174 @@
 * Project: WB Weather
 * Created on: May 2020
 * Created by: alj
+* Edited by: ek
 * Stata v.16
 
 * does
-	* reads in Nigeria, WAVE 2, POST HARVEST, NIGERIA AG SECTA3
-	* determines primary and secondary crops, cleans harvest (quantity, hecatres)
-	* converts to hectares and kilograms, as appropriate
-	* maybe more who knows
-	* outputs clean data file ready for combination with wave 2 hh data
+	* reads in Nigeria, WAVE 2 (2012-2013), POST HARVEST, AG SECTA3
+	* determines primary and secondary crops, cleans harvest (quantity and value)
+	* converts to kilograms and constant 2010 USD
+	* outputs clean data file ready for combination with wave 2 plot data
 
 * assumes
 	* customsave.ado
+	* mdesc.ado
 	* harvconv.dta conversion file
-	* land_conversion.dta conversion file 
-	
-* other notes: 
-	* still includes some notes from Alison Conley's work in spring 2020
-	
+
 * TO DO:
-	* need to convert Naira to USD
-	* unsure - incomplete, runs but maybe not right? 
-	* clarify "does" section
+	* complete
 
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
 
-* set global user
-	global user "aljosephson"
-	
-* define paths	
-	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_2/raw"
-	loc export = "G:/My Drive/weather_project/household_data/nigeria/wave_2/refined"
-	loc logout = "G:/My Drive/weather_project/household_data/nigeria/logs"
+* define paths
+	loc 	root	= 	"$data/household_data/nigeria/wave_2/raw"
+	loc		cnvrt	=	"$data/household_data/nigeria/conversion_files/wave_2"
+	loc 	export	= 	"$data/household_data/nigeria/wave_2/refined"
+	loc 	logout	= 	"$data/household_data/nigeria/logs"
 
-* close log (in case still open)
-	*log close
-	
-* open log	
-	log using "`logout'/ph_secta3", append
+* open log
+	log 	using 	"`logout'/wave_2_ph_secta3", append
 
 * **********************************************************************
-* 1 - general clean up, renaming, etc. 
+* 1 - general clean up, renaming, etc.
 * **********************************************************************
-		
+
 * import the first relevant data file
-		use "`root'/secta3_harvestw2", clear 	
+	use 			"`root'\secta3_harvestw2.dta" , clear
 
-tab cropcode
-*main crop is "cassava old"
+	tab 			cropcode
+	*** main crop is "cassava old"
+	*** not going to use cassava instead we use maize
 
-describe
-sort hhid plotid cropid cropcode
-isid hhid plotid cropid cropcode, missok
-
-* **********************************************************************
-* 2 - harvested amount, land area, conversions, etc.
-* **********************************************************************
+* find out who is not harvesting and why
+	tab				sa3q3
+	tab				sa3q4
+	tab				sa3q4b
 	
-*need the conversion key in order to get the crop area in hectares
-*this should be the variable we use to get yield for the main crop 
-gen crop_area = sa3q5a
-label variable crop_area "what was the land area of crop harvested since the last interview? not using standardized unit"
-rename sa3q5b area_unit
+* drop observations in which it was not harvest season
+	drop if 		sa3q4 == 9 | sa3q4 == 10 | sa3q4 == 11
+	*** drops 2517 observations
 
-*we will also use this measure to get yield
-gen harvestq = sa3q6a1
-label variable harvestq "quantity harvested since last interview, not in standardized unit"
-*units of harvest
+* convert missing harvest data to zero if harvest was lost to event
+	replace			sa3q6a1 = 0 if sa3q6a1 == . & sa3q4 < 9
+	replace			sa3q18  = 0 if sa3q18  == . & sa3q4 < 9
+	*** 443 missing changed to 0
 
-rename sa3q3 cultivated
+* drop if missing both quantity and values
+	drop			if sa3q6a1 == . & sa3q18 == .
+	*** dropped 49 observations
 
-* Naria needs to be converted to USD
-gen crop_value = sa3q18
-label variable crop_value "if you had sold all crop harvested since the last visit, what would be the total value in Naira?"
+* replace missing quantity if value is not missing
+	replace			sa3q6a1 = 0 if sa3q6a1 == . & sa3q18 != .
+	*** 21 missing changed to zero
+	
+* replace missing value if quantity is not missing
+	replace			sa3q18 = 0 if sa3q18 == . & sa3q6a1 != .
+	*** 79 missing changed to zero
+	
+* check to see if there are missing observations for quantity and value
+	mdesc 			sa3q6a1 sa3q18
+	*** no missing values
+	
+	describe
+	sort 			hhid plotid cropid
+	isid 			hhid plotid cropid
 
+* **********************************************************************
+* 2 - harvested amount and conversions
+* **********************************************************************
 
-* define new paths for conversions	
-	loc root = "G:/My Drive/weather_project/household_data/nigeria/conversion_files/"
+* create quantity harvested variable
+	gen 			harvestq = sa3q6a1
+	lab	var			harvestq "quantity harvested, not in standardized unit"
 
-merge m:1 zone using "`root'/land-conversion"
-drop _merge
+* units of harvest
+	rename 			sa3q6a2 harv_unit
+	tab				harv_unit, nolabel
+	rename 			sa3q3 cultivated
 
-tab area_unit
-tab area_unit, nolabel
+* create value variable
+	gen 			crop_value = sa3q18
+	rename 			crop_value vl_hrv
 
-*converting land area
-gen crop_area_hec = . 
-replace crop_area_hec = crop_area*heapcon if area_unit==1
-replace crop_area_hec = crop_area*ridgecon if area_unit==2
-replace crop_area_hec = crop_area*standcon if area_unit==3
-replace crop_area_hec = crop_area*plotcon if area_unit==4
-replace crop_area_hec = crop_area*acrecon if area_unit==5
-replace crop_area_hec = crop_area*sqmcon if area_unit==7
-replace crop_area_hec = crop_area if area_unit == 6
-label variable crop_area_hec "land area of crop harvested since last unit, converted to hectares"
+* convert 2013 Naria to constant 2010 USD
+	replace			vl_hrv = vl_hrv/190.4143545
+	lab var			vl_hrv 	"total value of harvest in 2010 USD"
+	*** value comes from World Bank: world_bank_exchange_rates.xlxs
 
-*units of harvest
-rename sa3q6a2 harv_unit
-tab harv_unit
-tab harv_unit, nolabel
+* merge harvest conversion file
+	merge 			m:1 cropcode harv_unit using "`cnvrt'/harvconv.dta"
+	*** matched 9633 but didn't match 2799 (from master 749 and using 2050)
+	*** okay with mismatch in using - not every crop and unit are used in the master 
+		
+* drop unmerged using
+	drop if			_merge == 2
+	* dropped 2050
 
-merge m:1 cropcode harv_unit using "`root'/harvconv"
-*matched 8673 but didn't match 6399 (from master 4275 and using 2124)
+* check into 306 unmatched from master
+	mdesc			harv_unit if _merge == 1
+	tab 			harv_unit if _merge == 1
+	*** 465 unmatched missing harv_unit, all but one are zeros (assume other is kg)
+	*** 211 unmatched are already in kgs, so these are okay
+	*** 73 unmatched have strange units
 
-*converting harvest quantities to kgs
-gen harv_kg = harvestq*harv_conversion
+* dropped unmatched with missing or strange units
+	drop if			_merge == 1 & harv_unit != 1
+	*** dropped 95 observations (73 + 22)
 
-order harvestq harv_unit harv_conversion harv_kg
+	drop 			_merge
 
-tab cultivated
-*yes = 9960 no = 2962 - could explain some of the data that didnt match ^^^
+* make sure no missing values in conversion
+	mdesc			conversion
+	tab 			harv_unit if conversion == .
+	*** there are 211 missing conversion factors
+	*** all of these are kg
 
+* replace missing conversion factors with 1 (for kg)
+	replace			conversion = 1 if conversion == .
+	mdesc			conversion
+	*** no more missing
+	
+* converting harvest quantities to kgs
+	gen 			harv_kg = harvestq*conversion
+	mdesc 			harv_kg
+	*** no missing
+
+* generate new variable that measures maize (1080) harvest
+	gen 			mz_hrv = harv_kg 	if 	cropcode > 1079 & cropcode < 1084
+	replace			mz_hrv = 0 			if	mz_hrv == .
+	*** replaces non-maize crop quantity with zero to allow for collapsing
+	
+* collapse crop level data to plot level
+	collapse (sum) 	mz_hrv vl_hrv, by(zone state lga sector ea hhid plotid)
+	*** sum up cp_hrv and tf_hrv to the plot level, keeping spatial variables
+
+* relabel variables
+	lab var			vl_hrv 	"total value of harvest (2010 USD)"
+	lab var			mz_hrv	"quantity of maize harvested (kg)"
+	
 * **********************************************************************
 * 3 - end matter, clean up to save
 * **********************************************************************
 
-keep hhid ///
-zone ///
-state ///
-lga ///
-sector ///
-hhid ///
-ea ///
-plotid ///
-cropid ///
-cropcode ///
-crop_area ///
-area_unit ///
-harvestq ///
-harv_unit ///
-cultivated ///
-crop_value ///
-tracked_obs ///
-harv_kg ///
-harv_conversion ///
-crop_area_hec ///
-
-
-compress
-describe
-summarize 
+	isid			hhid plotid
+	
+* create unique household-plot identifier
+	sort			hhid plotid
+	egen			plot_id = group(hhid plotid)
+	lab var			plot_id "unique plot identifier"
+	
+	compress
+	describe
+	summarize
 
 * save file
-		customsave , idvar(hhid) filename("ph_secta3.dta") ///
-			path("`export'/`folder'") dofile(ph_secta3) user($user)
+	customsave , idvar(plot_id) filename("ph_secta3.dta") ///
+		path("`export'") dofile(ph_secta3) user($user)
 
 * close the log
-	log	close
+	log		close
 
 /* END */
