@@ -21,7 +21,7 @@
 
 * define paths
 	loc		source 	= 	"$data/household_data/malawi/wb_raw_data/data/ihs4cx/hh"
-	loc		root 		= 	"$data/household_data/malawi/wave_3/raw"
+	loc		root 	= 	"$data/household_data/malawi/wave_3/raw"
 	loc		export 	= 	"$data/household_data/malawi/wave_3/refined"
 	loc		logout 	= 	"$data/household_data/malawi/logs"
 
@@ -101,6 +101,9 @@
 	lab var 	year "Year Rainy Season Begins"
 	order 		year, after(intyear)
 
+* destring unique household indicator
+	destring 	case_id, replace
+	
 * save data
 	customsave	, idvar(hhid) filename(hhfinal_ihs4cx.dta) ///
 				path("`export'") dofile(ihs4cx_hh_clean) user($user)

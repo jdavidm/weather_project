@@ -33,37 +33,37 @@
 * **********************************************************************
 
 * move IHS3 data to wave 1 folder
-	use			"$source/ihs3cx/hh/hh_final.dta", clear
+	use			"`source'/ihs3cx/hh/hh_final.dta", clear
 	customsave	, idvar(case_id) filename(ihs3cx_hh.dta) ///
-				path("$export/wave_1/raw") dofile(mwi_hh_masterdo) user($user)
+				path("`export'/wave_1/raw") dofile(mwi_hh_masterdo) user($user)
 
-	use			"$source/ihs3lpnl/hh/hh_final.dta", clear
+	use			"`source'/ihs3lpnl/hh/hh_final.dta", clear
 	customsave	, idvar(case_id) filename(ihs3lpnl_hh.dta) ///
-				path("$export/wave_1/raw") dofile(mwi_hh_masterdo) user($user)
+				path("`export'/wave_1/raw") dofile(mwi_hh_masterdo) user($user)
 
-	use			"$source/ihs3spnl/hh/hh_final.dta", clear
+	use			"`source'/ihs3spnl/hh/hh_final.dta", clear
 	customsave	, idvar(case_id) filename(ihs3spnl_hh.dta) ///
-				path("$export/wave_1/raw") dofile(mwi_hh_masterdo) user($user)
+				path("`export'/wave_1/raw") dofile(mwi_hh_masterdo) user($user)
 
 * move IHPS*pnl data to wave 2 folder
 
-	use			"$source/ihpsspnl/hh/hh_final.dta", clear
+	use			"`source'/ihpsspnl/hh/hh_final.dta", clear
 	customsave	, idvar(y2_hhid) filename(ihpsspnl_hh.dta) ///
-				path("$export/wave_2/raw") dofile(mwi_hh_masterdo) user($user)
+				path("`export'/wave_2/raw") dofile(mwi_hh_masterdo) user($user)
 
-	use			"$source/ihpslpnl/hh/hh_final.dta", clear
+	use			"`source'/ihpslpnl/hh/hh_final.dta", clear
 	customsave	, idvar(y2_hhid) filename(ihpslpnl_hh.dta) ///
-				path("$export/wave_2/raw") dofile(mwi_hh_masterdo) user($user)
+				path("`export'/wave_2/raw") dofile(mwi_hh_masterdo) user($user)
 
 * move IHS4 data to wave 3 folder
-	use			"$source/ihs4cx/hh/hh_final.dta", clear
+	use			"`source'/ihs4cx/hh/hh_final.dta", clear
 	customsave	, idvar(case_id) filename(ihs4cx_hh.dta) ///
-				path("$export/wave_3/raw") dofile(mwi_hh_masterdo) user($user)
+				path("`export'/wave_3/raw") dofile(mwi_hh_masterdo) user($user)
 
 * move IHS4*pnl data to wave 4folder
-	use			"$source/ihs4lpnl/hh/hh_final.dta", clear
+	use			"`source'/ihs4lpnl/hh/hh_final.dta", clear
 	customsave	, idvar(y3_hhid) filename(ihs4lpnl_hh.dta) ///
-				path("$export/wave_4/raw") dofile(mwi_hh_masterdo) user($user)
+				path("`export'/wave_4/raw") dofile(mwi_hh_masterdo) user($user)
 
 
 * **********************************************************************
@@ -91,25 +91,25 @@
 * **********************************************************************
 
 * do each IHS3 household cleaning files
-	do 			"`dofile'/wave_1/ihs3cx_merge.do"			//	merges IHS3cx to weather
-	do 			"`dofile'/wave_1/ihs3spnl_merge.do"		//	merges IHS3spnl to weather
-	do 			"`dofile'/wave_1/ihs3lpnl_merge.do"		//	merges IHS3lpnl to weather
+	do 			"`dofile'/wave_1/ihs3cx_build.do"			//	merges IHS3cx to weather
+	do 			"`dofile'/wave_1/ihs3spnl_build.do"			//	merges IHS3spnl to weather
+	do 			"`dofile'/wave_1/ihs3lpnl_build.do"			//	merges IHS3lpnl to weather
 
 * do each IHPS*pnl household cleaning files
-	do 			"`dofile'/wave_2/ihpsspnl_merge.do"		//	merges IHPSspnl to weather
-	do 			"`dofile'/wave_2/ihpslpnl_merge.do"		//	merges IHPSlpnl	to weather
+	do 			"`dofile'/wave_2/ihpsspnl_build.do"			//	merges IHPSspnl to weather
+	do 			"`dofile'/wave_2/ihpslpnl_build.do"			//	merges IHPSlpnl	to weather
 
 * do IHS4 household cleaning filename
-	do 			"`dofile'/wave_3/ihs4cx_merge.do"			//	merges IHS4cx to weather
+	do 			"`dofile'/wave_3/ihs4cx_build.do"			//	merges IHS4cx to weather
 
 * do IHS4*pnl household cleaning filefiles
-	do 			"`dofile'/wave_4/ihs4lpnl_merge.do"		//	merges IHS4lpnl to weather
+	do 			"`dofile'/wave_4/ihs4lpnl_build.do"			//	merges IHS4lpnl to weather
 
 
 * **********************************************************************
 * 4 - run .do file to append each wave
 * **********************************************************************
 
-	do			"`dofile'/MWI_append_merged.do"		// append waves
+	do			"`dofile'/MWI_append_built.do"				// append waves
 
 /* END */

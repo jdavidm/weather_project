@@ -27,12 +27,12 @@
 * **********************************************************************
 
 * define paths
-	loc root = "$data/weather_data/malawi/wave_3/daily"
-	loc export = "$data/weather_data/malawi/wave_3/refined"
-	loc logout = "$data/weather_data/malawi/logs"
+	loc 	root 	= 	"$data/weather_data/malawi/wave_3/daily"
+	loc 	export 	= 	"$data/weather_data/malawi/wave_3/refined"
+	loc 	logout 	= 	"$data/weather_data/malawi/logs"
 
 * open log
-	log using "`logout'/msi_ihs4_weather"
+	log 	using 		"`logout'/msi_ihs4_weather"
 
 
 * **********************************************************************
