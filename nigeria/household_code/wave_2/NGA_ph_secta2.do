@@ -60,14 +60,14 @@
 * create total household labor days for harvest
 	gen				hh_days = hh_1 + hh_2 + hh_3 + hh_4
 	
-* hired labor days (# of people hired for harvest)(# of days they worked)
-	gen				men_days = (sa2q2 * sa2q3)
+* hired labor days (# of people days hired for harvest)
+	gen				men_days = sa2q3
 	replace			men_days = 0 if men_days == . 
 
-	gen				women_days = (sa2q5 * sa2q6)
+	gen				women_days = sa2q6
 	replace			women_days = 0 if women_days == .
 
-	gen				child_days = (sa2q8 * sa2q9)
+	gen				child_days = sa2q9
 	replace			child_days = 0 if child_days == . 
 	*** again, this is hired labor only for harvest
 	
@@ -96,6 +96,7 @@
 					hrv_labor tracked_obs
 	
 * create unique household-plot identifier
+	isid			hhid plotid
 	sort			hhid plotid
 	egen			plot_id = group(hhid plotid)
 	lab var			plot_id "unique plot identifier"
