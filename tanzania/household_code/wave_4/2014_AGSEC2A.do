@@ -170,6 +170,7 @@
 	mi set 		wide 	// declare the data to be wide.
 	mi xtset, clear 	// this is a precautinary step to clear any xtset that the analyst may have had in place previously
 	mi register	imputed plotsize_gps // identify plotsize_GPS as the variable being imputed
+	sort		hhid plotnum, stable // sort to ensure reproducability of results
 	mi impute 	pmm plotsize_gps plotsize_self i.uq_dist, add(1) rseed(245780) ///
 					noisily dots force knn(5) bootstrap
 	mi 			unset

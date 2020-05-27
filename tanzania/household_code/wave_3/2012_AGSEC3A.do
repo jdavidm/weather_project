@@ -37,20 +37,30 @@
 
 * renaming variables of interest
 	rename 		y3_hhid hhid
+	
+* check for uniquie identifiers
+	drop		if plotnum == ""
+	isid		hhid plotnum
+	*** 1,710 obs dropped
+	
+* generate unique observation id
 	generate 	plot_id = hhid + " " + plotnum
-	isid 		plot_id
-
+	isid 		plot_id	
+	
 * renaming inputs
 	rename 		ag3a_03 status
-	rename 		ag3a_07_2 crop_code
 	rename 		ag3a_18 irrigated 
+	replace		irrigated = 2 if irrigated == .
 	
 * constructing fertilizer variables
 	rename 		ag3a_47 fert_any
+	replace		fert_any = 2 if fert_any == .
+	*** assuming missing values mean no fertilizer was used
+	*** 1,279 changes made
+	
 	replace		ag3a_49 = 0 if ag3a_49 == .
 	replace		ag3a_56 = 0 if ag3a_56 == .
 	gen			kilo_fert = ag3a_49 + ag3a_56
-	replace		kilo_fert = . if fert_any == . 
 
 * constructing pesticide/herbicide variables
 	gen			pesticide_any = 2
@@ -75,7 +85,7 @@
 	generate 	labor_days = hh_labor_days + hired_labor_days
 
 * keep what we want, get rid of the rest
-	keep 		hhid plot_id status crop_code irrigated fert_any kilo_fert ///
+	keep 		hhid plot_id status irrigated fert_any kilo_fert ///
 					pesticide_any herbicide_any labor_days plotnum
 
 * prepare for export

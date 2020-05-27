@@ -40,6 +40,11 @@
 	rename 		y3_hhid hhid
 	rename 		ag2a_04 plotsize_self_ac
 	rename 		ag2a_09 plotsize_gps_ac
+	
+* check for uniquie identifiers
+	drop		if plotnum == ""
+	isid		hhid plotnum
+	*** 1,710 obs dropped
 
 * generating unique ob id
 	generate 	plot_id = hhid + " " + plotnum
@@ -115,10 +120,15 @@
 		
 		list		plotsize_gps plotsize_self if plotsize_gps>20 & ///
 						!missing(plotsize_gps), sep(0)
+		sum			plotsize_gps plotsize_self if plotsize_gps>20 & ///
+						plotsize_gps != .
+		*** 26 observations
+		
 		pwcorr		plotsize_gps plotsize_self if plotsize_gps>20 & ///
 						!missing(plotsize_gps)
 		*** corr still at 0.57 even w/ plotsize_gps > 20
-		*** the high end seems okay, not dropping anything here
+		*** the high end seems very high, but the correlation still seems pretty good
+		*** not dropping anything here
 	
 	* low end
 		tab			plotsize_gps
@@ -164,6 +174,7 @@
 	mi set 		wide 	// declare the data to be wide.
 	mi xtset, clear 	// this is a precautinary step to clear any xtset that the analyst may have had in place previously
 	mi register	imputed plotsize_gps // identify plotsize_GPS as the variable being imputed
+	sort		hhid plotnum, stable // sort to ensure reproducability of results
 	mi impute 	pmm plotsize_gps plotsize_self i.uq_dist, add(1) rseed(245780) ///
 					noisily dots force knn(5) bootstrap
 	mi 			unset
@@ -187,6 +198,7 @@
 	keep 		hhid plotnum plot_id plotsize region district ward village
 
 * prepare for export
+	isid		hhid plotnum
 	compress
 	describe
 	summarize 

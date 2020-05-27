@@ -36,6 +36,10 @@
 * load data
 	use 		"`root'/SEC_2A", clear
 
+* check for uniquie identifiers
+	drop 		if plotnum == ""
+	isid		hhid plotnum
+	
 * generate unique ob id
 	gen			plot_id = hhid + " " + plotnum
 	isid 		plot_id
@@ -147,6 +151,7 @@
 	mi set 		wide 	// declare the data to be wide.
 	mi xtset, clear 	// this is a precautinary step to clear any existing xtset
 	mi register	imputed plotsize_gps // identify plotsize_GPS as the variable being imputed
+	sort		hhid plotnum, stable // sort to ensure reproducability of results
 	mi impute 	pmm plotsize_gps plotsize_self i.uq_dist, add(1) rseed(245780) ///
 					noisily dots force knn(5) bootstrap
 	mi 			unset
@@ -161,6 +166,9 @@
 
 * keep what we want, get rid of the rest
 	keep 		hhid plotnum plot_id plotsize region district ward village
+	
+* check for unique identifiers
+	isid		plot_id
 
 * prepare for export
 	compress

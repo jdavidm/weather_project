@@ -34,20 +34,35 @@
 
 * load data
 	use 		"`root'/SEC_3A", clear
+	
+* drop ob if field is fallow
+	rename 		s3aq3 status
+	drop		if status != 1
+	*** 718 obs dropped
+	
+* check for uniquie identifiers
+	drop		if plotnum == ""
+	isid		hhid plotnum
+	*** 0 obs dropped
 
 * renaming variables of interest
 	generate 	plot_id = hhid + " " + plotnum
 	isid 		plot_id
 
 * renaming inputs
-	rename 		s3aq3 status
-	rename 		s3aq5code crop_code
-	rename 		s3aq15 irrigated 
+	rename 		s3aq15 irrigated
+	replace		irrigated = 2 if irrigated == .
 	
 * constructing fertilizer variables
 	rename 		s3aq43 fert_any
+	replace		fert_any = 2 if fert_any == .
+	*** assuming missing values mean no fertilizer was used
+	*** 227 changes made
+	
 	rename 		s3aq45 kilo_fert
-	replace		kilo_fert = . if fert_any == . 
+	replace kilo_fert = 0 if kilo_fert == .
+	*** assuming based on related variables that missing obs are equal to 0
+ 
 
 * constructing pesticide/herbicide variables
 	gen			pesticide_any = 2
@@ -73,7 +88,7 @@
 	generate 	labor_days = hh_labor_days + hired_labor_days
 	
 * keep what we want, get rid of the rest
-	keep 		hhid plot_id status crop_code irrigated fert_any kilo_fert ///
+	keep 		hhid plot_id status irrigated fert_any kilo_fert ///
 					pesticide_any herbicide_any labor_days plotnum
 
 * prepare for export
