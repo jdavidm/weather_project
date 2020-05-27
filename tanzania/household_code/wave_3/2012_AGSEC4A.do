@@ -55,13 +55,14 @@
 	
 * replace missing weight 
 	replace 			ag4a_28 = 0 if ag4a_28 == .
+	*** one value changed
 	
 * generate unique identifier
 	generate 			plot_id = hhid + " " + plotnum
 	tostring 			crop_code, generate(crop_num)
 	gen str20 			crop_id = hhid + " " + plotnum + " " + crop_num
 	duplicates report 	crop_id
-	*** six duplicate crop_ids
+	*** five duplicate crop_ids
 
 * other variables of interest
 	rename 				ag4a_28 wgt_hvsted
@@ -73,7 +74,7 @@
 	replace				hvst_value = hvst_value/1730.033187
 	*** Value comes from World Bank: world_bank_exchange_rates.xlxs
 
-* generate new varaible for measuring mize harvest
+* generate new varaible for measuring maize harvest
 	gen					mz_hrv = wgt_hvsted if crop_code == 11
 	gen					mz_damaged = 1 if crop_code == 11 & mz_hrv == 0
 		
