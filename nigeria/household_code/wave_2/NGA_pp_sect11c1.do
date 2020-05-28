@@ -85,6 +85,9 @@
 
 	keep 			hhid zone state lga sector hhid ea plotid ///
 					pp_labor tracked_obs
+
+* winsorize data
+	winsor2			pp_labor, replace
 	
 * create unique household-plot identifier
 	isid			hhid plotid

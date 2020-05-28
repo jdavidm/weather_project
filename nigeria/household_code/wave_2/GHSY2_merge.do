@@ -128,7 +128,7 @@
 *maybe imputing zero values	
 	
 * impute yield outliers
-	sum				mz_yld
+	sum				mz_yld mz_hrv
 	bysort zone : 	egen stddev = sd(mz_yld) if !inlist(mz_yld,.,0)
 	recode 			stddev (.=0)
 	bysort zone : 	egen median = median(mz_yld) if !inlist(mz_yld,.,0)
@@ -153,6 +153,8 @@
 	generate 		mz_hrvimp = mz_yldimp * plotsize, after(mz_hrv)
 	lab var 		mz_hrvimp "maize harvest quantity (kg), imputed"
 	lab var 		mz_hrv "maize harvest quantity (kg)"
+
+	sum				mz_hrv mz_hrvimp
 
 
 * **********************************************************************
@@ -191,13 +193,15 @@
 	lab var			vl_hrvimp "value of harvest (2010USD), imputed"
 	lab var			vl_hrv "value of harvest (2010USD)"
 	
-
+	sum				vl_hrv vl_hrvimp 
+	
+	
 * **********************************************************************
 * 2c - impute: labor
 * **********************************************************************
 
 * generate total labor days
-	egen			labordays = rsum (hrv_labor pp_labor)
+	gen			labordays = pp_labor
 	lab var			labordays "farm labor (days)"
 
 * construct labor days per hectare
@@ -232,6 +236,8 @@
 	gen				labordaysimp = labordays_haimp * plotsize, after(labordays)
 	lab var			labordaysimp "farm labor (days), imputed"
 
+	sum				labordays labordaysimp 
+	
 
 * **********************************************************************
 * 2d - impute: fertilizer
@@ -273,6 +279,8 @@
 
 	replace			fert_any = 1 if fertimp > 0
 	replace			fert_any = 2 if fertimp == 0
+
+	sum				fert_ha fert_haimp
 
 
 * **********************************************************************
@@ -423,7 +431,7 @@
 	
 * verify values are accurate
 	sum				tf_* cp_*
-	
+	*** the max of these values are still too high
 	
 * **********************************************************************
 * 4 - end matter, clean up to save

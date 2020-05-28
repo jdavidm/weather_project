@@ -100,6 +100,9 @@
 
 	keep 			hhid zone state lga sector hhid ea plotid ///
 					fert_any fert_use tracked_obs
+
+* winsorize data
+	winsor2			fert_use, replace
 	
 * create unique household-plot identifier
 	isid			hhid plotid

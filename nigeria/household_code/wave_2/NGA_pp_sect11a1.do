@@ -214,6 +214,10 @@
 
 	keep 			hhid zone state lga hhid ea plotid plotsize
 
+* winsorize data
+*	winsor2			plotsize, replace
+	*** not sure if we want to winsorize the GPS values
+		
 * create unique household-plot identifier
 	isid				hhid plotid
 	sort				hhid plotid

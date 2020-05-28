@@ -135,12 +135,59 @@
 	gen 			harv_kg = harvestq*conversion
 	mdesc 			harv_kg
 	*** no missing
+						
+* check to see if outliers can be dealt with
+	by harv_unit	, sort: sum harv_kg if 	cropcode == 1080
+	*** grams seem to be wrong (mean of 61066)
+	*** max for large sack is high too (13,000)
+	*** as are wheelbarrow and pick up (4,400; 6,000; 26,000; 15,000)
+	*** all others seem reasonable
+	
+* deal with grams 
+	sort 			cropcode harv_unit
+	replace			harv_kg = harv_kg/1000 if harv_unit == 2 & ///
+						sa3q6a1 > 500 & cropcode == 1080
+	*** 4 values changed
+	
+* deal with sack and barrow etc 
+	sort 			cropcode harv_unit harv_kg
+	replace			harv_kg = 3000 if sa3q6a1 == 130 & cropcode == 1080
+	*** 1 value changed, the other high values may be plausible
+/*
+* merge in conversion file
+	merge 			m:1 	zone using 	"`cnvrt'/land-conversion.dta"
+		*** All observations matched.
 
+	keep 			if 		_merge == 3
+	drop 			_merge
+
+	rename			sa3q5a plot_size_SR
+	rename 			sa3q5b plot_unit
+
+* convert to hectares
+	gen 			plot_size_hec = .
+	replace 		plot_size_hec = plot_size_SR*ridgecon	if plot_unit == 2
+	*heaps
+	replace 		plot_size_hec = plot_size_SR*heapcon	if plot_unit == 1
+	*stands
+	replace 		plot_size_hec = plot_size_SR*standcon	if plot_unit == 3
+	*plots
+	replace 		plot_size_hec = plot_size_SR*plotcon	if plot_unit == 4
+	*acre
+	replace 		plot_size_hec = plot_size_SR*acrecon	if plot_unit == 5
+	*sqm
+	replace 		plot_size_hec = plot_size_SR*sqmcon		if plot_unit == 7
+	*hec
+	replace 		plot_size_hec = plot_size_SR			if plot_unit == 6
+
+* generate a yield measures
+	gen				yield = harv_kg / plot_size_hec
+	*/
 * generate new variable that measures maize (1080) harvest
 	gen 			mz_hrv = harv_kg 	if 	cropcode > 1079 & cropcode < 1084
 	gen				mz_damaged = 1		if  cropcode > 1079 & cropcode < 1084 ///
 						& mz_hrv == 0
-		
+	
 * collapse crop level data to plot level
 	collapse (sum) 	mz_hrv vl_hrv mz_damaged, by(zone state lga sector ea hhid plotid)
 	lab var			vl_hrv "Value of harvest (2010 USD)"
@@ -155,11 +202,13 @@
 	lab var			vl_hrv 	"total value of harvest (2010 USD)"
 	lab var			mz_hrv	"quantity of maize harvested (kg)"
 	
+
 * **********************************************************************
 * 3 - end matter, clean up to save
 * **********************************************************************
 
-	isid			hhid plotid
+* winsorize data
+	winsor2			mz_hrv vl_hrv, replace
 	
 * create unique household-plot identifier
 	isid			hhid plotid
