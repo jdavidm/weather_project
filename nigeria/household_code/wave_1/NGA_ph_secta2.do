@@ -1,15 +1,15 @@
 * Project: WB Weather
 * Created on: May 2020
 * Created by: alj
+* Edited by: ek
 * Stata v.16
 
 * notes: still includes some notes from Alison Conley's work in spring 2020
-
+* wave 1 (2010-2011)
 
 * does
 	* reads in Nigeria, POST HARVEST, NGA SECTA2 AG - Labor
-	* determines labor days
-	* maybe more who knows
+	* determines labor days from different sources
 	* outputs clean data file ready for combination with wave 1 hh data
 
 * assumes
@@ -18,16 +18,13 @@
 * other notes: 
 	* still includes some notes from Alison Conley's work in spring 2020
 	
-* TO DO:
-	* unsure - incomplete, runs but maybe not right? 
-	* clarify "does" section
-	
+
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
 
 * set global user
-	global user "aljosephson"
+	global user "emilk"
 	
 * define paths	
 	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_1/raw"
@@ -41,7 +38,7 @@
 	log using "`logout'/ph_secta2", append
 		
 * **********************************************************************
-* 1 - defining labor, labor days, etc. 
+* 1 - determine labor allocation 
 * **********************************************************************
 
 * import the first relevant data file
@@ -49,7 +46,9 @@
 
 describe
 sort hhid plotid
-isid hhid plotid, missok
+isid hhid plotid
+
+
 
 *according to survey: these are laborers from the last rainy/harvest season (e.g. NOT the dry season harvest)
 *household member labor, this calculation is (weeks x days per week) for up to 4 members of the household that were laborers
@@ -66,6 +65,25 @@ replace hh_3 = 0 if hh_3 == .
 gen hh_4 = (sa2q1d2 * sa2q1d3)
 replace hh_4 = 0 if hh_4 == . 
 
+*dropping impossible entries that must be mistake
+ sum sa2q1a3 sa2q1b3 sa2q1c3 sa2q1d3
+
+* keep if sa2q1a3<=7  
+*1,153 observations deleted
+
+*keep if sa2q1b3<=7
+*1,095 observations deleted
+
+*  keep if sa2q1c3<=7
+*1,069 observations deleted
+
+*  keep if sa2q1d3<=7
+*625 observations deleted
+
+*sum sa2q1a2 sa2q1b2 sa2q1c2 sa2q1d2
+*no one worked more weeks than there are weeks in a year
+
+*total labor days for harvest
 gen hh_days = hh_1 + hh_2 + hh_3 + hh_4
 
 *hired labor days, this calculation is (# of people hired for harvest)(# of days they worked)
