@@ -4,17 +4,17 @@
 * Stata v.16
 
 * does
-	* reads in Nigeria, w2agnsconversion (wave 2 conversion file)
+	* reads in Nigeria, w1agnsconversion (wave 1 conversion file)
 	* adds kilograms, grams, litres, and centilitres to conversion units
-	* outputs conversion file ready for combination with wave 2 and wave 3 harvest data
+	* outputs conversion file ready for combination with wave 1 harvest data
 
 * assumes
 	* customsave.ado
-	* w2agnsconversion.dta conversion file
+	* w1agnsconversion.dta conversion file
 
 * TO DO:
-	* complete
-
+	* complete 
+	
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
@@ -25,17 +25,18 @@
 	loc 	logout	= 	"$data/household_data/nigeria/logs"
 
 * open log
-	log 	using 	"`logout'/harvconv_master_wave_2_wave_3", append	
+	log 	using 	"`logout'/harvconv_master_wave_1", append	
 	
 * **********************************************************************
 * 1 - general import and clean up
 * **********************************************************************
 
 * import the relevant conversion file
-	use 			"`cnvrt'\w2agnsconversion" , clear
+	use 			"`cnvrt'\w1agnsconversion" , clear
 	
 * rename for matching with harvest files
 	rename 			nscode harv_unit
+	rename 			agcropid cropcode
 	
 * **********************************************************************
 * 2 - modify conversion factors - add kilograms
@@ -45,6 +46,8 @@
 
 	tab 			cropcode, nolabel
 
+	set 			obs 2177
+	replace 		cropcode = 1120 in 2177
 	set 			obs 2178
 	replace 		cropcode = 1010 in 2178
 	set 			obs 2179
@@ -271,6 +274,8 @@
 	*** 108 changes made
 	replace 		conversion = 1 if harv_unit ==1
 	*** 109 changes made
+	
+	drop 			if cropcode == . 
 
 * **********************************************************************
 * 3 - modify conversion factors - add grams
@@ -983,7 +988,6 @@
 * **********************************************************************
 * 6 - end matter, clean up to save
 * **********************************************************************
-	drop 			kg
 	isid			cropcode harv_unit
 	
 * create unique household-plot identifier
@@ -996,8 +1000,8 @@
 	summarize
 
 * save file
-	customsave , idvar(crop_unit) filename("harvconv_wave_2_wave_3.dta") ///
-		path("`export'") dofile(harvconv_wave_2_wave_3) user($user)
+	customsave , idvar(crop_unit) filename("harvconv_wave_1.dta") ///
+		path("`export'") dofile(harvconv_wave_1) user($user)
 
 * close the log
 	log		close
