@@ -59,14 +59,14 @@
 * create total household labor days for harvest
 	gen				hh_days = hh_1 + hh_2 + hh_3 + hh_4
 	
-* hired labor days (# of people hired for harvest)(# of days they worked)
-	gen				men_days = (s11c1q2 * s11c1q3)
+* hired labor days (# of people days hired for planting)
+	gen				men_days = s11c1q3
 	replace			men_days = 0 if men_days == .
 	
-	gen				women_days = (s11c1q5 * s11c1q6)
+	gen				women_days = s11c1q6
 	replace			women_days = 0 if women_days == .
 	
-	gen				child_days = (s11c1q8 * s11c1q9)
+	gen				child_days = s11c1q9
 	replace			child_days = 0 if child_days == . 
 
 * total labor in days
@@ -85,8 +85,12 @@
 
 	keep 			hhid zone state lga sector hhid ea plotid ///
 					pp_labor tracked_obs
+
+* winsorize data
+	winsor2			pp_labor, replace
 	
 * create unique household-plot identifier
+	isid			hhid plotid
 	sort			hhid plotid
 	egen			plot_id = group(hhid plotid)
 	lab var			plot_id "unique plot identifier"

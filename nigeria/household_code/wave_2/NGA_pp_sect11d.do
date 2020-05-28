@@ -43,23 +43,47 @@
 	rename			s11dq1 fert_any
 	lab var			fert_any "=1 if any fertilizer was used"
 
+* drop manure observations
+	drop if			s11dq3 == 3 | s11dq3 == 4
+	drop if			s11dq7 == 3 | s11dq7 == 4
+	drop if			s11dq15 == 3
+	drop if			s11dq27 == 3
+	*** dropped 156 observations (manure)
+	
 * quantity of fertilizer from different sources
-	gen				leftover_fert_kg = s11dq4
-	replace			leftover_fert_kg = 0 if leftover_fert_kg ==.
 
+* leftover fertilizer
+	gen				leftover_fert_kg = s11dq4
+	sum				leftover_fert_kg
+	*** mean of 176, max of 800
+	
+	replace			leftover_fert_kg = 0 if leftover_fert_kg ==.
+	
+* free fertilizer
 	gen				free_fert_kg = s11dq8
+	sum				free_fert_kg
+	*** mean of 7450 and max of 5000
+	*** all values for this variable are way too large, we will exclude it
+	
 	replace			free_fert_kg = 0 if free_fert_kg ==. 
 
+*purchased fertilizer
 	gen				purchased_fert_kg1 = s11dq16
-	replace			purchased_fert_kg1 = 0 if purchased_fert_kg1 ==. 
+	sum				purchased_fert_kg1
+	*** mean of 141 and max of 3500
+	*** this max value is too high but will keep it and deal with by winsorizing
 
 	gen				purchased_fert_kg2 = s11dq28
+	sum				purchased_fert_kg2
+	*** mean of 79 and max of 250
+	
+	replace			purchased_fert_kg1 = 0 if purchased_fert_kg1 ==. 
 	replace			purchased_fert_kg2 = 0 if purchased_fert_kg2 ==. 
 	*** the survey divides the fertilizer into left over, received for free, and purchased so here I combine them
 	*** the quantity is giving in kgs so no conversion is needed
 
 * generate variable for total fertilizer use
-	gen				fert_use = leftover_fert_kg + free_fert_kg + purchased_fert_kg1 + purchased_fert_kg2
+	gen				fert_use = leftover_fert_kg + purchased_fert_kg1 + purchased_fert_kg2
 	lab var			fert_use "fertilizer use (kg)"
 
 * check for missing values
@@ -76,11 +100,15 @@
 
 	keep 			hhid zone state lga sector hhid ea plotid ///
 					fert_any fert_use tracked_obs
+
+* winsorize data
+	winsor2			fert_use, replace
 	
 * create unique household-plot identifier
-	sort				hhid plotid
-	egen				plot_id = group(hhid plotid)
-	lab var				plot_id "unique plot identifier"
+	isid			hhid plotid
+	sort			hhid plotid
+	egen			plot_id = group(hhid plotid)
+	lab var			plot_id "unique plot identifier"
 	
 	compress
 	describe
