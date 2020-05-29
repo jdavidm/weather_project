@@ -3,43 +3,35 @@
 * Created by: alj
 * Stata v.16
 
-* to do
-	*outstanding issues: 
-	
 * does
-	* reads in Nigeria, WAVE 1, POST HARVEST, NGA SECTA3 AG 
-	* determines primary and secondary crops, cleans harvest (quantity, hecatres)
-	* converts to hectares and kilograms, as appropriate
+	* reads in Nigeria, WAVE 1 (2010-2011), POST HARVEST, NGA SECTA3 AG 
+	* determines primary crop & cleans harvest
+	* converts to kilograms
 	* produces value of harvest (Naria) - need to include conversion to Naria 
-	* renames variables to align with standardization (see OSF)
 	* outputs clean data file ready for combination with wave 1 hh data
 
 * assumes
 	* customsave.ado
 	* harvconv.dta conversion file
-	* land_conversion.dta conversion file 
 	
 * TO DO:
 	* convert Naira to USD
-	* rename variables to be in line with standard practice in other rounds
 	
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
 
-* set global user
-	global user "aljosephson"
-	
 * define paths	
-	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_1/raw"
-	loc export = "G:/My Drive/weather_project/household_data/nigeria/wave_1/refined"
-	loc logout = "G:/My Drive/weather_project/household_data/nigeria/logs"
+	loc root 		= 		"$data/household_data/nigeria/wave_1/raw"
+	loc cnvrt 		=		"$data/household_data/nigeria/conversion_files"
+	loc export 		= 		"$data/household_data/nigeria/wave_1/refined"
+	loc logout 		= 		"$data/household_data/nigeria/logs"
 
-* close log (in case still open)
-	*log close
+* close log 
+	log close
 	
 * open log	
-	log using "`logout'/ph_secta3", append
+	log using "`logout'/wave_1_ph_secta3", append
 		
 
 * **********************************************************************
@@ -47,55 +39,53 @@
 * **********************************************************************
 
 * import the first relevant data file
-		use "`root'/secta3_harvestw1", clear 	
+		use 				"`root'/secta3_harvestw1", clear 	
 
-rename sa3q2 cropcode
-tab cropcode
-*main crop is "cassava old" 
-*cassava is continuous cropping, so not using that as a main crop
-*going to use maize instead, which is second
+		rename 				sa3q2 cropcode
+		tab 				cropcode
+	*** main crop is "cassava old" 
+	*** cassava is continuous cropping, so not using that as a main crop
+	*** going to use maize, which is second most cultivated crop
+		drop				if cropcode == . 
 
-rename sa3q1 cropname
+		rename 				sa3q1 cropname
 
-rename cropid cropid
+		describe
+		sort 				hhid plotid cropid cropcode
+		isid 				hhid plotid cropid cropcode, missok
 
-describe
-sort hhid plotid cropid cropcode
-isid hhid plotid cropid cropcode, missok
-
-gen crop_area = sa3q5a
-label variable crop_area "what was the land area of crop harvested since the last interview? not using standardized unit"
-rename sa3q5b area_unit
+		gen 				crop_area = sa3q5a
+		label 				variable crop_area "what was the land area of crop harvested since the last interview? not using standardized unit"
+		rename 				sa3q5b area_unit
 
 * **********************************************************************
-* 2 - conversion factors, etc. (hectares, kgs)
+* 2 - conversion to kilograms
 * **********************************************************************
 
-* define new paths for conversions	
-	loc root = "G:/My Drive/weather_project/household_data/nigeria/conversion_files/"
+* create harvested quantity variable 
+		gen 				harvestq = sa3q6a
+		label 				variable harvestq "quantity harvested, not in standardized unit"
 
-*units of harvest
-rename sa3q6b harv_unit
-tab harv_unit
-tab harv_unit, nolabel
+* determine units of harvest 
+		rename 				sa3q6b harv_unit
+		tab 				harv_unit
+		tab 				harv_unit, nolabel
 
-merge m:1 cropcode harv_unit using "`root'/harvconv"
-*matched 9,917 but didn't match 5,212 (from master 3,101 and using 2,111)
-*drop these unmatched - either not producing or coming from merge conversion file 
-*values not matched from master usually had issue which prevented harvest e.g. lost crop
+		merge m:1 cropcode harv_unit using "`cnvrt'/harvconv"
+	*** matched 9,917 but didn't match 5,212 (from master 3,101 and using 2,111)
+	*** drop these unmatched - either not producing, no unit collected, or coming from merge conversion file 
+	*** values not matched from master usually had issue which prevented harvest e.g. lost crop
+	
 keep if _merge == 3
 drop _merge
 
-*we will also use this measure to get yield
-gen harvestq = sa3q6a
-label variable harvestq "quantity harvested since last interview, not in standardized unit"
 
 *converting harvest quantities to kgs
 gen harv_kg = harvestq*harv_conversion
 
 order harvestq harv_unit harv_conversion harv_kg
-
-*5272 missing values generated in harv_kg - looks like either missing unit or missing harvest quantity
+tab harv_kg, missing
+	*5272 missing values generated in harv_kg - looks like either missing unit or missing harvest quantity
 
 rename sa3q3 cultivated
 

@@ -1,6 +1,6 @@
 * Project: WB Weather
 * Created on: May 2020
-* Created by: alj
+* Created by: ek
 * Stata v.16
 
 * does
@@ -25,7 +25,7 @@
 * **********************************************************************
 
 * set global user
-	global user "aljosephson"
+	global user "emilk"
 	
 * define paths	
 	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_3/raw"

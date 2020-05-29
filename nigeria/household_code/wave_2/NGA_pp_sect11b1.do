@@ -4,83 +4,73 @@
 * Stata v.16
 
 * does
-	* reads in Nigeria, WAVE 2 POST PLANTING, NIGERIA AG SECT 11B1
-	* determine irrigation 
-	* maybe more who knows
-	* outputs clean data file ready for combination with wave 2 hh data
+	* reads in Nigeria, WAVE 2 (2012-2013), POST PLANTING, AG SECT 11B1
+	* determines irrigation 
+	* outputs clean data file ready for combination with wave 2 plot data
 
 * assumes
 	* customsave.ado
-	
-* other notes: 
-	* still includes some notes from Alison Conley's work in spring 2020
+	* mdsec.ado
 	
 * TO DO:
-	* unsure - incomplete, runs but maybe not right? 
-	* clarify "does" section
+	* complete
+
 
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
 
-* set global user
-	global user "aljosephson"
-	
-* define paths	
-	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_2/raw"
-	loc export = "G:/My Drive/weather_project/household_data/nigeria/wave_2/refined"
-	loc logout = "G:/My Drive/weather_project/household_data/nigeria/logs"
+* define paths
+	loc		root	=	"$data/household_data/nigeria/wave_2/raw"
+	loc		export	=	"$data/household_data/nigeria/wave_2/refined"
+	loc		logout	=	"$data/household_data/nigeria/logs"
 
-* close log (in case still open)
-	*log close
-	
 * open log	
-	log using "`logout'/ph_sect11b1", append
+	log 	using 	"`logout'/wave_2_ph_sect11b1", append
+	
 
 * **********************************************************************
 * 1 - describe plots and irrigation status
 * **********************************************************************
 		
 * import the first relevant data file
-		use "`root'/sect11b1_plantingw2", clear 	
+	use 			"`root'/sect11b1_plantingw2", clear 	
 
-describe
-sort hhid plotid
-isid hhid plotid, missok
+	describe
+	sort			hhid plotid
+	isid			hhid plotid
 
-*owner(s) of plots
-gen owner1 = s11b1q6a
-gen owner2 = s11b1q6b
+* is this plot irrigated?
+	rename			s11b1q39 irr_any
+	lab var			irr_any "=1 if any irrigation was used"
+	
+* check to see if values are missing
+	mdesc			irr_any
+	*** 123 missing observations, change these to "no"
+	
+* convert missing values to "no"
+	replace			irr_any = 2 if irr_any == .
 
-*alison kept decision-maker - alj dropped
-
-*is this plot irrigated?
-rename s11b1q39 irrigated
-
+	
 * **********************************************************************
 * 2 - end matter, clean up to save
 * **********************************************************************
 
-keep hhid /// 
-zone ///
-state ///
-lga ///
-sector ///
-ea ///
-hhid ///
-plotid ///
-owner1 ///
-owner2 ///
-tracked_obs ///
-irrigated ///
+	keep 			hhid zone state lga sector hhid ea plotid ///
+					irr_any tracked_obs
 
-compress
-describe
-summarize 
+* create unique household-plot identifier
+	sort			hhid plotid
+	egen			plot_id = group(hhid plotid)
+	lab var			plot_id "unique plot identifier"
+	
+	compress
+	describe
+	summarize 
 
 * save file
-		customsave , idvar(hhid) filename("pp_sect11b1.dta") ///
-			path("`export'/`folder'") dofile(pp_sect11b1) user($user)
+		customsave , idvar(plot_id) filename("pp_sect11b1.dta") ///
+			path("`export'") dofile(pp_sect11b1) user($user)
 
 * close the log
 	log	close
