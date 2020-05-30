@@ -230,8 +230,7 @@
 
 * keep what we want, get rid of the rest
 	keep			hhid plotnum plot_id plotsize clusterid strataid ///
-						y3_weight region district ward village ///
-						plotsize
+						y3_weight region district ward village
 	order			hhid plotnum plot_id clusterid strataid y3_weight ///
 						region district ward village plotsize
 						
