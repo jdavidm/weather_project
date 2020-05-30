@@ -49,7 +49,7 @@
 	lab var			any_mixed "=1 if any crop was mixed"
 	gen				percent_field = 0.25 if ag4a_02 == 1
 	lab var			percent_field "percent of field crop was on"
-	
+
 	replace			percent_field = 0.50 if ag4a_02==2
 	replace			percent_field = 0.75 if ag4a_02==3
 	replace			percent_field = 1 if pure_stand==1
