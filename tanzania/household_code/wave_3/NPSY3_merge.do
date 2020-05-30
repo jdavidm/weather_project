@@ -372,7 +372,8 @@
 	    replace		`v' = 0 if `v' == .
 	}		
 	
-	collapse (max)	tf_* cp_*, by(region district ward village hhid)
+	collapse (max)	tf_* cp_*, by(region district ward village hhid y3_weight ///
+						clusterid strataid)
 	*** we went from 4,702 to 2,662 observations 
 	
 * return non-maize production to missing
@@ -403,19 +404,23 @@
 * verify unique household id
 	isid			hhid
 	
+* revery hhid to orignal varname
+	rename			hhid y3_hhid
+	
 * generate year identifier
 	gen				year = 2012
 	lab var			year "Year"
 		
-	order 			region district ward village hhid year tf_hrv tf_lnd tf_yld ///
-						tf_lab tf_frt tf_pst tf_hrb tf_irr cp_hrv cp_lnd ///
-						cp_yld cp_lab cp_frt cp_pst cp_hrb cp_irr
+	order 			region district ward village y3_hhid year y3_weight ///
+						clusterid strataid tf_hrv tf_lnd tf_yld tf_lab tf_frt ///
+						tf_pst tf_hrb tf_irr cp_hrv cp_lnd cp_yld cp_lab ///
+						cp_frt cp_pst cp_hrb cp_irr
 	compress
 	describe
 	summarize 
 	
 * saving production dataset
-	customsave , idvar(hhid) filename(hhfinal_npsy3.dta) path("`export'") ///
+	customsave , idvar(y3_hhid) filename(hhfinal_npsy3.dta) path("`export'") ///
 			dofile(NPSY3_merge) user($user) 
 
 * close the log

@@ -48,7 +48,7 @@
 
 * generating unique ob id
 	gen				plot_id = hhid + " " + plotnum
-	lab var			plot_id "Unique plot id"
+	lab var			plot_id "Unique plot identifier"
 	isid			plot_id
 	
 * convert from acres to hectares

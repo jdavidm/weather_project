@@ -5,8 +5,8 @@
 
 * does
 	* cleans Tanzania household variables, wave 4 Ag sec2a
-	* looks like a parcel roster, "all plots anyone in your household owned or 
-	* cultivated during the long rainy season"
+	* looks like a parcel roster, long rainy season
+	* generates imputed plot sizes
 	
 * assumes
 	* customsave.ado
@@ -26,12 +26,12 @@
 	loc logout = "$data/household_data/tanzania/logs"
 
 * open log
-	log using "`logout'/wv4_AGSEC2A", append
+*	log using "`logout'/wv4_AGSEC2A", append
 
 	
 * ***********************************************************************
-* 1 - TZA 2014 (Wave 4) - Agriculture Section 2A 
-* *********************1*************************************************
+* 1 - prepare TZA 2010 (Wave 4) - Agriculture Section 2A 
+* ***********************************************************************
 
 * load data
 	use 		"`root'/ag_sec_2a", clear
@@ -41,8 +41,14 @@
 	rename 		ag2a_04 plotsize_self_ac
 	rename 		ag2a_09 plotsize_gps_ac
 
+* check for unique identifiers
+	drop		if plotnum == ""
+	isid		hhid plotnum
+	*** 1,262 obs dropped
+	
 * generating unique observation id for each ob
 	generate 	plot_id = hhid + " " + plotnum
+	lab var		plot_id "Unique plot identifier"
 	isid 		plot_id
 	
 * convert from acres to hectares
@@ -51,11 +57,16 @@
 	generate	plotsize_gps = plotsize_gps_ac * 0.404686
 	label		var plotsize_gps "GPS Measured Area (Hectares)"
 	drop		plotsize_gps_ac plotsize_self_ac
+
+	
+* ***********************************************************************
+* 2 - merge in regional ID and cultivation status
+* ***********************************************************************
 	
 * must merge in regional identifiers from 2008_HHSECA to impute
 	merge		m:1 hhid using "`export'/HH_SECA"
 	tab			_merge
-	*** all obs in master are matched (no 1s or 2s, kinda weird?)
+	*** 1,262 not merged from using, (dropped obs from line 45)
 	
 	drop		if _merge == 2
 	drop		_merge

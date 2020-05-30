@@ -200,14 +200,13 @@
 	duplicates		drop hhid plotnum crop_code, force
 	*** the duplicates are all the same, so dropping duplicates
 	
-	isid				crop_id
-	
 * prepare for export
+	isid			hhid plotnum crop_code
 	compress
 	describe
 	summarize 
 	sort plot_id
-	customsave , idvar(plot_id) filename(AG_SEC4A.dta) path("`export'") ///
+	customsave , idvar(crop_id) filename(AG_SEC4A.dta) path("`export'") ///
 		dofile(2012_AGSEC4A) user($user)
 
 * close the log
