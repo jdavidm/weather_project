@@ -37,20 +37,22 @@
 * start by loading harvest quantity and value, since this is our limiting factor
 	use 			"`root'/AG_SEC4A", clear
 
-	isid			plot_id
+	isid			crop_id
 
 * merge in plot size data
-	merge 			1:1 plot_id using "`root'/AG_SEC2A", generate(_2A)
-	*** 0 out of 4702 missing in master 
-	*** all unmerged obs came from using data 
-	*** meaning we lacked production data
+	merge 			m:1 hhid plotnum using "`root'/AG_SEC2A", generate(_2A)
+	*** 7 out of 7,451 missing in using 
+	*** 1,486 out of 7,451 missing in master
 	*** per Malawi (rs_plot) we drop all unmerged observations
 	
 	drop			if _2A != 3
-	
+
+* generate area planted
+	replace			plotsize = percent_field * plotsize if percent_field != .
+
 * merging in production inputs data
-	merge			1:1 plot_id using "`root'/AG_SEC3A", generate(_3A)
-	*** 0 out of 4702 missing in master 
+	merge			m:1 hhid plotnum using "`root'/AG_SEC3A", generate(_3A)
+	*** 0 out of 7,451 missing in master 
 	*** all unmerged obs came from using data 
 	*** meaning we lacked production data
 
@@ -78,6 +80,7 @@
 	rename			pesticide_any pest_any
 	rename 			herbicide_any herb_any
 	rename			irrigated irr_any
+
 	
 * **********************************************************************
 * 2 - impute: yield, value per hectare, labor (both), fertilizer use 
@@ -255,13 +258,13 @@
 * **********************************************************************
 
 * generate plot area
-	bysort			hhid (plot_id) :	egen tf_lnd = sum(plotsize)
+	bysort			hhid (plot_id) : egen tf_lnd = sum(plotsize)
 	lab var			tf_lnd	"Total farmed area (ha)"
 	assert			tf_lnd > 0 
 	sum				tf_lnd, detail
 
 * value of harvest
-	bysort			hhid (plot_id) :	egen tf_hrv = sum(vl_hrvimp)
+	bysort			hhid (plot_id) : egen tf_hrv = sum(vl_hrvimp)
 	lab var			tf_hrv	"Total value of harvest (2010 USD)"
 	sum				tf_hrv, detail
 	
@@ -315,7 +318,7 @@
 	sum				cp_lnd, detail
 
 * value of harvest
-	bysort			hhid (plot_id) :	egen cp_hrv = sum(vl_hrvimp) ///
+	bysort			hhid (plot_id) :	egen cp_hrv = sum(mz_hrvimp) ///
 						if mz_hrvimp != .
 	lab var			cp_hrv	"Total quantity of maize harvest (kg)"
 	sum				cp_hrv, detail
@@ -369,7 +372,7 @@
 	    replace		`v' = 0 if `v' == .
 	}		
 	
-	collapse (sum)	tf_* cp_*, by(region district ward village hhid)
+	collapse (max)	tf_* cp_*, by(region district ward village hhid)
 	*** we went from 4,702 to 2,662 observations 
 	
 * return non-maize production to missing
@@ -402,7 +405,7 @@
 	
 * generate year identifier
 	gen				year = 2012
-	lab var		year "Year"
+	lab var			year "Year"
 		
 	order 			region district ward village hhid year tf_hrv tf_lnd tf_yld ///
 						tf_lab tf_frt tf_pst tf_hrb tf_irr cp_hrv cp_lnd ///
