@@ -22,7 +22,7 @@
 	*global	user		"jdmichler" // global managed by masterdo, turn on to run single file
 
 * define paths
-	loc 	root 		= 	"G:/My Drive/weather_project/household_data/tanzania/wave_1/raw"
+	loc 	root 	= 	"G:/My Drive/weather_project/household_data/tanzania/wave_1/raw"
 	loc 	export 	= 	"G:/My Drive/weather_project/household_data/tanzania/wave_1/refined"
 	loc 	logout 	= 	"G:/My Drive/weather_project/household_data/tanzania/logs"
 
