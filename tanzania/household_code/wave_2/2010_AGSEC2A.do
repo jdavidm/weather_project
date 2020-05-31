@@ -30,7 +30,7 @@
 
 
 * ***********************************************************************
-* 1 - prepare TZA 2012 (Wave 3) - Agriculture Section 2A 
+* 1 - prepare TZA 2010 (Wave 2) - Agriculture Section 2A 
 * ***********************************************************************
 
 * load data
@@ -75,7 +75,7 @@
 	sort			region district
 	egen			uq_dist = group(region district)
 	distinct		uq_dist
-	*** 129 distinct districts, good deal
+	*** 129 distinct ditricts
 
 * rename household identifier
 	rename			hhid y2_hhid

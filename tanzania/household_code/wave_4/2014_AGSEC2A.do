@@ -30,7 +30,7 @@
 
 	
 * ***********************************************************************
-* 1 - prepare TZA 2010 (Wave 4) - Agriculture Section 2A 
+* 1 - prepare TZA 2014 (Wave 4) - Agriculture Section 2A 
 * ***********************************************************************
 
 * load data
@@ -221,6 +221,7 @@
 	
 	drop			if plotsize == . & plotsize_self ==.
 	*** no observations dropped
+
 
 * **********************************************************************
 * 4 - end matter, clean up to save

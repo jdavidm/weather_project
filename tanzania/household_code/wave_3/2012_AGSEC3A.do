@@ -79,7 +79,7 @@
 	rename			ag3a_47 fert_any
 	replace			fert_any = 2 if fert_any == .
 	*** assuming missing values mean no fertilizer was used
-	*** 1,279 changes made
+	*** 59 changes made
 	
 	replace			ag3a_49 = 0 if ag3a_49 == .
 	replace			ag3a_56 = 0 if ag3a_56 == .

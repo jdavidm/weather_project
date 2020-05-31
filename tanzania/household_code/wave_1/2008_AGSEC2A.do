@@ -26,35 +26,82 @@
 	loc	logout = "$data/household_data/tanzania/logs"
 
 * open log
-	log using "`logout'/wv1_AGSEC2A", append
+*	log using "`logout'/wv1_AGSEC2A", append
 
 	
-* **********************************************************************
-* 1 - TZA 2008 (Wave 1) - Agriculture Section 2A 
-* **********************************************************************
+* ***********************************************************************
+* 1 - prepare TZA 2008 (Wave 1) - Agriculture Section 2A 
+* ***********************************************************************
 
 * load data
-	use 		"`root'/SEC_2A", clear
+	use				"`root'/SEC_2A", clear
 
-* check for uniquie identifiers
-	drop 		if plotnum == ""
-	isid		hhid plotnum
-	
-* generate unique ob id
-	gen			plot_id = hhid + " " + plotnum
-	isid 		plot_id
-
-* rename variables of interest (plotsizes)
+* renaming variables of interest
 	rename 		s2aq4 plotsize_self_ac
 	rename 		area plotsize_gps_ac
+	
+* check for uniquie identifiers
+	drop			if plotnum == ""
+	isid			hhid plotnum
+	*** 0 obs dropped - none lack plot ids
 
+* generating unique ob id
+	gen				plot_id = hhid + " " + plotnum
+	lab var			plot_id "Unique plot identifier"
+	isid			plot_id
+	
 * convert from acres to hectares
-	gen			plotsize_self = plotsize_self_ac * 0.404686
-	lab	var 	plotsize_self "Self-reported Area (Hectares)"
-	gen			plotsize_gps = plotsize_gps_ac * 0.404686
-	lab	var 	plotsize_gps "GPS Measured Area (Hectares)"
-	drop		plotsize_gps_ac plotsize_self_ac
+	gen				plotsize_self = plotsize_self_ac * 0.404686
+	lab var			plotsize_self "Self-reported Area (Hectares)"
+	gen				plotsize_gps = plotsize_gps_ac * 0.404686
+	lab var			plotsize_gps "GPS Measured Area (Hectares)"
+	drop			plotsize_gps_ac plotsize_self_ac
 
+	
+* ***********************************************************************
+* 2 - merge in regional ID and cultivation status
+* ***********************************************************************	
+
+* must merge in regional identifiers from 2012_HHSECA to impute
+	merge			m:1 hhid using "`export'/HH_SECA"
+	tab				_merge
+	*** 981 not matched, using only
+	
+	drop if			_merge == 2
+	drop			_merge
+	
+* unique district id
+	sort			region district
+	egen			uq_dist = group(region district)
+	distinct		uq_dist
+	*** 125 distinct ditricts
+	
+* must merge in regional identifiers from 2012_AG_SEC_3A to impute
+	merge			1:1 hhid plotnum using "`root'/SEC_3A"
+	*** 2 not matched from master, 0 not matched from using
+	*** this doesn't come up in any other waves - issue?
+	
+	drop if			_merge == 2
+	drop			_merge
+	
+* record if field was cultivated during long rains
+	gen 			status = s3aq3==1 if s3aq3!=.
+	lab var			status "=1 if field cultivated during long rains"
+	*** 4,408 observations were cultivated (86%)
+	
+* drop observations that were not cultivated
+	drop if			status == 0
+	*** dropped 718 observations that were not cultivated in long rains
+	*** this code does not drop the 2 obs w/ missing sec 3 info
+	*** their valus will be imputed, but w/ no input info the obs are likely useless
+	
+	drop			s3aq2_1- status
+
+
+* ***********************************************************************
+* 3 - clean and impute plot size
+* ***********************************************************************
+	
 * interrogating plotsize variables
 	count 		if plotsize_gps != . & plotsize_self != .
 	*** only 856 not mising, out of 5,128
@@ -118,38 +165,16 @@
 
 	* will drop the lone '0' value, to be imputed later
 		replace 	plotsize_gps = . if plotsize_gps == 0
-
-* must merge in regional identifiers from 2008_HHSECA to impute
-	merge		m:1 hhid using "`export'/HH_SECA"
-	tab			_merge
-	*** all obs in master are matched
-
-	drop		if _merge == 2
-	drop		_merge
-
-* interrogating regional identifiers
-	sort 		region
-	by 			region: 	distinct district
-	*** 126 distinct districts
-
-* renaming village variables
-	rename		ea village	
-	
-* unique district id
-	tostring	region, generate(reg_num)
-	tostring	district, generate(dist_num)
-	gen			uq_dist = reg_num + dist_num
-	distinct	uq_dist
-	sort 		region district
-	destring	uq_dist, replace
-	*** 126 once again, good deal
-
-	drop 		reg_num dist_num
+		
+		count			if plotsize_gps < 0.05 & plotsize_gps != .
+		*** 39 obs < 0.05
+		*** I will not drop any low end values at this time
 
 * impute missing + irregular plot sizes using predictive mean matching
+* imputing 3,650 observations (out of 4,410) - 82.77% 
 * including plotsize_self as control
 	mi set 		wide 	// declare the data to be wide.
-	mi xtset, clear 	// this is a precautinary step to clear any existing xtset
+	mi xtset	, clear 	// this is a precautinary step to clear any existing xtset
 	mi register	imputed plotsize_gps // identify plotsize_GPS as the variable being imputed
 	sort		hhid plotnum, stable // sort to ensure reproducability of results
 	mi impute 	pmm plotsize_gps plotsize_self i.uq_dist, add(1) rseed(245780) ///
@@ -163,14 +188,33 @@
 					by(mi_miss) statistics(n mean min max) columns(statistics) ///
 					longstub format(%9.3g)
 	rename		plotsize_gps_1_ plotsize
+	lab var		plotsize "Plot size (ha), imputed"
+	*** imputed 3,650 values out of 4,410 total observations
+	
+	sum				plotsize_self plotsize_gps	plotsize
+	*** self reported	:	mean 0.95 and s.d. 4.1
+	*** gps				:	mean 0.92 and s.d. 1.4
+	*** imputed			:	mean 0.91 and s.d. 1.4
+	
+	drop			if plotsize == . & plotsize_self ==.
+	*** no observations dropped
+	
+
+* **********************************************************************
+* 4 - end matter, clean up to save
+* **********************************************************************	
+
+* rename ea village
+	rename 		ea village
 
 * keep what we want, get rid of the rest
-	keep 		hhid plotnum plot_id plotsize region district ward village
-	
-* check for unique identifiers
-	isid		plot_id
+	keep		hhid plotnum plot_id plotsize clusterid strataid ///
+					hh_weight region district ward village
+	order		hhid plotnum plot_id clusterid strataid hh_weight ///
+					region district ward village plotsize
 
 * prepare for export
+	isid		hhid plotnum
 	compress
 	describe
 	summarize
