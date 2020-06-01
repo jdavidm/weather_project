@@ -30,7 +30,7 @@
 
 	
 * ***********************************************************************
-* 1 - prepare TZA 2012 (Wave 3) - Agriculture Section 3A 
+* 1 - prepare TZA 2014 (Wave 4) - Agriculture Section 3A 
 * ***********************************************************************
 
 * load data
@@ -209,12 +209,12 @@
 	sum				plant* other* hrvst* if ag3a_73 == 1
 
 * replace outliers with missing
-	replace			plant_w = . if plant_w > 90
-	replace			plant_m = . if plant_m > 90
+	replace			plant_w = . if plant_w > 90  // 1 change
+	replace			plant_m = . if plant_m > 90 // 1 change
 	replace			other_w = . if other_w > 181
 	replace			other_m = . if other_m > 181 
-	replace			hrvst_w = . if hrvst_w > 90
-	replace			hrvst_m = . if hrvst_m > 90
+	replace			hrvst_w = . if hrvst_w > 90 // 2 changes
+	replace			hrvst_m = . if hrvst_m > 90 // 1 change
 	*** only 5 values replaced
 
 * impute missing values (need to do it for men and women's planting and harvesting)

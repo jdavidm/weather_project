@@ -111,7 +111,7 @@
 	replace			kilo_fert = kilo_fert_1_
 	lab var			kilo_fert "fertilizer use (kg), imputed"
 	drop			kilo_fert_1_
-	*** imputed 64 values out of 7,447 total observations	
+	*** imputed 63 values out of 7,447 total observations	
 	
 	
 * ***********************************************************************

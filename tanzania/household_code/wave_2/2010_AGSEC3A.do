@@ -10,6 +10,7 @@
 
 * assumes
 	* customsave.ado
+	* distinct.ado
 
 * TO DO:
 	* completed
@@ -25,11 +26,11 @@
 	loc logout = "$data/household_data/tanzania/logs"
 
 * open log
-*	log using "`logout'/wv2_AGSEC3A", append
+	log using "`logout'/wv2_AGSEC3A", append
 
 	
 * ***********************************************************************
-* 1 - prepare TZA 2012 (Wave 3) - Agriculture Section 3A 
+* 1 - prepare TZA 2010 (Wave 2) - Agriculture Section 3A 
 * ***********************************************************************
 
 * load data
@@ -166,104 +167,68 @@
 * in this survey we can't tell gender or age of household members
 * since we can't match household members we deal with each activity seperately
 
-*change missing to zero and then back again
-	mvdecode		ag3a_72_1 ag3a_72_2 ag3a_72_3 ag3a_72_4 ///
-						ag3a_72_5 ag3a_72_6 ag3a_72_7 ag3a_72_8 ag3a_72_9 ///
-						ag3a_72_10 ag3a_72_11 ag3a_72_12 ag3a_72_13 ag3a_72_14 ///
-						ag3a_72_15 ag3a_72_16 ag3a_72_17 ag3a_72_18 ag3a_72_19 ///
-						ag3a_72_20 ag3a_72_21 ag3a_72_22 ag3a_72_23 ag3a_72_24, ///
+* change missing to zero and then back again
+	mvdecode		ag3a_70_1 ag3a_70_2 ag3a_70_3 ag3a_70_4 ///
+						ag3a_70_5 ag3a_70_6 ag3a_70_13 ag3a_70_14 ag3a_70_15 ///
+						ag3a_70_16 ag3a_70_17 ag3a_70_18 ag3a_70_37 ag3a_70_38 ///
+						ag3a_70_39 ag3a_70_40 ag3a_70_41 ag3a_70_42 ag3a_70_25 ///
+						ag3a_70_26 ag3a_70_27 ag3a_70_28 ag3a_70_29 ag3a_70_30, ///
 						mv(0)
 
-	mvencode		ag3a_72_1 ag3a_72_2 ag3a_72_3 ag3a_72_4 ///
-						ag3a_72_5 ag3a_72_6 ag3a_72_7 ag3a_72_8 ag3a_72_9 ///
-						ag3a_72_10 ag3a_72_11 ag3a_72_12 ag3a_72_13 ag3a_72_14 ///
-						ag3a_72_15 ag3a_72_16 ag3a_72_17 ag3a_72_18 ag3a_72_19 ///
-						ag3a_72_20 ag3a_72_21 ag3a_72_22 ag3a_72_23 ag3a_72_24, ///
+	mvencode		ag3a_70_1 ag3a_70_2 ag3a_70_3 ag3a_70_4 ///
+						ag3a_70_5 ag3a_70_6 ag3a_70_13 ag3a_70_14 ag3a_70_15 ///
+						ag3a_70_16 ag3a_70_17 ag3a_70_18 ag3a_70_37 ag3a_70_38 ///
+						ag3a_70_39 ag3a_70_40 ag3a_70_41 ag3a_70_42 ag3a_70_25 ///
+						ag3a_70_26 ag3a_70_27 ag3a_70_28 ag3a_70_29 ag3a_70_30, ///
 						mv(0)
 	*** this allows us to impute only the variables we change to missing				
 						
 * summarize household individual labor for land prep to look for outliers
-	sum				ag3a_72_1 ag3a_72_2 ag3a_72_3 ag3a_72_4 ag3a_72_5 ag3a_72_6
-	replace			ag3a_72_1 = . if ag3a_72_1 > 90
-	replace			ag3a_72_2 = . if ag3a_72_2 > 90
-	** 4 changes made
+	sum				ag3a_70_1 ag3a_70_2 ag3a_70_3 ag3a_70_4 ag3a_70_5 ag3a_70_6
+	** no maxes > 90
 
 * summarize household individual labor for weeding to look for outliers
-	sum				ag3a_72_7 ag3a_72_8 ag3a_72_9 ag3a_72_10 ag3a_72_11 ag3a_72_12
-	replace			ag3a_72_8 = . if ag3a_72_8 > 90
-	*** 1 change made
+	sum				ag3a_70_13 ag3a_70_14 ag3a_70_15 ag3a_70_16 ag3a_70_17 ///
+						ag3a_70_18
+	*** no maxes > 90
 
 * summarize household individual labor for ridging, etc to look for outliers
-	sum				ag3a_72_13 ag3a_72_14 ag3a_72_15 ag3a_72_16 ag3a_72_17 ag3a_72_18
-	*** no excess amounts
+	sum				ag3a_70_37 ag3a_70_38 ag3a_70_39 ag3a_70_40 ag3a_70_41 ///
+						ag3a_70_42
+	*** no maxes > 60
 	
 * summarize household individual labor for harvest to look for outliers
-	sum				ag3a_72_19 ag3a_72_20 ag3a_72_21 ag3a_72_22 ag3a_72_23 ag3a_72_24
-	replace			ag3a_72_19 = . if ag3a_72_19 > 90
-	** 3 changes made
+	sum				ag3a_70_25 ag3a_70_26 ag3a_70_27 ag3a_70_28 ag3a_70_29 ///
+						ag3a_70_30
+	*** no maxes > 90
 
-* impute missing values (only need to do four variables)
-	mi set 			wide 	// declare the data to be wide.
-	mi xtset		, clear 	// clear any xtset that may have had in place previously
-	
-	* impute ag3a_72_1
-		mi register		imputed ag3a_72_1 // identify ag3a_72_1 as the variable being imputed
-		sort			hhid plotnum, stable // sort to ensure reproducability of results
-		mi impute 		pmm ag3a_72_1 i.uq_dist, add(1) rseed(245780) ///
-							noisily dots force knn(5) bootstrap
-	
-	* impute ag3a_72_2
-		mi register		imputed ag3a_72_2 // identify ag3a_72_2 as the variable being imputed
-		sort			hhid plotnum, stable // sort to ensure reproducability of results
-		mi impute 		pmm ag3a_72_2 i.uq_dist, add(1) rseed(245780) ///
-							noisily dots force knn(5) bootstrap
-	
-	* impute ag3a_72_8
-		mi register		imputed ag3a_72_8 // identify ag3a_72_1 as the variable being imputed
-		sort			hhid plotnum, stable // sort to ensure reproducability of results
-		mi impute 		pmm ag3a_72_8 i.uq_dist, add(1) rseed(245780) ///
-							noisily dots force knn(5) bootstrap
-	
-	* impute ag3a_72_19
-		mi register		imputed ag3a_72_19 // identify ag3a_72_2 as the variable being imputed
-		sort			hhid plotnum, stable // sort to ensure reproducability of results
-		mi impute 		pmm ag3a_72_19 i.uq_dist, add(1) rseed(245780) ///
-							noisily dots force knn(5) bootstrap
-							
-	mi 				unset
+* no imputation necessary as no values are dropped
 
-* replace values with imputed values
-	replace			ag3a_72_1 = ag3a_72_1_1_
-	replace			ag3a_72_2 = ag3a_72_2_2_
-	replace			ag3a_72_8 = ag3a_72_8_3_
-	replace			ag3a_72_19 = ag3a_72_19_4_
-	drop			ag3a_72_1_1_- ag3a_72_19_4_
-	
 * compiling labor inputs
-	egen			hh_labor_days = rsum(ag3a_72_1 ag3a_72_2 ag3a_72_3 ag3a_72_4 ///
-						ag3a_72_5 ag3a_72_6 ag3a_72_7 ag3a_72_8 ag3a_72_9 ///
-						ag3a_72_10 ag3a_72_11 ag3a_72_12 ag3a_72_13 ag3a_72_14 ///
-						ag3a_72_15 ag3a_72_16 ag3a_72_17 ag3a_72_18 ag3a_72_19 ///
-						ag3a_72_20 ag3a_72_21 ag3a_72_22 ag3a_72_23 ag3a_72_24)
+	egen			hh_labor_days = rsum(ag3a_70_1 ag3a_70_2 ag3a_70_3 ag3a_70_4 ///
+						ag3a_70_5 ag3a_70_6 ag3a_70_13 ag3a_70_14 ag3a_70_15 ///
+						ag3a_70_16 ag3a_70_17 ag3a_70_18 ag3a_70_37 ag3a_70_38 ///
+						ag3a_70_39 ag3a_70_40 ag3a_70_41 ag3a_70_42 ag3a_70_25 ///
+						ag3a_70_26 ag3a_70_27 ag3a_70_28 ag3a_70_29 ag3a_70_30)
 
 * generate hired labor by gender and activity
-	gen				plant_w = ag3a_74_1
-	gen				plant_m = ag3a_74_2
-	gen				other_w = ag3a_74_5 + ag3a_74_9
-	gen				other_m = ag3a_74_6 + ag3a_74_10
-	gen				hrvst_w = ag3a_74_13
-	gen				hrvst_m = ag3a_74_14
+	gen				plant_w = ag3a_72_1
+	gen				plant_m = ag3a_72_2
+	gen				other_w = ag3a_72_4 + ag3a_72_62
+	gen				other_m = ag3a_72_5 + ag3a_72_61
+	gen				hrvst_w = ag3a_72_7
+	gen				hrvst_m = ag3a_72_8
 
 * summarize hired individual labor to look for outliers
-	sum				plant* other* hrvst* if ag3a_73 == 1
+	sum				plant* other* hrvst* if ag3a_71 == 1
 
 * replace outliers with missing
-	replace			plant_w = . if plant_w > 90
-	replace			plant_m = . if plant_m > 90
+	replace			plant_w = . if plant_w > 90 // 1 change
+	replace			plant_m = . if plant_m > 90 // 1 change
 	replace			other_w = . if other_w > 181
 	replace			other_m = . if other_m > 181 
 	replace			hrvst_w = . if hrvst_w > 90
-	replace			hrvst_m = . if hrvst_m > 90
+	replace			hrvst_m = . if hrvst_m > 90 // 3 changes
 	*** only 5 values replaced
 
 * impute missing values (only need to do it for women's planting and harvesting)
@@ -273,22 +238,32 @@
 	* impute women's planting labor
 		mi register		imputed plant_w // identify kilo_fert as the variable being imputed
 		sort			hhid plotnum, stable // sort to ensure reproducability of results
-		mi impute 		pmm plant_w i.uq_dist if ag3a_73 == 1, add(1) rseed(245780) ///
+		mi impute 		pmm plant_w i.uq_dist if ag3a_71 == 1, add(1) rseed(245780) ///
+							noisily dots force knn(5) bootstrap
+							
+	* impute men's planting labor
+		mi register		imputed plant_m // identify kilo_fert as the variable being imputed
+		sort			hhid plotnum, stable // sort to ensure reproducability of results
+		mi impute 		pmm plant_m i.uq_dist if ag3a_71 == 1, add(1) rseed(245780) ///
 							noisily dots force knn(5) bootstrap
 	
-	* impute women's harvest labor
-		mi register		imputed hrvst_w // identify kilo_fert as the variable being imputed
+	* impute men's harvest labor
+		mi register		imputed hrvst_m // identify kilo_fert as the variable being imputed
 		sort			hhid plotnum, stable // sort to ensure reproducability of results
-		mi impute 		pmm hrvst_w i.uq_dist if ag3a_73 == 1, add(1) rseed(245780) ///
+		mi impute 		pmm hrvst_m i.uq_dist if ag3a_71 == 1, add(1) rseed(245780) ///
 							noisily dots force knn(5) bootstrap
 							
 	mi 				unset
 	
 * how did the imputation go?
-	replace			plant_w = plant_w_1_
-	replace			hrvst_w = hrvst_w_2_
-	drop			plant_w_1_ hrvst_w_1_ plant_w_2_ hrvst_w_2_
-	*** imputed 3 values (this is a bit of overkill to deal with 3 values)
+	replace			plant_w = plant_w_1_ // 27 changes made
+	replace			plant_m = plant_m_2_ // 28 changes made
+	replace			hrvst_m = hrvst_m_3_ // 32 changes made
+	drop			mi_miss1- hrvst_m_3_
+	*** like in wv 4, more changes than i expect. why?
+	*** it seems like a lot more than 5 imputations are happening
+	*** are these the right imputed variabes for each var? I think so...
+	*** what am I missing?
 
 * generate total hired labor days
 	egen			hired_labor_days = rsum(plant_w plant_m other_w ///
