@@ -10,6 +10,7 @@
 	
 * assumes
 	* customsave.ado
+	* mdesc.ado
 
 * TO DO:
 	* completed
@@ -38,49 +39,70 @@
 * rename variables of interest
 	rename 		y4_hhid hhid
 	rename 		zaocode crop_code
+	
+* check for missing values
+	mdesc 				crop_code ag4a_28
+	*** 1,541 obs missing crop code
+	*** 1,721 obs missing harvest weight
+	
+* drop if crop code is missing
+	drop				if crop_code == .
+	*** 1,541 observations dropped
+
+* drop if no harvest occured during long rainy season
+	drop				if ag4a_19 != 1
+	*** 181 obs dropped
+	
+* replace missing weight 
+	replace 			ag4a_28 = 0 if ag4a_28 == .
+	*** 0 changes made
 
 * generate unique identifier
 	generate 			plot_id = hhid + " " + plotnum
 	tostring 			crop_code, generate(crop_num)
-	gen str20 			crop_id = hhid + " " + plotnum + " " + crop_num
-	duplicates drop 	crop_id, force
-* dropping one dupicate observation
-	isid 		crop_id
-
-* generating mixed crop variable
-	rename 		ag4a_01 purestand
-	generate 	mixedcrop_pct = .
-	replace 	mixedcrop_pct = 100 if purestand == 1
-	replace 	mixedcrop_pct = 75 if ag4a_02 == 3
-	replace 	mixedcrop_pct = 50 if ag4a_02 == 2
-	replace 	mixedcrop_pct = 25 if ag4a_02 == 1
-* there are 2,850 missing obs here
-	tab 		mixedcrop_pct crop_code, missing
-* 2,848 of these are also missing crop codes
-* assuming these fields are fallow
-	sort 		crop_code
-* should they be dropped? All these obs seem to have no other info
-* probably so
-	drop 		if crop_code == . 
-* still two obs missing mixedcrop_pct
+	gen str23 			crop_id = hhid + " " + plotnum + " " + crop_num
+	duplicates report 	crop_id
+	*** six duplicate crop_ids
 
 * other variables of interest
-	rename 		ag4a_24_1 harvest_month
-	rename 		ag4a_28 wgt_hvsted
-	label 		variable wgt_hvsted "What was the quanitity harvested? (kg)"
-	rename 		ag4a_12 value_seed_purch
-* see if you can find quantity purchased and quantity of old seeds used to derive total value seeds used
-
+	rename 				ag4a_28 wgt_hvsted
+	rename				ag4a_29 hvst_value
+	tab					hvst_value, missing
+	*** hvst_value missing no observations
+	
+* currency conversion
+	replace				hvst_value = hvst_value/2012.06173
+	*** Value comes from World Bank: world_bank_exchange_rates.xlxs
+	
+* generate new varaible for measuring mize harvest
+	gen					mz_hrv = wgt_hvsted if crop_code == 11
+	gen					mz_damaged = 1 if crop_code == 11 & mz_hrv == 0
+	tab					mz_damaged, missing
+	*** no obs with damaged maize harvest leading to zero harvested
+		
+* collapse crop level data to plot level
+	collapse (sum)		mz_hrv hvst_value mz_damaged, by(hhid plotnum plot_id)
+	lab var				hvst_value "Value of harvest (2010 USD)"
+	lab var				mz_hrv "Quantity of maize harvested (kg)"
+	
+* replace non-maize harvest values as missing
+	tab					mz_damaged, missing
+	replace				mz_hrv = . if mz_damaged == 0 & mz_hrv == 0
+	drop 				mz_damaged
+	*** 1,083 changes made
+	
 * keep what we want, get rid of what we don't
-	keep 		hhid plotnum plot_id crop_id crop_code mixedcrop_pct harvest_month ///
-				wgt_hvsted value_seed_purch
-				
+	keep 				hhid plotnum plot_id mz_hrv hvst_value
+
+	isid				plot_id
+
 * prepare for export
-compress
-describe
-summarize 
-sort crop_id
-customsave , idvar(crop_id) filename(AG_SEC4A.dta) path("`export'") dofile(2014_AGSEC4A) user($user)
+	compress
+	describe
+	summarize 
+	sort plot_id
+	customsave , idvar(plot_id) filename(AG_SEC4A.dta) path("`export'") ///
+		dofile(2014_AGSEC4A) user($user)
 
 * close the log
 	log	close

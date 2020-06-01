@@ -99,7 +99,7 @@ if $pack == 1 {
 		ado update, update
 
 	* set graph and Stata preferences
-		set scheme plotplain
+		set scheme plotplain, perm
 		set more off
 }
 

@@ -28,13 +28,10 @@
 
 * ***********************************************************************
 * 1 - TZA 2012 (Wave 3) - Household Section A
-* *********************1*************************************************
+* ***********************************************************************
 
 * load data
 	use 			"`root'/HH_SEC_A", clear
-
-* keep variables of interest
-	keep 			occ- hh_a12_1
 
 * renaming some variables
 	rename		y3_hhid hhid
@@ -43,6 +40,10 @@
 	rename		hh_a03_1 ward
 	rename		hh_a04_1 village
 
+* keep variables of interest
+	keep 			hhid y3_weight clusterid strataid ///
+						region district ward village
+	
 * prepare for export
 	compress
 	describe
