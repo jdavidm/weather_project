@@ -1,54 +1,122 @@
-clear all
+* Project: WB Weather
+* Created on: April 2020
+* Created by: McG
+* Stata v.16
 
-*attempting to clean Tanzania household variables
-global user "themacfreezie"
+* does
+	* cleans Tanzania household variables, wave 2 Ag sec4a
+	* kind of a crop roster, with harvest weights, long rainy season
+	* generates weight harvested, harvest month, percentage of plot planted with given crop, value of seed purchases
+	
+* assumes
+	* customsave.ado
+	* mdesc.ado
 
-**********************************************************************************
-**	TZA 2010 (Wave 2) - Agriculture Section 4A 
-**********************************************************************************
+* TO DO:
+	* completed
 
-* For household data
-loc root = "C:\Users/$user\Dropbox\Weather_Project\Data\Tanzania\analysis_datasets\Tanzania_raw\TZA_2010"
-* To export results
-loc export = "C:\Users/$user\Dropbox\Weather_Project\Data\Tanzania\analysis_datasets\Tanzania_refined\TZA_2010"
+	
+* **********************************************************************
+* 0 - setup
+* **********************************************************************
 
-use "`root'/AG_SEC4A", clear
+* define paths
+	loc root = "$data/household_data/tanzania/wave_2/raw"
+	loc export = "$data/household_data/tanzania/wave_2/refined"
+	loc logout = "$data/household_data/tanzania/logs"
 
-*	Kind of a crop roster, with harvest weights, long rainy season
+* open log
+	log using "`logout'/wv2_AGSEC4A", append
 
-rename y2_hhid hhid
-rename zaocode crop_code
+	
+* ***********************************************************************
+* 1 - TZA 2010 (Wave 2) - Agriculture Section 4A
+* ***********************************************************************
 
-tostring crop_code, generate(crop_num) format(%03.0g) force
+* load data
+	use "`root'/AG_SEC4A", clear
 
-generate crop_id = hhid + " " + plotnum + " " + crop_num
-isid crop_id
+* rename variables of interest
+	rename 			y2_hhid hhid
+	rename 			zaocode crop_code
+	
+* check for missing values
+	mdesc 				crop_code ag4a_15
+	*** 2,205 obs missing crop code
+	*** 2,528 obs missing harvest weight
+	
+* drop if crop code is missing
+	drop				if crop_code == .
+	*** 2,205 observations dropped
 
-rename ag4a_01 purestand
-generate mixedcrop_pct = .
-replace mixedcrop_pct = 100 if purestand == 1
-replace mixedcrop_pct = 75 if ag4a_02 == 3
-replace mixedcrop_pct = 50 if ag4a_02 == 2
-replace mixedcrop_pct = 25 if ag4a_02 == 1
-*	There are 2,205 missing obs here
-tab mixedcrop_pct crop_code, missing
-*	Each of these is also missing a crop code
-*	Assuming these fields are fallow
-sort crop_code
-* 	Should they be dropped? All these obs seem to have no other info
-*	Probably so
+* drop if no harvest occured during long rainy season
+	drop				if ag4a_06 != 1
+	*** 322 obs dropped
+	
+* replace missing weight 
+	replace 			ag4a_15 = 0 if ag4a_15 == .
+	*** one change made
 
-rename ag4a_11_1 harvest_month
-rename ag4a_15 wgt_hvsted
-label variable wgt_hvsted "What was the quanitity harvested? (kg)"
-rename ag4a_21 value_seed_purch
-*	See if you can find quantity purchased and quantity of old seeds used to derive total value seeds used
+* generate unique identifier
+	generate 			plot_id = hhid + " " + plotnum
+	tostring 			crop_code, generate(crop_num)
+	gen str23 			crop_id = hhid + " " + plotnum + " " + crop_num
+	duplicates report 	crop_id
+	*** no duplicate crop_ids
+	
+	isid				crop_id
 
-keep hhid plotnum crop_id crop_code mixedcrop_pct harvest_month wgt_hvsted value_seed_purch
+* other variables of interest
+	rename 				ag4a_15 wgt_hvsted
+	rename				ag4a_16 hvst_value
+	tab					hvst_value, missing
+	*** hvst_value missing one observations
+	
+	tab					wgt_hvsted if hvst_value == . , missing
+	*** when hvst_value = . , wgt_hvsted = 0
+	*** if no weight is harvested, I'm comfortable setting harvest value to 0
 
-*	Prepare for export
-compress
-describe
-summarize 
-sort crop_id
-save "`export'/AG_SEC4A", replace
+	tab					crop_code if hvst_value == .
+	*** just checking for fun, crop is tomatoes	
+	
+	replace				hvst_value = 0 if wgt_hvsted == 0 & hvst_value == .
+	*** 1 change made
+
+*currency conversion
+	replace				hvst_value = hvst_value/1395.6249
+	*** Value comes from World Bank: world_bank_exchange_rates.xlxs
+	
+* generate new varaible for measuring mize harvest
+	gen					mz_hrv = wgt_hvsted if crop_code == 11
+	gen					mz_damaged = 1 if crop_code == 11 & mz_hrv == 0
+	tab					mz_damaged, missing
+	*** one observation with damaged maize harvest leading to zero harvested
+		
+* collapse crop level data to plot level
+	collapse (sum)		mz_hrv hvst_value mz_damaged, by(hhid plotnum plot_id)
+	lab var				hvst_value "Value of harvest (2010 USD)"
+	lab var				mz_hrv "Quantity of maize harvested (kg)"
+	
+* replace non-maize harvest values as missing
+	tab					mz_damaged, missing
+	replace				mz_hrv = . if mz_damaged == 0 & mz_hrv == 0
+	drop 				mz_damaged
+	*** 1,422 changes made
+	
+* keep what we want, get rid of what we don't
+	keep 				hhid plotnum plot_id mz_hrv hvst_value
+
+	isid				plot_id
+
+* prepare for export
+	compress
+	describe
+	summarize 
+	sort plot_id
+	customsave , idvar(plot_id) filename(AG_SEC4A.dta) path("`export'") ///
+		dofile(2010_AGSEC4A) user($user)
+
+* close the log
+	log	close
+
+/* END */
