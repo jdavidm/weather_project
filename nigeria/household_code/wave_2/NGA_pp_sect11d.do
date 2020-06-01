@@ -86,6 +86,33 @@
 	gen				fert_use = leftover_fert_kg + purchased_fert_kg1 + purchased_fert_kg2
 	lab var			fert_use "fertilizer use (kg)"
 
+* summarize fertilizer
+	sum				fert_use, detail
+	*** median 0, mean 52, max 3,500
+
+* replace any +3 s.d. away from median as missing
+	replace			fert_use = . if fert_use > `r(p50)'+(3*`r(sd)')
+	*** replaced 118 values, max is now 450
+	
+* impute missing values
+	mi set 			wide 	// declare the data to be wide.
+	mi xtset		, clear 	// clear any xtset that may have had in place previously
+	mi register		imputed fert_use // identify kilo_fert as the variable being imputed
+	sort			hhid plotid, stable // sort to ensure reproducability of results
+	mi impute 		pmm fert_use i.state, add(1) rseed(245780) ///
+						noisily dots force knn(5) bootstrap
+	mi 				unset
+	
+* how did the imputation go?
+	tab				mi_miss
+	tabstat			fert_use fert_use_1_, by(mi_miss) ///
+						statistics(n mean min max) columns(statistics) ///
+						longstub format(%9.3g) 
+	replace			fert_use = fert_use_1_
+	lab var			fert_use "fertilizer use (kg), imputed"
+	drop			fert_use_1_
+	*** imputed 118 values out of 5,611 total observations	
+	
 * check for missing values
 	mdesc			fert_any fert_use	
 	*** 18 fert_any missing no fert_use missing
@@ -101,9 +128,6 @@
 	keep 			hhid zone state lga sector hhid ea plotid ///
 					fert_any fert_use tracked_obs
 
-* winsorize data
-	winsor2			fert_use, replace
-	
 * create unique household-plot identifier
 	isid			hhid plotid
 	sort			hhid plotid

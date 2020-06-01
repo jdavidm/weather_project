@@ -16,6 +16,7 @@
 * TO DO:
 	* complete
 
+	
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
@@ -187,7 +188,7 @@
 	mi xtset		, clear // this is a precautinary step to clear any existing xtset
 	mi register 	imputed plot_size_hec_GPS // identify plotsize_GPS as the variable being imputed
 	sort			hhid plotid, stable // sort to ensure reproducability of results
-	mi impute 		pmm plot_size_hec_GPS i.lga, add(1) rseed(245780) noisily dots ///
+	mi impute 		pmm plot_size_hec_GPS i.state, add(1) rseed(245780) noisily dots ///
 						force knn(5) bootstrap
 	mi unset
 
@@ -205,6 +206,7 @@
 	drop 			if missing(plot_size_hec_GPS_1_)
 	*** 0 observations deleted
 
+	
 * **********************************************************************
 * 3 - end matter, clean up to save
 * **********************************************************************
@@ -214,10 +216,6 @@
 
 	keep 			hhid zone state lga hhid ea plotid plotsize
 
-* winsorize data
-*	winsor2			plotsize, replace
-	*** not sure if we want to winsorize the GPS values
-		
 * create unique household-plot identifier
 	isid				hhid plotid
 	sort				hhid plotid

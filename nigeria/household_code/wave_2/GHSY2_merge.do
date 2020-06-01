@@ -39,7 +39,7 @@
 * start by loading harvest quantity and value, since this is our limiting factor
 	use 			"`root'/ph_secta3.dta", clear
 
-	isid			hhid plotid  
+	isid			plot_id
 
 * merge in plot size data
 	merge 			1:1 hhid plotid using "`root'/pp_sect11a1", generate(_11a1)
@@ -79,7 +79,7 @@
 
 * merging in fertilizer use
 	merge		1:1 hhid plotid using "`root'/pp_sect11d", generate(_11d)
-	*** 52 out of 4992 missing in master (1%)
+	*** 206 out of 4838 missing in master (4%)
 	*** we will impute the missing values later
 	
 	drop			if _11d == 2

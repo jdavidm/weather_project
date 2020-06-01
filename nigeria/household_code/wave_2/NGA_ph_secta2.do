@@ -40,6 +40,14 @@
 	sort			hhid plotid
 	isid			hhid plotid
 
+* per Palacios-Lopez et al. (2017) in Food Policy, we cap labor per activity
+* 7 days * 13 weeks = 91 days for land prep and planting
+* 7 days * 26 weeks = 182 days for weeding and other non-harvest activities
+* 7 days * 13 weeks = 91 days for harvesting
+* we will also exclude child labor_days
+* in this survey we can't tell gender or age of household members
+* since we can't match household members we deal with each activity seperately
+
 * create household member labor (weeks x days per week)
 	gen				hh_1 = (sa2q1a2 * sa2q1a3)
 	replace			hh_1 = 0 if hh_1 == .
@@ -56,9 +64,6 @@
 	*** per the survey, these are laborers from the last rainy/harvest season
 	*** NOT the dry season harvest
 	*** does not include planting or cultivation labor (see NGA_pp_sect11c1)
-
-* create total household labor days for harvest
-	gen				hh_days = hh_1 + hh_2 + hh_3 + hh_4
 	
 * hired labor days (# of people days hired for harvest)
 	gen				men_days = sa2q3
@@ -66,10 +71,7 @@
 
 	gen				women_days = sa2q6
 	replace			women_days = 0 if women_days == .
-
-	gen				child_days = sa2q9
-	replace			child_days = 0 if child_days == . 
-	*** again, this is hired labor only for harvest
+	*** we do not include child labor days
 	
 * free labor days, from other households
 	replace			sa2q12a = 0 if sa2q12a == .
@@ -78,9 +80,47 @@
 
 	gen				free_days = (sa2q12a + sa2q12b + sa2q12c)
 	replace			free_days = 0 if free_days == . 
+	
+	
+* **********************************************************************
+* 2 - impute labor outliers
+* **********************************************************************
+	
+* summarize household individual labor for land prep to look for outliers
+	sum				hh_1 hh_2 hh_3 hh_4 men_days women_days free_days
+	*** all but one (men_days) has more harvest days than possible
+	
+* generate local for variables that contain outliers
+	loc				labor hh_1 hh_2 hh_3 hh_4 women_days free_days
+
+* replace zero to missing, missing to zero, and outliers to mizzing
+	foreach var of loc labor {
+	    mvdecode 		`var', mv(0)
+		mvencode		`var', mv(0)
+	    replace			`var' = . if `var' > 90
+	}
+	*** 1,458 outliers changed to missing
+
+* impute missing values (only need to do four variables)
+	mi set 			wide 	// declare the data to be wide.
+	mi xtset		, clear 	// clear any xtset that may have had in place previously
+
+
+* impute each variable in local		
+	foreach var of loc labor {
+		mi register			imputed `var' // identify variable to be imputed
+		sort				hhid plotid, stable // sort to ensure reproducability of results
+		mi impute 			pmm `var' i.state, add(1) rseed(245780) ///
+								noisily dots force knn(5) bootstrap
+	}						
+	mi 				unset	
+	
+* summarize imputed variables
+	sum				hh_1_1_ hh_2_2_ hh_3_3_ hh_4_4_ women_days_5_ free_days_6_
 
 * total labor days for harvest
-	gen 			hrv_labor = (men_days + women_days + child_days + free_days + hh_days)
+	egen			hrv_labor = rowtotal(hh_1_1_ hh_2_2_ hh_3_3_ hh_4_4_ ///
+							women_days_5_ free_days_6_)
 	lab var			hrv_labor "total labor at harvest (days)"
 
 * check for missing values
@@ -89,15 +129,12 @@
 	
 	
 * **********************************************************************
-* 2 - end matter, clean up to save
+* 3 - end matter, clean up to save
 * **********************************************************************
 
 	keep 			hhid zone state lga sector hhid ea plotid ///
 					hrv_labor tracked_obs
 
-* winsorize data
-	winsor2			hrv_labor, replace
-		
 * create unique household-plot identifier
 	isid			hhid plotid
 	sort			hhid plotid

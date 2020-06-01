@@ -13,10 +13,8 @@
 	* mdesc.ado
 	
 * TO DO:
-	* some issues with conversion units, detailed by Alison below
-		*alj incliniation - binary only keep suffix "_any"
-	* unsure - incomplete, runs but maybe not right? 
-	* clarify "does" section
+	* complete
+	
 
 * **********************************************************************
 * 0 - setup
