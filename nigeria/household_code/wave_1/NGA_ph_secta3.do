@@ -28,7 +28,7 @@
 	loc logout 		= 		"$data/household_data/nigeria/logs"
 
 * close log 
-	log close
+	*log close
 	
 * open log	
 	log using "`logout'/wave_1_ph_secta3", append
@@ -46,9 +46,35 @@
 	*** main crop is "cassava old" 
 	*** cassava is continuous cropping, so not using that as a main crop
 	*** going to use maize, which is second most cultivated crop
+	
 		drop				if cropcode == . 
-
+	***33 observations deleted
 		rename 				sa3q1 cropname
+	
+	*find out who is not harvesting
+	tab sa3q3
+	
+	* drop observations in which it was not harvest season or nothing was planted that season
+	tab sa3q4
+	drop if sa3q4==9
+	***2,115 observations deleted
+	
+	drop if sa3q4b== "DID NOT PLANT IT" | sa3q4b=="FALLOW"  |   sa3q4b=="DRY SEASON PLANTING" 
+	***2 observations deleted
+	
+	* convert missing harvest data to zero if harvest was lost to event
+	replace			sa3q6a = 0 if sa3q6a == . & sa3q4b!= "DID NOT PLANT IT" 
+	***795 real changes made
+	replace			sa3q6a = 0 if sa3q6a == . & sa3q4b!="FALLOW"  
+	replace			sa3q6a = 0 if sa3q6a == . & sa3q4b!="DRY SEASON PLANTING"
+	***0 changes made
+	
+*value of harvest was not recorded in this wave.
+
+*missing values for quantity of harvest
+mdesc sa3q6a
+*** no missing values
+
 
 		describe
 		sort 				hhid plotid cropid cropcode
@@ -62,64 +88,103 @@
 * 2 - conversion to kilograms
 * **********************************************************************
 
-* create harvested quantity variable 
-		gen 				harvestq = sa3q6a
-		label 				variable harvestq "quantity harvested, not in standardized unit"
+* create quantity harvested variable
+	gen 			harvestq = sa3q6a
+	lab	var			harvestq "quantity harvested, not in standardized unit"
 
-* determine units of harvest 
-		rename 				sa3q6b harv_unit
-		tab 				harv_unit
-		tab 				harv_unit, nolabel
+* units of harvest
+	rename 			sa3q6b harv_unit
+	tab				harv_unit, nolabel
+	rename 			sa3q3 cultivated
 
-		merge m:1 cropcode harv_unit using "`cnvrt'/harvconv"
-	*** matched 9,917 but didn't match 5,212 (from master 3,101 and using 2,111)
-	*** drop these unmatched - either not producing, no unit collected, or coming from merge conversion file 
-	*** values not matched from master usually had issue which prevented harvest e.g. lost crop
+	* create value variable
+	gen 			crop_value = sa3q18
+	rename 			crop_value vl_hrv
+
+* convert 2013 Naria to constant 2010 USD
+	replace			vl_hrv = vl_hrv/190.4143545
+	lab var			vl_hrv 	"total value of harvest in 2010 USD"
+	*** value comes from World Bank: world_bank_exchange_rates.xlxs
+
+		merge m:1 cropcode harv_unit using "`cnvrt'/harvconv_wave_1"
+	*** 1000 did not match from master
 	
-keep if _merge == 3
+	tab cropname if conversion==.
+	
+	*** drop these unmatched - either not producing, no unit collected, or coming from merge conversion file 
+	
+	* drop unmerged using
+	drop if			_merge == 2
+	* dropped 2105
+
+* check into 306 unmatched from master
+	mdesc			harv_unit if _merge == 1
+	tab 			harv_unit if _merge == 1
+	drop if harv_unit==5
+	***11 observations deleted
+	***observations that did not match and were not missing the harv_unit were already in standard units.
+	
+	*dropping observations with missing harv_unit
+	drop if harv_unit==.
+	***1007 deleted
+	
 drop _merge
 
+* make sure no missing values in conversion
+	mdesc			conversion
+	tab 			harv_unit if conversion == .
+	*** missing observations were missing because their cropcode did not have a unit conversion for their units because their units were already standard
 
+* replace missing conversion factors with 1 (for kg)
+	replace			conversion = 1 if harv_unit == 1 & conversion==.
+	***the above is the conversion for kgs
+	replace 		conversion = 1 if harv_unit == 3 & conversion==.
+	*** the above is the conversion for litres
+	replace 		conversion = 1000 if harv_unit == 2 & conversion==.
+	*** the above is the conversion for grams
+	mdesc			conversion
+	*** no more missing
+	
+	
 *converting harvest quantities to kgs
-gen harv_kg = harvestq*harv_conversion
+gen harv_kg = harvestq*conversion
+	mdesc 			harv_kg
+	*** no missing
+	
+	
+* generate new variable that measures maize (1080) harvest
+	gen 			mz_hrv = harv_kg 	if 	cropcode > 1079 & cropcode < 1084
+	replace			mz_hrv = 0 			if	mz_hrv == .
+	*** replaces non-maize crop quantity with zero to allow for collapsing
+	
+	
+	* collapse crop level data to plot level
+	collapse (sum) 	mz_hrv vl_hrv, by(zone state lga sector ea hhid plotid)
+	*** sum up cp_hrv and tf_hrv to the plot level, keeping spatial variables
 
-order harvestq harv_unit harv_conversion harv_kg
-tab harv_kg, missing
-	*5272 missing values generated in harv_kg - looks like either missing unit or missing harvest quantity
+* relabel variables
+	lab var			vl_hrv 	"total value of harvest (2010 USD)"
+	lab var			mz_hrv	"quantity of maize harvested (kg)"
 
-rename sa3q3 cultivated
-
-gen cp_hrv = harv_kg if cropcode == 1080 
 
 * **********************************************************************
-* 3 - value of harvest 
-* **********************************************************************
-*STILL NEEDS TO BE CONVERTED TO USD
-
-gen crop_value = sa3q18
-label variable crop_value "if you had sold all crop harvested since the last visit, what would be the total value in Naira?"
-rename crop_value tf_hrv 
-
-* **********************************************************************
-* 4 - end matter, collapse, clean up to save
+* 3 - end matter, collapse, clean up to save
 * **********************************************************************
 
-keep hhid ///
-zone ///
-state ///
-lga ///
-sector ///
-hhid ///
-ea ///
-plotid ///
-cropid ///
-cropcode ///
-cp_hrv ///
-tf_hrv ///
 
-compress
-describe
-summarize 
+	isid			hhid plotid
+	
+* create unique household-plot identifier
+	sort			hhid plotid
+	egen			plot_id = group(hhid plotid)
+	lab var			plot_id "unique plot identifier"
+	
+	compress
+	describe
+	summarize
+	
+	***there are obviously overestimates because the highest earning from maize is reported to be 400,000USD
+	
 
 * save file
 		customsave , idvar(hhid) filename("ph_secta3.dta") ///

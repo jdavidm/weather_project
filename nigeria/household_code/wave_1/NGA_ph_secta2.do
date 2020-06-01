@@ -88,13 +88,13 @@ gen hh_days = hh_1 + hh_2 + hh_3 + hh_4
 
 *hired labor days, this calculation is (# of people hired for harvest)(# of days they worked)
 
-gen men_days = (sa2q2 * sa2q3)
+gen men_days = sa2q3
 replace men_days = 0 if men_days == . 
 
-gen women_days = (sa2q5 * sa2q6)
+gen women_days = sa2q6
 replace women_days = 0 if women_days == .
 
-gen child_days = (sa2q8 * sa2q9)
+gen child_days = sa2q9
 replace child_days = 0 if child_days == . 
 
 *free labor days, from other households
