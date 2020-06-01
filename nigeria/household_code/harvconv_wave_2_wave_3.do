@@ -5,32 +5,28 @@
 
 * does
 	* reads in Nigeria, w2agnsconversion (wave 2 conversion file)
-	* 
-	* outputs conversion file ready for combination with wave 2 harvest data
+	* adds kilograms, grams, litres, and centilitres to conversion units
+	* outputs conversion file ready for combination with wave 2 and wave 3 harvest data
 
 * assumes
 	* customsave.ado
 	* w2agnsconversion.dta conversion file
 
 * TO DO:
-	* clarify does 
+	* complete
 
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
 
 * define paths
-	loc 	root	= 	"$data/household_data/nigeria/wave_2/raw"
-	loc		cnvrt	=	"$data/household_data/nigeria/conversion_files/wave_2"
-	loc 	export	= 	"$data/household_data/nigeria/conversion_files/wave_2"
+	loc		cnvrt	=	"$data/household_data/nigeria/conversion_files"
+	loc 	export	= 	"$data/household_data/nigeria/conversion_files"
 	loc 	logout	= 	"$data/household_data/nigeria/logs"
 
-* close log (as needed when cleaning)
-	log 	close 
-	
 * open log
-	log 	using 	"`logout'/harvconv_master", append
-
+	log 	using 	"`logout'/harvconv_master_wave_2_wave_3", append	
+	
 * **********************************************************************
 * 1 - general import and clean up
 * **********************************************************************
@@ -1000,8 +996,8 @@
 	summarize
 
 * save file
-	customsave , idvar(crop_unit) filename("harvconv.dta") ///
-		path("`export'") dofile(ph_secta3) user($user)
+	customsave , idvar(crop_unit) filename("harvconv_wave_2_wave_3.dta") ///
+		path("`export'") dofile(harvconv_wave_2_wave_3) user($user)
 
 * close the log
 	log		close

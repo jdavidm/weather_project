@@ -22,7 +22,7 @@
 * **********************************************************************
 
 * set $pack to 0 to skip package installation
-	global 			pack 	1
+	global 			pack 	0
 		
 * Specify Stata version in use
     global stataVersion 16.1    // set Stata version
@@ -99,7 +99,7 @@ if $pack == 1 {
 		ado update, update
 
 	* set graph and Stata preferences
-		set scheme plotplain
+		set scheme plotplain, perm
 		set more off
 }
 
