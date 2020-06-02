@@ -180,7 +180,7 @@
 
 	
 * **********************************************************************
-* 4 - end matter, clean up to save
+* 3 - end matter, clean up to save
 * **********************************************************************
 	
 * keep what we want, get rid of what we don't

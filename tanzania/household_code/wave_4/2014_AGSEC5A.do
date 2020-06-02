@@ -71,8 +71,8 @@
 	egen		district_id = group(region district)
 	sort		region district ward 
 	egen		ward_id = group(region district ward)
-	sort		region district ward hh_a03_3a 
-	egen		village_id = group(region district ward hh_a03_3a)
+	sort		region district ward village
+	egen		village_id = group(region district ward village)
 	distinct	region_id district_id ward_id village_id
 
 * collapse to district level to generate region average prices
@@ -100,8 +100,8 @@
 	restore
 
 * drop variables to create village-crop panel
-	keep		crop_code crop_num region- ward hh_a03_3a hh_a03_3b ///
-					village region_id district_id ward_id village_id
+	keep		crop_code crop_num region- village ///
+					region_id district_id ward_id village_id
 	duplicates 	drop
 	*** drops 4084 duplicate observations
 	
