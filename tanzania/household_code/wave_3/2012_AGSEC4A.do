@@ -187,7 +187,7 @@
 	keep 				hhid plotnum plot_id crop_code crop_id clusterid ///
 							strataid y3_weight region district ward village ///
 							any_* pure_stand percent_field ///
-							mz_hrv hvst_value
+							mz_hrv hvst_value mz_damaged
 
 	order				hhid plotnum plot_id crop_code crop_id clusterid ///
 							strataid y3_weight region district ward village
