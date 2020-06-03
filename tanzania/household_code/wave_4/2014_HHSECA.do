@@ -33,15 +33,16 @@
 * load data
 	use 		"`root'/hh_sec_a", clear
 
-* keep variables of interest
-	keep 			occ- hh_a12_1
-
 * renaming some variables
 	rename		y4_hhid hhid
 	rename		hh_a01_1 region
 	rename		hh_a02_1 district
 	rename		hh_a03_1 ward
 	rename		hh_a04_1 village
+	rename		y4_weights y4_weight
+
+* keep variables of interest
+	keep 		hhi region district ward village y4_weight strataid clusterid
 
 * prepare for export
 	compress

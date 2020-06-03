@@ -180,18 +180,18 @@
 
 	
 * **********************************************************************
-* 4 - end matter, clean up to save
+* 3 - end matter, clean up to save
 * **********************************************************************
 	
 * keep what we want, get rid of what we don't
 	keep 				hhid plotnum plot_id crop_code crop_id clusterid ///
 							strataid y3_weight region district ward village ///
 							any_* pure_stand percent_field ///
-							mz_hrv hvst_value
+							mz_hrv hvst_value mz_damaged
 
 	order				hhid plotnum plot_id crop_code crop_id clusterid ///
 							strataid y3_weight region district ward village
-
+							
 * check for duplicates
 	duplicates		report hhid plotnum crop_code
 	*** there are 3 duplicates
@@ -200,14 +200,13 @@
 	duplicates		drop hhid plotnum crop_code, force
 	*** the duplicates are all the same, so dropping duplicates
 	
-	isid				crop_id
-	
 * prepare for export
+	isid			hhid plotnum crop_code
 	compress
 	describe
 	summarize 
 	sort plot_id
-	customsave , idvar(plot_id) filename(AG_SEC4A.dta) path("`export'") ///
+	customsave , idvar(crop_id) filename(AG_SEC4A.dta) path("`export'") ///
 		dofile(2012_AGSEC4A) user($user)
 
 * close the log

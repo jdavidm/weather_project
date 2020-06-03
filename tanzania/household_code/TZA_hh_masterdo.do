@@ -19,11 +19,8 @@
 * 0 - setup
 * **********************************************************************
 
-* set global user
-	global user "themacfreezie"
-
 * define paths
-	loc root = "C:/Users/$user/git/weather_project/tanzania/household_code"
+	loc root = "$code/tanzania/household_code"
 
 
 * **********************************************************************
