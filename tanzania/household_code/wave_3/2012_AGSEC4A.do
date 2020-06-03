@@ -191,7 +191,7 @@
 
 	order				hhid plotnum plot_id crop_code crop_id clusterid ///
 							strataid y3_weight region district ward village
-
+							
 * check for duplicates
 	duplicates		report hhid plotnum crop_code
 	*** there are 3 duplicates
