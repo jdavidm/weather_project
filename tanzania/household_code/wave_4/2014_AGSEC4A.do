@@ -60,8 +60,7 @@
 	duplicates		drop hhid plotnum zaoname, force
 	*** percent_field and pure_stand variables are the same, so dropping duplicates
 	*** drops 4 duplicate obs, the 2 remaining are 'chilies' and 'OTHER'
-	*** the duplicate obs that remain come from the same household and plot
-	*** total planted area of this plot is 8/4, will the next step address this?
+	*** since they're not maize, I will collapse at the end of the do-file
 
 * create total area on field (total on plot across ALL crops)
 	bys 			hhid plotnum: egen total_percent_field = total(percent_field)
@@ -198,6 +197,12 @@
 
 	order				hhid plotnum plot_id crop_code crop_id clusterid ///
 							strataid y4_weight region district ward village
+							
+* collapsing to resolve duplicate observations
+	collapse (sum)		mz_hrv hvst_value percent_field, by(hhid plotnum plot_id ///
+							crop_code crop_id clusterid strataid y4_weight ///
+							region district ward village any_* pure_stand)
+
 	
 * prepare for export
 *	isid			hhid plotnum crop_code // not unique, same issue from above

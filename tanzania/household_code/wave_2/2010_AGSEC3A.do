@@ -260,10 +260,6 @@
 	replace			plant_m = plant_m_2_ // 28 changes made
 	replace			hrvst_m = hrvst_m_3_ // 32 changes made
 	drop			mi_miss1- hrvst_m_3_
-	*** like in wv 4, more changes than i expect. why?
-	*** it seems like a lot more than 5 imputations are happening
-	*** are these the right imputed variabes for each var? I think so...
-	*** what am I missing?
 
 * generate total hired labor days
 	egen			hired_labor_days = rsum(plant_w plant_m other_w ///
