@@ -14,23 +14,17 @@
 	* mdesc.ado
 	
 * TO DO:
-	*correct imputation process and remove outliers
+	* done
 
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
 
-* set global user
-	global user "emilk"
-	
 * define paths	
-	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_3/raw"
-	loc export = "G:/My Drive/weather_project/household_data/nigeria/wave_3/refined"
-	loc logout = "G:/My Drive/weather_project/household_data/nigeria/logs"
+	loc root = "$data/household_data/nigeria/wave_3/raw"
+	loc export = "$data/household_data/nigeria/wave_3/refined"
+	loc logout = "$data/household_data/nigeria/logs"
 
-* close log (in case still open)
-	*log close
-	
 * open log	
 	log using "`logout'/ph_sect11d", append
 
@@ -49,62 +43,60 @@ isid hhid plotid
 rename s11dq1 fert_any
 	lab var			fert_any "=1 if any fertilizer was used"
 
-	*drop manure/compost observations
-	
+*drop manure/compost observations
 	tab sect11dq7
 	tab s11dq15 
 	tab s11dq27
 	tab s11dq3
-	
 	drop if s11dq15==3
 	***1 observation deleted
 	drop if s11dq15_os=="COMPOST"
 	***1 observation deleted
 	
-	
-	* quantity of fertilizer from different sources
+* quantity of fertilizer from different sources
 
 * leftover fertilizer
 	gen				leftover_fert_kg = s11dq4a
-	replace leftover_fert_kg= leftover_fert_kg*1000 if s11dq4b==2
+	replace 		leftover_fert_kg = leftover_fert_kg/1000 if s11dq4b==2
+	*** convert grams to kgs - 5 obs (divide to get kgs)
+	sum 			leftover_fert_kg
+	***maximum observation is 300, average 55.45 kg 
 	replace			leftover_fert_kg = 0 if leftover_fert_kg ==.
-	sum leftover_fert_kg
-	***Maximum observation is 500000kg which is too high
-	
+
 * free fertilizer
 	gen				free_fert_kg = sect11dq8a
-	replace 		free_fert_kg=free_fert_kg*1000 if sect11dq8b==2
+	replace 		free_fert_kg=free_fert_kg/1000 if sect11dq8b==2
 	sum				free_fert_kg
-	***Observations are too high the mean is 35000kg
-	
-	
+	***maximum observation is 200, average is 49.21 kg 
+	*** OMITTED IN ROUND 2 - CAN ALSO PLAN TO OMIT HERE FOR CONSISTENCY 
 	replace			free_fert_kg = 0 if free_fert_kg ==. 
 
 *purchased fertilizer
 	gen				purchased_fert_kg1 = s11dq16a
-	replace purchased_fert_kg1 = purchased_fert_kg1*1000 if s11dq16b==2
+	replace purchased_fert_kg1 = purchased_fert_kg1/1000 if s11dq16b==2
 	sum				purchased_fert_kg1
-	***Observations are too high
-	
+	*** observations are too high - max = 2000 kg, mean is 90.96 kgs
+	*** mean is okay, but max is a bit high 
+	***  max value is too high but will keep it and deal with by winsorizing
 
 	gen				purchased_fert_kg2 = s11dq28a
-	replace purchased_fert_kg2 = purchased_fert_kg2*1000 if s11dq28b==2
+	replace purchased_fert_kg2 = purchased_fert_kg2/1000 if s11dq28b==2
 	sum				purchased_fert_kg2
-	***observations are too high
+	*** max observation is 250, mean is 55.37 
 
-	
 	replace			purchased_fert_kg1 = 0 if purchased_fert_kg1 ==. 
 	replace			purchased_fert_kg2 = 0 if purchased_fert_kg2 ==. 
-	*** the survey divides the fertilizer into left over, received for free, and purchased so here I combine them
 
-
+* the survey divides the fertilizer into left over, received for free, and purchased so here I combine them
 * generate variable for total fertilizer use
-	gen				fert_use = leftover_fert_kg + purchased_fert_kg1 + purchased_fert_kg2
+	egen			fert_use	= rsum (leftover_fert_kg purchased_fert_kg1 purchased_fert_kg2) 
 	lab var			fert_use "fertilizer use (kg)"
+	*** omit free fertilizer 
 
-	* summarize fertilizer
+* summarize fertilizer
 	sum				fert_use, detail
-	*** median 0, mean 3908, max 1.25e+07
+	*** median 0, mean 32.584, max 2000
+	*** only 5914 observations 
 
 * replace any +3 s.d. away from median as missing
 	replace			fert_use = . if fert_use > `r(p50)'+(3*`r(sd)')
@@ -127,17 +119,18 @@ rename s11dq1 fert_any
 	replace			fert_use = fert_use_1_
 	lab var			fert_use "fertilizer use (kg), imputed"
 	drop			fert_use_1_
-	*** imputed 5 values out of 5,914 total observations
-	
-
+	*** imputed 114 values out of 5,914 total observations
+	*** impute went fine - mean - 24.3 and maximum 250 (min still = 0)
 	
 * check for missing values
 	mdesc			fert_any fert_use	
-	*** 9 fert_any missing 5 fert_use missing
+	*** 9 fert_any missing 0 fert_use missing
 	
 * convert missing values to "no"
 	replace			fert_any	=	2	if	fert_any	==	.
+	*** 9 changes made
 	replace 		fert_use	=	2	if 	fert_use	==	.
+	*** 0 changes made 
 
 * **********************************************************************
 * 3 - end matter, clean up to save
