@@ -10,15 +10,9 @@
 
 * assumes
 	* customsave.ado
-	* land-conversion.dta conversion file
-	
-* other notes: 
-	* still includes some notes from Alison Conley's work in spring 2020
 	
 * TO DO:
-	* some issues with conversion to kgs
-	* unsure - incomplete, runs but maybe not right? 
-	* clarify "does" section
+	* complete
 	
 * **********************************************************************
 * 0 - setup
@@ -36,7 +30,7 @@
 	*log close
 	
 * open log	
-	*log using "`logout'/pp_sect11f", append
+	log using "`logout'/pp_sect11f", append
 
 * **********************************************************************
 * 1 - determine plot size
@@ -68,7 +62,8 @@ lab var			year "planting year"
 	*** this aligns with FAO planting season
 	*** roughly 7% are not in the FAO planting season
 	tab year
-	*** 97% are in 2015
+	*** 97% are in 2015, we will drop those from years before 2014
+	drop if year<=2013
 * **********************************************************************
 * 3 - end matter, clean up to save
 * **********************************************************************
