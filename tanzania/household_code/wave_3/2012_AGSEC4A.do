@@ -103,7 +103,7 @@
 	sort			region district
 	egen			uq_dist = group(region district)
 	distinct		uq_dist
-	*** 130 once this time
+	*** 130 distinct districts
 	
 	
 * ***********************************************************************

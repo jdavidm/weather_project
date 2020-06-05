@@ -95,21 +95,11 @@
 	*** the next highest ob is 2,500 - the high values seem unlikely
 
 * replace any +3 s.d. away from median as missing
-	replace			kilo_fert = . if kilo_fert > `r(p50)'+(3*`r(sd)')
-	*** replaced top 2 values, max is now 2500
-	*** i think this is still high 
-	*** the two exteremely large obs are inflating the s.d.
-	*** i believe this high s.d. neuters the impact of this step and the next
-	*** let's repeat the above steps and see what happens w/out those 2 values
-	
-* summarize fertilizer
+	replace			kilo_fert = . if kilo_fert > 5000
 	sum				kilo_fert, detail
-	*** median 0, mean 13, max 2,500, s.d. 85
-	*** seems more reasonable
-	
-* replace any +3 s.d. away from median as missing
 	replace			kilo_fert = . if kilo_fert > `r(p50)'+(3*`r(sd)')
-	*** replaced 38 values, max is now 250
+	sum				kilo_fert, detail
+	*** replaced 40 values, max is now 250
 	*** this seems more like it to me
 	
 * impute missing values
