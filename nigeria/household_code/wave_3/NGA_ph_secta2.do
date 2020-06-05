@@ -1,38 +1,32 @@
 * Project: WB Weather
 * Created on: May 2020
 * Created by: alj
+* Edited by: ek
 * Stata v.16
 
 * does
-	* reads in Nigeria, WAVE 3 POST HARVEST, NIGERIA AG SECTA2
-	* determines labor 
-	* maybe more who knows
-	* outputs clean data file ready for combination with wave 3 hh data
+	* reads in Nigeria, WAVE 3 (2015-2016) POST HARVEST, NIGERIA AG SECTA2
+	* determines harvest labor (only) for preceeding rainy season
+	* outputs clean data file ready for combination with wave 2 plot data
 
 * assumes
 	* customsave.ado
-	
-* other notes: 
-	* still includes some notes from Alison Conley's work in spring 2020
+	* mdesc.ado
 	
 * TO DO:
-	* unsure - incomplete, runs but maybe not right? 
-	* clarify "does" section
+	* complete
 	
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
 
 * set global user
-	global user "aljosephson"
+	global user "emilk"
 	
 * define paths	
 	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_3/raw"
 	loc export = "G:/My Drive/weather_project/household_data/nigeria/wave_3/refined"
 	loc logout = "G:/My Drive/weather_project/household_data/nigeria/logs"
-
-* close log (in case still open)
-	*log close
 	
 * open log	
 	log using "`logout'/ph_secta2", append
@@ -46,130 +40,127 @@
 
 describe
 sort hhid plotid
-isid hhid plotid, missok
+isid hhid plotid
 
-*per the survey, these are laborers from the last rainy/harvest season NOT the dry season harvest
-*household member labor, this calculation is (weeks x days per week) for up to 4 members of the household that were laborers
-***NOTE: the survey says these were hired between planting and harvesting
-gen hh_1_ph = (sa2q1b_a2 * sa2q1b_a3)
-replace hh_1_ph = 0 if hh_1_ph == .
+* per Palacios-Lopez et al. (2017) in Food Policy, we cap labor per activity
+* 7 days * 13 weeks = 91 days for land prep and planting
+* 7 days * 26 weeks = 182 days for weeding and other non-harvest activities
+* 7 days * 13 weeks = 91 days for harvesting
+* we will also exclude child labor_days
+* in this survey we can't tell gender or age of household members
+* since we can't match household members we deal with each activity seperately
 
-gen hh_2_ph = (sa2q1b_b2 * sa2q1b_b3)
-replace hh_2_ph = 0 if hh_2_ph == . 
+	* create household member labor (weeks x days per week)
+		gen	hh_1	=	(sa2q1a2 * sa2q1a3)
+		replace	hh_1	=	0	if	hh_1	==	.
 
-gen hh_3_ph = (sa2q1b_c2 * sa2q1b_c3)
-replace hh_3_ph = 0 if hh_3_ph == .
+		gen	hh_2	=	(sa2q1b2 * sa2q1b3)
+		replace	hh_2	=	0	if	hh_2	==	. 
 
-gen hh_4_ph = (sa2q1b_d2 * sa2q1b_d3)
-replace hh_4_ph = 0 if hh_4_ph == . 
+		gen	hh_3 	= 	(sa2q1c2 * sa2q1c3)
+		replace	hh_3	=	0	if	hh_3 	== 	.
 
-gen hh_5_ph = (sa2q1b_e2 * sa2q1b_e3)
-replace hh_5_ph = 0 if hh_5_ph == .
+		gen	hh_4 	= 	(sa2q1d2 * sa2q1d3)
+		replace	hh_4 	= 	0 	if 	hh_4 	== 	. 
+	
+		gen	hh_5 	= 	(sa2q1e2*sa2q1e3) 
+		replace hh_5 	=	0 	if 	hh_5	==	.
+	
+		gen hh_6 	= 	(sa2q1f2*sa2q1f3) 
+		replace hh_6 	=	0 	if 	hh_6 	==	.
+	
+		gen hh_7 	= 	(sa2q1g2*sa2q1g3)
+		replace hh_7 	=	0 	if 	hh_7 	==	.
+	
+		gen	hh_8 	= 	(sa2q1h2*sa2q1h3)
+		replace hh_8	= 	0 	if 	hh_8 	==	.
+	
+	*** this calculation is for up to 8 members of the household that were laborers
+	*** per the survey, these are laborers from the last rainy/harvest season
+	*** NOT the dry season harvest
+	*** does not include planting or cultivation labor (see NGA_pp_sect11c1)
 
-gen hh_6_ph = (sa2q1b_f2 * sa2q1b_f3)
-replace hh_6_ph = 0 if hh_6_ph == . 
 
-gen hh_7_ph = (sa2q1b_g2 * sa2q1b_g3)
-replace hh_7_ph = 0 if hh_7_ph == .
+	*hired labor days, (# of people days hired to work) HARVEST & THRESH
+		gen men_days_ht = (sa2q3)
+		replace men_day = 0 if men_days == . 
 
-gen hh_8_ph = (sa2q1b_h2 * sa2q1b_h3)
-replace hh_8_ph = 0 if hh_8_ph == . 
+		gen women_days = (sa2q6)
+		replace women_days = 0 if women_days == .
+		*** we do not include child labor days
 
-gen hh_days_ph = hh_1_ph + hh_2_ph + hh_3_ph + hh_4_ph + hh_5_ph + hh_6_ph + hh_7_ph + hh_8_ph
+	*free labor days, from other households, HARVEST & THRESH
+		replace sa2q12a = 0 if sa2q12a == .
+		replace sa2q12b = 0 if sa2q12b == .
+		replace sa2q12c = 0 if sa2q12c == .
 
-*hired labor days, this calculation is (# of people hired for harvest)(# of days they worked) BETWEEN PLANTING AND HARVESTING
-gen men_days_ph = (sa2q1c * sa2q1d)
-replace men_days_ph = 0 if men_days_ph == . 
-
-gen women_days_ph = (sa2q1f * sa2q1g)
-replace women_days_ph = 0 if women_days_ph == .
-
-gen child_days_ph = (sa2q1i * sa2q1j)
-replace child_days_ph = 0 if child_days_ph == . 
-
-*free labor days, from other households BETWEEN PLANTING AND HARVESTING
-replace sa2q1n_a = 0 if sa2q1n_a == .
-replace sa2q1n_b = 0 if sa2q1n_b == .
-replace sa2q1n_c = 0 if sa2q1n_c == .
-
-gen free_days_ph = (sa2q1n_a + sa2q1n_b + sa2q1n_c)
-replace free_days_ph = 0 if free_days_ph == . 
-
-*total labor days, we will need the labor rate in days/hectare but will need the plotsize from other data sets to get it
-gen labor_days_ph = (men_days_ph + women_days_ph + child_days_ph + free_days_ph + hh_days_ph)
-
-**_ph stands for the survey portion that asks about labor between planting and harvesting during the rainy season
-**_ht stands for laborers that worked on this plot for harvesting and threshing - this isn't double counting I would assume??
-*HELP: may want to look into this^
-
-**Here, I sum the labor recorded for harvesting and threshing (_ht)
-gen hh_1_ht = (sa2q1a2 * sa2q1a3)
-replace hh_1_ht = 0 if hh_1_ht == .
-
-gen hh_2_ht = (sa2q1b2 * sa2q1b3)
-replace hh_2_ht = 0 if hh_2_ht == . 
-
-gen hh_3_ht = (sa2q1c2 * sa2q1c3)
-replace hh_3_ht = 0 if hh_3_ht == .
-
-gen hh_4_ht = (sa2q1d2 * sa2q1d3)
-replace hh_4_ht = 0 if hh_4_ht == . 
-
-gen hh_5_ht = (sa2q1e2 * sa2q1e3)
-replace hh_5_ht = 0 if hh_5_ht == .
-
-gen hh_6_ht = (sa2q1f2 * sa2q1f3)
-replace hh_6_ht = 0 if hh_6_ht == . 
-
-gen hh_7_ht = (sa2q1g2 * sa2q1g3)
-replace hh_7_ht = 0 if hh_7_ht == .
-
-gen hh_8_ht = (sa2q1h2 * sa2q1h3)
-replace hh_8_ht = 0 if hh_8_ht == . 
-
-gen hh_days_ht = hh_1_ht + hh_2_ht + hh_3_ht + hh_4_ht + hh_5_ht + hh_6_ht + hh_7_ht + hh_8_ht
-
-*hired labor days, this calculation is (# of people hired for harvest)(# of days they worked) HARVEST & THRESH
-gen men_days_ht = (sa2q2 * sa2q3)
-replace men_days_ht = 0 if men_days_ht == . 
-
-gen women_days_ht = (sa2q5 * sa2q6)
-replace women_days_ht = 0 if women_days_ht == .
-
-gen child_days_ht = (sa2q8 * sa2q9)
-replace child_days_ht = 0 if child_days_ht == . 
-
-*free labor days, from other households, HARVEST & THRESH
-replace sa2q12a = 0 if sa2q12a == .
-replace sa2q12b = 0 if sa2q12b == .
-replace sa2q12c = 0 if sa2q12c == .
-
-gen free_days_ht = (sa2q12a + sa2q12b + sa2q12c)
-replace free_days_ht = 0 if free_days_ht == . 
-
-*total labor days, we will need the labor rate in days/hectare but will need the plotsize from other data sets to get it, HARVEST & THRESH
-gen labor_days_ht = (men_days_ht + women_days_ht + child_days_ht + free_days_ht + hh_days_ht)
-
-***TOTAL DAYS (SUM OF PH AND HT)
-gen labor_days = labor_days_ph + labor_days_ht
+		gen free_days = (sa2q12a + sa2q12b + sa2q12c)
+		replace free_days = 0 if free_days == . 
 
 * **********************************************************************
-* 2 - end matter, clean up to save
+* 2 - impute labor outliers
+* **********************************************************************
+	
+* summarize household individual labor for land prep to look for outliers
+	sum				hh_1 hh_2 hh_3 hh_4 men_days women_days free_days
+	*** all but one (men_days) has more harvest days than possible
+	
+* generate local for variables that contain outliers
+	loc				labor hh_1 hh_2 hh_3 hh_4 women_days free_days
+
+* replace zero to missing, missing to zero, and outliers to mizzing
+	foreach var of loc labor {
+	    mvdecode 		`var', mv(0)
+		mvencode		`var', mv(0)
+	    replace			`var' = . if `var' > 90
+	}
+	*** 1,458 outliers changed to missing
+
+* impute missing values (only need to do four variables)
+	mi set 			wide 	// declare the data to be wide.
+	mi xtset		, clear 	// clear any xtset that may have had in place previously
+
+
+* impute each variable in local		
+	foreach var of loc labor {
+		mi register			imputed `var' // identify variable to be imputed
+		sort				hhid plotid, stable // sort to ensure reproducability of results
+		mi impute 			pmm `var' i.state, add(1) rseed(245780) ///
+								noisily dots force knn(5) bootstrap
+	}						
+	mi 				unset	
+	
+* summarize imputed variables
+	sum				hh_1_1_ hh_2_2_ hh_3_3_ hh_4_4_ women_days free_days
+
+* total labor days for harvest
+	egen			hrv_labor = rowtotal(hh_1_1_ hh_2_2_ hh_3_3_ hh_4_4_ ///
+							women_days free_days)
+	lab var			hrv_labor "total labor at harvest (days)"
+
+* check for missing values
+	mdesc			hrv_labor
+	*** no missing values
+
+* **********************************************************************
+* 3 - end matter, clean up to save
 * **********************************************************************
 
-keep hhid ///
-zone ///
-state ///
-lga ///
-sector ///
-hhid ///
-ea ///
-plotid ///
-labor_days ///
+	keep 			hhid zone state lga sector hhid ea plotid ///
+					hrv_labor
 
-compress
-describe
-summarize 
+* create unique household-plot identifier
+	isid			hhid plotid
+	sort			hhid plotid
+	egen			plot_id = group(hhid plotid)
+	lab var			plot_id "unique plot identifier"
+	
+	compress
+	describe
+	summarize 
+	
+	sum hrv_labor, detail
+	* harvest labor looks reasonable more than 90% of observations are less than 91 days within the cap by Palacios-Lopez et al. (2017) in Food Policy for harvest labor.
 
 * save file
 		customsave , idvar(hhid) filename("ph_secta2.dta") ///

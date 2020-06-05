@@ -30,12 +30,12 @@
 
 	* define paths
 		loc 	root		= 	"$data/household_data/nigeria/wave_3/raw"
-		loc		cnvrt		=		"$data/household_data/nigeria/conversion_files"
-		loc 	export 	= 	"$data/household_data/nigeria/wave_3/refined"
-		loc 	logout 	= 	"$data/household_data/nigeria/logs"
+		loc		cnvrt		=	"$data/household_data/nigeria/conversion_files"
+		loc 	export 		= 	"$data/household_data/nigeria/wave_3/refined"
+		loc 	logout 		= 	"$data/household_data/nigeria/logs"
 
 	* open log
-		log 	using		"`logout'/ph_secta1", append
+		*log 	using		"`logout'/ph_secta1", append
 
 * **********************************************************************
 * 1 - determine area harvested
@@ -46,139 +46,103 @@
 
 		describe
 		sort 				hhid plotid cropid
-		isid 				hhid plotid cropid, missok
-
-* rename the important variables to match the variable names in pervious waves: harvested
-		rename 				sa3iq3 	harvested
-		lab var				harvested "Did you harvest this crop on plot during this season?"
-
-* rename the important variables to match the variable names in pervious waves: harvest month
-		rename 				sa3iq4a1 	harv_month
-
-* rename the important variables to match the variable names in pervious waves: harvest year
-		rename 				sa3iq4a2 	harv_yr
-
-* **********************************************************************
-* 2 - conversions
-* **********************************************************************
-
-* area harvested needs to be converted to standard units
-		gen 				crop_area = sa3iq5a
-		rename 				sa3iq5b 	area_unit
-		tab 				area_unit
-
-* dropping observations from households that did not harvest
-
-		tab harvested
+		isid 				hhid plotid cropid
 		
-		drop if harvested == 2
-		
-		*check for missing quantity and value
-		mdesc 			 sa3iq6ii sa3iq6a
-		*** 45 missing value, 22 missing quantity
-		
-		*drop if missing both value and quantity
-		drop if sa3iq6ii==. & sa3iq6a==.
-		*** 18 observations deleted
-		
-		drop if sa3iq6ii==. & sa3iq6a==0
-		*** 3 observations deleted
-		
-		count if sa3iq6a==.
-		*** 27 observations have a weight harvested but no value
-		
-		count if sa3iq6ii==.
-		*** 1 observation has no weight but a value harvested
-
+		tab 			cropcode	
+	*** cassava is most widely cropped 16.41% wont use cassava as main crop
+	*** maize is second most widely cropped 14.38% we use maize as main crop
 	
-* merge in land converstion
-		merge	 	m:1 	zone using 	"`cnvrt'/land-conversion"
-		*** All observations matched
+	tab sa3iq4
+	
+	* drop observations in which it was not harvest season
+	drop if sa3iq4	==	9	|	sa3iq4	==	10	|	sa3iq4	==	11
+	***1450 deleted
+	
+	replace sa3iq6i 	= 	0 	if 	sa3iq6i	==	. 	& 	sa3iq3	==	2
+	***228 changes
+	replace sa3iq6a 	= 	0 	if 	sa3iq6a	==	. 	& 	sa3iq3	==	2
+	***228 changes
+	
+	* drop if missing both harvest quantities and harvest value
+	drop if 	sa3iq6a	==	. 	& 	sa3iq6i	==	.
+	***12 deleted
+	
+	* replace missing value if quantity is not missing
+	replace			sa3iq6a = 0 if sa3iq6a == . & sa3iq6i != .
+	***33 changes
+	
+* replace missing quantity if value is not missing
+	replace			sa3iq6i = 0 if sa3iq6i == . & sa3iq6a != .
+	***no changes
+	
+	* check to see if there are missing observations for quantity and value
+	mdesc 			sa3iq6i sa3iq6a
+	*** no missing values
+	
+	describe
+	sort 			hhid plotid cropid
+	isid 			hhid plotid cropid
 
-		keep 				if 	_merge == 3
-		drop 					_merge
-
-* converting land area
-		gen 				crop_area_hec 	= 	.
-		replace 			crop_area_hec 	= 	crop_area*heapcon	if 		area_unit == 1
-		replace 			crop_area_hec 	= 	crop_area*ridgecon	if 		area_unit == 2
-		replace 			crop_area_hec 	= 	crop_area*standcon	if 		area_unit == 3
-		replace 			crop_area_hec 	= 	crop_area*plotcon	if 		area_unit == 4
-		replace 			crop_area_hec 	= 	crop_area*acrecon	if 		area_unit == 5
-		replace 			crop_area_hec 	= 	crop_area*sqmcon	if 		area_unit == 7
-		replace 			crop_area_hec 	= 	crop_area			if 		area_unit == 6
-		lab var				crop_area_hec 	"land area of crop harvested in hectares"
-		*** all converted appropriately (comparison of tabbed units to changes made)
-
-* this part was not included in previous waves: survey question - percent of plot area harvested
-		rename 				sa3iq5c 	portion_plot
-		lab var				portion_plot 		"% of plot area harvested"
-
-* survey: how much did you harvest during this ag season?
-		gen 					harvestq = sa3iq6i
-		label var 					harvestq "quantity harvested not in standardized units"
-		rename 					sa3iq6ii 	harv_unit
-		
-		rename 					sa3iq6a tf_hrv
-		replace 				tf_hrv=tf_hrv/224.5642303
-		label var					tf_hrv "total value of harvest in 2016 US$"
-		*** value comes from World Bank: world_bank_exchange_rates.xlxs
-		
-		
-* merge in conversion for harvest quantities
-		merge 				m:1 zone cropcode harv_unit using	"`cnvrt'/wave_3/ag_conv_w3_long"
-		*** 1,188 did not match from master , 3,565 did not match from using  
-		*** matching failed because "`cnvrt'/wave_3/ag_conv_w3_long" is incomplete
-   
-   * drop unmerged using
-	drop if				_merge == 2
-	* dropped 3,565
-
-* check into 1,188 unmatched from master
-	tab 				harv_unit if _merge == 1
-	mdesc				harv_unit if _merge == 1
-
-
-		keep 					if _merge == 3
-		drop 					_merge
-
-* converting harvest quantities to kgs
-		gen 					harv_kg 	=	 harvestq*conv
-		*** missing the following
-				* bin/basket (10) of cassava, kolabut, cocoyam
-				* paint rubber(11) of poil palm, cashew
-				* milk cup (12) of ogbono, agbono
-				* congo small of agbono
-				* congo large of cashew nut, cocoa tree, cassava
-				* mudu (30) small of kola nut
-				* bowl medium (71) of cassava
-				* bowl large of cassava
-				* (82) piece large of sugar cane
-				* (90) small heap of plantain and agbono
-				* heap medium (91) of plantain, banana, palm tree
-				* heap medium yam,
-				* small and medium bunch oil palm, small bunch palm tree
-				* medium stalk (111) cassava
-				* sack bag (130) yam, 132 of ogbono, yam, water yam,
-				* mudu large (31) cassava
-				* 132 of banana, small basket 140 of pear, oil palm
-				* 150 basin small of kolanut
-				* cassava pick up (180)
-		*** how many are missing as a percentage of total?
-
-		* generate new variable that measures maize (1080) harvest
-		gen 					cp_hrv 	= 	harv_kg 	if 		cropcode	 == 	1080
-		order 				harvestq 	harv_unit 	conv harv_kg
-		*** maize is the second most widely grown crop 12% of all crops grown are maize
-		*** cassava is most widely cropped but we cannot use cassava since it is continuously cropped
-
-
-* **********************************************************************
-* 3 - value of harvest
+	* **********************************************************************
+* 2 - generate harvested values
 * **********************************************************************
 
-		rename 				sa3iq6a 	tf_hrv
-		*** need to convert to constant 2010 USD
+* create quantity harvested variable
+	gen 			harvestq = sa3iq6i
+	lab	var			harvestq "quantity harvested, not in standardized unit"
+
+* units of harvest
+	rename 			sa3iq6ii harv_unit
+	tab				harv_unit, nolabel
+
+* create value variable
+	gen 			crop_value = sa3iq6a
+	rename 			crop_value vl_hrv
+
+* convert 2015 Naria to constant 2010 USD
+	replace			vl_hrv = vl_hrv/204.9997322
+	lab var			vl_hrv 	"total value of harvest in 2010 USD"
+	*** value comes from World Bank: world_bank_exchange_rates.xlxs
+
+* summarize value of harvest
+	sum				vl_hrv, detail
+	*** median 97.56, mean 253.16, max 28292.72
+
+* replace any +3 s.d. away from median as missing
+	replace			vl_hrv = . if vl_hrv > `r(p50)'+(3*`r(sd)')
+	*** replaced 149 values, max is now 1951.22
+	
+	* impute missing values
+	mi set 			wide 	// declare the data to be wide.
+	mi xtset		, clear 	// clear any xtset that may have had in place previously
+	mi register		imputed vl_hrv // identify kilo_fert as the variable being imputed
+	sort			hhid plotid cropid, stable // sort to ensure reproducability of results
+	mi impute 		pmm vl_hrv i.state i.cropid, add(1) rseed(245780) ///
+						noisily dots force knn(5) bootstrap
+	mi 				unset	
+
+* how did the imputation go?
+	tab				mi_miss
+	tabstat			vl_hrv vl_hrv_1_, by(mi_miss) ///
+						statistics(n mean min max) columns(statistics) ///
+						longstub format(%9.3g) 
+	replace			vl_hrv = vl_hrv_1_
+	lab var			vl_hrv "Value of harvest (2010 USD), imputed"
+	drop			vl_hrv_1_
+	***imputed 149 observations out of 10,494
+	
+* **********************************************************************
+* 3 - generate maize harvest quantities
+* **********************************************************************
+
+* merge harvest conversion file
+	merge 			m:1 cropcode harv_unit using "`cnvrt'/harvconv_wave_2_wave_3.dta"
+	*** matched 1306 but didn't match 11710 (from master 9188 and using 2522)
+	*** okay with mismatch in using - not every crop and unit are used in the master 
+		
+* drop unmerged using
+	drop if			_merge == 2
+	
 
 * **********************************************************************
 * 4 - end matter, clean up to save
