@@ -130,14 +130,19 @@
 	lab var			vl_hrv "Value of harvest (2010 USD), imputed"
 	drop			vl_hrv_1_
 	***imputed 149 observations out of 10,494
+	*** mean from 201 to 203, max = 1951
 	
 * **********************************************************************
 * 3 - generate maize harvest quantities
 * **********************************************************************
 
 * merge harvest conversion file
-	merge 			m:1 cropcode harv_unit using "`cnvrt'/harvconv_wave_2_wave_3.dta"
-	*** matched 1306 but didn't match 11710 (from master 9188 and using 2522)
+	merge 			m:1 cropcode harv_unit using "`cnvrt'/harvconv_wave_3" 
+	
+	*** WILL NEED TO USE DIFFERENT FILE THAN PREVIOUS - alj will update file appropriately but file in folder named here should work 
+	*** 9069 matched
+	*** of those 1425 not matched, of those 92 are maize
+	*** of those 92, 65 did not harvest and 7 who did harvest had a crop failure - so should set those equal to zero 
 	*** okay with mismatch in using - not every crop and unit are used in the master 
 		
 * drop unmerged using
