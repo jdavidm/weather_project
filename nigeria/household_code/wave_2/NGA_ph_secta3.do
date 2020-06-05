@@ -134,7 +134,7 @@
 * **********************************************************************
 
 * merge harvest conversion file
-	merge 			m:1 cropcode harv_unit using "`cnvrt'/harvconv_wave_2_wave_3.dta"
+	merge 			m:1 cropcode harv_unit using "`cnvrt'/harvconv_wave_2.dta"
 	*** matched 9633 but didn't match 2799 (from master 749 and using 2050)
 	*** okay with mismatch in using - not every crop and unit are used in the master 
 		
