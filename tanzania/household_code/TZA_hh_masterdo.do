@@ -62,10 +62,10 @@
 * **********************************************************************
 
 * do each IHS3 household cleaning files
-	do 			"`dofile'/wave_1/NPSY1_merge.do"			//	merges wv 1 hh datasets
-	do 			"`dofile'/wave_2/NPSY2_merge.do"			//	merges wv 2 hh datasets
-	do 			"`dofile'/wave_3/NPSY3_merge.do"			//	merges wv 3 hh datasets
-	do 			"`dofile'/wave_4/NPSY4_merge.do"			//	merges wv 4 hh datasets
+	do 			"`root'/wave_1/NPSY1_merge.do"			//	merges wv 1 hh datasets
+	do 			"`root'/wave_2/NPSY2_merge.do"			//	merges wv 2 hh datasets
+	do 			"`root'/wave_3/NPSY3_merge.do"			//	merges wv 3 hh datasets
+	do 			"`root'/wave_4/NPSY4_merge.do"			//	merges wv 4 hh datasets
 
 
 * **********************************************************************
