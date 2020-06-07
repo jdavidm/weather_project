@@ -73,10 +73,10 @@
 * **********************************************************************
 
 * do each IHS3 household cleaning files
-	do 			"`dofile'/wave_1/npsy1_build.do"			//	merges NPSY1 to weather
-	do 			"`dofile'/wave_2/npsy2_build.do"			//	merges NPSY2 to weather
-	do 			"`dofile'/wave_3/npsy3_build.do"			//	merges NPSY3 to weather
-	do 			"`dofile'/wave_4/npsy4_build.do"			//	merges NPSY4 to weather
+	do 			"`root'/wave_1/npsy1_build.do"			//	merges NPSY1 to weather
+	do 			"`root'/wave_2/npsy2_build.do"			//	merges NPSY2 to weather
+	do 			"`root'/wave_3/npsy3_build.do"			//	merges NPSY3 to weather
+	do 			"`root'/wave_4/npsy4_build.do"			//	merges NPSY4 to weather
 
 
 * **********************************************************************
