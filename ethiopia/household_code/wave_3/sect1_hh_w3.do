@@ -30,9 +30,9 @@
 	log using "`logout'/wv3_HHSEC1", append
 
 	
-**********************************************************************************
-**	1 - ESS 2015/16 (Wave 3) - Household Section 1 
-**********************************************************************************
+************************************************************************
+**	1 - preparing ESS 2015/16 (Wave 3) - Household Section 1 
+************************************************************************
 
 * load data
 	use 		"`root'/sect1_hh_w3.dta", clear
@@ -51,6 +51,11 @@
 	distinct	saq01 saq02, joint
 	*** 84 distinct regions
 
+
+* ***********************************************************************
+* 2 - cleaning and keeping
+* ***********************************************************************
+
 * renaming some variables of interest
 	rename 		household_id hhid
 	rename 		household_id2 hhid2
@@ -58,11 +63,6 @@
 	rename 		saq02 region
 	rename 		saq03 woreda
 	rename		saq07 ea
-
-
-* ***********************************************************************
-* 2 - cleaning and keeping
-* *********************1*************************************************
 
 * restrict to variables of interest
 	keep  		hhid- saq08 region_id

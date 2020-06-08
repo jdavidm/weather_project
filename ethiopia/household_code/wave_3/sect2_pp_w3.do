@@ -26,12 +26,12 @@
 	loc logout = "$data/household_data/ethiopia/logs"
 
 * open log
-	log using "`logout'/wv3_HHSEC1", append
+	log using "`logout'/wv3_PPSEC2", append
 
 	
-**********************************************************************************
-**	1 - ESS 2015/16 (Wave 3) - Post Planting Section 2 
-**********************************************************************************
+************************************************************************
+**	1 - preparing ESS 2015/16 (Wave 3) - Post Planting Section 2 
+************************************************************************
 
 * load data
 	use 		"`root'/sect2_pp_w3.dta", clear
@@ -49,6 +49,12 @@
 	label var 	region_id "Unique region identifier"
 	distinct	saq01 saq02, joint
 	*** 69 distinct regions
+	
+* creating unique parcel identifier
+	rename		parcel_id parcel
+	tostring	parcel, replace
+	generate 	parcel_id = holder_id + " " + ea_id + " " + parcel
+	isid 		parcel_id
 
 * drop observations with a missing parcel_id
 	summarize 	if missing(holder_id,ea_id,parcel_id)
@@ -71,16 +77,19 @@
 * *********************1*************************************************
 
 * restrict to variables of interest
-	keep  		holder_id- pp_s2q01 number_fields region_id
-	order 		holder_id- pp_s2q01 number_fields region_id
+	keep  		holder_id- pp_s2q01 number_fields region_id parcel_id
+	order 		holder_id- pp_s2q01 number_fields region_id parcel_id
 
 * prepare for export
-	isid		holder_id ea_id parcel_id
+	isid		holder_id ea_id parcel
+	isid		parcel_id
 	compress
 	describe
+	*** a number of obs are missing number_fields...
+	
 	summarize 
 	sort 		holder_id ea_id
-	customsave , idvar(hhid) filename(PP_SEC2.dta) path("`export'") ///
+	customsave , idvar(parcel_id) filename(PP_SEC2.dta) path("`export'") ///
 		dofile(PP_SEC2) user($user)
 
 * close the log
