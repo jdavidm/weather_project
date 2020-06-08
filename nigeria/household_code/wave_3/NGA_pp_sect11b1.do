@@ -1,10 +1,11 @@
 * Project: WB Weather
 * Created on: May 2020
 * Created by: alj
+* Edited by: ek
 * Stata v.16
 
 * does
-	* reads in Nigeria, WAVE 3 POST PLANTING, NIGERIA AG SECT11B1
+	* reads in Nigeria, WAVE 3 (2015-2016) POST PLANTING, NIGERIA AG SECT11B1
 	* determines irrigation and plot use
 	* maybe more who knows
 	* outputs clean data file ready for combination with wave 3 hh data
@@ -24,7 +25,7 @@
 * **********************************************************************
 
 * set global user
-	global user "aljosephson"
+	global user "emilk"
 	
 * define paths	
 	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_3/raw"
@@ -35,7 +36,7 @@
 	*log close
 	
 * open log	
-	log using "`logout'/ph_sect11b1", append
+	log using "`logout'/pp_sect11b1", append
 
 * **********************************************************************
 * 1 - determine irrigation and plot use
@@ -46,42 +47,41 @@
 
 describe
 sort hhid plotid
-isid hhid plotid, missok
-
-*alj: drop Alison's information about ownership and manager of plots
+isid hhid plotid
 
 *is this plot irrigated?
-rename s11b1q39 irrigated
+rename s11b1q39 irr_any
+	lab var			irr_any "=1 if any irrigation was used"
 
-*binary for cultivation of plot
-rename s11b1q27 cultivated
-
-*plot use (probably won't need this one because we should be able to see whether the plot was 
-*harvested or not based on other info or previously established binary)
-rename s11b1q28 plot_use
-
+* check to see if values are missing
+	mdesc			irr_any
+	***99 missing
+	
+	
+* convert missing values to "no"
+	replace			irr_any = 2 if irr_any == .
+	
 * **********************************************************************
 * 2 - end matter, clean up to save
 * **********************************************************************
 
-keep hhid /// 
-zone ///
-state ///
-lga ///
-sector ///
-ea ///
-hhid ///
-plotid ///
-irrigated ///
-plot_use ///
+	keep 			hhid zone state lga sector hhid ea plotid ///
+					irr_any
 
-compress
-describe
-summarize 
+* create unique household-plot identifier
+	isid			hhid plotid
+	sort			hhid plotid
+	egen			plot_id = group(hhid plotid)
+	lab var			plot_id "unique plot identifier"
+	
+	compress
+	describe
+	summarize 
+
 
 * save file
-		customsave , idvar(hhid) filename("ph_sect11b1.dta") ///
-			path("`export'/`folder'") dofile(ph_sect11b1) user($user)
+		customsave , idvar(hhid) filename("pp_sect11b1.dta") ///
+			path("`export'/`folder'") dofile(pp_sect11b1) user($user)
 
 * close the log
 	log	close

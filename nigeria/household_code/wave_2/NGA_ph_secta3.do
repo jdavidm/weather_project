@@ -18,6 +18,7 @@
 * TO DO:
 	* complete
 
+	
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
@@ -76,8 +77,9 @@
 	sort 			hhid plotid cropid
 	isid 			hhid plotid cropid
 
+	
 * **********************************************************************
-* 2 - harvested amount and conversions
+* 2 - generate harvested values
 * **********************************************************************
 
 * create quantity harvested variable
@@ -97,6 +99,39 @@
 	replace			vl_hrv = vl_hrv/190.4143545
 	lab var			vl_hrv 	"total value of harvest in 2010 USD"
 	*** value comes from World Bank: world_bank_exchange_rates.xlxs
+
+* summarize value of harvest
+	sum				vl_hrv, detail
+	*** median 226, mean 105, max 13,654
+
+* replace any +3 s.d. away from median as missing
+	replace			vl_hrv = . if vl_hrv > `r(p50)'+(3*`r(sd)')
+	*** replaced 111 values, max is now 1,054
+	
+* impute missing values
+	mi set 			wide 	// declare the data to be wide.
+	mi xtset		, clear 	// clear any xtset that may have had in place previously
+	mi register		imputed vl_hrv // identify kilo_fert as the variable being imputed
+	sort			hhid plotid cropid, stable // sort to ensure reproducability of results
+	mi impute 		pmm vl_hrv i.state i.cropid, add(1) rseed(245780) ///
+						noisily dots force knn(5) bootstrap
+	mi 				unset	
+
+* how did the imputation go?
+	tab				mi_miss
+	tabstat			vl_hrv vl_hrv_1_, by(mi_miss) ///
+						statistics(n mean min max) columns(statistics) ///
+						longstub format(%9.3g) 
+	replace			vl_hrv = vl_hrv_1_
+	lab var			vl_hrv "Value of harvest (2010 USD), imputed"
+	drop			vl_hrv_1_
+	*** imputed 172 values out of 10,382 total observations
+
+
+	
+* **********************************************************************
+* 3 - generate maize harvest quantities
+* **********************************************************************
 
 * merge harvest conversion file
 	merge 			m:1 cropcode harv_unit using "`cnvrt'/harvconv_wave_2_wave_3.dta"
@@ -135,7 +170,10 @@
 	gen 			harv_kg = harvestq*conversion
 	mdesc 			harv_kg
 	*** no missing
-						
+
+* replace other types of maize to all have the same crop code
+	replace			cropcode = 1080 if cropcode > 1079 & cropcode < 1084
+	
 * check to see if outliers can be dealt with
 	by harv_unit	, sort: sum harv_kg if 	cropcode == 1080
 	*** grams seem to be wrong (mean of 61066)
@@ -153,41 +191,39 @@
 	sort 			cropcode harv_unit harv_kg
 	replace			harv_kg = 3000 if sa3q6a1 == 130 & cropcode == 1080
 	*** 1 value changed, the other high values may be plausible
-/*
-* merge in conversion file
-	merge 			m:1 	zone using 	"`cnvrt'/land-conversion.dta"
-		*** All observations matched.
 
-	keep 			if 		_merge == 3
-	drop 			_merge
-
-	rename			sa3q5a plot_size_SR
-	rename 			sa3q5b plot_unit
-
-* convert to hectares
-	gen 			plot_size_hec = .
-	replace 		plot_size_hec = plot_size_SR*ridgecon	if plot_unit == 2
-	*heaps
-	replace 		plot_size_hec = plot_size_SR*heapcon	if plot_unit == 1
-	*stands
-	replace 		plot_size_hec = plot_size_SR*standcon	if plot_unit == 3
-	*plots
-	replace 		plot_size_hec = plot_size_SR*plotcon	if plot_unit == 4
-	*acre
-	replace 		plot_size_hec = plot_size_SR*acrecon	if plot_unit == 5
-	*sqm
-	replace 		plot_size_hec = plot_size_SR*sqmcon		if plot_unit == 7
-	*hec
-	replace 		plot_size_hec = plot_size_SR			if plot_unit == 6
-
-* generate a yield measures
-	gen				yield = harv_kg / plot_size_hec
-	*/
 * generate new variable that measures maize (1080) harvest
-	gen 			mz_hrv = harv_kg 	if 	cropcode > 1079 & cropcode < 1084
-	gen				mz_damaged = 1		if  cropcode > 1079 & cropcode < 1084 ///
+	gen 			mz_hrv = harv_kg 	if 	cropcode == 1080
+	gen				mz_damaged = 1		if  cropcode == 1080 ///
 						& mz_hrv == 0
+						
+* summarize value of harvest
+	sum				mz_hrv, detail
+	*** median 400, mean 886, max 40,000
+
+* replace any +3 s.d. away from median as missing
+	replace			mz_hrv = . if mz_hrv > `r(p50)' + (3*`r(sd)')
+	*** replaced 17 values, max is now 6,600
 	
+* impute missing values
+	mi set 			wide 	// declare the data to be wide.
+	mi xtset		, clear 	// clear any xtset that may have had in place previously
+	mi register		imputed mz_hrv // identify kilo_fert as the variable being imputed
+	sort			hhid plotid cropid, stable // sort to ensure reproducability of results
+	mi impute 		pmm mz_hrv i.state if cropcode == 1080, add(1) rseed(245780) ///
+						noisily dots force knn(5) bootstrap
+	mi 				unset	
+
+* how did the imputation go?
+	tab				mi_miss1 if cropcode == 1080
+	tabstat			mz_hrv mz_hrv_1_ if cropcode == 1080, by(mi_miss) ///
+						statistics(n mean min max) columns(statistics) ///
+						longstub format(%9.3g) 
+	replace			mz_hrv = mz_hrv_1_  if cropcode == 1080
+	lab var			mz_hrv "Quantity of maize harvested (kg)"
+	drop			mz_hrv_1_
+	*** imputed 17 values out of 1,422 total observations									
+
 * collapse crop level data to plot level
 	collapse (sum) 	mz_hrv vl_hrv mz_damaged, by(zone state lga sector ea hhid plotid)
 	lab var			vl_hrv "Value of harvest (2010 USD)"
@@ -196,20 +232,13 @@
 	
 * replace non-maize harvest values as missing
 	replace			mz_hrv = . if mz_damaged == 0 & mz_hrv == 0
-	drop 			mz_damaged
-
-* relabel variables
-	lab var			vl_hrv 	"total value of harvest (2010 USD)"
-	lab var			mz_hrv	"quantity of maize harvested (kg)"
+	drop 			mz_damaged	
 	
-
+	
 * **********************************************************************
-* 3 - end matter, clean up to save
+* 4 - end matter, clean up to save
 * **********************************************************************
 
-* winsorize data
-	winsor2			mz_hrv vl_hrv, replace
-	
 * create unique household-plot identifier
 	isid			hhid plotid
 	sort			hhid plotid

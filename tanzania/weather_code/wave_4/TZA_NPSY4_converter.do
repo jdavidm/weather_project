@@ -23,16 +23,13 @@
 * 0 - setup
 * **********************************************************************
 
-* set user
-	*global user "jdmichler" // global user set in TZA_NPS_masterdo
-
 * define paths
-	loc root = "G:/My Drive/weather_project/weather_data/tanzania/wave_4/raw"
-	loc export = "G:/My Drive/weather_project/weather_data/tanzania/wave_4/daily"
-	loc logout = "G:/My Drive/weather_project/weather_data/tanzania/logs"
+	loc		root	=	"$data/weather_data/tanzania/wave_4/raw"
+	loc		export	=	"$data/weather_data/tanzania/wave_4/daily"
+	loc		logout	=	"$data/weather_data/tanzania/logs"
 
 * open log
-	log using "`logout'/tza_npsy4_converter", replace
+	log		using	"`logout'/tza_npsy4_converter", replace
 
 
 * **********************************************************************
@@ -55,7 +52,8 @@ foreach folder of loc folderList {
 	foreach file in `fileList' {
 		
 		* import the .csv files - this takes time
-		import delimited "`root'/`folder'/`file'", varnames (1) clear
+		import delimited "`root'/`folder'/`file'", varnames(1)   ///
+			encoding(Big5) stringcols(1) clear
 
 		* drop early and late observations
 		drop 	rf_19830101-rf_19831031 ///
@@ -160,7 +158,8 @@ foreach folder of local folderList {
 	foreach file in `fileList' {
 		
 		* import the .csv files - this takes time	
-		import delimited "`root'/`folder'/`file'", varnames(1) encoding(Big5) clear
+		import delimited "`root'/`folder'/`file'", varnames(1)   ///
+			encoding(Big5) stringcols(1) clear
 
 		* drop early and late observations
 		drop 	tmp_19830101-tmp_19831031 ///
