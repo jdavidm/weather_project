@@ -39,7 +39,7 @@
 * **********************************************************************
 
 * import the first relevant data file
-		use "`root'/secta2_harvestw1", clear 	
+	use "`root'/secta2_harvestw1", clear 	
 
 	describe
 	sort hhid plotid
