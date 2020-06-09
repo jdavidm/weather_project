@@ -1,19 +1,20 @@
 * Project: WB Weather
 * Created on: May 2020
 * Created by: alj
-* Edited by: erk
+* Edited by: ek
 * Stata v.16
 
 * does
 	* reads in Nigeria, WAVE 1 (2010-2011) POST PLANTING, NIGERIA SECT 11B AG
-	* determines if plot is irrigated
-	* outputs clean data file ready for combination with wave 1 hh data
+	* determines irrigation 
+	* outputs clean data file ready for combination with wave 1 plot data
 
 * assumes
 	* customsave.ado
+	* mdsec.ado
 	
 * TO DO:
-	* complete 
+	* complete
 
 * **********************************************************************
 * 0 - setup
@@ -21,12 +22,12 @@
 
 * set global user
 	global user "emilk"
-	
-* define paths	
-	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_1/raw"
-	loc export = "G:/My Drive/weather_project/household_data/nigeria/wave_1/refined"
-	loc logout = "G:/My Drive/weather_project/household_data/nigeria/logs"
 
+* define paths
+	loc		root	=	"$data/household_data/nigeria/wave_1/raw"
+	loc		export	=	"$data/household_data/nigeria/wave_1/refined"
+	loc		logout	=	"$data/household_data/nigeria/logs"
+	
 * close log (in case still open)
 	*log close
 	
@@ -40,9 +41,9 @@
 * import the first relevant data file
 		use "`root'/sect11b_plantingw1", clear 	
 
-describe
-sort hhid plotid
-isid hhid plotid
+	describe
+	sort hhid plotid
+	isid hhid plotid
 
 * is this plot irrigated?
 	rename			s11bq24 irr_any
@@ -62,8 +63,8 @@ isid hhid plotid
 	keep 			hhid zone state lga sector hhid ea plotid ///
 					irr_any
 
-
 * create unique household-plot identifier
+	isid			hhid plotid
 	sort			hhid plotid
 	egen			plot_id = group(hhid plotid)
 	lab var			plot_id "unique plot identifier"
@@ -71,6 +72,7 @@ isid hhid plotid
 	compress
 	describe
 	summarize 
+
 
 * save file
 		customsave , idvar(hhid) filename("pp_sect11b.dta") ///
