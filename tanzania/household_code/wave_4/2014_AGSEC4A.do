@@ -192,20 +192,24 @@
 * keep what we want, get rid of what we don't
 	keep 				hhid plotnum plot_id crop_code crop_id clusterid ///
 							strataid y4_weight region district ward village ///
-							any_* pure_stand percent_field ///
-							mz_hrv hvst_value mz_damaged
+							any_* pure_stand percent_field mz_hrv hvst_value ///
+							mz_damaged
 
 	order				hhid plotnum plot_id crop_code crop_id clusterid ///
 							strataid y4_weight region district ward village
 							
 * collapsing to resolve duplicate observations
-	collapse (sum)		mz_hrv hvst_value percent_field, by(hhid plotnum plot_id ///
-							crop_code crop_id clusterid strataid y4_weight ///
-							region district ward village any_* pure_stand)
+	collapse (sum)		mz_hrv hvst_value percent_field mz_damaged, by(hhid ///
+							plotnum plot_id crop_code crop_id clusterid ///
+							strataid y4_weight region district ward village ///
+							any_* pure_stand)
+	** two fewer obs, should be the dupes from line 63
+	
+	replace				mz_damaged = . if mz_damaged == 0
 
 	
 * prepare for export
-*	isid			hhid plotnum crop_code // not unique, same issue from above
+	isid			hhid plotnum crop_code // not unique, same issue from above
 	compress
 	describe
 	summarize 

@@ -49,9 +49,11 @@
 	gen				percent_field = 0.25 if s4aq4 == 1
 	lab var			percent_field "percent of field crop was on"
 
+	replace			percent_field = 0.25 if s4aq4==.25
 	replace			percent_field = 0.50 if s4aq4==2
 	replace			percent_field = 0.75 if s4aq4==3
 	replace			percent_field = 1 if pure_stand==1
+	replace			percent_field = 1 if s4aq6 == 2 & percent_field == .
 	duplicates		report hhid plotnum crop_code
 	*** there are 0 duplicates
 
@@ -102,6 +104,18 @@
 	distinct		uq_dist
 	*** 125 distinct districts
 
+* checking on percent_field
+	 tab			percent_field, missing
+	 *** missing two obs, I can't determine why...
+	 
+	 sort percent_field hhid plotnum
+	*** they both come from the same plot
+	*** the other two obs on that plot are both equal to 0.25
+	*** all for obs together should equal 1
+	
+	replace		percent_field = .25 if percent_field == .
+	*** will replace these two obs equl to .25
+	*** they may not both actually equal .25, but they should sum to .5
 	
 * ***********************************************************************
 * 2 - generate harvest variables
@@ -165,7 +179,7 @@
 	drop			hvst_value_1_
 	*** imputed 78 values out of 5,190 total observations	
 	
-* generate new varaible for measuring mize harvest
+* generate new varaible for measuring maize harvest
 	gen					mz_hrv = wgt_hvsted if crop_code == 11
 	gen					mz_damaged = 1 if crop_code == 11 & mz_hrv == 0
 	tab					mz_damaged, missing

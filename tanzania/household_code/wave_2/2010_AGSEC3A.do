@@ -96,23 +96,11 @@
 	*** like in wv4, the high values seem unlikely to me 
 
 * replace any +3 s.d. away from median as missing
-	replace			kilo_fert = . if kilo_fert > `r(p50)'+(3*`r(sd)')
-	*** replaced top 6 values, max is now 1,100
-	*** i think exteremely large obs are inflating the s.d.
-	
-* summarize fertilizer
+	replace			kilo_fert = . if kilo_fert > 5000
 	sum				kilo_fert, detail
-	*** median 0, mean 9.73, max 1,100, s.d. 45
-	*** seems more reasonable
-
-* do we want to run another drop? I'm unsure..
-* if so there's code (and results) below
-/*
-* replace any +3 s.d. away from median as missing
 	replace			kilo_fert = . if kilo_fert > `r(p50)'+(3*`r(sd)')
-	*** replaced 92 more values, max is now 135
-	*** this seems more in line w/ wv3 but max is almost maybe too low?
-	*/
+	sum				kilo_fert, detail
+	*** replaced 39 values, max is now 200
 	
 * impute missing values
 	mi set 			wide 	// declare the data to be wide.

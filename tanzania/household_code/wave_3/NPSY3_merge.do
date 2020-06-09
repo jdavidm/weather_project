@@ -89,7 +89,6 @@
 	replace			herb_any = 0 if herb_any == 2
 	replace			irr_any  = 0 if irr_any  == 2
 	
-	
 * generate mz_variables
 	gen				mz_lnd = plotsize	if mz_hrv != .
 	gen				mz_lab = labordays	if mz_hrv != .

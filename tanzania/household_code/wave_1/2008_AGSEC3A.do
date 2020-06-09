@@ -88,21 +88,11 @@
 	*** these numbers are way crazy compared to other waves
 
 * replace any +3 s.d. away from median as missing
-	replace			kilo_fert = . if kilo_fert > `r(p50)'+(3*`r(sd)')
-	*** replaced 2 values, max is now 1,200
-	*** i think exteremely large obs are inflating the s.d.
-	
-* summarize fertilizer
+	replace			kilo_fert = . if kilo_fert > 5000
 	sum				kilo_fert, detail
-	*** median 50, mean 72.36, max 1,200, s.d. 126
-	*** seems more reasonable
-
-* do we want to run another drop? I think so...
-
-* replace any +3 s.d. away from median as missing
 	replace			kilo_fert = . if kilo_fert > `r(p50)'+(3*`r(sd)')
-	*** 9 more drops made, max is now 400
-	*** this seems more in line w/ wv3
+	sum				kilo_fert, detail
+	*** 11 changes made, max is now 400
 	
 * impute missing values
 	mi set 			wide 	// declare the data to be wide.
