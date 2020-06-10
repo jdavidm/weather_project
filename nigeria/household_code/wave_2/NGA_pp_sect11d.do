@@ -83,7 +83,7 @@
 	*** the quantity is giving in kgs so no conversion is needed
 
 * generate variable for total fertilizer use
-	gen				fert_use = leftover_fert_kg + purchased_fert_kg1 + purchased_fert_kg2
+	egen			fert_use = rsum (leftover_fert_kg purchased_fert_kg1 purchased_fert_kg2) 
 	lab var			fert_use "fertilizer use (kg)"
 
 * summarize fertilizer

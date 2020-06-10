@@ -35,9 +35,6 @@
 
 * import the .dta houeshold file
 	use 		"`rooth'/hhfinal_npsy3.dta", clear
-
-* rename hhid to match household id in weather data
-	rename		hhid y3_hhid
 	
 * generate variable to record data source
 	gen 		data = "npsy3"
@@ -211,13 +208,10 @@
 	}						
 }
 
-
-* revert to old household id name
-	rename		y3_hhid hhid
 	
 * save file
 	qui: compress
-	customsave 	, idvar(hhid) filename("npsy3_merged.dta") ///
+	customsave 	, idvar(y3_hhid) filename("npsy3_merged.dta") ///
 		path("`export'") dofile(npsy3_build) user($user)
 		
 * close the log

@@ -37,7 +37,7 @@
 	rename		y2_hhid hhid
 
 * keep variables of interest
-	keep 		hhid region district ward ea
+	keep 		hhid region district ward ea clusterid strataid y2_weight
 	order		hhid region district ward ea
 
 * prepare for export

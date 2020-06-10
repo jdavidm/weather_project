@@ -35,9 +35,6 @@
 
 * import the .dta houeshold file
 	use 		"`rooth'/hhfinal_npsy2.dta", clear
-
-* rename hhid to match household id in weather data
-	rename		hhid y2_hhid
 	
 * generate variable to record data source
 	gen 		data = "npsy2"
@@ -211,9 +208,6 @@
 	}						
 }
 
-
-* revert to old household id name
-	rename		y2_hhid hhid
 	
 * save file
 	qui: compress
