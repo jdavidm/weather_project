@@ -222,23 +222,44 @@
 	lab var			mz_hrv "Quantity of maize harvested (kg)"
 	drop			mz_hrv_1_
 	*** imputed 20 values out of 1,338 total observations									
-
-* collapse crop level data to plot level
-	collapse (sum) 	mz_hrv vl_hrv mz_damaged, by(zone state lga sector ea hhid plotid)
-	lab var			vl_hrv "Value of harvest (2010 USD)"
-	lab var			mz_hrv "Quantity of maize harvested (kg)"
-	*** sum up cp_hrv and tf_hrv to the plot level, keeping spatial variables
 	
 * replace non-maize harvest values as missing
 	replace			mz_hrv = . if mz_damaged == 0 & mz_hrv == 0
-	drop 			mz_damaged	
 
 * **********************************************************************
 * 4 - end matter, clean up to save
 * **********************************************************************
 
+* keep what we want, get rid of what we don't
+	keep 				zone state lga sector ea hhid plotid cropid harv_kg ///
+					cropname cropcode cultivated mz_hrv vl_hrv mz_damaged
+			
+* check for duplicates
+	duplicates		report hhid plotid cropid
+	*** there are 3 duplicates
+	sort			hhid plotid cropid
+	quietly by hhid plotid cropid:  gen dup = cond(_N==1,0,_n)
+	drop if dup>1
+	*** 2 observations deleted
+
+* create unique household-plot-crop identifier
+	count if cropid==.
+	***2 missing
+	count if hhid==130019
+	***1 observation meaning there is only one plot with one crop belonging to this hh
+	count if hhid==280064
+	***1 observation meaning there is only one plot with one crop belonging to this hh
+	***we will replace the missing cropid's with 1
+	
+	replace cropid=1 if cropid==.
+	*** 2 changes made
+	
+	isid			hhid plotid cropid
+	sort			hhid plotid cropid
+	egen			cropplot_id = group(hhid plotid cropid)
+	lab var			cropplot_id "unique crop-plot identifier"
+
 * create unique household-plot identifier
-	isid			hhid plotid
 	sort			hhid plotid
 	egen			plot_id = group(hhid plotid)
 	lab var			plot_id "unique plot identifier"
