@@ -36,20 +36,23 @@
 * start by loading harvest quantity and value, since this is our limiting factor
 	use 			"`root'/AG_SEC4A", clear
 
-	isid			plot_id
+	isid			crop_id
 
 * merge in plot size data
-	merge 			1:1 plot_id using "`root'/AG_SEC2A", generate(_2A)
-	*** 0 out of 3,705 missing in master 
+	merge 			m:1 plot_id using "`root'/AG_SEC2A", generate(_2A)
+	*** 0 out of 5,679 missing in master 
 	*** all unmerged obs came from using data 
 	*** meaning we lacked production data
 	*** per Malawi (rs_plot) we drop all unmerged observations
 	
 	drop			if _2A != 3
 	
+* generate area planted
+	replace			plotsize = percent_field * plotsize if percent_field != .
+	
 * merging in production inputs data
-	merge			1:1 plot_id using "`root'/AG_SEC3A", generate(_3A)
-	*** 0 out of 3,705 missing in master 
+	merge			m:1 plot_id using "`root'/AG_SEC3A", generate(_3A)
+	*** 0 out of 5,679 missing in master 
 	*** all unmerged obs came from using data 
 	*** meaning we lacked production data
 	*** stragnely, the same # of unmatched obs from using in 3A as in 2A
@@ -70,9 +73,10 @@
 	drop			_2A _3A
 	
 * **********************************************************************
-* 1b - adjusting variable names (for imputation)
+* 1b - create total farm and maize variables 
 * **********************************************************************
 
+* rename some variables
 	rename 			hvst_value vl_hrv
 	rename			labor_days	labordays
 	rename			kilo_fert fert
@@ -80,9 +84,42 @@
 	rename 			herbicide_any herb_any
 	rename			irrigated irr_any
 	
+* recode binary variables
+	replace			fert_any = 0 if fert_any == 2
+	replace			pest_any = 0 if pest_any == 2
+	replace			herb_any = 0 if herb_any == 2
+	replace			irr_any  = 0 if irr_any  == 2
+	
+* generate mz_variables
+	gen				mz_lnd = plotsize	if mz_hrv != .
+	gen				mz_lab = labordays	if mz_hrv != .
+	gen				mz_frt = fert		if mz_hrv != .
+	gen				mz_pst = pest_any	if mz_hrv != .
+	gen				mz_hrb = herb_any	if mz_hrv != .
+	gen				mz_irr = irr_any	if mz_hrv != .
+
+* collapse to plot level
+	collapse (sum)	vl_hrv plotsize labordays fert ///
+						mz_hrv mz_lnd mz_lab mz_frt ///
+			 (max)	pest_any herb_any irr_any  ///
+						mz_pst mz_hrb mz_irr mz_damaged, ///
+						by(hhid plotnum plot_id clusterid strataid ///
+						y2_weight region district ward village)
+						
+* replace non-maize harvest values as missing
+	tab				mz_damaged, missing
+	loc	mz			mz_lnd mz_lab mz_frt mz_pst mz_hrb mz_irr
+	foreach v of varlist `mz'{
+	    replace		`v' = . if mz_damaged == . & mz_hrv == 0	
+	}	
+	replace			mz_hrv = . if mz_damaged == . & mz_hrv == 0		
+	drop 			mz_damaged
+	*** 1,422 changes made
+	
 * **********************************************************************
 * 2 - impute: yield, value per hectare, labor (both), fertilizer use 
 * **********************************************************************
+
 
 * ******************************************************************************
 * FOLLOWING WB: we will construct production variables on a per hectare basis,
@@ -96,46 +133,7 @@
 
 
 * **********************************************************************
-* 2a - impute: yield
-* **********************************************************************
-
-* construct maize yield
-	gen				mz_yld = mz_hrv / plotsize, after(mz_hrv)
-	assert			!missing(mz_yld) if !missing(mz_hrv)
-	lab var			mz_yld	"maize yield (kg/ha)"
-
-*maybe imputing zero values	
-	
-* impute yield outliers
-	sum				mz_yld
-	bysort region : egen stddev = sd(mz_yld) if !inlist(mz_yld,.,0)
-	recode 			stddev (.=0)
-	bysort region : egen median = median(mz_yld) if !inlist(mz_yld,.,0)
-	bysort region : egen replacement = median(mz_yld) if /// 
-						(mz_yld <= median + (3 * stddev)) & ///
-						(mz_yld >= median - (3 * stddev)) & !inlist(mz_yld,.,0)
-	bysort region : egen maxrep = max(replacement)
-	bysort region : egen minrep = min(replacement)
-	assert 			minrep==maxrep
-	generate 		mz_yldimp = mz_yld, after(mz_yld)
-	replace  		mz_yldimp = maxrep if !((mz_yld < median + (3 * stddev)) ///
-					& (mz_yld > median - (3 * stddev))) ///
-					& !inlist(mz_yld,.,0) & !mi(maxrep)
-	tabstat 		mz_yld mz_yldimp, ///
-					f(%9.0f) s(n me min p1 p50 p95 p99 max) c(s) longstub
-	*** reduces mean from 848 to 695
-					
-	drop 			stddev median replacement maxrep minrep
-	lab var 		mz_yldimp "maize yield (kg/ha), imputed"
-
-* inferring imputed harvest quantity from imputed yield value 
-	generate 		mz_hrvimp = mz_yldimp * plotsize, after(mz_hrv)
-	lab var 		mz_hrvimp "maize harvest quantity (kg), imputed"
-	lab var 		mz_hrv "maize harvest quantity (kg)"
-
-
-* **********************************************************************
-* 2b - impute: value
+* 2a - impute: total value
 * **********************************************************************
 	
 * construct production value per hectare
@@ -160,7 +158,7 @@
 						& !inlist(vl_yld,.,0) & !mi(maxrep)
 	tabstat			vl_yld vl_yldimp, ///
 						f(%9.0f) s(n me min p1 p50 p95 p99 max) c(s) longstub
-	*** reduces mean from 306 to 230
+	*** reduces mean from 355 to 261
 						
 	drop			stddev median replacement maxrep minrep
 	lab var			vl_yldimp	"value of yield (2010USD/ha), imputed"
@@ -172,7 +170,7 @@
 	
 
 * **********************************************************************
-* 2c - impute: labor
+* 2b - impute: labor
 * **********************************************************************
 
 * construct labor days per hectare
@@ -197,7 +195,7 @@
 						& !inlist(labordays_ha,.,0) & !mi(maxrep)
 	tabstat 		labordays_ha labordays_haimp, ///
 						f(%9.0f) s(n me min p1 p50 p95 p99 max) c(s) longstub
-	*** reduces mean from 267 to 203
+	*** reduces mean from 438 to 335
 	
 	drop			stddev median replacement maxrep minrep
 	lab var			labordays_haimp	"farm labor use (days/ha), imputed"
@@ -208,7 +206,7 @@
 
 
 * **********************************************************************
-* 2d - impute: fertilizer
+* 2c - impute: fertilizer
 * **********************************************************************
 
 * construct fertilizer use per hectare
@@ -230,11 +228,10 @@
 	gen				fert_haimp = fert_ha, after(fert_ha)
 	replace 		fert_haimp = maxrep if !((fert_ha < median + (3 * stddev)) ///
 						& (fert_ha > median - (3 * stddev))) ///
-						& fert_ha != 0 & !mi(maxrep)
-	*** note that this code is slighlty different we don't use !inlist
+						& !inlist(fert_ha,.,0) & !mi(maxrep)
 	tabstat 		fert_ha fert_haimp, ///
 						f(%9.0f) s(n me min p1 p50 p95 p99 max) c(s) longstub
-	*** reduces mean from 163 to 26
+	*** reduces mean from 46 to 37
 	
 	drop			stddev median replacement maxrep minrep
 	lab var			fert_haimp	"fertilizer use (kg/ha), imputed"
@@ -244,17 +241,129 @@
 	lab var			fertimp "fertilizer (kg), imputed"
 	lab var			fert "fertilizer (kg)"
 
-	replace			fert_any = 1 if fertimp > 0
-	*** one change made
+
+* **********************************************************************
+* 3 - impute: maize yield, labor, fertilizer use 
+* **********************************************************************
+
+
+* **********************************************************************
+* 3a - impute: maize yield
+* **********************************************************************
+
+* construct maize yield
+	gen				mz_yld = mz_hrv / mz_lnd, after(mz_hrv)
+	lab var			mz_yld	"maize yield (kg/ha)"
+
+*maybe imputing zero values	
 	
-	replace			fert_any = 2 if fertimp == 0
+* impute yield outliers
+	sum				mz_yld
+	bysort region : egen stddev = sd(mz_yld) if !inlist(mz_yld,.,0)
+	recode 			stddev (.=0)
+	bysort region : egen median = median(mz_yld) if !inlist(mz_yld,.,0)
+	bysort region : egen replacement = median(mz_yld) if /// 
+						(mz_yld <= median + (3 * stddev)) & ///
+						(mz_yld >= median - (3 * stddev)) & !inlist(mz_yld,.,0)
+	bysort region : egen maxrep = max(replacement)
+	bysort region : egen minrep = min(replacement)
+	assert 			minrep==maxrep
+	generate 		mz_yldimp = mz_yld, after(mz_yld)
+	replace  		mz_yldimp = maxrep if !((mz_yld < median + (3 * stddev)) ///
+					& (mz_yld > median - (3 * stddev))) ///
+					& !inlist(mz_yld,.,0) & !mi(maxrep)
+	tabstat 		mz_yld mz_yldimp, ///
+					f(%9.0f) s(n me min p1 p50 p95 p99 max) c(s) longstub
+	*** reduces mean from 1367 to 1100
+					
+	drop 			stddev median replacement maxrep minrep
+	lab var 		mz_yldimp "maize yield (kg/ha), imputed"
+
+* inferring imputed harvest quantity from imputed yield value 
+	generate 		mz_hrvimp = mz_yldimp * mz_lnd, after(mz_hrv)
+	lab var 		mz_hrvimp "maize harvest quantity (kg), imputed"
+	lab var 		mz_hrv "maize harvest quantity (kg)"
 
 
 * **********************************************************************
-* 3 - collapse to household level
+* 3b - impute: maize labor
+* **********************************************************************
+
+* construct labor days per hectare
+	gen				mz_lab_ha = mz_lab / mz_lnd, after(labordays)
+	lab var			mz_lab_ha "maize labor use (days/ha)"
+	sum				mz_lab mz_lab_ha
+
+* impute labor outliers, right side only 
+	sum				mz_lab_ha, detail
+	bysort region :	egen stddev = sd(mz_lab_ha) if !inlist(mz_lab_ha,.,0)
+	recode 			stddev (.=0)
+	bysort region :	egen median = median(mz_lab_ha) if !inlist(mz_lab_ha,.,0)
+	bysort region :	egen replacement = median(mz_lab_ha) if ///
+						(mz_lab_ha <= median + (3 * stddev)) & ///
+						(mz_lab_ha >= median - (3 * stddev)) & !inlist(mz_lab_ha,.,0)
+	bysort region :	egen maxrep = max(replacement)
+	bysort region :	egen minrep = min(replacement)
+	assert			minrep==maxrep
+	gen				mz_lab_haimp = mz_lab_ha, after(mz_lab_ha)
+	replace 		mz_lab_haimp = maxrep if !((mz_lab_ha < median + (3 * stddev)) ///
+						& (mz_lab_ha > median - (3 * stddev))) ///
+						& !inlist(mz_lab_ha,.,0) & !mi(maxrep)
+	tabstat 		mz_lab_ha mz_lab_haimp, ///
+						f(%9.0f) s(n me min p1 p50 p95 p99 max) c(s) longstub
+	*** reduces mean from 350 to 273
+	
+	drop			stddev median replacement maxrep minrep
+	lab var			mz_lab_haimp	"maize labor use (days/ha), imputed"
+
+* make labor days based on imputed labor days per hectare
+	gen				mz_labimp = mz_lab_haimp * mz_lnd, after(mz_lab)
+	lab var			mz_labimp "maize labor (days), imputed"
+
+
+* **********************************************************************
+* 3c - impute: maize fertilizer
+* **********************************************************************
+
+* construct fertilizer use per hectare
+	gen				mz_frt_ha = mz_frt / mz_lnd, after(mz_frt)
+	lab var			mz_frt_ha "fertilizer use (kg/ha)"
+	sum				mz_frt mz_frt_ha
+
+* impute labor outliers, right side only 
+	sum				mz_frt_ha, detail
+	bysort region :	egen stddev = sd(mz_frt_ha) if !inlist(mz_frt_ha,.,0)
+	recode 			stddev (.=0)
+	bysort region :	egen median = median(mz_frt_ha) if !inlist(mz_frt_ha,.,0)
+	bysort region :	egen replacement = median(mz_frt_ha) if ///
+						(mz_frt_ha <= median + (3 * stddev)) & ///
+						(mz_frt_ha >= median - (3 * stddev)) & !inlist(mz_frt_ha,.,0)
+	bysort region :	egen maxrep = max(replacement)
+	bysort region :	egen minrep = min(replacement)
+	assert			minrep==maxrep
+	gen				mz_frt_haimp = mz_frt_ha, after(mz_frt_ha)
+	replace 		mz_frt_haimp = maxrep if !((mz_frt_ha < median + (3 * stddev)) ///
+						& (mz_frt_ha > median - (3 * stddev))) ///
+						& !inlist(mz_frt_ha,.,0) & !mi(maxrep)
+	tabstat 		mz_frt_ha mz_frt_haimp, ///
+						f(%9.0f) s(n me min p1 p50 p95 p99 max) c(s) longstub
+	*** reduces mean from 51 to 39
+	
+	drop			stddev median replacement maxrep minrep
+	lab var			mz_frt_haimp	"fertilizer use (kg/ha), imputed"
+
+* make labor days based on imputed labor days per hectare
+	gen				mz_frtimp = mz_frt_haimp * mz_lnd, after(mz_frt)
+	lab var			mz_frtimp "fertilizer (kg), imputed"
+	lab var			mz_frt "fertilizer (kg)"
+
+
+
+* **********************************************************************
+* 4 - collapse to household level
 * **********************************************************************
 * **********************************************************************
-* 3a - generate total farm variables
+* 4a - generate total farm variables
 * **********************************************************************
 
 * generate plot area
@@ -397,17 +506,20 @@
 	sum				tf_* cp_*
 	
 * **********************************************************************
-* 4 - end matter, clean up to save
+* 5 - end matter, clean up to save
 * **********************************************************************
 
 * verify unique household id
 	isid			hhid
 	
+* revery hhid to orignal varname
+	rename			hhid y2_hhid
+	
 * generate year identifier
 	gen				year = 2010
 	lab var			year "Year"
 		
-	order 			region district ward village hhid year tf_hrv tf_lnd tf_yld ///
+	order 			region district ward village y2_hhid year tf_hrv tf_lnd tf_yld ///
 						tf_lab tf_frt tf_pst tf_hrb tf_irr cp_hrv cp_lnd ///
 						cp_yld cp_lab cp_frt cp_pst cp_hrb cp_irr
 	compress
@@ -415,7 +527,7 @@
 	summarize 
 	
 * saving production dataset
-	customsave , idvar(hhid) filename(hhfinal_npsy2.dta) path("`export'") ///
+	customsave , idvar(y2_hhid) filename(hhfinal_npsy2.dta) path("`export'") ///
 			dofile(NPSY2_merge) user($user) 
 
 * close the log
