@@ -5,7 +5,8 @@
 
 * does
 	* cleans Ethiopia household variables, wave 3 PP sec3
-	* looks like a plot roster
+	* looks like a field roster
+	* hierarchy: holder > parcel > field > crop
 	* seems to correspond to Malawi ag-modC and ag-modJ
 	
 * assumes
@@ -30,11 +31,12 @@
 	log using "`logout'/wv3_PPSEC3", append
 
 
-************************************************************************
-**	1 - preparing ESS 2015/16 (Wave 3) - Post Planting Section 3 
-************************************************************************
+* **********************************************************************
+* 1 - preparing ESS 2015/16 (Wave 3) - Post Planting Section 3 
+* **********************************************************************
 
 * build conversion id into conversion dataset
+	clear
 	use 		"`root'/ET_local_area_unit_conversion.dta"
 	gen		 	conv_id = string(region) + " " + string(zone) + " " + string(woreda) + " " + string(local_unit)
 	save 		"`root'/ET_local_area_unit_conversion_use.dta", replace
@@ -51,11 +53,11 @@
 	sort 		holder_id ea_id parcel_id field_id
 	isid 		holder_id parcel_id field_id, missok
 
-* creating unique region identifier
-	egen 		region_id = group( saq01 saq02)
-	lab var 	region_id "Unique region identifier"
+* creating district identifier
+	egen 		district_id = group( saq01 saq02)
+	lab var 	district_id "Unique district identifier"
 	distinct	saq01 saq02, joint
-	*** 69 distinct regions
+	*** 69 distinct district
 	*** same as pp sect2, good
 
 * field status check
@@ -75,7 +77,7 @@
 * creating a merge variable for sect9_ph_w2
 	generate 	field_ident = holder_id + " " + string(parcel_id) + " " + string(field_id)
 	
-* creating unique parcel identifier
+* creating parcel identifier
 	rename		parcel_id parcel
 	tostring	parcel, replace
 	generate 	parcel_id = holder_id + " " + ea_id + " " + parcel
@@ -237,7 +239,7 @@
 	mi set 		wide //	declare the data to be wide. 
 	mi xtset, 	clear //	this is a precautinary step to clear any xtset that the analyst may have had in place previously
 	mi register imputed plotsize //	identify plotsize as the variable being imputed 
-	mi impute 	pmm plotsize selfreport_ha i.region_id, add(1) rseed(245780) ///
+	mi impute 	pmm plotsize selfreport_ha i.district_id, add(1) rseed(245780) ///
 					noisily dots force knn(5) bootstrap 
 	mi 			unset
 
@@ -298,15 +300,21 @@
 
 * renaming some variables of interest
 	rename 		household_id hhid
-	rename 		household_id2 hhid2
+	rename 		household_id2 hhid2	
+	drop		region	
+	rename 		saq01 region
+	rename 		saq02 district
+	label var 	district "District Code"
+	rename 		saq03 ward	
+	
 
 * restrict to variables of interest 
 * this is how world bank has their do-file set up
 * if we want to keep all identifiers (i.e. region, zone, etc) we can do that easily
 	keep  		holder_id- pp_s3q02_c status kilo_fert labordays_plant plotsize ///
 					selfreport_ha irrigated fert_any org_fert_any crop_1 crop_2 ///
-					field_ident parcel_id field_id
-	order 		holder_id- saq06 parcel_id field_id
+					field_ident parcel_id field_id district_id
+	order 		holder_id- saq06 district_id parcel_id field_id
 
 * Final preparations to export
 	isid 		holder_id parcel field
@@ -322,4 +330,3 @@
 
 * close the log
 	log	close
-

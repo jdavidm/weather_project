@@ -6,6 +6,7 @@
 * does
 	* cleans Ethiopia household variables, wave 3 PP sec2
 	* looks like a parcel roster
+	* hierarchy: holder > parcel > field > crop
 	* seems to correspond to Malawi ag-modB and ag-modI
 	
 * assumes
@@ -13,7 +14,7 @@
 	* distinct.ado
 
 * TO DO:
-	* 
+	* resolve any obs missing data for certain variables
 
 	
 * **********************************************************************
@@ -29,9 +30,9 @@
 	log using "`logout'/wv3_PPSEC2", append
 
 	
-************************************************************************
-**	1 - preparing ESS 2015/16 (Wave 3) - Post Planting Section 2 
-************************************************************************
+* **********************************************************************
+* 1 - preparing ESS 2015/16 (Wave 3) - Post Planting Section 2 
+* **********************************************************************
 
 * load data
 	use 		"`root'/sect2_pp_w3.dta", clear
@@ -44,11 +45,11 @@
 	sort 		holder_id ea_id parcel_id
 	isid 		holder_id parcel_id, missok
 
-* creating unique region identifier
-	egen 		region_id = group( saq01 saq02)
-	label var 	region_id "Unique region identifier"
+* creating district identifier
+	egen 		district_id = group( saq01 saq02)
+	label var 	district_id "Unique district identifier"
 	distinct	saq01 saq02, joint
-	*** 69 distinct regions
+	*** 69 distinct district
 	
 * creating unique parcel identifier
 	rename		parcel_id parcel
@@ -62,23 +63,24 @@
 	*** no obs dropped 
 	
 	isid 		holder_id ea_id parcel_id
-
-* renaming some variables of interest	
-	rename 		household_id hhid
-	rename 		household_id2 hhid2
-	rename 		saq01 district
-	rename 		saq02 region
-	rename 		saq03 ward
-	rename 		pp_s2q02 number_fields
 	
 	
 * ***********************************************************************
 * 2 - cleaning and keeping
 * *********************1*************************************************
 
+* renaming some variables of interest	
+	rename 		household_id hhid
+	rename 		household_id2 hhid2
+	rename 		saq01 region
+	rename 		saq02 district
+	label var 	district "District Code"
+	rename 		saq03 ward
+	rename 		pp_s2q02 number_fields
+
 * restrict to variables of interest
-	keep  		holder_id- pp_s2q01 number_fields region_id parcel_id
-	order 		holder_id- pp_s2q01 number_fields region_id parcel_id
+	keep  		holder_id- pp_s2q01 number_fields district_id parcel_id
+	order 		holder_id- pp_s2q01 number_fields district_id parcel_id
 
 * prepare for export
 	isid		holder_id ea_id parcel

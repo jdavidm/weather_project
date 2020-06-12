@@ -6,6 +6,7 @@
 * does
 	* cleans Ethiopia household variables, wave 3 HH sec1
 	* gives location identifiers for participants
+	* hierarchy: holder > parcel > field > crop - not a concern in this dofile
 	* seems to very roughly correspond to Malawi ag-modI and ag-modO
 	
 * assumes
@@ -30,9 +31,9 @@
 	log using "`logout'/wv3_HHSEC1", append
 
 	
-************************************************************************
-**	1 - preparing ESS 2015/16 (Wave 3) - Household Section 1 
-************************************************************************
+* **********************************************************************
+* 1 - preparing ESS 2015/16 (Wave 3) - Household Section 1 
+* **********************************************************************
 
 * load data
 	use 		"`root'/sect1_hh_w3.dta", clear
@@ -45,11 +46,11 @@
 	sort 		household_id2 individual_id2
 	isid 		individual_id2, missok
 
-* creating unique region identifier
-	egen 		region_id = group( saq01 saq02)
-	label var 	region_id "Unique region identifier"
+* creating district identifier
+	egen 		district_id = group( saq01 saq02)
+	label var 	district_id "Unique district identifier"
 	distinct	saq01 saq02, joint
-	*** 84 distinct regions
+	*** 84 distinct districts
 
 
 * ***********************************************************************
@@ -59,13 +60,14 @@
 * renaming some variables of interest
 	rename 		household_id hhid
 	rename 		household_id2 hhid2
-	rename 		saq01 district
-	rename 		saq02 region
-	rename 		saq03 woreda
+	rename 		saq01 region
+	rename 		saq02 district
+	label var 	district "District Code"
+	rename 		saq03 ward
 	rename		saq07 ea
 
 * restrict to variables of interest
-	keep  		hhid- saq08 region_id
+	keep  		hhid- saq08 district_id
 	order 		hhid- saq08
 	
 * prepare for export

@@ -1,45 +1,109 @@
-clear all
+* Project: WB Weather
+* Created on: June 2020
+* Created by: McG
+* Stata v.16
 
-*attempting to clean Ethiopia household variables
-global user "themacfreezie"
+* does
+	* cleans Ethiopia household variables, wave 3 PH sec12
+	* seems to roughly correspong to Malawi ag-modD and ag-modK
+	* contains harvest and sales info on fruit/nuts/root crops
+	* hierarchy: holder > parcel > field > crop
 
-**********************************************************************************
-**	ESS Wave 2 - Post Harvest Section 12
-**********************************************************************************
-*	Seems to roughly correspong to Malawi ag-modD and ag-modK
+* assumes
+	* customsave.ado
+	
+* TO DO:
+	* must find a unique ob identifier
+	* like in pp_sect3, ph_sect9, & ph_sect11, many observtions from master are not being matched
+	* must finish building out data cleaning - see wave 1 maybe	
+	
+	
+* **********************************************************************
+* 0 - setup
+* **********************************************************************
 
-* For household data
-loc root = "C:\Users/$user\Dropbox\Weather_Project\Data\Ethiopia\analysis_datasets\Ethiopia_raw\Wave3_2015"
-* To export results
-loc export = "C:\Users/$user\Dropbox\Weather_Project\Data\Ethiopia\analysis_datasets\Ethiopia_refined\Wave3_2015"
+* define paths
+	loc root = "$data/household_data/ethiopia/wave_3/raw"
+	loc export = "$data/household_data/ethiopia/wave_3/refined"
+	loc logout = "$data/household_data/ethiopia/logs"
 
-*	Build conversion id into conversion dataset
-use "`root'/Crop_CF_Wave3.dta"
-generate conv_id = string(crop_code) + " " + string(unit_cd)
-duplicates report
-duplicates drop
-duplicates report conv_id
-*look at obs 67 & 68 - yet another weird problem =\
-save "`root'/Crop_CF_Wave3_use.dta", replace
-clear
+* open log
+	log using "`logout'/wv3_PHSEC12", append
 
-use "`root'/sect12_ph_w3.dta", clear
 
-*	Dropping duplicates
-duplicates drop
+* **********************************************************************
+* 1 - preparing ESS (Wave 3) - Post Harvest Section 12
+* **********************************************************************
 
-*	Attempting to generate unique identifier
-describe
-sort holder_id crop_code
-* isid holder_id crop_code, missok
+* build conversion id into conversion dataset
+	clear
+	use "`root'/Crop_CF_Wave3.dta"
+	generate conv_id = string(crop_code) + " " + string(unit_cd)
+	duplicates report
+	duplicates drop
+	duplicates report conv_id
+	save "`root'/Crop_CF_Wave3_use.dta", replace
+	clear
 
-*creating unique region identifier
-egen region_id = group( saq01 saq02)
-label var region_id "Unique region identifier"
+* load data
+	use "`root'/sect12_ph_w3.dta", clear
 
-*	Like in Sect9, no crop codes are missing
+* dropping duplicates
+	duplicates drop
 
-* Create conversion key 
-generate conv_id = string(crop_code) + " " + string(ph_s12q0b)
-merge m:1 conv_id using "`root'/Crop_CF_Wave3_use.dta"
+* attempting to generate unique identifier
+	describe
+	sort holder_id crop_code
+* 	isid holder_id crop_code, missok
+	*** these variables do not uniquely identify observations
 
+* creating unique region identifier
+	egen 		district_id = group( saq01 saq02)
+	label var 	district_id "Unique region identifier"
+	distinct	saq01 saq02, joint
+	*** 66 distinct districts
+	*** three fewer than in pp sect2, pp sect3, & ph_sect9
+
+* check for missing crop codes
+	tab			crop_code, missing	
+	*** this is supposed to be fruits and nuts 
+	*** but still a few obs w/ maize and sorghum and the like
+	*** like in Sect9, no crop codes are missing
+
+* create conversion key 
+	generate 	conv_id = string(crop_code) + " " + string(ph_s12q0b)
+	merge 		m:1 conv_id using "`root'/Crop_CF_Wave3_use.dta"
+	*** 5,146 not matched from master
+
+	tab 		_merge
+	drop		if _merge == 2
+	drop		_merge
+
+
+* ***********************************************************************
+* 2 - cleaning and keeping
+* ***********************************************************************
+
+* renaming some variables of interest
+	rename 		household_id hhid
+	rename 		household_id2 hhid2
+	rename 		saq01 region
+	rename 		saq02 district
+	label var 	district "District Code"
+	rename 		saq03 ward	
+
+*	Restrict to variables of interest
+	keep  		holder_id- crop_code
+	order 		holder_id- crop_code
+
+* final preparations to export
+*	isid 		// don't have one yet
+	compress
+	describe
+	summarize 
+	sort 		holder_id ea_id crop_code
+	customsave , idvar(holder_id) filename(PP_SEC12.dta) path("`export'") ///
+		dofile(PP_SEC12) user($user)
+
+* close the log
+	log	close	
