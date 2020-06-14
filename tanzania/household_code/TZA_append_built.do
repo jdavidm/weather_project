@@ -26,6 +26,7 @@
 * **********************************************************************
 
 * define paths
+	loc		cnvrt	=	"$data/household_data/tanzania/wave_3/raw"
 	loc		root 	= 	"$data/merged_data/tanzania"
 	loc		export 	= 	"$data/regression_data/tanzania"
 	loc		logout 	= 	"$data/merged_data/tanzania/logs"
@@ -33,7 +34,7 @@
 * open log	
 	*log 	using 		"`logout'/tza_append_built", append
 
-
+	
 * **********************************************************************
 * 1 - append all Tanzania data
 * **********************************************************************
@@ -41,15 +42,6 @@
 * import the third wave file
 	use 		"`root'/wave_3/npsy3_merged.dta", clear
 
-* merge in panel key	
-	merge		1:m y3_hhid using "$data/household_data/tanzania/wave_3/raw/NPSY3.PANEL.KEY.dta"	
-
-	keep		if _merge == 3
-	drop		UPI3 indidy1 indidy2 indidy3 _merge
-	duplicates	drop
-	
-	order		y1_hhid y2_hhid y3_hhid year
-	
 * append the first wave file
 	append		using "`root'/wave_1/npsy1_merged.dta", force	
 	
