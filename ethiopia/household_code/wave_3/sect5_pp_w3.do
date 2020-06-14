@@ -27,7 +27,7 @@
 	loc logout = "$data/household_data/ethiopia/logs"
 
 * open log
-	log using "`logout'/wv3_PPSEC5", append
+*	log using "`logout'/wv3_PPSEC5", append
 
 
 * **********************************************************************
@@ -39,6 +39,13 @@
 
 * dropping duplicates
 	duplicates drop
+	
+* creating district identifier
+	egen 		district_id = group( saq01 saq02)
+	lab var 	district_id "Unique district identifier"
+	distinct	saq01 saq02, joint
+	*** 69 distinct district
+	*** same as pp sect2, sect3 & sect4, good
 
 * attempting to generate unique identifier
 	describe
@@ -58,10 +65,11 @@
 
 * check for duplicates in terms of holder, crop, and seed type
 	duplicates 	tag holder_id crop_code pp_s5q01, generate (dupe)
-	tab			dupe
-	*** many duplicates in terms of these three variables - 184, some multiples
+	tab			dupe	
+	duplicates	report seed_id
+	*** 124 surplus observations
 
-* maybe look into 'collapse' command
+* maybe look into 'collapse' command? (THIS IS OLD LANGUAGE - NOT SURE WHAT WE MEANT)
 
 * drop observations with a missing crop_code
 	summarize 	if missing(crop_code)
@@ -71,22 +79,50 @@
 *	isid 		holder_id crop_code pp_s5q01, missok
 
 * no unique identifier is easily found
-* there are weird differences in rows that are otehrwise completely identical
+* there are weird differences in rows that are otherwise completely identical
 
 	duplicates 	list holder_id crop_code pp_s5q01
 	*** the above command is useful for looking at differences
 
 * investigate crop mix
 	tabulate 	crop_code, plot
+	
 
-* seed info (do we need this?)
+* ***********************************************************************
+* 2 - seed use
+* ***********************************************************************
+
+* seed info
+* pp_sect4 also has seed weight...
 	generate	seed_wgt = pp_s5q19_a + (0.001*pp_s5q19_b)
 	label var 	seed_wgt "Total amount of seed used (kg)"
 	rename		pp_s5q08 seed_value
+	sum 		seed_wgt seed_value
+		
+* imputing missing seed values using predictive mean matching 
+	mi set 		wide //	declare the data to be wide. 
+	mi xtset, 	clear //	this is a precautinary step to clear any xtset that the analyst may have had in place previously
+	mi register imputed seed_value //	identify seed_value as the variable being imputed 
+	mi impute 	pmm seed_value crop_code seed_wgt i.district_id, add(1) rseed(245780) ///
+					noisily dots force knn(5) bootstrap 
+	*** including crop type and seed_wgt control variables - seems logical
+	
+	mi 			unset
+	
+* summarize results of imputation
+	tabulate 	mi_miss	//	this binary = 1 for the full set of observations where plotsize_GPS is missing
+	tabstat 	seed_value seed_value_1_, by(mi_miss) ///
+					statistics(n mean min max) columns(statistics) longstub ///
+					format(%9.3g) 
+	*** 9,691 values imputed
+					
+	drop		mi_miss
+	drop		seed_value
+	rename		seed_value_1_ seed_value
 
 
 * ***********************************************************************
-* 2 - cleaning and keeping
+* 3 - cleaning and keeping
 * ***********************************************************************
 
 * renaming some variables of interest

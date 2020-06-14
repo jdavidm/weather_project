@@ -13,7 +13,8 @@
 	* customsave.ado
 
 * TO DO:
-	* results in genreal are all over the place (see summary at the end)
+	* pesticide_any and herbicide_any are well short of the other variables
+	* can we impute a binary variable?
 	
 	
 * **********************************************************************
@@ -44,6 +45,13 @@
 	sort 		holder_id parcel_id field_id crop_code
 	isid 		holder_id parcel_id field_id crop_code, missok
 	
+* creating district identifier
+	egen 		district_id = group( saq01 saq02)
+	lab var 	district_id "Unique district identifier"
+	distinct	saq01 saq02, joint
+	*** 69 distinct district
+	*** same as pp sect2 & sect3, good
+	
 * creating parcel identifier
 	rename		parcel_id parcel
 	tostring	parcel, replace
@@ -66,15 +74,50 @@
 	drop 		if missing(parcel_id,field_id,crop_code)
 	isid holder_id parcel_id field_id crop_code
 	*** 0 observtions dropped
+	
+
+* ***********************************************************************
+* 2 - variables of interest
+* ***********************************************************************
+
+* ***********************************************************************
+* 2a - percent field use
+* ***********************************************************************
 
 * accounting for mixed use fields - creates a multiplier
 	generate 	field_prop = 1 if pp_s4q02 == 1
 	replace 	field_prop = pp_s4q03*.01 if pp_s4q02 ==2
+	label var	field_prop "Percent field planted with crop"
+	
+	
+* ***********************************************************************
+* 2b - damage and damage preventation
+* ***********************************************************************
+
+* looking at crop damage
+	rename		pp_s4q08 damaged
+	sum 		damaged
+	*** info for all observations
+	
+* percent crop damaged
+	rename		pp_s4q10 damaged_pct
+	replace		damaged_pct = 0 if damaged == 2
+	sum			damaged_pct
+	*** info for all obs
 
 * looking at crop damage prevention measures
 	generate 	pesticide_any = pp_s4q05 if pp_s4q05 >= 1
 	generate 	herbicide_any = pp_s4q06 if pp_s4q06 >= 1
 	replace 	herbicide_any = pp_s4q07 if pp_s4q06 != 1 & pp_s4q07 >= 1
+	*** the same 3,740 obs have both pesticde & herbicide information
+	*** all other obs are blank
+	*** should these be considered as 'no's? seems like a big assumption
+	
+*	replace		pesticide_any = 2 if pesticide_any == .
+*	replace		herbicide_any = 2 if herbicide_any == .
+	*** should these be considered as 'no's? seems like a big assumption
+
+* should (can) we impute a binary variable?
 
 * pp_s4q12_a and pp_s4q12_b give month and year seeds were planted
 * the years for some reason mostly say 2005. 
@@ -82,7 +125,40 @@
 
 
 * ***********************************************************************
-* 2 - cleaning and keeping
+* 2c - seed use
+* ***********************************************************************
+
+* no info on seed value in this dataset
+
+* looking at seed use
+	generate	seed_wgt = pp_s4q11b_a + (0.001 * pp_s4q11b_b)
+	summarize	seed_wgt
+	*** 15,791 values for seed weight
+	
+* imputing missing seed values using predictive mean matching 
+	mi set 		wide //	declare the data to be wide. 
+	mi xtset, 	clear //	this is a precautinary step to clear any xtset that the analyst may have had in place previously
+	mi register imputed seed_wgt //	identify seed_wgt as the variable being imputed 
+	mi impute 	pmm seed_wgt pp_s4q01_b i.district_id, add(1) rseed(245780) ///
+					noisily dots force knn(5) bootstrap 
+	*** including crop type as a control variable - seems logical
+	
+	mi 			unset
+	
+* summarize results of imputation
+	tabulate 	mi_miss	//	this binary = 1 for the full set of observations where plotsize_GPS is missing
+	tabstat 	seed_wgt seed_wgt_1_, by(mi_miss) ///
+					statistics(n mean min max) columns(statistics) longstub ///
+					format(%9.3g) 
+	*** 14,550 values imputed
+					
+	drop		mi_miss
+	drop		seed_wgt
+	rename		seed_wgt_1_ seed_wgt
+
+
+* ***********************************************************************
+* 3 - cleaning and keeping
 * ***********************************************************************
 
 * renaming some variables of interest
@@ -95,7 +171,7 @@
 	
 * restrict to variables of interest
 	keep  		holder_id- pp_s4q01_b pesticide_any herbicide_any field_prop ///
-					crop_id
+					damaged damaged_pct seed_wgt parcel_id field_id crop_id
 	order 		holder_id- saq05
 
 * Final preparations to export
@@ -104,8 +180,6 @@
 	compress
 	describe
 	summarize 
-	*** results are once again all over the place
-
 	sort 		holder_id parcel field crop_code
 	customsave , idvar(crop_id) filename(PP_SEC4.dta) path("`export'") ///
 		dofile(PP_SEC4) user($user)

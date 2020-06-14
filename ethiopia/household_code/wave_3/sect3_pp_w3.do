@@ -15,7 +15,6 @@
 
 * TO DO:
 	* figure out why so many observations arent matched from master data when merging in conv_id
-	* results in genreal are all over the place (see summary at the end)
 
 	
 * **********************************************************************
@@ -387,9 +386,8 @@
 	*** kilo_fert only captures Urea and DAP - 5,172 obs
 	*** no quantities are provided for compost, manure, or organic fertilizer
 	*** will attempt to impute missing values
-	*** are there other control variables worth including in the imputation?
 	
-* investigating potential control variables
+* investigating potential control variables for imputation
 	pwcorr		kilo_fert plotsize
 	*** figure this is a good place to start, larger plots might use more fert_any
 	*** correlation is low - 0.0396
