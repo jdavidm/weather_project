@@ -21,12 +21,12 @@
 * **********************************************************************
 
 * define paths
-	loc root = "$data/household_data/tanzania/wave_2/refined"
-	loc export = "$data/household_data/tanzania/wave_2/refined"
-	loc logout = "$data/household_data/tanzania/logs"
+	loc		root	=	"$data/household_data/tanzania/wave_2/refined"
+	loc		export	=	"$data/household_data/tanzania/wave_2/refined"
+	loc		logout	=	"$data/merged_data/tanzania/logs"
 
 * open log
-	log using "`logout'/NPSY2_MERGE", append
+	log		using	"`logout'/npsy2_merge", append
 
 
 * **********************************************************************
@@ -512,16 +512,17 @@
 * verify unique household id
 	isid			hhid
 	
-* revery hhid to orignal varname
+* rename hhid for merging with weather
 	rename			hhid y2_hhid
 	
 * generate year identifier
 	gen				year = 2010
 	lab var			year "Year"
 		
-	order 			region district ward village y2_hhid year tf_hrv tf_lnd tf_yld ///
-						tf_lab tf_frt tf_pst tf_hrb tf_irr cp_hrv cp_lnd ///
-						cp_yld cp_lab cp_frt cp_pst cp_hrb cp_irr
+	order 			region district ward village y2_hhid ///
+						year tf_hrv tf_lnd tf_yld tf_lab tf_frt tf_pst ///
+						tf_hrb tf_irr cp_hrv cp_lnd cp_yld cp_lab ///
+						cp_frt cp_pst cp_hrb cp_irr
 	compress
 	describe
 	summarize 

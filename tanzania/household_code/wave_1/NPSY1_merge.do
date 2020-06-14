@@ -21,14 +21,14 @@
 * **********************************************************************
 
 * define paths
-	loc root = "$data/household_data/tanzania/wave_1/refined"
-	loc export = "$data/household_data/tanzania/wave_1/refined"
-	loc logout = "$data/household_data/tanzania/logs"
+	loc		root	=	"$data/household_data/tanzania/wave_1/refined"
+	loc		export	=	"$data/household_data/tanzania/wave_1/refined"
+	loc		logout	=	"$data/merged_data/tanzania/logs"
 
 * open log
-	log using "`logout'/NPSY1_MERGE", append
+	log		using	"`logout'/npsy1_merge", append
 
-
+	
 * **********************************************************************
 * 1a - merge plot level data sets together
 * **********************************************************************
@@ -512,16 +512,16 @@
 * 5 - end matter, clean up to save
 * **********************************************************************
 
-* verify unique household id
 	isid			hhid
-	
+
 * generate year identifier
 	gen				year = 2008
 	lab var			year "Year"
 		
-	order 			region district ward village hhid year tf_hrv tf_lnd tf_yld ///
-						tf_lab tf_frt tf_pst tf_hrb tf_irr cp_hrv cp_lnd ///
-						cp_yld cp_lab cp_frt cp_pst cp_hrb cp_irr
+	order 			region district ward village hhid ///
+						year tf_hrv tf_lnd tf_yld tf_lab tf_frt tf_pst ///
+						tf_hrb tf_irr cp_hrv cp_lnd cp_yld cp_lab cp_frt ///
+						cp_pst cp_hrb cp_irr
 	compress
 	describe
 	summarize 

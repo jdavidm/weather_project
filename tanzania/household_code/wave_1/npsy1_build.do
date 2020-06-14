@@ -208,10 +208,12 @@
 	}						
 }
 
-	
+* rename hhid
+	rename			hhid y1_hhid
+
 * save file
 	qui: compress
-	customsave 	, idvar(hhid) filename("npsy1_merged.dta") ///
+	customsave 	, idvar(y1_hhid) filename("npsy1_merged.dta") ///
 		path("`export'") dofile(npsy1_build) user($user)
 		
 * close the log

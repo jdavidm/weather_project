@@ -22,12 +22,12 @@
 * **********************************************************************
 
 * define paths
-	loc root = "$data/household_data/tanzania/wave_3/refined"
-	loc export = "$data/household_data/tanzania/wave_3/refined"
-	loc logout = "$data/household_data/tanzania/logs"
+	loc		root	=	"$data/household_data/tanzania/wave_3/refined"
+	loc		export	=	"$data/household_data/tanzania/wave_3/refined"
+	loc		logout	=	"$data/merged_data/tanzania/logs"
 
 * open log
-	log using "`logout'/NPSY3_MERGE", append
+	log		using	"`logout'/npsy3_merge", append
 
 	
 * **********************************************************************
@@ -499,18 +499,28 @@
 
 * verify unique household id
 	isid			hhid
-	
-* revery hhid to orignal varname
+
+* rename hhid and merge in panel key
 	rename			hhid y3_hhid
 	
+	merge			1:m y3_hhid using "`root'/panel_key.dta"
+	
+	keep			if _merge == 3
+	drop			_merge
+	
+	order			uid y1_hhid y2_hhid y3_hhid
+
+* verify unique household id
+	isid			y3_hhid	
+
 * generate year identifier
 	gen				year = 2012
 	lab var			year "Year"
 		
-	order 			region district ward village y3_hhid year y3_weight ///
-						clusterid strataid tf_hrv tf_lnd tf_yld tf_lab tf_frt ///
-						tf_pst tf_hrb tf_irr cp_hrv cp_lnd cp_yld cp_lab ///
-						cp_frt cp_pst cp_hrb cp_irr
+	order 			region district ward village y3_hhid ///
+						year y3_weight clusterid strataid tf_hrv tf_lnd ///
+						tf_yld tf_lab tf_frt tf_pst tf_hrb tf_irr cp_hrv ///
+						cp_lnd cp_yld cp_lab cp_frt cp_pst cp_hrb cp_irr
 	compress
 	describe
 	summarize 
