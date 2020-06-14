@@ -13,8 +13,8 @@
 	* customsave.ado
 	* distinct.ado
 
-* TO DO:
-	* resolve any obs missing data for certain variables
+* TO DO: 
+	* what is 'obs' variable?
 
 	
 * **********************************************************************
@@ -61,6 +61,14 @@
 	summarize 	if missing(holder_id,ea_id,parcel_id)
 	drop 		if missing(holder_id,ea_id,parcel_id)
 	*** no obs dropped 
+
+* drop obs where the holder no longer owns or rents this parcel
+	drop		if pp_s2q01b == 2
+	
+* address missing value for pp_saq07 (holder id)
+	replace		pp_saq07 = 1 if pp_saq07 == .
+	*** one change made
+	*** it seems to be the only obs for that hh, so I assume it should be = 1
 	
 	isid 		holder_id ea_id parcel_id
 	

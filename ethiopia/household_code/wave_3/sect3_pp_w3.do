@@ -249,6 +249,8 @@
 					statistics(n mean min max) columns(statistics) longstub ///
 					format(%9.3g) 
 	*** 127 imputations made
+	
+	drop		mi_miss
 
 * verify that there is nothing to be done to get a plot size for the observations where plotsize_GPS_1_ is missing
 	list 		gps rap selfreport_ha plotsize if missing(plotsize_1_), sep(0)
@@ -261,37 +263,169 @@
 	rename 		(plotsize plotsize_1_)(plotsize_raw plotsize)
 	label 		variable plotsize		"Plot Size (ha)"
 	sum 		plotsize, detail
+	*** i'm not a fan of the one negative plotsize
+	
+	replace		plotsize = 0 if plotsize < 0
+	*** one change made, good
 	
 
 ************************************************************************
 **	4 - constructing other variables of interest
 ************************************************************************
 
+************************************************************************
+**	4a - irrigation and labor
+************************************************************************
+
 * look at irrigation dummy
 	generate 	irrigated = pp_s3q12 if pp_s3q12 >= 1
 	label 		variable irrigated "Is field irrigated?"
 
-* look at fertilizer use
-	generate 	fert_any = pp_s3q14 if pp_s3q14 >= 1
-	label 		variable fert_any "Is fertilizer used on field?"
+* household planting labor
+* replace weeks worked equal to zero if missing
+	replace		pp_s3q27_b = 0 if pp_s3q27_b == . 
+	replace		pp_s3q27_f = 0 if pp_s3q27_f == . 
+	replace		pp_s3q27_j = 0 if pp_s3q27_j == . 
+	replace		pp_s3q27_n = 0 if pp_s3q27_n == . 
 	
-	generate 	org_fert_any = pp_s3q25 if pp_s3q25 >= 1
-	label 		variable org_fert_any "Do you use any organic fertilizer on field?"
+* find average # of days worked by first worker reported (most obs)
+	sum 		pp_s3q27_c pp_s3q27_g pp_s3q27_k pp_s3q27_o
+	*** pp_s3q27_c has by far the most obs, mean is 2.59
 	
-	generate 	kilo_fert = pp_s3q16 + pp_s3q19
-	label var 	kilo_fert "Kilograms of fertilizer applied (Urea and DAP only)"
-	*** kilo_fert only captures Urea and DAP 
-	*** no quantities are provided for compost, manure, or organic fertilizer
+* replace days per week worked equal to 2.59 if missing and weeks were worked 
+	replace		pp_s3q27_c = 0 if pp_s3q27_c == . &  pp_s3q27_b != 0 
+	replace		pp_s3q27_g = 0 if pp_s3q27_g == . &  pp_s3q27_f != 0  
+	replace		pp_s3q27_k = 0 if pp_s3q27_k == . &  pp_s3q27_j != 0  
+	replace		pp_s3q27_o = 0 if pp_s3q27_o == . &  pp_s3q27_n != 0  
+	
+* replace days per week worked equal to 0 if missing and no weeks were worked
+	replace		pp_s3q27_c = 0 if pp_s3q27_c == . &  pp_s3q27_b == 0 
+	replace		pp_s3q27_g = 0 if pp_s3q27_g == . &  pp_s3q27_f == 0  
+	replace		pp_s3q27_k = 0 if pp_s3q27_k == . &  pp_s3q27_j == 0  
+	replace		pp_s3q27_o = 0 if pp_s3q27_o == . &  pp_s3q27_n == 0  
+	
+	summarize	pp_s3q27_b pp_s3q27_c pp_s3q27_f pp_s3q27_g pp_s3q27_j ///
+					pp_s3q27_k pp_s3q27_n pp_s3q27_o
+	*** it looks like the above approach works
 
-* planting labor
+* other hh labor
+* there is an assumption here
+	/* 	survey instrument splits question into # of men, total # of days
+		where pp_s3q29_a is # of men and pp_s3q29_b is total # of days (men)
+		there is also women and children (c & d and e % f)
+		the assumption is that total # of days is the total
+		and therefore does not require being multiplied by # of men
+		there are weird obs that make this assumption shakey
+		where # of men = 3 and total # of days = 1 for example
+		the same dilemna/assumption applies to hired labor (pp_s3q28_*)
+		this can be revised if we think this assumption is shakey */
+
+* replace total days = 0 if total days is missing
+	replace		pp_s3q29_b = 0 if pp_s3q29_b == . 
+	replace		pp_s3q29_d = 0 if pp_s3q29_d == . 
+	replace		pp_s3q29_f = 0 if pp_s3q29_f == . 	
+	
+* replace total days = 0 if total days is missing, hired labor
+	replace		pp_s3q28_b = 0 if pp_s3q28_b == . 
+	replace		pp_s3q28_e = 0 if pp_s3q28_e == . 
+	replace		pp_s3q28_h = 0 if pp_s3q28_h == . 	
+	
+* generate aggregate hh and hired labor variables	
 	generate 	laborday_plant_hh = (pp_s3q27_b * pp_s3q27_c) + ///
 					(pp_s3q27_f * pp_s3q27_g) + (pp_s3q27_j * pp_s3q27_k) + ///
 					(pp_s3q27_n * pp_s3q27_o) + pp_s3q29_b + pp_s3q29_d + ///
 					pp_s3q29_f
 	generate 	laborday_plant_hired = pp_s3q28_b + pp_s3q28_e + pp_s3q28_h
+	
+* check to make sure things look all right
+	sum			laborday_plant_hh laborday_plant_hired
+	*** hired mean is way lower than household
+	*** could this be because of the above assumption? (line 309)
+	*** or maybe just people hire way less labor than make use of hh labor
+	
+* combine hh and hired labor into one variable 
 	generate 	labordays_plant = laborday_plant_hh + laborday_plant_hired
 	drop 		laborday_plant_hh laborday_plant_hired
 	label var 	labordays_plant "Total Days of Planting Labor - Household and Hired"
+	
+
+************************************************************************
+**	4b - fertilizer
+************************************************************************
+
+* look at fertilizer use
+	rename 		pp_s3q14 fert_any
+	
+	generate 	org_fert_any = pp_s3q25 if pp_s3q25 >= 1
+	label 		variable org_fert_any "Do you use any organic fertilizer on field?"
+	*** should I roll this into fert_any? 
+	*** organic fertilizer is typically manure i think
+	*** i'm not sure that we're concerned about manure
+	
+* constructing continuous fertilizer variable	
+	generate 	fert_u = pp_s3q16  // urea
+	replace		fert_u = 0 if pp_s3q16 == . & (pp_s3q19 != . | pp_s3q20a_2 != . ///
+					| pp_s3q20a_7 != .)
+	
+	generate 	fert_d = pp_s3q19 // DAP
+	replace		fert_d = 0 if pp_s3q19 == . & (pp_s3q16 != . | pp_s3q20a_2 != . ///
+					| pp_s3q20a_7 != .)
+	
+	generate 	fert_n = pp_s3q20a_2 // NPS
+	replace		fert_n = 0 if pp_s3q20a_2 == . & (pp_s3q16 != . | pp_s3q19 != . ///
+					| pp_s3q20a_7 != .)
+	*** unit of measure not specified, assuming kg
+					
+	generate 	fert_o = pp_s3q20a_7 // other chemical fertilizer
+	replace		fert_o = 0 if pp_s3q20a_7 == . & (pp_s3q16 != . | pp_s3q19 != . ///
+					| pp_s3q20a_2 != .)
+	*** unit of measure not specified, assuming kg
+	
+	generate 	kilo_fert = fert_u + fert_d + fert_n + fert_o
+	label var 	kilo_fert "Kilograms of fertilizer applied (Urea and DAP only)"
+	drop 		fert_u fert_d fert_n fert_o
+	*** kilo_fert only captures Urea and DAP - 5,172 obs
+	*** no quantities are provided for compost, manure, or organic fertilizer
+	*** will attempt to impute missing values
+	*** are there other control variables worth including in the imputation?
+	
+* investigating potential control variables
+	pwcorr		kilo_fert plotsize
+	*** figure this is a good place to start, larger plots might use more fert_any
+	*** correlation is low - 0.0396
+	
+	pwcorr		kilo_fert selfreport_ha
+	*** even lower - 0.0264
+	
+	pwcorr		kilo_fert labordays_plant
+	*** still low - 0.0337
+	*** will proceed without other control variables for now...
+
+* attempting to impute missing fertilizer values using predictive mean matching 
+	mi set 		wide //	declare the data to be wide. 
+	mi xtset, 	clear //	this is a precautinary step to clear any xtset that the analyst may have had in place previously
+	mi register imputed kilo_fert //	identify kilo_fert as the variable being imputed 
+	mi impute 	pmm kilo_fert i.district_id, add(1) rseed(245780) ///
+					noisily dots force knn(5) bootstrap 
+	mi 			unset
+	*** wait, does this assume that no one uses zero fertilizer?
+	*** i can replace kilo_fert = 0 if fert_any == no
+	*** i think i want to do this after i impute so all the zeros don't affect the imputation
+	*** or! alternatively i could impute if fert_any == yes
+	
+* summarize results of imputation
+	tabulate 	mi_miss	//	this binary = 1 for the full set of observations where kilo_fert is missing
+	tabstat 	kilo_fert kilo_fert_1_, by(mi_miss) ///
+					statistics(n mean min max) columns(statistics) longstub ///
+					format(%9.3g) 
+	*** 17,368 imputations made
+
+	replace		kilo_fert_1_ = 0 if fert_any == 2 & kilo_fert == .
+	*** 11,401 changes made
+	*** see line 345
+	
+	drop		kilo_fert
+	rename		kilo_fert_1_ kilo_fert
 	
 
 * ***********************************************************************
@@ -307,13 +441,11 @@
 	label var 	district "District Code"
 	rename 		saq03 ward	
 	
-
 * restrict to variables of interest 
 * this is how world bank has their do-file set up
 * if we want to keep all identifiers (i.e. region, zone, etc) we can do that easily
-	keep  		holder_id- pp_s3q02_c status kilo_fert labordays_plant plotsize ///
-					selfreport_ha irrigated fert_any org_fert_any crop_1 crop_2 ///
-					field_ident parcel_id field_id district_id
+	keep  		holder_id- pp_s3q0a status kilo_fert labordays_plant plotsize ///
+					irrigated fert_any field_ident parcel_id field_id district_id
 	order 		holder_id- saq06 district_id parcel_id field_id
 
 * Final preparations to export
@@ -321,9 +453,7 @@
 	isid		field_id
 	compress
 	describe
-	summarize 
-	*** results are all over the place
-
+	summarize
 	sort 		holder_id parcel_id field_id
 	customsave , idvar(field_id) filename(PP_SEC3.dta) path("`export'") ///
 		dofile(PP_SEC3) user($user)
