@@ -117,7 +117,8 @@
 *	replace		herbicide_any = 2 if herbicide_any == .
 	*** should these be considered as 'no's? seems like a big assumption
 
-* should (can) we impute a binary variable?
+* should (can) we impute a binary variable? - NO!
+* jeff sez "if it's missing, call it a no"
 
 * pp_s4q12_a and pp_s4q12_b give month and year seeds were planted
 * the years for some reason mostly say 2005. 

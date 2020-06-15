@@ -27,19 +27,12 @@
 	loc logout = "$data/household_data/ethiopia/logs"
 
 * open log
-	log using "`logout'/wv3_PPSEC3", append
+*	log using "`logout'/wv3_PPSEC3", append
 
 
 * **********************************************************************
 * 1 - preparing ESS 2015/16 (Wave 3) - Post Planting Section 3 
 * **********************************************************************
-
-* build conversion id into conversion dataset
-	clear
-	use 		"`root'/ET_local_area_unit_conversion.dta"
-	gen		 	conv_id = string(region) + " " + string(zone) + " " + string(woreda) + " " + string(local_unit)
-	save 		"`root'/ET_local_area_unit_conversion_use.dta", replace
-	clear
 
 * load pp section 3 data
 	use 		"`root'/sect3_pp_w3.dta", clear
@@ -50,7 +43,7 @@
 * investigate unique identifier
 	describe
 	sort 		holder_id ea_id parcel_id field_id
-	isid 		holder_id parcel_id field_id, missok
+	isid 		holder_id parcel_id field_id
 
 * creating district identifier
 	egen 		district_id = group( saq01 saq02)
@@ -73,70 +66,41 @@
 	drop 		if missing(parcel_id,field_id)
 	isid 		holder_id parcel_id field_id
 	
-* creating a merge variable for sect9_ph_w2
-	generate 	field_ident = holder_id + " " + string(parcel_id) + " " + string(field_id)
-	
 * creating parcel identifier
 	rename		parcel_id parcel
 	tostring	parcel, replace
-	generate 	parcel_id = holder_id + " " + ea_id + " " + parcel
+	generate 	parcel_id = holder_id + " " + parcel
 	
 * creating unique field identifier
 	rename		field_id field
 	tostring	field, replace
-	generate 	field_id = holder_id + " " + ea_id + " " + parcel + " " + field
+	generate 	field_id = holder_id + " " + parcel + " " + field
 	isid 		field_id
 
 * create conversion key 
-	generate 	conv_id = string(saq01) + " " + string(saq02) + " " + ///
-					string(saq03) + " " + string(pp_s3q02_c)
-	merge 		m:1 conv_id using "`root'/ET_local_area_unit_conversion_use.dta"
+	rename		saq01 region
+	rename		saq02 zone
+	rename 		saq03 woreda
+	rename		pp_s3q02_c local_unit
+	merge 		m:1 region zone woreda local_unit using "`root'/ET_local_area_unit_conversion.dta"
 	*** 13,748 obs not matched from master data
 	*** why is this...
-	
-* look at crop mix
-	generate 	crop_1 = pp_s3q31_b if pp_s3q31_b >= 0
-	label var	crop_1 "What is the crop used for the first and second harvest? (Crop #1 Code)"
-	generate 	crop_2 = pp_s3q31_d if pp_s3q31_d >= 0
-	label var	crop_2 "What is the crop used for the first and second harvest? (Crop #2 Code)"
 	
 
 ************************************************************************
 **	2 - constructing conversion factors 
 ************************************************************************	
 
-* create units of measure for each observation
-*	drop 		region zonename zone woredaname woreda
-	replace 	local_unit = pp_s3q02_c if local_unit == .
-	summarize 	local_unit pp_s3q02_c
-	*** 69 fewer pp_s3q02_c
+* replace self-reported equal to missing if there is no conversion factor
+* will not replace sef-reported if given in hectares, meters squared
+	replace		
 
-* infer local units from district, region, or country means
-	egen 		avg_dis = mean(conversion), by(saq01 saq02 pp_s3q02_c)
-	egen 		avg_reg = mean(conversion), by(saq01 pp_s3q02_c)
-	egen 		avg_eth = mean(conversion), by(pp_s3q02_c)
-	
-* fill out missing conversion factors
-	replace 	conversion = avg_dis if conversion == .
-	replace 	conversion = avg_reg if conversion == .
-	replace 	conversion = avg_eth if conversion == .
-	replace 	conversion = . if local_unit == .
-	*** 14 changes made in the last line
-	*** do not drop observations that lack local units since they may have gps values
-
-	drop if 	_merge == 2
-	drop 		avg_dis avg_reg avg_eth
-
-* generate self-reported land area of plot w/ conversions
-	tabulate 	pp_s3q02_c, missing // Unit of land area, self-reported
-	*** missing 14 out of 23,244
-	
-	generate 	cfactor = 10000 if pp_s3q02_c==1
+/*	generate 	cfactor = 10000 if pp_s3q02_c==1
 	replace 	cfactor = 1 if pp_s3q02_c==2
 	replace 	cfactor = conversion if pp_s3q02_c==local_unit ///
 					& pp_s3q02_c!=1 & pp_s3q02_c!=2
 	tab			cfactor, missing
-	*** cfactor missing from 7,757 obs
+	*** cfactor missing from 7,757 obs */
 
 
 ************************************************************************
@@ -238,6 +202,7 @@
 	mi set 		wide //	declare the data to be wide. 
 	mi xtset, 	clear //	this is a precautinary step to clear any xtset that the analyst may have had in place previously
 	mi register imputed plotsize //	identify plotsize as the variable being imputed 
+	sort		holder_id parcel field, stable // sort to ensure reproducability of results
 	mi impute 	pmm plotsize selfreport_ha i.district_id, add(1) rseed(245780) ///
 					noisily dots force knn(5) bootstrap 
 	mi 			unset
@@ -264,7 +229,8 @@
 	sum 		plotsize, detail
 	*** i'm not a fan of the one negative plotsize
 	
-	replace		plotsize = 0 if plotsize < 0
+* SEE IF THIS IS STILL THE CASE AFTER CHANGES ARE MADE
+*	replace		plotsize = 0 if plotsize < 0
 	*** one change made, good
 	
 
@@ -276,11 +242,19 @@
 **	4a - irrigation and labor
 ************************************************************************
 
+* per Palacios-Lopez et al. (2017) in Food Policy, we cap labor per activity
+* 7 days * 13 weeks = 91 days for land prep and planting
+* 7 days * 26 weeks = 182 days for weeding and other non-harvest activities
+* 7 days * 13 weeks = 91 days for harvesting
+* we will also exclude child labor_days
+* in this survey we can't tell gender or age of household members
+* since we can't match household members we deal with each activity seperately
+
 * look at irrigation dummy
 	generate 	irrigated = pp_s3q12 if pp_s3q12 >= 1
 	label 		variable irrigated "Is field irrigated?"
 
-* household planting labor
+* household non-harvest labor
 * replace weeks worked equal to zero if missing
 	replace		pp_s3q27_b = 0 if pp_s3q27_b == . 
 	replace		pp_s3q27_f = 0 if pp_s3q27_f == . 
@@ -292,10 +266,10 @@
 	*** pp_s3q27_c has by far the most obs, mean is 2.59
 	
 * replace days per week worked equal to 2.59 if missing and weeks were worked 
-	replace		pp_s3q27_c = 0 if pp_s3q27_c == . &  pp_s3q27_b != 0 
-	replace		pp_s3q27_g = 0 if pp_s3q27_g == . &  pp_s3q27_f != 0  
-	replace		pp_s3q27_k = 0 if pp_s3q27_k == . &  pp_s3q27_j != 0  
-	replace		pp_s3q27_o = 0 if pp_s3q27_o == . &  pp_s3q27_n != 0  
+	replace		pp_s3q27_c = 2.59 if pp_s3q27_c == . &  pp_s3q27_b != 0 
+	replace		pp_s3q27_g = 2.42 if pp_s3q27_g == . &  pp_s3q27_f != 0  
+	replace		pp_s3q27_k = 2.37 if pp_s3q27_k == . &  pp_s3q27_j != 0  
+	replace		pp_s3q27_o = 2.2 if pp_s3q27_o == . &  pp_s3q27_n != 0  
 	
 * replace days per week worked equal to 0 if missing and no weeks were worked
 	replace		pp_s3q27_c = 0 if pp_s3q27_c == . &  pp_s3q27_b == 0 
@@ -311,7 +285,7 @@
 * there is an assumption here
 	/* 	survey instrument splits question into # of men, total # of days
 		where pp_s3q29_a is # of men and pp_s3q29_b is total # of days (men)
-		there is also women and children (c & d and e % f)
+		there is also women (c & d)
 		the assumption is that total # of days is the total
 		and therefore does not require being multiplied by # of men
 		there are weird obs that make this assumption shakey
@@ -321,31 +295,39 @@
 
 * replace total days = 0 if total days is missing
 	replace		pp_s3q29_b = 0 if pp_s3q29_b == . 
-	replace		pp_s3q29_d = 0 if pp_s3q29_d == . 
-	replace		pp_s3q29_f = 0 if pp_s3q29_f == . 	
+	replace		pp_s3q29_d = 0 if pp_s3q29_d == . 	
 	
 * replace total days = 0 if total days is missing, hired labor
 	replace		pp_s3q28_b = 0 if pp_s3q28_b == . 
-	replace		pp_s3q28_e = 0 if pp_s3q28_e == . 
-	replace		pp_s3q28_h = 0 if pp_s3q28_h == . 	
+	replace		pp_s3q28_e = 0 if pp_s3q28_e == . 	
 	
+* generating individual household labor rates
+	generate	laborhh_1 = pp_s3q27_b * pp_s3q27_c
+	generate	laborhh_2 = pp_s3q27_f * pp_s3q27_g
+	generate	laborhh_3 = pp_s3q27_j * pp_s3q27_k
+	generate	laborhh_4 = pp_s3q27_n * pp_s3q27_o
+	generate	laborhi_m = pp_s3q28_b
+	generate	laborhi_f = pp_s3q28_e
+	generate	laborfr_m = pp_s3q29_b
+	generate	laborfr_f = pp_s3q29_d
+	
+	summarize	labor*	
+	
+* one outlying value to be addressed in laborhi_m
+	replace 	laborhi_m = 273 if laborhi_m > 273
+
 * generate aggregate hh and hired labor variables	
-	generate 	laborday_plant_hh = (pp_s3q27_b * pp_s3q27_c) + ///
-					(pp_s3q27_f * pp_s3q27_g) + (pp_s3q27_j * pp_s3q27_k) + ///
-					(pp_s3q27_n * pp_s3q27_o) + pp_s3q29_b + pp_s3q29_d + ///
-					pp_s3q29_f
-	generate 	laborday_plant_hired = pp_s3q28_b + pp_s3q28_e + pp_s3q28_h
+	generate 	laborday_hh = laborhh_1 + laborhh_2 + laborhh_3 + laborhh_4
+	generate 	laborday_hired = laborhi_m + laborhi_f
+	gen			laborday_free = laborfr_m + laborfr_f
 	
 * check to make sure things look all right
-	sum			laborday_plant_hh laborday_plant_hired
-	*** hired mean is way lower than household
-	*** could this be because of the above assumption? (line 309)
-	*** or maybe just people hire way less labor than make use of hh labor
+	sum			laborday*
 	
 * combine hh and hired labor into one variable 
-	generate 	labordays_plant = laborday_plant_hh + laborday_plant_hired
-	drop 		laborday_plant_hh laborday_plant_hired
-	label var 	labordays_plant "Total Days of Planting Labor - Household and Hired"
+	generate 	labordays_plant = laborday_hh + laborday_hired + laborday_free
+	drop 		laborday_hh laborday_hired laborday_free laborhh_1- laborfr_f
+	label var 	labordays_plant "Total Days of Non-harvest Labor"
 	
 
 ************************************************************************
@@ -353,15 +335,13 @@
 ************************************************************************
 
 * look at fertilizer use
-	rename 		pp_s3q14 fert_any
+	generate	fert_any = 1 if pp_s3q15 == 1 | pp_s3q18 ==1 | pp_s3q20a_1 == 1 ///
+					| pp_s3q20a == 1
+	replace		fert_any = 0 if fert_any == . 
 	
-	generate 	org_fert_any = pp_s3q25 if pp_s3q25 >= 1
-	label 		variable org_fert_any "Do you use any organic fertilizer on field?"
-	*** should I roll this into fert_any? 
-	*** organic fertilizer is typically manure i think
-	*** i'm not sure that we're concerned about manure
-	
-* constructing continuous fertilizer variable	
+* constructing continuous fertilizer variable
+* making any missing ob zero if there is a value for another inorganic fertilizer
+* variable in the same observation	
 	generate 	fert_u = pp_s3q16  // urea
 	replace		fert_u = 0 if pp_s3q16 == . & (pp_s3q19 != . | pp_s3q20a_2 != . ///
 					| pp_s3q20a_7 != .)
@@ -383,47 +363,39 @@
 	generate 	kilo_fert = fert_u + fert_d + fert_n + fert_o
 	label var 	kilo_fert "Kilograms of fertilizer applied (Urea and DAP only)"
 	drop 		fert_u fert_d fert_n fert_o
-	*** kilo_fert only captures Urea and DAP - 5,172 obs
+	*** kilo_fert only captures Urea, DAP, NPS, and other inorganics - 5,172 obs
 	*** no quantities are provided for compost, manure, or organic fertilizer
 	*** will attempt to impute missing values
 	
-* investigating potential control variables for imputation
-	pwcorr		kilo_fert plotsize
-	*** figure this is a good place to start, larger plots might use more fert_any
-	*** correlation is low - 0.0396
-	
-	pwcorr		kilo_fert selfreport_ha
-	*** even lower - 0.0264
-	
-	pwcorr		kilo_fert labordays_plant
-	*** still low - 0.0337
-	*** will proceed without other control variables for now...
-
-* attempting to impute missing fertilizer values using predictive mean matching 
-	mi set 		wide //	declare the data to be wide. 
-	mi xtset, 	clear //	this is a precautinary step to clear any xtset that the analyst may have had in place previously
-	mi register imputed kilo_fert //	identify kilo_fert as the variable being imputed 
-	mi impute 	pmm kilo_fert i.district_id, add(1) rseed(245780) ///
-					noisily dots force knn(5) bootstrap 
-	mi 			unset
-	*** wait, does this assume that no one uses zero fertilizer?
-	*** i can replace kilo_fert = 0 if fert_any == no
-	*** i think i want to do this after i impute so all the zeros don't affect the imputation
-	*** or! alternatively i could impute if fert_any == yes
-	
-* summarize results of imputation
-	tabulate 	mi_miss	//	this binary = 1 for the full set of observations where kilo_fert is missing
-	tabstat 	kilo_fert kilo_fert_1_, by(mi_miss) ///
-					statistics(n mean min max) columns(statistics) longstub ///
-					format(%9.3g) 
-	*** 17,368 imputations made
-
-	replace		kilo_fert_1_ = 0 if fert_any == 2 & kilo_fert == .
+	replace		kilo_fert = 0 if fert_any == 0 & kilo_fert == .
 	*** 11,401 changes made
-	*** see line 345
 	
-	drop		kilo_fert
-	rename		kilo_fert_1_ kilo_fert
+* summarize fertilizer
+	sum				kilo_fert, detail
+	*** median 0, mean 24.5, max 10,000
+
+* replace any +3 s.d. away from median as missing
+	replace			kilo_fert = . if kilo_fert > `r(p50)'+(3*`r(sd)')
+	*** replaced 125 values, mean is now 7.77, max is now 801
+	
+* impute missing values
+	mi set 			wide 	// declare the data to be wide.
+	mi xtset		, clear 	// clear any xtset that may have had in place previously
+	mi register		imputed kilo_fert // identify kilo_fert as the variable being imputed
+	sort			holder_id parcel field, stable // sort to ensure reproducability of results
+	mi impute 		pmm kilo_fert i.district_id, add(1) rseed(245780) ///
+						noisily dots force knn(5) bootstrap
+	mi 				unset
+	
+* how did the imputation go?
+	tab				mi_miss
+	tabstat			kilo_fert kilo_fert_1_, by(mi_miss) ///
+						statistics(n mean min max) columns(statistics) ///
+						longstub format(%9.3g) 
+	replace			kilo_fert = kilo_fert_1_
+	lab var			kilo_fert "fertilizer use (kg), imputed"
+	drop			kilo_fert_1_ 
+	*** 125 imputations made
 	
 
 * ***********************************************************************
@@ -434,19 +406,16 @@
 	rename 		household_id hhid
 	rename 		household_id2 hhid2	
 	drop		region	
-	rename 		saq01 region
-	rename 		saq02 district
-	label var 	district "District Code"
-	rename 		saq03 ward	
+	rename		pp_s3q03b purestand
 	
 * restrict to variables of interest 
 * this is how world bank has their do-file set up
 * if we want to keep all identifiers (i.e. region, zone, etc) we can do that easily
-	keep  		holder_id- pp_s3q0a status kilo_fert labordays_plant plotsize ///
+	keep  		holder_id- pp_s3q0a purestand kilo_fert labordays_plant plotsize ///
 					irrigated fert_any field_ident parcel_id field_id district_id
 	order 		holder_id- saq06 district_id parcel_id field_id
 
-* Final preparations to export
+* final preparations to export
 	isid 		holder_id parcel field
 	isid		field_id
 	compress

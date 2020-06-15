@@ -67,7 +67,7 @@
 	rename		saq07 ea
 
 * restrict to variables of interest
-	keep  		hhid- saq08 district_id
+	keep  		hhid- hh_s1q00 district_id
 	order 		hhid- saq08
 	
 * prepare for export
@@ -76,7 +76,7 @@
 	describe
 	summarize 
 	sort hhid ea_id
-	customsave , idvar(hhid) filename(HH_SEC1.dta) path("`export'") ///
+	customsave , idvar(individual_id2) filename(HH_SEC1.dta) path("`export'") ///
 		dofile(HH_SEC1) user($user)
 
 * close the log

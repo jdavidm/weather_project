@@ -27,7 +27,7 @@
 	loc logout = "$data/household_data/ethiopia/logs"
 
 * open log
-	log using "`logout'/wv3_PPSEC2", append
+*	log using "`logout'/wv3_PPSEC2", append
 
 	
 * **********************************************************************
@@ -43,7 +43,7 @@
 * investigate unique identifier
 	describe
 	sort 		holder_id ea_id parcel_id
-	isid 		holder_id parcel_id, missok
+	isid 		holder_id parcel_id
 
 * creating district identifier
 	egen 		district_id = group( saq01 saq02)
@@ -54,7 +54,7 @@
 * creating unique parcel identifier
 	rename		parcel_id parcel
 	tostring	parcel, replace
-	generate 	parcel_id = holder_id + " " + ea_id + " " + parcel
+	generate 	parcel_id = holder_id + " " + parcel
 	isid 		parcel_id
 
 * drop observations with a missing parcel_id
