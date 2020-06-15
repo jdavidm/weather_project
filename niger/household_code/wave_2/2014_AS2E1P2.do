@@ -11,6 +11,7 @@
 
 * assumes
 	* customsave.ado
+	* mdesc.ado
 
 * TO DO:
 	* done
@@ -28,10 +29,10 @@
 * open log
 	*log 	using 	"`logout'/2014_AS2E1P2_1", append
 
+	
 * **********************************************************************
 * 1 - harvest information
 * **********************************************************************
-
 
 * import the first relevant data file
 	use				"`root'/ECVMA2_AS2E1P2", clear
@@ -59,32 +60,41 @@
 	sort 			clusterid hh_num extension ord field parcel
 	isid 			clusterid hh_num extension ord field parcel
 		
-	rename 				CULTURE cropid
-	tab 				cropid
+	rename 			CULTURE cropid
+	tab 			cropid
 	*** main crop is "mil" = millet 
 	*** cropcode for millet == 1
 	*** second crop is cowpea, third is sorghum ... and then a huge (thousands) diference to peanut 
 
+* look for the month household started harvesting
+	tab 			AS02EQ06A
+	
 * drop observations in which it was not harvest season
-	tab 				AS02EQ06A
-	*** month started harvesting
-	tab 				AS02EQ06B
-	*** month finished harvesting
 	drop if 		AS02EQ06A == 0 | AS02EQ06A == 1 | AS02EQ06A == 2 | ///
 					AS02EQ06A == 3 | AS02EQ06A == 4 | AS02EQ06A == 5 | ///
 					AS02EQ06A == 6 | AS02EQ06A == 7 
 	*** drops 826 observations
+	
+* check to see if household has finished harvesting
+	tab 			AS02EQ06B	
+
+* drop if household has not completed harvest	
 	drop if 		AS02EQ06B == 99 
 	*** drops 10 observations 
 	
-* examine kg harvest value
+* rename variables associated with harvest
 	rename 			AS02EQ07C harvkg 
 	rename 			AS02EQ07A harv 
 
+* make harvkg 0 if household said they harvested nothing
 	replace			harvkg = 0 if harvkg == . & harv == 0 
 	*** 343 changes made 
+
+* make harvkg missing if household said they did not harvest
 	replace 		harvkg = . if harvkg == 0 & harv != 0 
-	*** 93 changes made 
+	*** 93 changes made
+
+* replace miscoded variables as missing 
 	replace			harvkg = . if harvkg > 999997 
 	*** 18 changed to missing (obs = 999998 and 999999) - seems to be . in many cases for Niger
 
@@ -96,7 +106,6 @@
 	drop 			if cropid == 48 
 	*** 14 observations dropped 
 
-	describe
 	sort 			clusterid hh_num extension ord field parcel
 	isid 			clusterid hh_num extension ord field parcel
 
@@ -111,11 +120,10 @@
 	*** this is across all crops
 	*** average 281, max 24000, min 0 
 
-* replace any +3 s.d. away from median as missing, by cropid
-	sort 			cropid
-	by 				cropid: replace	harvkg = . if harvkg > `r(p50)'+(3*`r(sd)')
+* replace any +3 s.d. away from median as missing
+	replace			harvkg = . if harvkg > `r(p50)'+(3*`r(sd)')
 	sum				harvkg, detail
-	*** replaced 123 values, max is now 2208 
+	*** replaced 122 values, max is now 2208 
 	
 * impute missing values
 	mi set 			wide 	// declare the data to be wide.
@@ -134,78 +142,85 @@
 	replace			harvkg = harvkg_1_
 	lab var			harvkg "kg of harvest, imputed"
 	drop			harvkg_1_
-	*** imputed 230 out of 8692 total observations
-	*** mean from 219 to 227, max at 2208, min at 0 (no change in min or max)
+	*** imputed 228 out of 8678 total observations
+	*** mean from 219 to 226, max at 2208, min at 0 (no change in min or max)
 
+	
 * **********************************************************************
 * 3 - prices 
 * **********************************************************************
 
 * merge in regional information 
-	merge m:1		clusterid hh_num extension using "`root'/2014_ms00p1"
+	merge m:1		clusterid hh_num extension using "`export'/2014_ms00p1"
 	*** 8692 matched, 0 from master not matched, 1839 from using (which is fine)
 	keep if _merge == 3
 	drop _merge
 	
 * merge price data back into dataset
 	merge m:1 cropid region dept canton zd	        using "`export'/'2014_ase1p2_p1.dta", gen(p1)
+	drop			if p1 == 2
+	
 	merge m:1 cropid region dept canton 	        using "`export'/'2014_ase1p2_p2.dta", gen(p2)
+	drop			if p2 == 2
+	
 	merge m:1 cropid region dept 			        using "`export'/'2014_ase1p2_p3.dta", gen(p3)
+	drop			if p3 == 2
+	
 	merge m:1 cropid region 						using "`export'/'2014_ase1p2_p4.dta", gen(p4)
+	drop			if p4 == 2
+	
 	merge m:1 cropid 						        using "`export'/'2014_ase1p2_p5.dta", gen(p5)
-	keep if p5 == 3
-	*** 2 deleted - no prices for these crops 
+	keep			if p5 == 3
+	*** 4 deleted - no prices for these crops
+	
 	drop p1 p2 p3 p4 p5
 
-* make imputed price, using median price where we have at least 10 observations
-* this code differs from Malawi - seems like their code ignores prices 
+* check to see if we have prices for all crops
 	tabstat 		p_zd n_zd p_can n_can p_dept n_dept p_reg n_reg p_crop n_crop, ///
 						by(cropid) longstub statistics(n min p50 max) columns(statistics) format(%9.3g) 
-	*** look at fonio, wheat (ble), mint (menthe), small peas (petit pois) - very few observations 
-						
+	*** no prices for fonio, wheat (ble), mint (menthe)
+	
+* drop if we are missing prices
+	drop			if p_crop == .
+	*** dropped 17 observations
+	
+* make imputed price, using median price where we have at least 10 observations
+* this code differs from Malawi - seems like their code ignores prices 
 	generate 		croppricei = .
-	*** 8720 missing values generated
+	*** 8659 missing values generated
 	
 	bys cropid (clusterid hh_num extension field parcel ord): replace croppricei = p_zd if n_zd>=10 & missing(croppricei)
 	*** 583 replaced
 	bys cropid (clusterid hh_num extension field parcel ord): replace croppricei = p_can if n_can>=10 & missing(croppricei)
-	*** 393 replaced
+	*** 391 replaced
 	bys cropid (clusterid hh_num extension field parcel ord): replace croppricei = p_dept if n_dept>=10 & missing(croppricei)
 	*** 2002 replaced 
 	bys cropid (clusterid hh_num extension field parcel ord): replace croppricei = p_reg if n_reg>=10 & missing(croppricei)
-	*** 4565 replaced
+	*** 4559 replaced
 	bys cropid (clusterid hh_num extension field parcel ord): replace croppricei = p_crop if missing(croppricei)
-	*** 1157 replaced 
+	*** 1124 replaced 
 	label 			variable croppricei	"implied unit value of crop"
 
-* create crop price 	
-	by 				cropid: replace cropprice = croppricei if missing(cropprice) 
-	*** 0 changes made
-	mdesc 			cropprice
+* verify that prices exist for all crops
 	mdesc 			croppricei
-	*** 20 missing (in both cases)
-	*** missing are similar to above - wheat, fonio, petit peas, and mint
-	drop 			if cropprice == . 
+	*** 0 missing
+	
 	sum 			cropprice croppricei
-	*** mean = 0.356, max = 34.95
-	*** exactly the same croppricei = cropprice
+	*** mean = 0.315, max = 2.23
 	
 * generate value of harvest 
-	gen cropvalue = harvkg * croppricei
+	gen				cropvalue = harvkg * croppricei
 	label 			variable cropvalue	"implied value of crops" 
 	
-* some observations from merge are just prices and unused - drop them
-	drop 			if cropvalue == . 
-	*** 41 observations dropped
-	
-	sum 			cropvalue 
-	*** mean of imputed 63, max 2123
- 
+* verify that we have crop value for all observations
+	mdesc 			cropvalue
+	*** 0 missing
+
 * replace any +3 s.d. away from median as missing, by cropid
 	sum 			cropvalue, detail
-	bys cropid (clusterid hh_num extension field parcel ord): replace	cropvalue = . if cropvalue > `r(p50)'+ (3*`r(sd)')
+	replace			cropvalue = . if cropvalue > `r(p50)'+ (3*`r(sd)')
 	sum				cropvalue, detail
-	*** replaced 304 values
+	*** replaced 160 values
 	
 * impute missing values
 	mi set 			wide 	// declare the data to be wide.
@@ -224,36 +239,34 @@
 	replace			cropvalue = cropvalue_1_
 	lab var			cropvalue "value of harvest, imputed"
 	drop			cropvalue_1_
-	*** imputed 451 out of 8659 total observations
-	*** mean from 43 to 44.7, max at 223, min at 0 (no change in min or max)
+	*** imputed 228 out of 8659 total observations
+	*** mean from 51.4 to 52.8, max at 379, min at 0 (no change in min or max)
+	
 	
 * **********************************************************************
-* 3 - examine millet harvest quantities
+* 4 - examine millet harvest quantities
 * **********************************************************************
 
-* things should be addressed above - but will examine millet specifically
-
 * check to see if outliers can be dealt with
-	sum harvkg if 	cropid == 1
-	*** mean = 365.96
-	*** max = 2208
-	*** min = 0 
+	sum 			harvkg if cropid == 1
+	*** mean = 367, max = 2208, min = 0 
 	
 * generate new variable that measures millet (1) harvest
 	gen 			mz_hrv = harvkg 	if 	cropid == 1
+	*** for consistency going to keep the mz abbreviation though crop is millet
+	
+* create variable =1 if millet was damaged	
 	gen				mz_damaged = 1		if  cropid == 1 ///
-						& mz_hrv == 0
-	*** for consistency going to keep the mz abbreviation 
-	*** 8617 missing values generated 
+						&  AS02EQ08 == 1 & AS02EQ09 == 100
+	sort			mz_damaged
+	replace			mz_damaged = 0 if mz_damaged == .
+	*** all damaged millet have yield zero
 						
-* summarize value of harvest
-	sum				mz_hrv, detail
-	*** no change from above 365.96, 2209, 0 
-
 * replace any +3 s.d. away from median as missing
-	replace			mz_hrv = . if mz_hrv > `r(p50)' + (3*`r(sd)')
 	sum				mz_hrv, detail
-	*** replaced 96 values, max is now 1350
+	replace			mz_hrv = . if mz_hrv > `r(p50)' + (3*`r(sd)')
+	sum				mz_hrv
+	*** replaced 92 values, max is now 1350 instead of 2208
 	
 * impute missing values
 	mi set 			wide 	// declare the data to be wide.
@@ -272,15 +285,16 @@
 	replace			mz_hrv = mz_hrv_1_  if cropid == 1
 	lab var			mz_hrv "Quantity of maize harvested (kg)"
 	drop			mz_hrv_1_
-	*** imputed 96 values out of 3340 total values
-	*** mean from 327 to 329, max 1350 (no change), min 0 (no change)
+	*** imputed 92 values out of 3337 total values
+	*** mean from 3329 332, max 1350 (no change), min 0 (no change)
 
 * replace non-maize harvest values as missing
 	replace			mz_hrv = . if mz_damaged == 0 & mz_hrv == 0
-	*** 0 changes made 
+	*** 13 changes made 
+
 	
 * **********************************************************************
-* 4 - end matter, clean up to save
+* 5 - end matter, clean up to save
 * **********************************************************************
 
 * create unique household-plot identifier

@@ -21,7 +21,7 @@
 
 * define paths
 	loc 	root	= 	"$data/household_data/niger/wave_2/raw"
-	loc 	export	= 	"$data/household_data/niger/wave_2/raw"
+	loc 	export	= 	"$data/household_data/niger/wave_2/refined"
 	loc 	logout	= 	"$data/household_data/niger/logs"
 
 * open log
