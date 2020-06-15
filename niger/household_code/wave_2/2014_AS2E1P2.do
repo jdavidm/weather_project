@@ -4,15 +4,13 @@
 * Stata v.16
 
 * does
-	* reads in Nigeria, WAVE 2 (2014), POST HARVEST, ECVMA2 AS2E1P2
+	* reads in Niger, WAVE 2 (2014), POST HARVEST, ECVMA2 AS2E1P2
 	* determines primary crops, cleans harvest (quantity in kg)
 	* determines harvest for all crops - to determine value (based on prices)
 	* outputs clean data file ready for combination with wave 2 plot data
 
 * assumes
 	* customsave.ado
-	* mdesc.ado
-	* harvconv.dta conversion file
 
 * TO DO:
 	* done
@@ -28,7 +26,7 @@
 	loc 	logout	= 	"$data/household_data/niger/logs"
 
 * open log
-	log 	using 	"`logout'/2014_AS2E1P2_1", append
+	*log 	using 	"`logout'/2014_AS2E1P2_1", append
 
 * **********************************************************************
 * 1 - harvest information
@@ -37,7 +35,8 @@
 
 * import the first relevant data file
 	use				"`root'/ECVMA2_AS2E1P2", clear
-		
+	duplicates 		drop
+	
 * need to rename for English
 	rename 			PASSAGE visit
 	label 			var visit "number of visit"
@@ -75,17 +74,27 @@
 					AS02EQ06A == 3 | AS02EQ06A == 4 | AS02EQ06A == 5 | ///
 					AS02EQ06A == 6 | AS02EQ06A == 7 
 	*** drops 826 observations
+	drop if 		AS02EQ06B == 99 
+	*** drops 10 observations 
 	
 * examine kg harvest value
-	tab 			AS02EQ07C, missing
-	*** 334 missing
-	replace			AS02EQ07C = . if AS02EQ07C > 999997 
-	*** 24 changed to missing (obs = 999998 and 999999) - seems to be . in many cases for Niger
 	rename 			AS02EQ07C harvkg 
+	rename 			AS02EQ07A harv 
+
+	replace			harvkg = 0 if harvkg == . & harv == 0 
+	*** 343 changes made 
+	replace 		harvkg = . if harvkg == 0 & harv != 0 
+	*** 93 changes made 
+	replace			harvkg = . if harvkg > 999997 
+	*** 18 changed to missing (obs = 999998 and 999999) - seems to be . in many cases for Niger
 
 * convert missing harvest data to zero if harvest was lost to event
 	replace			harvkg = 0 if AS02EQ08 == 1 & AS02EQ09 == 100
-	*** 315 missing changed to 0
+	*** 59 missing changed to 0
+	
+* drop "other / autre"
+	drop 			if cropid == 48 
+	*** 14 observations dropped 
 
 	describe
 	sort 			clusterid hh_num extension ord field parcel
@@ -125,8 +134,98 @@
 	replace			harvkg = harvkg_1_
 	lab var			harvkg "kg of harvest, imputed"
 	drop			harvkg_1_
-	*** imputed 231 out of 8702 total observations
-	*** mean from 219 to 225, max at 2208, min at 0 (no change in min or max)
+	*** imputed 230 out of 8692 total observations
+	*** mean from 219 to 227, max at 2208, min at 0 (no change in min or max)
+
+* **********************************************************************
+* 3 - prices 
+* **********************************************************************
+
+* merge in regional information 
+	merge m:1		clusterid hh_num extension using "`root'/2014_ms00p1"
+	*** 8692 matched, 0 from master not matched, 1839 from using (which is fine)
+	keep if _merge == 3
+	drop _merge
+	
+* merge price data back into dataset
+	merge m:1 cropid region dept canton zd	        using "`export'/'2014_ase1p2_p1.dta", gen(p1)
+	merge m:1 cropid region dept canton 	        using "`export'/'2014_ase1p2_p2.dta", gen(p2)
+	merge m:1 cropid region dept 			        using "`export'/'2014_ase1p2_p3.dta", gen(p3)
+	merge m:1 cropid region 						using "`export'/'2014_ase1p2_p4.dta", gen(p4)
+	merge m:1 cropid 						        using "`export'/'2014_ase1p2_p5.dta", gen(p5)
+	keep if p5 == 3
+	*** 2 deleted - no prices for these crops 
+	drop p1 p2 p3 p4 p5
+
+* make imputed price, using median price where we have at least 10 observations
+* this code differs from Malawi - seems like their code ignores prices 
+	tabstat 		p_zd n_zd p_can n_can p_dept n_dept p_reg n_reg p_crop n_crop, ///
+						by(cropid) longstub statistics(n min p50 max) columns(statistics) format(%9.3g) 
+	*** look at fonio, wheat (ble), mint (menthe), small peas (petit pois) - very few observations 
+						
+	generate 		croppricei = .
+	*** 8720 missing values generated
+	
+	bys cropid (clusterid hh_num extension field parcel ord): replace croppricei = p_zd if n_zd>=10 & missing(croppricei)
+	*** 583 replaced
+	bys cropid (clusterid hh_num extension field parcel ord): replace croppricei = p_can if n_can>=10 & missing(croppricei)
+	*** 393 replaced
+	bys cropid (clusterid hh_num extension field parcel ord): replace croppricei = p_dept if n_dept>=10 & missing(croppricei)
+	*** 2002 replaced 
+	bys cropid (clusterid hh_num extension field parcel ord): replace croppricei = p_reg if n_reg>=10 & missing(croppricei)
+	*** 4565 replaced
+	bys cropid (clusterid hh_num extension field parcel ord): replace croppricei = p_crop if missing(croppricei)
+	*** 1157 replaced 
+	label 			variable croppricei	"implied unit value of crop"
+
+* create crop price 	
+	by 				cropid: replace cropprice = croppricei if missing(cropprice) 
+	*** 0 changes made
+	mdesc 			cropprice
+	mdesc 			croppricei
+	*** 20 missing (in both cases)
+	*** missing are similar to above - wheat, fonio, petit peas, and mint
+	drop 			if cropprice == . 
+	sum 			cropprice croppricei
+	*** mean = 0.356, max = 34.95
+	*** exactly the same croppricei = cropprice
+	
+* generate value of harvest 
+	gen cropvalue = harvkg * croppricei
+	label 			variable cropvalue	"implied value of crops" 
+	
+* some observations from merge are just prices and unused - drop them
+	drop 			if cropvalue == . 
+	*** 41 observations dropped
+	
+	sum 			cropvalue 
+	*** mean of imputed 63, max 2123
+ 
+* replace any +3 s.d. away from median as missing, by cropid
+	sum 			cropvalue, detail
+	bys cropid (clusterid hh_num extension field parcel ord): replace	cropvalue = . if cropvalue > `r(p50)'+ (3*`r(sd)')
+	sum				cropvalue, detail
+	*** replaced 304 values
+	
+* impute missing values
+	mi set 			wide 	// declare the data to be wide.
+	mi xtset		, clear 	// clear any xtset that may have had in place previously
+	mi register		imputed cropvalue // identify kilo_fert as the variable being imputed
+	sort			hh_num extension field parcel ord cropid, stable // sort to ensure reproducability of results
+	mi impute 		pmm cropvalue i.clusterid i.cropid, add(1) rseed(245780) ///
+						noisily dots force knn(5) bootstrap
+	mi 				unset	
+
+* how did the imputation go?
+	tab				mi_miss
+	tabstat			cropvalue cropvalue_1_, by(mi_miss) ///
+						statistics(n mean min max) columns(statistics) ///
+						longstub format(%9.3g) 
+	replace			cropvalue = cropvalue_1_
+	lab var			cropvalue "value of harvest, imputed"
+	drop			cropvalue_1_
+	*** imputed 451 out of 8659 total observations
+	*** mean from 43 to 44.7, max at 223, min at 0 (no change in min or max)
 	
 * **********************************************************************
 * 3 - examine millet harvest quantities
