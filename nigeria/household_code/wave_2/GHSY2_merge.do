@@ -395,45 +395,37 @@
 
 * generate plot area
 	bysort			hhid (plot_id) : egen tf_lnd = sum(plotsize)
-	lab var			tf_lnd	"Total farmed area (ha)"
 	assert			tf_lnd > 0 
 	sum				tf_lnd, detail
 
 * value of harvest
 	bysort			hhid (plot_id) : egen tf_hrv = sum(vl_hrvimp)
-	lab var			tf_hrv	"Total value of harvest (2010 USD)"
 	sum				tf_hrv, detail
 	
 * value of yield
 	generate		tf_yld = tf_hrv / tf_lnd
-	lab var			tf_yld	"value of yield (2010 USD/ha)"
 	sum				tf_yld, detail
 	
 * labor
 	bysort 			hhid (plot_id) : egen lab_tot = sum(labordaysimp)
 	generate		tf_lab = lab_tot / tf_lnd
-	lab var			tf_lab	"labor rate (days/ha)"
 	sum				tf_lab, detail
 
 * fertilizer
 	bysort 			hhid (plot_id) : egen fert_tot = sum(fertimp)
 	generate		tf_frt = fert_tot / tf_lnd
-	lab var			tf_frt	"fertilizer rate (kg/ha)"
 	sum				tf_frt, detail
 
 * pesticide
 	bysort 			hhid (plot_id) : egen tf_pst = max(pest_any)
-	lab var			tf_pst	"Any plot has pesticide"
 	tab				tf_pst
 	
 * herbicide
 	bysort 			hhid (plot_id) : egen tf_hrb = max(herb_any)
-	lab var			tf_hrb	"Any plot has herbicide"
 	tab				tf_hrb
 	
 * irrigation
 	bysort 			hhid (plot_id) : egen tf_irr = max(irr_any)
-	lab var			tf_irr	"Any plot has irrigation"
 	tab				tf_irr
 	
 	
@@ -444,51 +436,43 @@
 * generate plot area
 	bysort			hhid (plot_id) :	egen cp_lnd = sum(mz_lnd) ///
 						if mz_hrvimp != .
-	lab var			cp_lnd	"Total maize area (ha)"
 	assert			cp_lnd > 0 
 	sum				cp_lnd, detail
 
 * value of harvest
 	bysort			hhid (plot_id) :	egen cp_hrv = sum(mz_hrvimp) ///
 						if mz_hrvimp != .
-	lab var			cp_hrv	"Total quantity of maize harvest (kg)"
 	sum				cp_hrv, detail
 	
 * value of yield
 	generate		cp_yld = cp_hrv / cp_lnd if mz_hrvimp != .
-	lab var			cp_yld	"Maize yield (kg/ha)"
 	sum				cp_yld, detail
 	
 * labor
 	bysort 			hhid (plot_id) : egen lab_mz = sum(mz_labimp) ///
 						if mz_hrvimp != .
 	generate		cp_lab = lab_mz / cp_lnd
-	lab var			cp_lab	"labor rate for maize (days/ha)"
 	sum				cp_lab, detail
 
 * fertilizer
 	bysort 			hhid (plot_id) : egen fert_mz = sum(mz_frtimp) ///
 						if mz_hrvimp != .
 	generate		cp_frt = fert_mz / cp_lnd
-	lab var			cp_frt	"fertilizer rate for maize (kg/ha)"
 	sum				cp_frt, detail
 
 * pesticide
 	bysort 			hhid (plot_id) : egen cp_pst = max(mz_pst) /// 
 						if mz_hrvimp != .
-	lab var			cp_pst	"Any maize plot has pesticide"
 	tab				cp_pst
 	
 * herbicide
 	bysort 			hhid (plot_id) : egen cp_hrb = max(mz_hrb) ///
 						if mz_hrvimp != .
-	lab var			cp_hrb	"Any maize plot has herbicide"
 	tab				cp_hrb
 	
 * irrigation
 	bysort 			hhid (plot_id) : egen cp_irr = max(mz_irr) ///
 						if mz_hrvimp != .
-	lab var			cp_irr	"Any maize plot has irrigation"
 	tab				cp_irr
 
 * verify values are accurate
@@ -525,6 +509,24 @@
 
 * verify values are accurate
 	sum				tf_* cp_*
+
+* label variables
+	lab var			tf_lnd	"Total farmed area (ha)"
+	lab var			tf_hrv	"Total value of harvest (2010 USD)"
+	lab var			tf_yld	"value of yield (2010 USD/ha)"
+	lab var			tf_lab	"labor rate (days/ha)"
+	lab var			tf_frt	"fertilizer rate (kg/ha)"
+	lab var			tf_pst	"Any plot has pesticide"
+	lab var			tf_hrb	"Any plot has herbicide"
+	lab var			tf_irr	"Any plot has irrigation"
+	lab var			cp_lnd	"Total maize area (ha)"
+	lab var			cp_hrv	"Total quantity of maize harvest (kg)"
+	lab var			cp_yld	"Maize yield (kg/ha)"
+	lab var			cp_lab	"labor rate for maize (days/ha)"
+	lab var			cp_frt	"fertilizer rate for maize (kg/ha)"
+	lab var			cp_pst	"Any maize plot has pesticide"
+	lab var			cp_hrb	"Any maize plot has herbicide"
+	lab var			cp_irr	"Any maize plot has irrigation"
 	
 * **********************************************************************
 * 4 - end matter, clean up to save
@@ -534,7 +536,7 @@
 	isid			hhid
 
 * generate year identifier
-	gen				year = 2013
+	gen				year = 2012
 	lab var			year "Year"
 		
 	order 			zone state lga sector ea hhid /// 	
