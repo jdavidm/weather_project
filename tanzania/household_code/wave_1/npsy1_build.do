@@ -210,9 +210,13 @@
 
 * rename hhid
 	rename			hhid y1_hhid
-
-* save file
+	
+* prepare for export
 	qui: compress
+	summarize 
+	sort y1_hhid
+	
+* save file
 	customsave 	, idvar(y1_hhid) filename("npsy1_merged.dta") ///
 		path("`export'") dofile(npsy1_build) user($user)
 		

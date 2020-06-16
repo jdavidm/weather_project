@@ -208,9 +208,12 @@
 	}						
 }
 
+* prepare for export
+	qui: compress
+	summarize 
+	sort y3_hhid
 	
 * save file
-	qui: compress
 	customsave 	, idvar(y3_hhid) filename("npsy3_merged.dta") ///
 		path("`export'") dofile(npsy3_build) user($user)
 		
