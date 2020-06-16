@@ -221,7 +221,7 @@
 
 * create unique household-plot identifier
 	isid				clusterid hh_num extension ord field parcel
-	sort				clusterid hh_num extension ord field parcel
+	sort				clusterid hh_num extension ord field parcel, stable 
 	egen				plot_id = group(clusterid hh_num extension ord field parcel)
 	lab var				plot_id "unique field and parcel identifier"
 
@@ -230,7 +230,7 @@
 	summarize
 
 * save file
-		customsave , idvar(plot_id) filename("2014_as2ap1") ///
+		customsave , idvar(plot_id) filename("2014_as2ap1_2") ///
 			path("`export'") dofile(2014_as2ap2_1) user($user)
 
 * close the log

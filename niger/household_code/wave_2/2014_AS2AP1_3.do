@@ -212,19 +212,36 @@
 
 	keep 			clusterid hh_num extension ord field parcel prep_labor prep_labor_all ///
 					hh_prep_labor hired_prep_labor mutual_prep_labor 
-
-* create unique household-plot identifier
+	
+	* create unique household-plot identifier
 	isid				clusterid hh_num extension ord field parcel
-	sort				clusterid hh_num extension ord field parcel
+	sort				clusterid hh_num extension ord field parcel, stable 
 	egen				plot_id = group(clusterid hh_num extension ord field parcel)
 	lab var				plot_id "unique field and parcel identifier"
+					
+* merging in plant labor data
+	merge		m:1 plot_id using "`export'/2014_as2ap1_2", generate(_as2ap12)
+	*** 305 missing in master, 0 not matched from using 
+	*** total of 4834 matched 
+	*** we will impute the missing values later
+
+	drop _as2ap12
+	
+* merging in harvest labor data
+	merge		m:1 plot_id using "`export'/2014_as2ap1_3", generate(_as2ap13)
+	*** 305 missing in master, 0 not matched from using 
+	*** presumably those which did not match will have issues matching will full file, also 
+	*** total of 4834 matched 
+	*** we will impute the missing values later
+
+	drop _as2ap13 
 
 	compress
 	describe
 	summarize
 
 * save file
-		customsave , idvar(plot_id) filename("2014_as2ap1") ///
+		customsave , idvar(plot_id) filename("2014_as2ap1_f") ///
 			path("`export'") dofile(2014_AS2AP1_3) user($user)
 
 * close the log

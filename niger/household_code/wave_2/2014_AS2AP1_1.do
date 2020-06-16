@@ -102,7 +102,6 @@
 * **********************************************************************
 
 	keep 			clusterid hh_num extension ord field parcel pest_any herb_any 
-
 	
 * create unique household-plot identifier
 	isid				clusterid hh_num extension ord field parcel
