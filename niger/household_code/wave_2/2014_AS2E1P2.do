@@ -27,7 +27,7 @@
 	loc 	logout	= 	"$data/household_data/niger/logs"
 
 * open log
-	*log 	using 	"`logout'/2014_AS2E1P2_1", append
+	log 	using 	"`logout'/2014_AS2E1P2_1", append
 
 	
 * **********************************************************************
@@ -102,7 +102,8 @@
 	replace			harvkg = 0 if AS02EQ08 == 1 & AS02EQ09 == 100
 	*** 59 missing changed to 0
 	
-* drop "other / autre"
+* drop "other / autre" for crop production
+* unable to determine prices, etc. 
 	drop 			if cropid == 48 
 	*** 14 observations dropped 
 
@@ -144,7 +145,6 @@
 	drop			harvkg_1_
 	*** imputed 228 out of 8678 total observations
 	*** mean from 219 to 226, max at 2208, min at 0 (no change in min or max)
-
 	
 * **********************************************************************
 * 3 - prices 
@@ -179,6 +179,7 @@
 	tabstat 		p_zd n_zd p_can n_can p_dept n_dept p_reg n_reg p_crop n_crop, ///
 						by(cropid) longstub statistics(n min p50 max) columns(statistics) format(%9.3g) 
 	*** no prices for fonio, wheat (ble), mint (menthe)
+	*** not a lot of variation in betterave (beet)
 	
 * drop if we are missing prices
 	drop			if p_crop == .
@@ -207,6 +208,7 @@
 	
 	sum 			cropprice croppricei
 	*** mean = 0.315, max = 2.23
+	*** identical 
 	
 * generate value of harvest 
 	gen				cropvalue = harvkg * croppricei
@@ -218,9 +220,11 @@
 
 * replace any +3 s.d. away from median as missing, by cropid
 	sum 			cropvalue, detail
+	*** mean 63, max 2465
 	replace			cropvalue = . if cropvalue > `r(p50)'+ (3*`r(sd)')
 	sum				cropvalue, detail
 	*** replaced 160 values
+	*** reduces mean to 51, max to 379 
 	
 * impute missing values
 	mi set 			wide 	// declare the data to be wide.
@@ -240,8 +244,9 @@
 	lab var			cropvalue "value of harvest, imputed"
 	drop			cropvalue_1_
 	*** imputed 228 out of 8659 total observations
+	*** weird that imputation is the exact same number as imputation above
+		*** not making anything of it at this time - but seems odd? 
 	*** mean from 51.4 to 52.8, max at 379, min at 0 (no change in min or max)
-	
 	
 * **********************************************************************
 * 4 - examine millet harvest quantities
@@ -286,27 +291,32 @@
 	lab var			mz_hrv "Quantity of maize harvested (kg)"
 	drop			mz_hrv_1_
 	*** imputed 92 values out of 3337 total values
-	*** mean from 3329 332, max 1350 (no change), min 0 (no change)
+	*** mean from 329 to 333, max 1350 (no change), min 0 (no change)
 
 * replace non-maize harvest values as missing
 	replace			mz_hrv = . if mz_damaged == 0 & mz_hrv == 0
 	*** 13 changes made 
-
 	
 * **********************************************************************
 * 5 - end matter, clean up to save
 * **********************************************************************
 
 * create unique household-plot identifier
-	sort				clusterid hh_num extension ord field parcel
-	egen				plot_id = group(clusterid hh_num extension ord field parcel)
-	lab var				plot_id "unique field and parcel identifier"
+	sort			clusterid hh_num extension ord field parcel
+	egen			plot_id = group(clusterid hh_num extension ord field parcel)
+	lab var			plot_id "unique field and parcel identifier"
 
 * create unique household-plot-crop identifier
-	isid				clusterid hh_num extension ord field parcel cropid
-	sort				clusterid hh_num extension ord field parcel cropid
-	egen				cropplot_id = group(clusterid hh_num extension ord field parcel cropid)
-	lab var				cropplot_id "unique field and parcel and crop identifier"
+	isid			clusterid hh_num extension ord field parcel cropid
+	sort			clusterid hh_num extension ord field parcel cropid
+	egen			cropplot_id = group(clusterid hh_num extension ord field parcel cropid)
+	lab var			cropplot_id "unique field and parcel and crop identifier"
+	
+	keep 			clusterid hh_num extension ord field parcel region dept canton zd cropplot_id plot_id /// 
+					mz_hrv mz_damaged cropvalue harvkg cropid 
+					
+	rename 			cropvalue vl_hrv 
+	label 			var vl_hrv "value of harvest, in 2010 USD"
 
 	compress
 	describe
