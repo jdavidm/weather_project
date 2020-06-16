@@ -6,7 +6,7 @@
 * does
 	* reads in Niger, WAVE 2 (2014), POST PLANTING (first passage), ECVMA2_AS2AP1
 	* cleans labor post planting - prep labor 
-	* outputs clean data file ready for combination with wave 2 plot data
+	* combines all labor files in Niger for combination with wave 2 plot data (harvest, planting)
 
 * assumes
 	* customsave.ado
@@ -207,7 +207,7 @@
 	*** without free labor: average = 11.4, max = 180
 	
 * **********************************************************************
-* 3 - end matter, clean up to save
+* 3 - combine planting and harvest labor 
 * **********************************************************************
 
 	keep 			clusterid hh_num extension ord field parcel prep_labor prep_labor_all ///
@@ -235,6 +235,11 @@
 	*** we will impute the missing values later
 
 	drop _as2ap13 
+	
+* **********************************************************************
+* 4 - end matter, clean up to save
+* **********************************************************************
+
 
 	compress
 	describe
