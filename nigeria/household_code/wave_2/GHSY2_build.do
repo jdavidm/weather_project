@@ -415,6 +415,19 @@
 * append southern data
 	append		using "`export'/ghsy2_merged_s.dta", force
 
+* check to verify that there are observations for all variables
+	sum
+	*** missing observations in z-gdd
+	*** this is because those osbervations always have the same number of gdd
+	*** thus, they have no standard deviation and thus a z-score of infinity
+	*** we recode these as zeros because a z-score equal to 0 represents an element equal to the mean
+	
+* replace missing z-gdd with missing
+	loc	zgdd			v21_*
+	foreach v of varlist `zgdd'{
+	    replace		`v' = 0 if `v' == .
+	}		
+	
 	qui: compress	
 	describe
 	summarize 
