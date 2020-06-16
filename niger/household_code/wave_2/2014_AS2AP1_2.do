@@ -73,12 +73,10 @@
 	tab 			fert_any, missing
 	*** 1,123 use some sort of fertilizer (21%), none missing
 	
-* create conversion units - kgs, tiya, black sachet, white sachet 	
+* create conversion units - kgs, tiya
 	gen 			kgconv = 1 
 	gen 			tiyaconv = 3
-	gen 			bsachet = .
-	gen 			wsachet = . 
-	*** do not currently know converison for black and white sachets 
+	*** will not create conversion for black and white sachet - will impute theses values 
 	
 * create amoung of fertilizer value (kg)
 ** UREA 
@@ -87,8 +85,8 @@
 	rename AS02AQ09B ureaquant
 	gen kgurea = ureaquant*kgconv if ureaunits == 1
 	replace kgurea = ureaquant*tiyaconv if ureaunits == 2
-	*replace kgurea = ureaquant*bsachetconv if ureaunits == 3
-	*replace kgurea = ureaquant*wsachetconv if ureaunits == 4
+	replace kgurea = . if ureaunits == 3
+	replace kgurea = . if ureaunits == 4
 	tab kgurea 
 ** DAP
 	replace AS02AQ10C = . if AS02AQ10C == 9 
@@ -96,8 +94,8 @@
 	rename AS02AQ10B dapquant
 	gen kgdap = dapquant*kgconv if dapunits == 1
 	replace kgdap = dapquant*tiyaconv if dapunits == 2
-	*replace kgdap = dapquant*bsachetconv if dapunits == 3
-	*replace kgdap = dapquant*wsachetconv if dapunits == 4
+	replace kgdap = . if dapunits == 3
+	replace kgdap = . if dapunits == 4
 	tab kgdap 
 ** NPK
 	replace AS02AQ11C = . if AS02AQ11C == 9 
@@ -105,8 +103,8 @@
 	rename AS02AQ11B npkquant
 	gen npkkg = npkquant*kgconv if npkunits == 1
 	replace npkkg = npkquant*tiyaconv if npkunits == 2
-	*replace npkkg = npkquant*bsachetconv if npkunits == 3
-	*replace npkkg = npkquant*wsachetconv if npkunits == 4
+	replace npkkg = . if npkunits == 3
+	replace npkkg = . if npkunits == 4
 	tab npkkg 
 ** BLEND 
 	replace AS02AQ12C = . if AS02AQ12C == 9 
@@ -114,15 +112,31 @@
 	rename AS02AQ12B blendquant
 	gen blendkg = blendquant*kgconv if blendunits == 1
 	replace blendkg = blendquant*tiyaconv if blendunits == 2
-	*replace blendkg = blendquant*bsachetconv if blendunits == 3
-	*replace blendkg = blendquant*wsachetconv if blendunits == 4
+	replace blendkg = . if blendunits == 3
+	replace blendkg = . if blendunits == 4
 	tab blendkg 
 
 *total use 
 	egen fert_use = rsum(kgurea kgdap npkkg blendkg)
 	count  if fert_use != . 
 	count  if fert_use == . 
-	*** how many missing / not
+	*** need to replace those in sachets equal to . because those will be replaced with 0s in summation 
+	replace fert_use = . if ureaunits == 3
+	*** 43 changes made
+	replace fert_use = . if ureaunits == 4
+	*** 12 changes made
+	replace fert_use = . if dapunits == 3
+	*** 3 changes made
+	replace fert_use = . if dapunits == 4
+	*** 1 change made
+	replace fert_use = . if npkunits == 3
+	*** 24 changes made
+	replace fert_use = . if npkunits == 4
+	*** 5 changes made
+	replace fert_use = . if blendunits == 3
+	*** 9 changes made
+	replace fert_use = . if blendunits == 4
+	*** 5 changes made 
 	
 * summarize fertilizer
 	sum				fert_use, detail
@@ -130,7 +144,7 @@
 
 * replace any +3 s.d. away from median as missing
 	replace			fert_use = . if fert_use > `r(p50)'+(3*`r(sd)')
-	*** replaced  values, max is now 
+	*** replaced 129 values, max is now 
 	
 * impute missing values
 	mi set 			wide 	// declare the data to be wide.
@@ -149,12 +163,13 @@
 	replace			fert_use = fert_use_1_
 	lab var			fert_use "fertilizer use (kg), imputed"
 	drop			fert_use_1_
-	*** imputed  values out of  total observations	
+	*** imputed 231 values out of 5139 total observations	
 	
 * check for missing values
 	count 			if fert_use == !.
 	count			if fert_use == .
-	*** 
+	*** 4145 total values
+	*** 0 missing values 
 
 * **********************************************************************
 * 3 - end matter, clean up to save
