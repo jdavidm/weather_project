@@ -23,7 +23,7 @@
 	* 2014_as2ap2_1 - do file to create planting labor
 	* 2014_as2ap2_2 - do file to create harvest labor 
 	* 2014_AS2AP1_3 - do file to create prep labor AND merges in harvest and planting labor
-		*** _3 MUST BE RUN LAST, with _1 and _2 preceeding - becuase these must be created to include in merge at end of file 
+		*** _3 MUST BE RUN LAST, with _1 and _2 preceeding - because these must be created to include in merge at end of file 
 	* 2014_ms00p1 - do file to get regional indicators which are used in constructing prices (2014_as1p2_p)
 	* 2014_as1p2_p - do file to create prices
 		*** MUST BE RUN AFTER 2014_ms00p1
