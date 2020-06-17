@@ -10,6 +10,7 @@
 
 * assumes
 	* customsave.ado
+	* access to 2014_as2ap2_2 and 2014_as2ap2_1
 
 * TO DO:
 	* done
