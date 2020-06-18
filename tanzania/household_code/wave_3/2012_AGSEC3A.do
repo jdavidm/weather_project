@@ -34,22 +34,22 @@
 
 * load data
 	use 			"`root'/AG_SEC_3A", clear
-
-* renaming variables of interest
-	rename			y3_hhid hhid
+	
+* dropping duplicates
+	duplicates 		drop
+	*** 0 obs dropped
 	
 * check for uniquie identifiers
 	drop			if plotnum == ""
-	isid			hhid plotnum
+	isid			y3_hhid plotnum
 	*** 1,710 obs dropped
 	
 * generate unique observation id
-	gen				plot_id = hhid + " " + plotnum
-	lab var			plot_id "Unique plot id"
+	gen				plot_id = y3_hhid + " " + plotnum
 	isid			plot_id	
 
 * must merge in regional identifiers from 2008_HHSECA to impute
-	merge			m:1 hhid using "`export'/HH_SECA"
+	merge			m:1 y3_hhid using "`export'/HH_SECA"
 	tab				_merge
 	*** 1,710 not matched
 	
@@ -84,7 +84,6 @@
 	replace			ag3a_49 = 0 if ag3a_49 == .
 	replace			ag3a_56 = 0 if ag3a_56 == .
 	gen				kilo_fert = ag3a_49 + ag3a_56
-	lab var			kilo_fert "fertilizer used (kg)"
 
 * summarize fertilizer
 	sum				kilo_fert, detail
@@ -98,7 +97,7 @@
 	mi set 			wide 	// declare the data to be wide.
 	mi xtset		, clear 	// clear any xtset that may have had in place previously
 	mi register		imputed kilo_fert // identify kilo_fert as the variable being imputed
-	sort			hhid plotnum, stable // sort to ensure reproducability of results
+	sort			y3_hhid plotnum, stable // sort to ensure reproducability of results
 	mi impute 		pmm kilo_fert i.uq_dist, add(1) rseed(245780) ///
 						noisily dots force knn(5) bootstrap
 	mi 				unset
@@ -109,7 +108,6 @@
 						statistics(n mean min max) columns(statistics) ///
 						longstub format(%9.3g) 
 	replace			kilo_fert = kilo_fert_1_
-	lab var			kilo_fert "fertilizer use (kg), imputed"
 	drop			kilo_fert_1_
 	*** imputed 63 values out of 7,447 total observations	
 	
@@ -121,7 +119,6 @@
 * renaming irrigation
 	rename			ag3a_18 irrigated 
 	replace			irrigated = 2 if irrigated == .
-	lab var			irrigated "=1 if any irrigation was used"
 	
 * constructing pesticide/herbicide variables
 	gen				pesticide_any = 2
@@ -131,8 +128,6 @@
 	lab define		pesticide_any 1 "Yes" 2 "No"
 	lab values		pesticide_any pesticide_any
 	lab values		herbicide_any pesticide_any
-	lab var			pesticide_any "=1 if any pesticide was used"
-	lab var			herbicide_any "=1 if any herbicide was used"
 
 
 * ***********************************************************************
@@ -189,25 +184,25 @@
 	
 	* impute ag3a_72_1
 		mi register		imputed ag3a_72_1 // identify ag3a_72_1 as the variable being imputed
-		sort			hhid plotnum, stable // sort to ensure reproducability of results
+		sort			y3_hhid plotnum, stable // sort to ensure reproducability of results
 		mi impute 		pmm ag3a_72_1 i.uq_dist, add(1) rseed(245780) ///
 							noisily dots force knn(5) bootstrap
 	
 	* impute ag3a_72_2
 		mi register		imputed ag3a_72_2 // identify ag3a_72_2 as the variable being imputed
-		sort			hhid plotnum, stable // sort to ensure reproducability of results
+		sort			y3_hhid plotnum, stable // sort to ensure reproducability of results
 		mi impute 		pmm ag3a_72_2 i.uq_dist, add(1) rseed(245780) ///
 							noisily dots force knn(5) bootstrap
 	
 	* impute ag3a_72_8
 		mi register		imputed ag3a_72_8 // identify ag3a_72_1 as the variable being imputed
-		sort			hhid plotnum, stable // sort to ensure reproducability of results
+		sort			y3_hhid plotnum, stable // sort to ensure reproducability of results
 		mi impute 		pmm ag3a_72_8 i.uq_dist, add(1) rseed(245780) ///
 							noisily dots force knn(5) bootstrap
 	
 	* impute ag3a_72_19
 		mi register		imputed ag3a_72_19 // identify ag3a_72_2 as the variable being imputed
-		sort			hhid plotnum, stable // sort to ensure reproducability of results
+		sort			y3_hhid plotnum, stable // sort to ensure reproducability of results
 		mi impute 		pmm ag3a_72_19 i.uq_dist, add(1) rseed(245780) ///
 							noisily dots force knn(5) bootstrap
 							
@@ -253,13 +248,13 @@
 	
 	* impute women's planting labor
 		mi register		imputed plant_w // identify kilo_fert as the variable being imputed
-		sort			hhid plotnum, stable // sort to ensure reproducability of results
+		sort			y3_hhid plotnum, stable // sort to ensure reproducability of results
 		mi impute 		pmm plant_w i.uq_dist if ag3a_73 == 1, add(1) rseed(245780) ///
 							noisily dots force knn(5) bootstrap
 	
 	* impute women's harvest labor
 		mi register		imputed hrvst_w // identify kilo_fert as the variable being imputed
-		sort			hhid plotnum, stable // sort to ensure reproducability of results
+		sort			y3_hhid plotnum, stable // sort to ensure reproducability of results
 		mi impute 		pmm hrvst_w i.uq_dist if ag3a_73 == 1, add(1) rseed(245780) ///
 							noisily dots force knn(5) bootstrap
 							
@@ -277,21 +272,39 @@
 
 * generate total labor days (household plus hired)
 	gen				labor_days = hh_labor_days + hired_labor_days
-	lab var			labor_days "total labor (days), imputed"
 	
 	
 * **********************************************************************
 * 5 - end matter, clean up to save
 * **********************************************************************
-
-* keep what we want, get rid of the rest
-	keep			hhid plot_id irrigated fert_any kilo_fert ///
-						pesticide_any herbicide_any labor_days plotnum
-
-	order			hhid plotnum plot_id
 	
+* keep what we want, get rid of the rest
+	keep			y3_hhid plotnum plot_id irrigated fert_any kilo_fert ///
+						pesticide_any herbicide_any labor_days plotnum ///
+						region district ward ea y3_rural clusterid strataid ///
+						y3_weight
+	order			y3_hhid plotnum plot_id
+	
+* renaming and relabelling variables
+	lab var			y3_hhid "Unique Household Identification NPS Y3"
+	lab var			y3_rural "Cluster Type"
+	lab var			y3_weight "Household Weights (Trimmed & Post-Stratified)"
+	lab var			plotnum "Plot ID Within household"
+	lab var			plot_id "Unquie Plot Identifier"
+	lab var			clusterid "Unique Cluster Identification"
+	lab var			strataid "Design Strata"
+	lab var			region "Region Code"
+	lab var			district "District Code"
+	lab var			ward "Ward Code"
+	lab var			ea "Village / Enumeration Area Code"
+	lab var			labor_days "Total Labor (days), Imputed"
+	lab var			irrigated "Is plot irrigated?"
+	lab var			pesticide_any "Was Pesticide Used?"
+	lab var			herbicide_any "Was Herbicide Used?"	
+	lab var			kilo_fert "Fertilizer Use (kg), Imputed"
+		
 * prepare for export
-	isid			hhid plotnum
+	isid			y3_hhid plotnum
 	compress
 	describe
 	summarize 

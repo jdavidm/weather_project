@@ -101,8 +101,8 @@
 						mz_hrv mz_lnd mz_lab mz_frt ///
 			 (max)	pest_any herb_any irr_any  ///
 						mz_pst mz_hrb mz_irr mz_damaged, ///
-						by(hhid plotnum plot_id clusterid strataid ///
-						y4_weight region district ward village)
+						by(y4_hhid plotnum plot_id clusterid strataid ///
+						y4_weight region district ward ea)
 						
 * replace non-maize harvest values as missing
 	tab				mz_damaged, missing
@@ -361,13 +361,13 @@
 * **********************************************************************
 
 * generate plot area
-	bysort			hhid (plot_id) :	egen tf_lnd = sum(plotsize)
+	bysort			y4_hhid (plot_id) :	egen tf_lnd = sum(plotsize)
 	lab var			tf_lnd	"Total farmed area (ha)"
 	assert			tf_lnd > 0 
 	sum				tf_lnd, detail
 
 * value of harvest
-	bysort			hhid (plot_id) :	egen tf_hrv = sum(vl_hrvimp)
+	bysort			y4_hhid (plot_id) :	egen tf_hrv = sum(vl_hrvimp)
 	lab var			tf_hrv	"Total value of harvest (2010 USD)"
 	sum				tf_hrv, detail
 	
@@ -377,13 +377,13 @@
 	sum				tf_yld, detail
 	
 * labor
-	bysort 			hhid (plot_id) : egen lab_tot = sum(labordaysimp)
+	bysort 			y4_hhid (plot_id) : egen lab_tot = sum(labordaysimp)
 	generate		tf_lab = lab_tot / tf_lnd
 	lab var			tf_lab	"labor rate (days/ha)"
 	sum				tf_lab, detail
 
 * fertilizer
-	bysort 			hhid (plot_id) : egen fert_tot = sum(fertimp)
+	bysort 			y4_hhid (plot_id) : egen fert_tot = sum(fertimp)
 	generate		tf_frt = fert_tot / tf_lnd
 	lab var			tf_frt	"fertilizer rate (kg/ha)"
 	sum				tf_frt, detail
@@ -393,7 +393,7 @@
 	tab				pest_any, missing
 	*** still missing that one obs
 	
-	bysort 			hhid (plot_id) : egen tf_pst = max(pest_any)
+	bysort 			y4_hhid (plot_id) : egen tf_pst = max(pest_any)
 	lab var			tf_pst	"Any plot has pesticide"
 	tab				tf_pst
 	*** it gets lost in the egen, one of the other plots must use pesticide
@@ -402,14 +402,14 @@
 * herbicide
 	replace			herb_any = 0 if herb_any == 2
 	tab				herb_any, missing
-	bysort 			hhid (plot_id) : egen tf_hrb = max(herb_any)
+	bysort 			y4_hhid (plot_id) : egen tf_hrb = max(herb_any)
 	lab var			tf_hrb	"Any plot has herbicide"
 	tab				tf_hrb
 	
 * irrigation
 	replace			irr_any = 0 if irr_any == 2
 	tab				irr_any, missing
-	bysort 			hhid (plot_id) : egen tf_irr = max(irr_any)
+	bysort 			y4_hhid (plot_id) : egen tf_irr = max(irr_any)
 	lab var			tf_irr	"Any plot has irrigation"
 	tab				tf_irr
 	
@@ -418,14 +418,14 @@
 * **********************************************************************	
 	
 * generate plot area
-	bysort			hhid (plot_id) :	egen cp_lnd = sum(plotsize) ///
+	bysort			y4_hhid (plot_id) :	egen cp_lnd = sum(plotsize) ///
 						if mz_hrvimp != .
 	lab var			cp_lnd	"Total maize area (ha)"
 	assert			cp_lnd > 0 
 	sum				cp_lnd, detail
 
 * value of harvest
-	bysort			hhid (plot_id) :	egen cp_hrv = sum(vl_hrvimp) ///
+	bysort			y4_hhid (plot_id) :	egen cp_hrv = sum(vl_hrvimp) ///
 						if mz_hrvimp != .
 	lab var			cp_hrv	"Total quantity of maize harvest (kg)"
 	sum				cp_hrv, detail
@@ -436,14 +436,14 @@
 	sum				cp_yld, detail
 	
 * labor
-	bysort 			hhid (plot_id) : egen lab_mz = sum(labordaysimp) ///
+	bysort 			y4_hhid (plot_id) : egen lab_mz = sum(labordaysimp) ///
 						if mz_hrvimp != .
 	generate		cp_lab = lab_mz / cp_lnd
 	lab var			cp_lab	"labor rate for maize (days/ha)"
 	sum				cp_lab, detail
 
 * fertilizer
-	bysort 			hhid (plot_id) : egen fert_mz = sum(fertimp) ///
+	bysort 			y4_hhid (plot_id) : egen fert_mz = sum(fertimp) ///
 						if mz_hrvimp != .
 	generate		cp_frt = fert_mz / cp_lnd
 	lab var			cp_frt	"fertilizer rate for maize (kg/ha)"
@@ -451,21 +451,21 @@
 
 * pesticide
 	tab				pest_any, missing
-	bysort 			hhid (plot_id) : egen cp_pst = max(pest_any) /// 
+	bysort 			y4_hhid (plot_id) : egen cp_pst = max(pest_any) /// 
 						if mz_hrvimp != .
 	lab var			cp_pst	"Any maize plot has pesticide"
 	tab				cp_pst
 	
 * herbicide
 	tab				herb_any, missing
-	bysort 			hhid (plot_id) : egen cp_hrb = max(herb_any) ///
+	bysort 			y4_hhid (plot_id) : egen cp_hrb = max(herb_any) ///
 						if mz_hrvimp != .
 	lab var			cp_hrb	"Any maize plot has herbicide"
 	tab				cp_hrb
 	
 * irrigation
 	tab				irr_any, missing
-	bysort 			hhid (plot_id) : egen cp_irr = max(irr_any) ///
+	bysort 			y4_hhid (plot_id) : egen cp_irr = max(irr_any) ///
 						if mz_hrvimp != .
 	lab var			cp_irr	"Any maize plot has irrigation"
 	tab				cp_irr
@@ -479,7 +479,7 @@
 	    replace		`v' = 0 if `v' == .
 	}		
 	
-	collapse (sum)	tf_* cp_*, by(region district ward village hhid)
+	collapse (sum)	tf_* cp_*, by(region district ward ea y4_hhid)
 	*** we went frm 3,107 to 1,788 observations 
 	
 * return non-maize production to missing
@@ -503,15 +503,16 @@
 * verify values are accurate
 	sum				tf_* cp_*
 	
+	
 * **********************************************************************
 * 5 - end matter, clean up to save
 * **********************************************************************
 
 * verify unique household id
-	isid			hhid
+	isid			y4_hhid
 	
 * rename hhid and merge in panel key
-	rename			hhid y3_hhid
+	rename			y4_hhid y3_hhid
 	
 	merge			1:m y3_hhid using "$data/household_data/tanzania/wave_3/raw/NPSY3.PANEL.KEY.dta"
 	
@@ -524,7 +525,7 @@
 	gen				year = 2014
 	lab var			year "Year"
 		
-	order 			region district ward village UPI3 y1_hhid y2_hhid y4_hhid ///
+	order 			region district ward ea UPI3 y1_hhid y2_hhid y4_hhid ///
 						year tf_hrv tf_lnd tf_yld tf_lab tf_frt tf_pst tf_hrb ///
 						tf_irr cp_hrv cp_lnd cp_yld cp_lab cp_frt cp_pst ///
 						cp_hrb cp_irr
