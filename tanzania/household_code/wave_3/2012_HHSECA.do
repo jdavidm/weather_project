@@ -32,6 +32,10 @@
 
 * load data
 	use 		"`root'/HH_SEC_A", clear
+	
+* dropping duplicates
+	duplicates 	drop
+	*** 0 obs dropped
 
 * renaming some variables
 	rename		hh_a01_1 region

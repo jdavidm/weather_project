@@ -32,6 +32,10 @@
 
 * load data
 	use 		"`root'/SEC_A_T", clear
+	
+* dropping duplicates
+	duplicates 	drop
+	*** 0 obs dropped
 
 * keep variables of interest
 	keep		hhid hh_weight clusterid strataid ///

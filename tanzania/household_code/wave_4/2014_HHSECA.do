@@ -35,6 +35,10 @@
 * load data
 	use 		"`root'/hh_sec_a", clear
 	
+* dropping duplicates
+	duplicates 	drop
+	*** 0 obs dropped
+	
 	drop y4_rural 
 	
 * renaming some variables
@@ -51,6 +55,17 @@
 
 	order		y4_hhid region district ward ea y4_rural ///
 					clusterid strataid y4_weight 
+					
+* relabel variables
+	lab var		y4_hhid "Unique Household Identification NPS Y4"
+	lab var		region "Region Code"
+	lab var		district "District Code"
+	lab var		ward "Ward Code"
+	lab var		ea "Village / Enumeration Area Code"
+	lab var		y4_rural "Cluster Type"
+	lab var		clusterid "Unique Cluster Identification"
+	lab var		strataid "Design Strata"
+	lab var		y4_weight "Household Weights (Trimmed & Post-Stratified)"
 					
 * prepare for export
 	compress
