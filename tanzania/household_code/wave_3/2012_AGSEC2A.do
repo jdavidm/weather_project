@@ -224,10 +224,13 @@
 * **********************************************************************
 
 * keep what we want, get rid of the rest
-	keep		y3_hhid plotnum plot_id plotsize clusterid strataid ///
-					y3_weight region district ward ea y3_rural
+	keep		y3_hhid region district ward ea y3_rural ///
+					clusterid strataid y3_weight mover_R1R2R3 ///
+					location_R2_to_R3 plotnum plot_id plotsize
+
 	order		y3_hhid plotnum plot_id clusterid strataid y3_weight ///
-					region district ward ea plotsize
+					region district ward ea y3_rural mover_R1R2R3 ///
+					location_R2_to_R3 plotsize
 					
 * renaming and relabelling variables
 	lab var		y3_hhid "Unique Household Identification NPS Y3"

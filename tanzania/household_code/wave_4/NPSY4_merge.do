@@ -511,21 +511,11 @@
 * verify unique household id
 	isid			y4_hhid
 	
-* rename hhid and merge in panel key
-	rename			y4_hhid y3_hhid
-	
-	merge			1:m y3_hhid using "$data/household_data/tanzania/wave_3/raw/NPSY3.PANEL.KEY.dta"
-	
-	drop			if _merge == 2
-	drop			_merge indidy1 indidy2 indidy3
-	
-	rename			y3_hhid y4_hhid
-	
 * generate year identifier
 	gen				year = 2014
 	lab var			year "Year"
-		
-	order 			region district ward ea UPI3 y1_hhid y2_hhid y4_hhid ///
+
+	order 			region district ward ea y4_hhid ///
 						year tf_hrv tf_lnd tf_yld tf_lab tf_frt tf_pst tf_hrb ///
 						tf_irr cp_hrv cp_lnd cp_yld cp_lab cp_frt cp_pst ///
 						cp_hrb cp_irr

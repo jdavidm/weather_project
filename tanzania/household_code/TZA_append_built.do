@@ -38,18 +38,87 @@
 * **********************************************************************
 * 1 - append all Tanzania data
 * **********************************************************************
+
+* import the first wave file
+	use 		"`root'/wave_1/npsy1_merged.dta", clear
+	
+* append the second wave file
+	append		using "`root'/wave_2/npsy2_merged.dta", force	
+	
+	order		y2_hhid, after(y1_hhid)	
+
+* drop split-off households, keep only original households
+	drop if		mover_R1R2 == 1
+	*** drops 315 households
+
+* import the third wave file
+	append 		using "`root'/wave_3/npsy3_merged.dta", force	
+
+	order		y3_hhid, after(y2_hhid)
+	
+* drop split-off households, keep only original households
+	drop if		mover_R1R2R3 == 1
+	*** drops 565 households	
+	
+* fill in missing y3_hhid
+	sort		y1_hhid year
+	egen		hhid = group(y1_hhid)
+	order		hhid
+	
+	xtset 		hhid
+	xfill 		y3_hhid if hhid != ., i(hhid)	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+*	replace		y1_hhid = substr(y2_hhid, 1, 14) if y1_hhid == ""
+
+* drop split-off households, keep only original households
+	duplicates 	tag y1_hhid year, generate(dup)	
+	drop if 	dup > 0 & mover_R1R2 == 1
+	drop		dup
+	duplicates 	tag y1_hhid year, generate(dup)	
+	*** there are two duplicate households left and can't tell which to drop
+	*** so I arbitrarily drop one each
+	
+	drop if		dup == 1 & y2_rural == 0
+	drop if 	y2_hhid == "1907007005073510"
+	drop		dup
 	
 * import the third wave file
-	use 		"`root'/wave_3/npsy3_merged.dta", clear
+	append 		using "`root'/wave_3/npsy3_merged.dta", force
 
-* append the first wave file
-	append		using "`root'/wave_1/npsy1_merged.dta", force	
+	order		y3_hhid, after(y2_hhid)
+
+* create household panel id
+	sort		y1_hhid y2_hhid y3_hhid
+	egen		hhid = group(y1_hhid)
+	lab var		hhid "panel household id"
+	order		hhid
+
+* drop split-off households, keep only original households
+	duplicates 	tag hhid year, generate(dup)
+	replace		dup = 0 if dup == 745
+	*** replace duplicate value for non-panel households
 	
-* create household panel id for year 1
-	sort		y1_hhid
-	egen		y1id = group(y1_hhid)
-	lab var		y1id "panel household id"
-	order		y1id
+	drop if 	dup > 0 & mover_R1R2R3 == 1
+	drop		dup
+	duplicates 	tag hhid year, generate(dup)	
+	replace		dup = 0 if dup == 745
+	
+	
+* fill in missing y2_hhid and y3_hhid
+	xtset 		hhid
+	xfill 		y2_hhid if hhid != ., i(hhid)
+
+	
+	
 	
 	xtset		y1id	
 	xfill		y3_hhid if y3_hhid == "", i(y1id)

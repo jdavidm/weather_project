@@ -211,8 +211,8 @@
 	keep		hhid plotnum plot_id plotsize clusterid strataid ///
 					y1_weight region district ward ea y1_rural
 	order		hhid plotnum plot_id clusterid strataid y1_weight ///
-					region district ward ea plotsize
-					
+					region district ward ea y1_rural plotsize
+	
 * renaming and relabelling variables
 	lab var		hhid "Unique Household Identification NPS Y1"
 	lab var		y1_rural "Cluster Type"
