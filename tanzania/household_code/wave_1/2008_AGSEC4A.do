@@ -35,20 +35,20 @@
 
 * load data
 	use 		"`root'/SEC_4A", clear
+	
+* dropping duplicates
+	duplicates 		drop
+	*** 0 obs dropped
 
 * rename variables of interest
 	rename 		zaocode crop_code
 	
 * create percent of area to crops
 	gen				pure_stand = s4aq3 == 1
-	lab var			pure_stand "=1 if crop was pure stand"
 	gen				any_pure = pure_stand == 1
-	lab var			any_pure "=1 if any crop was pure stand"
 	gen				any_mixed = pure_stand == 0
-	lab var			any_mixed "=1 if any crop was mixed"
+	
 	gen				percent_field = 0.25 if s4aq4 == 1
-	lab var			percent_field "percent of field crop was on"
-
 	replace			percent_field = 0.25 if s4aq4==.25
 	replace			percent_field = 0.50 if s4aq4==2
 	replace			percent_field = 0.75 if s4aq4==3
@@ -83,11 +83,9 @@
 * generate hh x plot x crop identifier
 	isid				hhid plotnum crop_code
 	gen		 			plot_id = hhid + " " + plotnum
-	lab var				plot_id "plot id"
 	tostring 			crop_code, generate(crop_num)
 	gen str20 			crop_id = hhid + " " + plotnum + " " + crop_num
 	duplicates report 	crop_id
-	lab var				crop_id "unique crop id"
 	*** 0 duplicate crop_ids	
 	
 * must merge in regional identifiers from 2008_HHSECA to impute
@@ -175,7 +173,6 @@
 						statistics(n mean min max) columns(statistics) ///
 						longstub format(%9.3g) 
 	replace			hvst_value = hvst_value_1_
-	lab var				hvst_value "Value of harvest (2010 USD)"
 	drop			hvst_value_1_
 	*** imputed 78 values out of 5,190 total observations	
 	
@@ -208,7 +205,6 @@
 						statistics(n mean min max) columns(statistics) ///
 						longstub format(%9.3g) 
 	replace			mz_hrv = mz_hrv_1_  if crop_code == 11
-	lab var			mz_hrv "Quantity of maize harvested (kg)"
 	drop			mz_hrv_1_
 	*** imputed 18 values out of 1,864 total observations		
 	
@@ -216,18 +212,37 @@
 * **********************************************************************
 * 3 - end matter, clean up to save
 * **********************************************************************
-
-* rename ea village
-	rename 		ea village
 	
 * keep what we want, get rid of what we don't
 	keep 				hhid plotnum plot_id crop_code crop_id clusterid ///
-							strataid hh_weight region district ward village ///
-							any_* pure_stand percent_field ///
-							mz_hrv hvst_value mz_damaged
+							strataid y1_weight region district ward ea ///
+							any_* pure_stand percent_field mz_hrv hvst_value ///
+							mz_damaged y1_rural
 
 	order				hhid plotnum plot_id crop_code crop_id clusterid ///
-							strataid hh_weight region district ward village
+							strataid y1_weight region district ward ea
+	
+* renaming and relabelling variables
+	lab var			hhid "Unique Household Identification NPS Y1"
+	lab var			y1_rural "Cluster Type"
+	lab var			y1_weight "Household Weights (Trimmed & Post-Stratified)"
+	lab var			plotnum "Plot ID Within household"
+	lab var			plot_id "Plot Identifier"
+	lab var			clusterid "Unique Cluster Identification"
+	lab var			strataid "Design Strata"
+	lab var			region "Region Code"
+	lab var			district "District Code"
+	lab var			ward "Ward Code"
+	lab var			ea "Village / Enumeration Area Code"	
+	lab var			mz_hrv "Quantity of Maize Harvested (kg)"
+	lab var			mz_damaged "Was Maize Harvest Damaged to the Point of No Yield"
+	lab var			hvst_value "Value of Harvest (2010 USD)"
+	lab var 		crop_code "Crop Identifier"
+	lab var			crop_id "Unique Crop ID Within Plot"
+	lab var			pure_stand "Is Crop Planted in Full Area of Plot (Purestand)?"
+	lab var			any_pure "Is Crop Planted in Full Area of Plot (Purestand)?"
+	lab var			any_mixed "Is Crop Planted in Less Than Full Area of Plot?"
+	lab var			percent_field "Percent of Field Crop Was Planted On"
 	
 * prepare for export
 	isid			hhid plotnum crop_code
@@ -242,18 +257,3 @@
 	log	close
 
 /* END */
-
-	
-/*
-** what happened to colapsing and mz_damaged? gotta ask...
-		
-* collapse crop level data to plot level
-	collapse (sum)		mz_hrv hvst_value mz_damaged, by(hhid plotnum plot_id)
-	lab var				hvst_value "Value of harvest (2010 USD)"
-	lab var				mz_hrv "Quantity of maize harvested (kg)"
-	
-* replace non-maize harvest values as missing
-	tab					mz_damaged, missing
-	replace				mz_hrv = . if mz_damaged == 0 & mz_hrv == 0
-	drop 				mz_damaged
-	*** 1,492 changes made

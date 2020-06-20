@@ -27,6 +27,7 @@
 * open log	
 	log 	using 		"`logout'/tza_panel_key", append
 
+
 * **********************************************************************
 * 1 - process panel id key
 * **********************************************************************
@@ -34,35 +35,14 @@
 * read in data
 	use			"`cnvrt'/NPSY3.PANEL.KEY.dta", clear
 
-* collapse duplicate individuals in households
-	collapse (count) indidy1 indidy2 indidy3, by( y1_hhid y2_hhid y3_hhid)
+* drop duplicate individuals in households
+	keep if		indidy3 == 1
 	
-	sort y1_hhid y2_hhid y3_hhid, stable
-
-* generate numeric ids
-	egen		y1id = group(y1_hhid)
-	egen		y2id = group(y2_hhid)
-	egen		y3id = group(y3_hhid)
-
-* fill in missing values
-	xtset		y1id
-	xfill		y2_hhid if y2_hhid == "", i(y1id)
-	xfill		y3_hhid if y3_hhid == "", i(y1id)
-	
-	xtset		y2id
-	xfill		y1_hhid if y1_hhid == "", i(y2id)
-	xfill		y3_hhid if y3_hhid == "", i(y2id)
-
-	xtset		y3id
-	xfill		y2_hhid if y2_hhid == "", i(y3id)	
 
 * drop individual ids and all duplicate household records
-	drop		indidy1 indidy2 indidy3 y1id y2id y3id
+	drop		indidy1 indidy2 indidy3 UPI3
 	duplicates 	drop
-	*** this gets us 8,482 unique households
-	
-* generate a unique household id
-	gen			uid = _n
+	*** this gets us 5,010 unique households
 	
 
 * **********************************************************************
@@ -70,16 +50,14 @@
 * **********************************************************************
 
 * verify unique household id
-	isid		uid
-	
-	order		uid
+	isid		y3_hhid
 
 	compress
 	describe
 	summarize 
 	
 * saving production dataset
-	customsave , idvar(uid) filename(panel_key.dta) path("`export'") ///
+	customsave , idvar(y3_hhid) filename(panel_key.dta) path("`export'") ///
 			dofile(tza_panel_key) user($user) 
 
 * close the log

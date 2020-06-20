@@ -208,6 +208,10 @@
 	}						
 }
 
+* prepare for export
+	qui: compress
+	summarize 
+	sort y4_hhid
 	
 * save file
 	qui: compress

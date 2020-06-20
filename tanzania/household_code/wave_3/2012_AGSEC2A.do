@@ -35,20 +35,22 @@
 
 * load data
 	use				"`root'/AG_SEC_2A", clear
+	
+* dropping duplicates
+	duplicates 		drop
+	*** 0 obs dropped
 
 * renaming variables of interest
-	rename			y3_hhid hhid
 	rename			ag2a_04 plotsize_self_ac
 	rename			ag2a_09 plotsize_gps_ac
 	
 * check for uniquie identifiers
 	drop			if plotnum == ""
-	isid			hhid plotnum
+	isid			y3_hhid plotnum
 	*** 1,710 obs dropped that lacked plot ids
 
 * generating unique ob id
-	gen				plot_id = hhid + " " + plotnum
-	lab var			plot_id "Unique plot identifier"
+	gen				plot_id = y3_hhid + " " + plotnum
 	isid			plot_id
 	
 * convert from acres to hectares
@@ -64,7 +66,7 @@
 * ***********************************************************************	
 
 * must merge in regional identifiers from 2012_HHSECA to impute
-	merge			m:1 hhid using "`export'/HH_SECA"
+	merge			m:1 y3_hhid using "`export'/HH_SECA"
 	tab				_merge
 	*** 1,710 not matched, these are the ones we dropped that lacked plotnum
 	
@@ -76,10 +78,6 @@
 	egen			uq_dist = group(region district)
 	distinct		uq_dist
 	*** 132 once again, good deal
-
-* rename household identifier
-	rename			hhid y3_hhid
-	*** allows matching with uncleaned data
 	
 * must merge in regional identifiers from 2012_AG_SEC_3A to impute
 	merge			1:1 y3_hhid plotnum using "`root'/AG_SEC_3A"
@@ -87,9 +85,6 @@
 	
 	drop if			_merge == 2
 	drop			_merge
-
-* rename household identifier
-	rename			y3_hhid hhid
 	
 * record if field was cultivated during long rains
 	gen 			status = ag3a_03==1 if ag3a_03!=.
@@ -200,7 +195,7 @@
 	mi set 			wide 	// declare the data to be wide.
 	mi xtset		, clear 	// clear any xtset that may have had in place previously
 	mi register		imputed plotsize_gps // identify plotsize_GPS as the variable being imputed
-	sort			hhid plotnum, stable // sort to ensure reproducability of results
+	sort			y3_hhid plotnum, stable // sort to ensure reproducability of results
 	mi impute 		pmm plotsize_gps plotsize_self i.uq_dist, add(1) rseed(245780) ///
 						noisily dots force knn(5) bootstrap
 	mi 				unset
@@ -229,13 +224,30 @@
 * **********************************************************************
 
 * keep what we want, get rid of the rest
-	keep			hhid plotnum plot_id plotsize clusterid strataid ///
-						y3_weight region district ward village
-	order			hhid plotnum plot_id clusterid strataid y3_weight ///
-						region district ward village plotsize
-						
+	keep		y3_hhid region district ward ea y3_rural ///
+					clusterid strataid y3_weight mover_R1R2R3 ///
+					location_R2_to_R3 plotnum plot_id plotsize
+
+	order		y3_hhid plotnum plot_id clusterid strataid y3_weight ///
+					region district ward ea y3_rural mover_R1R2R3 ///
+					location_R2_to_R3 plotsize
+					
+* renaming and relabelling variables
+	lab var		y3_hhid "Unique Household Identification NPS Y3"
+	lab var		y3_rural "Cluster Type"
+	lab var		y3_weight "Household Weights (Trimmed & Post-Stratified)"
+	lab var		plotnum "Plot ID Within household"
+	lab var		plot_id "Unquie Plot Identifier"
+	lab var		plotsize "Plot size (ha), imputed"
+	lab var		clusterid "Unique Cluster Identification"
+	lab var		strataid "Design Strata"
+	lab var		region "Region Code"
+	lab var		district "District Code"
+	lab var		ward "Ward Code"
+	lab var		ea "Village / Enumeration Area Code"
+
 * prepare for export
-	isid			hhid plotnum
+	isid			y3_hhid plotnum
 	compress
 	describe
 	summarize 

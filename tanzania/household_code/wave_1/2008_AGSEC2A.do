@@ -35,6 +35,10 @@
 
 * load data
 	use				"`root'/SEC_2A", clear
+	
+* dropping duplicates
+	duplicates 		drop
+	*** 0 obs dropped
 
 * renaming variables of interest
 	rename 		s2aq4 plotsize_self_ac
@@ -188,7 +192,6 @@
 					by(mi_miss) statistics(n mean min max) columns(statistics) ///
 					longstub format(%9.3g)
 	rename		plotsize_gps_1_ plotsize
-	lab var		plotsize "Plot size (ha), imputed"
 	*** imputed 3,650 values out of 4,410 total observations
 	
 	sum				plotsize_self plotsize_gps	plotsize
@@ -204,14 +207,25 @@
 * 4 - end matter, clean up to save
 * **********************************************************************	
 
-* rename ea village
-	rename 		ea village
-
 * keep what we want, get rid of the rest
 	keep		hhid plotnum plot_id plotsize clusterid strataid ///
-					hh_weight region district ward village
-	order		hhid plotnum plot_id clusterid strataid hh_weight ///
-					region district ward village plotsize
+					y1_weight region district ward ea y1_rural
+	order		hhid plotnum plot_id clusterid strataid y1_weight ///
+					region district ward ea y1_rural plotsize
+	
+* renaming and relabelling variables
+	lab var		hhid "Unique Household Identification NPS Y1"
+	lab var		y1_rural "Cluster Type"
+	lab var		y1_weight "Household Weights (Trimmed & Post-Stratified)"
+	lab var		plotnum "Plot ID Within household"
+	lab var		plot_id "Unquie Plot Identifier"
+	lab var		plotsize "Plot size (ha), imputed"
+	lab var		clusterid "Unique Cluster Identification"
+	lab var		strataid "Design Strata"
+	lab var		region "Region Code"
+	lab var		district "District Code"
+	lab var		ward "Ward Code"
+	lab var		ea "Village / Enumeration Area Code"
 
 * prepare for export
 	isid		hhid plotnum
