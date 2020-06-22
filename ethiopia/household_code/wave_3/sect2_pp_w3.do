@@ -27,7 +27,7 @@
 	loc logout = "$data/household_data/ethiopia/logs"
 
 * open log
-*	log using "`logout'/wv3_PPSEC2", append
+	log using "`logout'/wv3_PPSEC2", append
 
 	
 * **********************************************************************

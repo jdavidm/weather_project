@@ -15,7 +15,6 @@
 	
 * TO DO:
 	* like in pp_sect3, many observtions from master are not being matched
-	* must finish building out data cleaning - see wave 1 maybe
 	
 	
 * **********************************************************************
