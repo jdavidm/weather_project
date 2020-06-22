@@ -61,7 +61,13 @@
 * check # of maize obs
 	tab			crop_code
 	*** 3,380 maize obs
-						
+	
+* drop if obs haven't harvested crop
+	tab			ph_s9q03
+	*** 4,398 answered no
+	
+	drop 		if ph_s9q03 == 2
+				
 * attempting to generate unique identifier
 	describe
 	sort 		holder_id parcel_id field_id crop_code
@@ -164,6 +170,11 @@
 	replace		cf = .27 if unit_cd == 192
 	replace		cf = .57 if unit_cd == 193
 	
+	*** PROVIDE CODE AND EXPLANATION ***
+	replace 	cf = 30 if unit_cd == 51		// chinets
+	replace 	cf = 50 if unit_cd == 52
+	replace 	cf = 70 if unit_cd == 53
+	
 * now moving on to region specific units
 	replace 	cf = mean_cf1 if saq01 == 1 & cf == .
 	replace		cf = mean_cf2 if saq01 == 2 & cf == .	
@@ -193,7 +204,7 @@
 	
 	gen			hrvqty_self_converted = hrvqty_self * cf
 	pwcorr		hrvqty_self_converted hrvqty_self_kgest
-	*** correlation of 0.5044 - not terrible but not great either
+	*** correlation of 0.5045 - not terrible but not great either
 	*** i'm inclined to take the surveyor's estimate over the converted kgs
 	*** being that the conversion factors are region wide averages
 	*** the surveyor may have been able to estimate based on more local info
@@ -203,7 +214,7 @@
 	*** only 98 changes made in this step
 
 	tab			hrvqty_selfr, missing
-	*** missing 4,428 obs
+	*** missing 17 obs
 	
 	sum 		hrvqty_selfr, detail
 	*** mean qty 135 kg, this seems plausible
@@ -219,7 +230,7 @@
 	rename 		ph_s9q11 damaged
 	rename 		ph_s9q13 damaged_pct
 	tab 		damaged_pct damaged, missing
-	tab 		hrvqty_self damaged, missing
+	tab 		hrvqty_selfr damaged, missing
 	*** crop damage reported on 47 of the 49 obs w/ harv quantity = 0
 	*** what about 100% crop damage on other obs?
 	
@@ -235,15 +246,10 @@
 	
 	tab			damaged_pct
 	tab 		destroyed_lite, missing
-	*** 1,965 obs reporting 100% destoryed
+	*** 1,965 obs reporting 100% destroyed
 	*** the problem here is i'm not confident in how damaged_pct is reported
 	*** there are 11 obs >100% damage
 	*** there are also 258 obs reporting <5% damage
-
-* i don't know if i think this should be done or not
-* if we trust the reporting on crop loss, the code below replaces weights with zeros	
-*	replace 	hrvqty_selfr = 0 if destroyed_lite == 1
-	*** 1,962 changes made
 	
 * let's take stock of where we're at so far
 *	order 		hrvqty_selfr hrvqty_self_kgest hrvqty_self_converted ///
@@ -252,7 +258,7 @@
 	sort 		hrvqty_selfr 
 	tab			hrvqty_self if hrvqty_selfr == 0, missing
 	*** these all have non-zero self reported values
-	*** two are listed as destoryed (100% crop damage)
+	*** two are listed as destroyed (100% crop damage)
 	
 	tab			hrvqty_self_converted if hrvqty_selfr == 0, missing
 	*** 11 of 49 missing, due to missing conversion factors
@@ -262,7 +268,7 @@
 	replace		hrvqty_selfr = hrvqty_self_converted if hrvqty_selfr == 0 & ///
 					hrvqty_self_converted != .
 	sort		hrvqty_selfr
-	*** only 11 zeros remain, still 4,428 = .
+	*** only 11 zeros remain, still 17 = .
 	*** if this step is taken, neither of the two destroyed obs remain (line 236)
 	
 	tab 		unit_cd if hrvqty_selfr == 0
@@ -307,13 +313,25 @@
 					& hrvqty_self_converted != .
 	*** 3 changes
 	
-* remaining zeros are all chinets in SNNP
-* can a regional conversion factor be reverse engineered? how?
+* chinet conversions - 30 for small, 50 for medium, 70 for large
 	
+* remaining zeros are all chinets in SNNP - 8 obs
+* can a regional conversion factor be reverse engineered? how?
+* either replace with missing and impute or continue to count these as zeros
+* chinet conversions - 30 for small, 50 for medium, 70 for large
+* based on algebra and supported by online research
 	
 * ***********************************************************************
 * 2d - resolving missing values
 * ***********************************************************************		
+
+* summarize value of harvest
+	sum				hrvqty_selfr, detail
+	*** median 45, mean 135, max 50,000 - max is huge!
+
+* replace any +3 s.d. away from median as missing
+	replace			hrvqty_selfr = . if hrvqty_selfr > `r(p50)'+(3*`r(sd)')
+	*** replaced 114 values, max is now 2,000
 	
 * impute missing harvest weights using predictive mean matching 
 	mi set 		wide //	declare the data to be wide. 
@@ -347,6 +365,10 @@
 * 3 - cleaning and keeping
 * ***********************************************************************
 
+* purestand or mixed and if mixed what percent was planted with this crop?
+	rename		ph_s9q01 purestand
+	rename		ph_s9q02 mixedcrop_pct
+
 * renaming some variables of interest
 	rename 		household_id hhid
 	rename 		household_id2 hhid2	
@@ -359,7 +381,8 @@
 * restrict to variables of interest 
 * this is how world bank has their do-file set up
 * if we want to keep all identifiers (i.e. region, zone, etc) we can do that easily
-	keep  		holder_id- crop_code crop_id mz_hrv harvest_qty
+	keep  		holder_id- crop_code crop_id mz_hrv harvest_qty purestand ///
+					mixedcrop_pct
 	*** keeping harvest quantity for all crops as a precaution
 	
 	drop		crop_name

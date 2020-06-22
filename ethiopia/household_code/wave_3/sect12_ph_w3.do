@@ -35,21 +35,14 @@
 * 1 - preparing ESS (Wave 3) - Post Harvest Section 12
 * **********************************************************************
 
-* build conversion id into conversion dataset
-	clear
-	use "`root'/Crop_CF_Wave3.dta"
-	generate conv_id = string(crop_code) + " " + string(unit_cd)
-	duplicates report
-	duplicates drop
-	duplicates report conv_id
-	save "`root'/Crop_CF_Wave3_use.dta", replace
-	clear
-
 * load data
 	use "`root'/sect12_ph_w3.dta", clear
 
 * dropping duplicates
 	duplicates drop
+	
+* drop trees and other perennial crops
+	drop if crop_code == 65 // guava, for example
 
 * attempting to generate unique identifier
 	describe
