@@ -28,7 +28,7 @@
 	loc 	logout	=	"$data/household_data/nigeria/logs"
 
 * open log
-	*log 	using 	"`logout'/ghsy2_merge", append
+	log 	using 	"`logout'/ghsy1_merge", append
 
 	
 * **********************************************************************
@@ -552,8 +552,8 @@
 	summarize 
 	
 * saving production dataset
-	customsave , idvar(hhid) filename(hhfinal_ghsy2.dta) path("`export'") ///
-			dofile(ghsy2_merge) user($user) 
+	customsave , idvar(hhid) filename(hhfinal_ghsy1.dta) path("`export'") ///
+			dofile(ghsy1_merge) user($user) 
 
 * close the log
 	log	close
