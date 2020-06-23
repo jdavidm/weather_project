@@ -215,10 +215,7 @@
 	rename 			district2010 district
 	rename 			ward2010 ward
 	rename 			ea2010 ea
-	rename 			clusterid2010 clusterid
-	rename 			strataid2010 strataid
 	rename 			*hhid2010 *hhid
-	rename			y2_weight2010 weight2010
 	rename			mover_R1R22010 mover2010
 	
 * drop unneeded variables

@@ -106,7 +106,7 @@
 			 (max)	pest_any herb_any irr_any  ///
 						mz_pst mz_hrb mz_irr mz_damaged, ///
 						by(hhid plotnum plot_id clusterid strataid ///
-						y1_weight region district ward ea y1_rural)
+						hhweight region district ward ea y1_rural)
 
 * replace non-maize harvest values as missing
 	tab				mz_damaged, missing
@@ -467,7 +467,7 @@
 	}		
 	
 	collapse (sum)	tf_* cp_*, by(hhid region district ward ea y1_rural ///
-					clusterid strataid y1_weight)
+					clusterid strataid hhweight)
 	*** we went from 3,337 to 1,875 observations
 	*** we went frm 3,356 to 1,879 observations 
 	
@@ -522,7 +522,7 @@
 	lab var			year "Year"
 		
 	order 			hhid region district ward ea y1_rural ///
-						clusterid strataid y1_weight year tf_hrv ///
+						clusterid strataid hhweight year tf_hrv ///
 						tf_lnd tf_yld tf_lab tf_frt tf_pst tf_hrb ///
 						tf_irr cp_hrv cp_lnd cp_yld cp_lab cp_frt ///
 						cp_pst cp_hrb cp_irr

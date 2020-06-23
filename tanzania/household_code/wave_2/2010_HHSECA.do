@@ -63,7 +63,9 @@
 	
 	order		y2_hhid region district ward ea y2_rural ///
 					clusterid strataid y2_weight mover_R1R2 location_R1_to_R2
-
+					
+	rename		y2_weight hhweight
+	
 * relabel variables
 	lab var		y2_hhid "Unique Household Identification NPS Y2"
 	lab var		region "Region Code"
@@ -73,7 +75,7 @@
 	lab var		y2_rural "Cluster Type"
 	lab var		clusterid "Unique Cluster Identification"
 	lab var		strataid "Design Strata"
-	lab var		y2_weight "Household Weights (Trimmed & Post-Stratified)"
+	lab var		hhweight "Household Weights (Trimmed & Post-Stratified)"
 	
 * prepare for export
 	compress

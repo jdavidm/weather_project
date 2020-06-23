@@ -102,7 +102,7 @@
 						mz_hrv mz_lnd mz_lab mz_frt ///
 			 (max)	pest_any herb_any irr_any  ///
 						mz_pst mz_hrb mz_irr mz_damaged, ///
-						by(y3_hhid plotnum plot_id clusterid strataid y3_weight ///
+						by(y3_hhid plotnum plot_id clusterid strataid hhweight ///
 						region district ward ea y3_rural mover_R1R2R3 ///
 						location_R2_to_R3)
 
@@ -457,7 +457,7 @@
 	    replace		`v' = 0 if `v' == .
 	}		
 	
-	collapse (max)	tf_* cp_*, by(y3_hhid clusterid strataid y3_weight ///
+	collapse (max)	tf_* cp_*, by(y3_hhid clusterid strataid hhweight ///
 						region district ward ea y3_rural mover_R1R2R3 ///
 						location_R2_to_R3)
 	*** we went from 4,697 to 2,661 observations 
@@ -519,7 +519,7 @@
 	lab var			year "Year"
 		
 	order 			y3_hhid y2_hhid y1_hhid region district ward ea y3_rural ///
-						clusterid strataid y3_weight mover_R1R2R3 ///
+						clusterid strataid hhweight mover_R1R2R3 ///
 						location_R2_to_R3 year tf_hrv tf_lnd ///
 						tf_yld tf_lab tf_frt tf_pst tf_hrb tf_irr cp_hrv ///
 						cp_lnd cp_yld cp_lab cp_frt cp_pst cp_hrb cp_irr

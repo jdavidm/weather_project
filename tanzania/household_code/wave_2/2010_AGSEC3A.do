@@ -260,13 +260,13 @@
 	keep			y2_hhid plotnum plot_id irrigated fert_any kilo_fert ///
 						pesticide_any herbicide_any labor_days plotnum ///
 						region district ward ea y2_rural clusterid strataid ///
-						y2_weight
+						hhweight
 	order			y2_hhid plotnum plot_id
 	
 * renaming and relabelling variables
 	lab var			y2_hhid "Unique Household Identification NPS Y2"
 	lab var			y2_rural "Cluster Type"
-	lab var			y2_weight "Household Weights (Trimmed & Post-Stratified)"
+	lab var			hhweight "Household Weights (Trimmed & Post-Stratified)"
 	lab var			plotnum "Plot ID Within household"
 	lab var			plot_id "Unquie Plot Identifier"
 	lab var			clusterid "Unique Cluster Identification"

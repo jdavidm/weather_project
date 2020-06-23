@@ -231,17 +231,17 @@
 	
 * keep what we want, get rid of the rest
 	keep			y2_hhid plotnum plot_id region district ward ///
-						ea y2_rural clusterid strataid y2_weight ///
+						ea y2_rural clusterid strataid hhweight ///
 						mover_R1R2 location_R1_to_R2 plotnum plot_id plotsize
 						
-	order			y2_hhid plotnum plot_id clusterid strataid y2_weight ///
+	order			y2_hhid plotnum plot_id clusterid strataid hhweight ///
 						region district ward ea y2_rural mover_R1R2 ///
 						location_R1_to_R2 plotsize
 						
 * renaming and relabelling variables
 	lab var		y2_hhid "Unique Household Identification NPS Y2"
 	lab var		y2_rural "Cluster Type"
-	lab var		y2_weight "Household Weights (Trimmed & Post-Stratified)"
+	lab var		hhweight "Household Weights (Trimmed & Post-Stratified)"
 	lab var		plotnum "Plot ID Within household"
 	lab var		plot_id "Unquie Plot Identifier"
 	lab var		plotsize "Plot size (ha), imputed"

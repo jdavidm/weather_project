@@ -180,17 +180,17 @@
 							
 * keep what we want, get rid of what we don't
 	keep 				y3_hhid plotnum plot_id crop_code crop_id clusterid ///
-							strataid y3_weight region district ward ea ///
+							strataid hhweight region district ward ea ///
 							any_* pure_stand percent_field mz_hrv hvst_value ///
 							mz_damaged y3_rural
 
 	order				y3_hhid plotnum plot_id crop_code crop_id clusterid ///
-							strataid y3_weight region district ward ea
+							strataid hhweight region district ward ea
 	
 * renaming and relabelling variables
 	lab var			y3_hhid "Unique Household Identification NPS Y3"
 	lab var			y3_rural "Cluster Type"
-	lab var			y3_weight "Household Weights (Trimmed & Post-Stratified)"
+	lab var			hhweight "Household Weights (Trimmed & Post-Stratified)"
 	lab var			plotnum "Plot ID Within household"
 	lab var			plot_id "Plot Identifier"
 	lab var			clusterid "Unique Cluster Identification"
