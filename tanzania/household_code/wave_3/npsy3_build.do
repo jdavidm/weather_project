@@ -1,6 +1,7 @@
 * Project: WB Weather
 * Created on: May 2020
 * Created by: jdm
+* Edited by: alj
 * Stata v.16
 
 * does
@@ -207,6 +208,22 @@
 			drop 		*2012								
 	}						
 }
+
+* create wide data set 	
+	rename 			* *2012
+	rename 			region2012 region
+	rename 			district2012 district
+	rename 			ward2012 ward
+	rename 			ea2012 ea
+	rename 			clusterid2012 clusterid
+	rename 			strataid2012 strataid
+	rename 			*hhid2012 *hhid
+	rename			y3_weight2012 weight2012
+	rename			mover_R1R2R32012 mover2012
+	
+* drop unneeded variables
+	drop			y3_rural2012 year2012 location_R2_to_R32012
+	
 
 * prepare for export
 	qui: compress

@@ -1,6 +1,7 @@
 * Project: WB Weather
 * Created on: May 2020
 * Created by: mcg
+* Edited by: alj 
 * Stata v.16
 
 * does
@@ -210,6 +211,20 @@
 
 * rename hhid
 	rename			hhid y1_hhid
+	
+* create wide data set 	
+	rename 			* *2008
+	rename 			region2008 region
+	rename 			district2008 district
+	rename 			ward2008 ward
+	rename 			ea2008 ea
+	rename 			clusterid2008 clusterid
+	rename 			strataid2008 strataid
+	rename 			*hhid2008 *hhid
+	rename			y1_weight2008 weight2008
+	
+* drop unneeded variables
+	drop			y1_rural2008 year2008 
 	
 * prepare for export
 	qui: compress
