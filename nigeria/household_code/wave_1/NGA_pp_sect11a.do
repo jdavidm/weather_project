@@ -22,9 +22,6 @@
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
-
-* set global user
-	global user "aljosephson"
 	
 * define paths	
 	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_1/raw"

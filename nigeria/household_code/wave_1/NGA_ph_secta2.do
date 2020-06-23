@@ -20,9 +20,6 @@
 * 0 - setup
 * **********************************************************************
 
-* set global user
-	global user "emilk"
-	
 * define paths	
 	loc 	root 	= 	"G:/My Drive/weather_project/household_data/nigeria/wave_1/raw"
 	loc 	export 	= 	"G:/My Drive/weather_project/household_data/nigeria/wave_1/refined"
