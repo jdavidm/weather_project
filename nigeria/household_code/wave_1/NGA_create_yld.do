@@ -18,14 +18,12 @@
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
-
-* set global user
-	global user "aljosephson"
 	
 * define paths	
-	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_1/refined"
-	loc export = "G:/My Drive/weather_project/household_data/nigeria/wave_1/refined"
-	loc logout = "G:/My Drive/weather_project/household_data/nigeria/logs"
+	loc root = "$data/household_data/nigeria/wave_1/refined"
+	loc export = "$data/household_data/nigeria/wave_1/refined"
+	loc logout = "$data/household_data/nigeria/logs"
+
 
 * close log (in case still open)
 	*log close
