@@ -13,11 +13,7 @@
 * assumes
 	* customsave.ado
 	* land-conversion.dta conversion file
-	
-* TO DO:
-	* unsure - incomplete, runs but maybe not right? 
-	* clarify "does" section
-	
+
 * **********************************************************************
 * 0 - setup
 * **********************************************************************

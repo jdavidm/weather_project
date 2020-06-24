@@ -9,20 +9,9 @@
 	* determines harvest information (area and quantity) and that maize is the second most widely cultivated crop///
 	* outputs clean data file ready for combination with wave 3 hh data
 
-	* WILL WANT TO DROP INFORMATION ON LAND AREA
-
 * assumes
 	* customsave.ado
 	* land-conversion.dta conversion file
-
-* other notes:
-	* still includes some notes from Alison Conley's work in spring 2020
-
-* TO DO:
-	* this has info regarding harvest, but the info provided is different from previous waves
-	* cannot identify what isnt merging. identify what isn't merging when converting harvest quantities
-	* make this do file look more like wave 2 NGA_ph_secta3.do file
-
 
 * **********************************************************************
 * 0 - setup

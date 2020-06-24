@@ -6,35 +6,19 @@
 * does
 	* reads in Nigeria, WAVE 3 POST HARVEST, NIGERIA AG SECTA
 	* determines previous interview information
-	* maybe more who knows
 	* outputs clean data file ready for combination with wave 3 hh data
 
 * assumes
 	* customsave.ado
-	
-* other notes: 
-	* still includes some notes from Alison Conley's work in spring 2020
-	
-* TO DO:
-	* see notes below
-	* unsure - incomplete, runs but maybe not right? 
-	* clarify "does" section
-	
-* Alison Notes: 
-	* this data file has information regarding the responders previous interviews and the tracked observations - I don't know if this will be information that we will need but I figured it's better to have it and we don't have to merge it if it's not needed,
-	* I believe this info was also present in wave 2 secta
 
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
-
-* set global user
-	global user "aljosephson"
 	
 * define paths	
-	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_3/raw"
-	loc export = "G:/My Drive/weather_project/household_data/nigeria/wave_3/refined"
-	loc logout = "G:/My Drive/weather_project/household_data/nigeria/logs"
+	loc root = "$data/household_data/nigeria/wave_3/raw"
+	loc export = "$data/household_data/nigeria/wave_3/refined"
+	loc logout = "$data/household_data/nigeria/logs"
 
 * close log (in case still open)
 	*log close
