@@ -6,18 +6,10 @@
 * does
 	* reads in Nigeria, WAVE 1 - POST PLANTING NIGERIA, SECTION 11A AG
 	* determines total and cultivated
-	* maybe more who knows
 	* outputs clean data file ready for combination with wave 1 hh data
 
 * assumes
 	* customsave.ado
-	
-* other notes: 
-	* still includes some notes from Alison Conley's work in spring 2020
-	
-* TO DO:
-	* unsure - incomplete, runs but maybe not right? 
-	* clarify "does" section
 
 * **********************************************************************
 * 0 - setup

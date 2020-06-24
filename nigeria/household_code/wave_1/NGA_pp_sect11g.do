@@ -7,21 +7,11 @@
 	* reads in Nigeria, WAVE 1 POST PLANTING, NIGERIA SECT11G
 	* converts harvest quantitites 
 	* converts to kilograms, as appropriate
-	* maybe more who knows
 	* outputs clean data file ready for combination with wave 1 hh data
 
 * assumes
 	* customsave.ado
 	* harvconv.dta conversion file 
-	
-* other notes: 
-	* still includes some notes from Alison Conley's work in spring 2020
-	
-* TO DO:
-	* problematic issues with conversions 
-	* not best practices for fixing observations - does the trick, typos fairly obvious, but not great...
-	* unsure - incomplete, runs but maybe not right? 
-	* clarify "does" section
 
 * **********************************************************************
 * 0 - setup

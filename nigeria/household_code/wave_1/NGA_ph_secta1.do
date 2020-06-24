@@ -14,9 +14,6 @@
 	* harvconv_wave1_secta1.dta conversion file
 	* land_conversion.dta conversion file 
 	
-* other notes: 
-	* still includes some notes from Alison Conley's work in spring 2020
-	
 * TO DO:
 	* complete 
 
