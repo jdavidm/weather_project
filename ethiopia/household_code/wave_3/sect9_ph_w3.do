@@ -68,7 +68,7 @@
 	
 	drop 		if ph_s9q03 == 2
 				
-* attempting to generate unique identifier
+* finding unique identifier
 	describe
 	sort 		holder_id parcel_id field_id crop_code
 	isid 		holder_id parcel_id field_id crop_code, missok
@@ -170,7 +170,12 @@
 	replace		cf = .27 if unit_cd == 192
 	replace		cf = .57 if unit_cd == 193
 	
-	*** PROVIDE CODE AND EXPLANATION ***
+* using algebra to back out (universal) cfs for chinets
+	gen 		impqty = hrvqty_self_kgest/hrvqty_self
+	sum 		impqty if unit_cd == 51, detail			// chinet small, cf = 30
+	sum 		impqty if unit_cd == 52, detail			// chinet small, cf = 50
+	sum 		impqty if unit_cd == 53, detail			// chinet small, cf = 70
+	
 	replace 	cf = 30 if unit_cd == 51		// chinets
 	replace 	cf = 50 if unit_cd == 52
 	replace 	cf = 70 if unit_cd == 53
@@ -191,7 +196,7 @@
 	
 * checking veracity of kg estimates
 	tab 		cf, missing
-	*** missing 6,994 - slightly fewer than missed merges due to univeral units
+	*** missing 2,120 - slightly fewer than missed merges due to univeral units
 	
 	tab			cf if hrvqty_self != ., missing
 	tab			hrvqty_self if cf != ., missing
