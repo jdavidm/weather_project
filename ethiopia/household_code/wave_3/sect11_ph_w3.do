@@ -39,10 +39,6 @@
 * dropping duplicates
 	duplicates drop
 	
-* check # of maize obs
-	tab			crop_code
-	*** 1,595 maize obs
-	
 * creating district identifier
 	egen 		district_id = group( saq01 saq02)
 	label var 	district_id "Unique district identifier"
@@ -150,50 +146,48 @@
 	*** all units labelled 'other' missing a conversion factor
 
 * filling in as many missing cfs as possible
-	sum			cf if unit_cd == 101	// kubaya (sm), mean = 0.26825
-	replace 	cf = .26825 if unit_cd == 101 & cf == .
+	sum			cf if unit_cd == 101, detail	// kubaya (sm)
+	replace 	cf = `r(p50)' if unit_cd == 101 & cf == .
 	
-	sum			cf if unit_cd == 111	// kunna/mishe/kefer/enkib (sm), mean = 6.073
-	replace 	cf = 6.073 if unit_cd == 111 & cf == .
+	sum			cf if unit_cd == 111	// kunna/mishe/kefer/enkib (sm)
+	replace 	cf = `r(p50)' if unit_cd == 111 & cf == .
 	
-	sum			cf if unit_cd == 112	// kunna/mishe/kefer/enkib (md), mean = 9.9388
-	replace 	cf = 9.9388 if unit_cd == 112 & cf == .
+	sum			cf if unit_cd == 112	// kunna/mishe/kefer/enkib (md)
+	replace 	cf = `r(p50)'if unit_cd == 112 & cf == .
 	
-	sum			cf if unit_cd == 113	// kunna/mishe/kefer/enkib (lg), mean = 17.2898
-	replace 	cf = 17.2898 if unit_cd == 113 & cf == .
+	sum			cf if unit_cd == 113	// kunna/mishe/kefer/enkib (lg)
+	replace 	cf = `r(p50)' if unit_cd == 113 & cf == .
 	
-	sum			cf if unit_cd == 121	// madaberia/nuse/shera/cheret (sm), mean = 36.806
-	replace 	cf = 36.806 if unit_cd == 121 & cf == .
+	sum			cf if unit_cd == 121	// madaberia/nuse/shera/cheret (sm)
+	replace 	cf = `r(p50)' if unit_cd == 121 & cf == .
 	
-	sum			cf if unit_cd == 122	// madaberia/nuse/shera/cheret (md), mean = 82.231
-	replace 	cf = 82.231 if unit_cd == 122 & cf == .
+	sum			cf if unit_cd == 122	// madaberia/nuse/shera/cheret (md)
+	replace 	cf = `r(p50)' if unit_cd == 122 & cf == .
 	
-	sum			cf if unit_cd == 123	// madaberia/nuse/shera/cheret (lg), mean = 104.42
-	replace 	cf = 104.42 if unit_cd == 123 & cf == .
+	sum			cf if unit_cd == 123	// madaberia/nuse/shera/cheret (lg)
+	replace 	cf = `r(p50)' if unit_cd == 123 & cf == .
 	
-	sum			cf if unit_cd == 182	// tasa/tanika/shember/selmon (md), mean = 0.66792
-	replace 	cf = .66792 if unit_cd == 182 & cf == .
+	sum			cf if unit_cd == 182	// tasa/tanika/shember/selmon (md)
+	replace 	cf = `r(p50)' if unit_cd == 182 & cf == .
 	
-	sum			cf if unit_cd == 183	// tasa/tanika/shember/selmon (lg), mean = 1.0824
-	replace 	cf = 1.0824 if unit_cd == 183 & cf == .
+	sum			cf if unit_cd == 183	// tasa/tanika/shember/selmon (lg)
+	replace 	cf = `r(p50)' if unit_cd == 183 & cf == .
 	
 * check results
 	sort		cf unit_cd
 	*** 23 obs still missing cfs are all labelled 'other'
-	*** not sure how to address this
+
 	
 * ultimate goal is to create a region based set of prices (birr/kg) by crop
 * we can therefore probably throw out those 23 obs
-
-* investigating those 23 'other' unit of measure obs
 	tab			crop_code if unit_cd == 900
 	* majority is rape seed, 15 obs of 53 rape seed observations
 	* could meaningfully impact price of rape seed (crop_cod = 26)
 	* other eight obs are spread across 7 crops:
 	* barley, maize, sorghum, teff, wheat, horse beans (2 obs), field peas
 	
-*	drop		if unit_cd == 900
-	*** leaving this out for now
+	drop		if unit_cd == 900
+
 	
 * ***********************************************************************
 * 2b - constructing harvest weights
@@ -208,17 +202,14 @@
 	
 * converting sales quantity to kilos
 	gen			sales_qty_kg = sales_qty * cf
-	*** missing 23 values, this is expected (line 178)
-	
 	tab 		sales_val
-	*** full information on sales values
+	*** not missing any sales values
 	
 * generate a price per kilogram
 	gen 		price = sales_val/sales_qty_kg
 	*** this can be applied to harvested crops which weren't sold
-	*** still missing those 23
 	
-	lab var		price "Sales price (BIRR/kg)"
+	lab var		price "Sales Price (BIRR/kg)"
 	
 	
 * ***********************************************************************

@@ -28,7 +28,7 @@
 	loc logout = "$data/household_data/ethiopia/logs"
 
 * open log
-*	log using "`logout'/wv3_PHSEC12", append
+	log using "`logout'/wv3_PHSEC12", append
 
 
 * **********************************************************************
@@ -41,32 +41,44 @@
 * dropping duplicates
 	duplicates drop
 	
-* drop if obs haven't sold any crop
+/* drop if obs haven't sold any crop
 	tab			ph_s12q06
 	*** 4,704 answered no
 	
 	drop 		if ph_s12q06 == 2
+*/
 	
 * drop trees and other perennial crops
-	drop if crop_code == 41 // apples
-	drop if crop_code == 42 // bananas
-	drop if crop_code == 44 // lemons
-	drop if crop_code == 45 // mandarins
-	drop if crop_code == 46 // mangos
-	drop if crop_code == 47 // oranges
-	drop if crop_code == 48 // papaya
-	drop if crop_code == 49 // pineapples
-	drop if crop_code == 50 // citron
-	drop if crop_code == 65 // guava
-	drop if crop_code == 66 // peach
-	drop if crop_code == 71 // chat
-	drop if crop_code == 72 // coffee 
-	drop if crop_code == 73 // cotton
-	drop if crop_code == 76 // sugar cane ??
-	drop if crop_code == 78 // tobacco
-	drop if crop_code == 84 // avocados
-	drop if crop_code == 85 // grazing land
-	*** 1,717 obs dropped
+	drop if crop_code == 41 	// apples
+	drop if crop_code == 42 	// bananas
+	drop if crop_code == 44 	// lemons
+	drop if crop_code == 45 	// mandarins
+	drop if crop_code == 46 	// mangos
+	drop if crop_code == 47 	// oranges
+	drop if crop_code == 48 	// papaya
+	drop if crop_code == 49 	// pineapples
+	drop if crop_code == 50 	// citron
+	drop if crop_code == 65 	// guava
+	drop if crop_code == 66 	// peach
+	drop if crop_code == 71 	// chat
+	drop if crop_code == 72 	// coffee 
+	drop if crop_code == 73 	// cotton
+	drop if crop_code == 76 	// sugar cane
+	drop if crop_code == 78 	// tobacco
+	drop if crop_code == 84 	// avocados
+	drop if crop_code == 85		// grazing land
+	drop if crop_code == 64 	// godere
+	drop if crop_code == 74 	// enset
+	drop if crop_code == 75 	// gesho
+	drop if crop_code == 81 	// rue
+	drop if crop_code == 82 	// gishita
+	drop if crop_code == 112 	// kazmir
+	drop if crop_code == 98 	// other, root
+	drop if crop_code == 115	// other, fruits
+	drop if crop_code == 117	// other, spices
+	drop if crop_code == 119	// other, oil seed
+	drop if crop_code == 123	// other, vegetable
+	*** 4,913 obs dropped
 	*** must check other crops
 
 * generate unique identifier
