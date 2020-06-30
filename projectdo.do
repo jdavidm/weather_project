@@ -92,7 +92,7 @@ if $pack == 1 {
 		from(https://raw.githubusercontent.com/etjernst/Materials/master/stata/) replace
 
 	* install -weather- package
-		net install StataConfig, ///
+		net install WeatherConfig, ///
 		from(https://jdavidm.github.io/) replace
 	
 	* update all ado files
