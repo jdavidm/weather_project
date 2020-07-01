@@ -63,7 +63,7 @@
 	rename 		saq01 region
 	rename 		saq02 district
 	label var 	district "District Code"
-	rename 		saq03 ward
+	rename 		saq03 woreda
 	rename		saq07 ea
 
 * restrict to variables of interest

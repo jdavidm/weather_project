@@ -126,39 +126,6 @@
 
 
 * ***********************************************************************
-* 2c - seed use
-* ***********************************************************************
-
-* no info on seed value in this dataset
-
-* looking at seed use
-	generate	seed_wgt = pp_s4q11b_a + (0.001 * pp_s4q11b_b)
-	summarize	seed_wgt
-	*** 15,791 values for seed weight
-	
-* imputing missing seed values using predictive mean matching 
-	mi set 		wide //	declare the data to be wide. 
-	mi xtset, 	clear //	this is a precautinary step to clear any xtset that the analyst may have had in place previously
-	mi register imputed seed_wgt //	identify seed_wgt as the variable being imputed 
-	mi impute 	pmm seed_wgt pp_s4q01_b i.district_id, add(1) rseed(245780) ///
-					noisily dots force knn(5) bootstrap 
-	*** including crop type as a control variable - seems logical
-	
-	mi 			unset
-	
-* summarize results of imputation
-	tabulate 	mi_miss	//	this binary = 1 for the full set of observations where plotsize_GPS is missing
-	tabstat 	seed_wgt seed_wgt_1_, by(mi_miss) ///
-					statistics(n mean min max) columns(statistics) longstub ///
-					format(%9.3g) 
-	*** 14,550 values imputed
-					
-	drop		mi_miss
-	drop		seed_wgt
-	rename		seed_wgt_1_ seed_wgt
-
-
-* ***********************************************************************
 * 3 - cleaning and keeping
 * ***********************************************************************
 

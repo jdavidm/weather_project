@@ -14,7 +14,7 @@
 	* distinct.ado
 
 * TO DO:
-	* figure out why so many observations arent matched from master data when merging in conv_id
+	* figure out why so many observations arent matched from master data when merging
 
 	
 * **********************************************************************
@@ -27,7 +27,7 @@
 	loc logout = "$data/household_data/ethiopia/logs"
 
 * open log
-	log using "`logout'/wv3_PPSEC3", append
+*	log using "`logout'/wv3_PPSEC3", append
 
 
 * **********************************************************************
@@ -49,8 +49,7 @@
 	egen 		district_id = group( saq01 saq02)
 	lab var 	district_id "Unique district identifier"
 	distinct	saq01 saq02, joint
-	*** 69 distinct district
-	*** same as pp sect2, good
+	*** 69 distinct districts
 
 * field status check
 	rename 		pp_s3q03 status, missing
@@ -86,21 +85,23 @@
 	*** 13,748 obs not matched from master data
 	*** why is this...
 	
+	drop		if _merge == 2
+	
 
 ************************************************************************
-**	2 - constructing conversion factors 
+**	2 - constructing conversion factors
 ************************************************************************	
 
 * replace self-reported equal to missing if there is no conversion factor
 * will not replace sef-reported if given in hectares, meters squared
-	replace		
-
-/*	generate 	cfactor = 10000 if pp_s3q02_c==1
-	replace 	cfactor = 1 if pp_s3q02_c==2
-	replace 	cfactor = conversion if pp_s3q02_c==local_unit ///
-					& pp_s3q02_c!=1 & pp_s3q02_c!=2
-	tab			cfactor, missing
-	*** cfactor missing from 7,757 obs */
+	replace		conversion = 10000 if local_unit == 1 & conversion == .
+	*** 465 changes
+	
+	replace		conversion = 1 if local_unit == 2 & conversion == .	
+	*** 329 changes 
+	
+	replace		pp_s3q02_a = . if conversion == .
+	*** 12,948 changes
 
 
 ************************************************************************
@@ -112,16 +113,11 @@
 ************************************************************************	
 	
 * problem! There are over 12,000 obs with units of measure not included in the conversion file
-	summarize 	pp_s3q02_c, detail // Quantity of land units, self-reported
-	generate 	selfreport_sqm = cfactor * pp_s3q02_a if pp_s3q02_c!=0
+	summarize 	local_unit, detail // Quantity of land units, self-reported
+	generate 	selfreport_sqm = conversion * pp_s3q02_a if local_unit !=0
 	summarize 	selfreport_sqm, detail // resulting land area (sq. meters)
 	generate 	selfreport_ha = selfreport_sqm * 0.0001
 	summarize 	selfreport_ha, detail // resulting land area (hectares)
-
-* to check the work above the following command is helpful
-* 	order		(_merge conv_id saq01 region saq02 zone saq03 woreda pp_s3q02_c ///
-*					local_unit conversion cfactor selfreport_sqm selfreport_ha)
-	sort		_merge
 	
 
 ************************************************************************
@@ -145,7 +141,8 @@
 	* in Wave 1 there were NO GPS measured fields > 10 ha
 
 	sort 		gps		
-	list 		gps rap selfreport_ha if gps>3 & !missing(gps), sep(0)	// Large gps values are sometimes way off from the self-reported
+	list 		gps rap selfreport_ha if gps>3 & !missing(gps), sep(0)	
+	*** large gps values are sometimes way off from the self-reported
 
 * GPS on the smaller side vs self-report 
 	summarize 	gps if gps<0.002 // ~3,000 obs
@@ -163,23 +160,23 @@
 	
 * evaluating correlations between various measures
 	pwcorr 		gps rap 
-	*** 0.57 correlation - midrange
+	*** 0.6912 correlation
 	
 	pwcorr 		gps rap if !inrange(gps,0.002,4)
-	*** 0.6984 - correlation outside this range higher than overall
+	*** 0.6984 - correlation outside this range similar to overall
 	
 	pwcorr 		gps rap if inrange(gps,0.002,4) 
 	*** 0.7772 - higher than outside the central range
 	
 	pwcorr 		selfreport_ha rap 	
-	*** 0.24 correlation - low
+	*** 0.2006 correlation - low
 	
 	pwcorr 		selfreport_ha gps	
-	*** 0.0022 correlation - very very low
+	*** 0.0019 correlation - very very low
 	
 	pwcorr 		selfreport_ha gps if inrange(gps,0.002,4) ///
 					& inrange(selfreport_ha,0.002,4)
-	*** 0.7023 - much much higher when range is restricted for both	
+	*** 0.6811 - much much higher when range is restricted for both	
 	
 	twoway 		(scatter selfreport_ha gps if inrange(gps,0.002,4) ///
 					& inrange(selfreport_ha,0.002,4))
@@ -196,7 +193,7 @@
 	*** we have some self-report information where we are missing plotsize 
 	
 	summarize 	selfreport_ha if missing(plotsize), detail
-	*** 127 obs w/ selfreport_ha missing plotsize
+	*** 109 obs w/ selfreport_ha missing plotsize
 
 * impute missing plot sizes using predictive mean matching 
 	mi set 		wide //	declare the data to be wide. 
@@ -212,7 +209,7 @@
 	tabstat 	gps rap selfreport_ha plotsize plotsize_1_, by(mi_miss) ///
 					statistics(n mean min max) columns(statistics) longstub ///
 					format(%9.3g) 
-	*** 127 imputations made
+	*** 109 imputations made
 	
 	drop		mi_miss
 
@@ -229,8 +226,8 @@
 	sum 		plotsize, detail
 	*** i'm not a fan of the one negative plotsize
 	
-* SEE IF THIS IS STILL THE CASE AFTER CHANGES ARE MADE
-*	replace		plotsize = 0 if plotsize < 0
+* replacing negative plotsize value equal to zero
+	replace		plotsize = 0 if plotsize < 0
 	*** one change made, good
 	
 
@@ -412,7 +409,7 @@
 * this is how world bank has their do-file set up
 * if we want to keep all identifiers (i.e. region, zone, etc) we can do that easily
 	keep  		holder_id- pp_s3q0a purestand kilo_fert labordays_plant plotsize ///
-					irrigated fert_any field_ident parcel_id field_id district_id
+					irrigated fert_any parcel_id field_id district_id
 	order 		holder_id- saq06 district_id parcel_id field_id
 
 * final preparations to export
@@ -427,3 +424,5 @@
 
 * close the log
 	log	close
+	
+/* END */
