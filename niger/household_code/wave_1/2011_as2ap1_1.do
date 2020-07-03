@@ -12,8 +12,7 @@
 	* customsave.ado
 
 * TO DO:
-	* the wave 2 version of this file asks if there is another pesticide question - There is another pesticide question in wave 1 that asks if pesticide was used at the crop level
-	* cant find "extension" variable like they have in wave 2. This is a problem because in wave 2 we make a unique id based on clusterid, hhnumber, extension, order, field, and parcel to uniquely identify
+	*done
 	
 * **********************************************************************
 * 0 - setup
@@ -25,7 +24,8 @@
 	loc		logout	= 		"$data/household_data/niger/logs"
 
 * open log
-	log 	using	"`logout'/2011_as1_p1_1", append
+	cap 	log 	close
+	log 	using	"`logout'/2011_as2ap1_1", append
 
 * **********************************************************************
 * 1 - describing plot size - self-reported and GPS
@@ -113,8 +113,8 @@
 	summarize
 
 * save file
-		customsave , idvar(plot_id) filename("2011_as1_p1_1.dta") ///
-			path("`export'") dofile(2011_as1_p1_1) user($user)
+		customsave , idvar(plot_id) filename("2011_pp_as2ap1.dta") ///
+			path("`export'") dofile(2011_as2ap1_1) user($user)
 
 * close the log
 	log	close

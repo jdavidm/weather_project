@@ -4,16 +4,15 @@
 * Stata v.16
 
 * does
-	* reads in Niger, WAVE 1 (2011),POST PLANTING (first passage), ecvmaas1_p1_en
-	* cleans pesticide and herbicide use
+	* reads in Niger, WAVE 1 (2011), Post Planting, ecvmaas1_p1_en
+	* * creates binaries and kg for fertilizer use
 	* outputs clean data file ready for combination with wave 1 plot data
 
 * assumes
 	* customsave.ado
 
 * TO DO:
-	* the wave 2 version of this file asks if there is another pesticide question - There is another pesticide question in wave 1 that asks if pesticide was used at the crop level
-	* cant find "extension" variable like they have in wave 2. This is a problem because in wave 2 we make a unique id based on clusterid, hhnumber, extension, order, field, and parcel to uniquely identify
+	* done
 	
 * **********************************************************************
 * 0 - setup
@@ -25,7 +24,8 @@
 	loc		logout	= 		"$data/household_data/niger/logs"
 
 * open log
-	log 	using	"`logout'/2011_as1_p1_2", append
+	cap 	log 	close
+	log 	using	"`logout'/2011_pp_as2ap1fert", append
 
 * **********************************************************************
 * 1 - describing plot size - self-reported and GPS
@@ -200,8 +200,8 @@
 	summarize
 
 * save file
-		customsave , idvar(plot_id) filename("2011_as1_p1fert.dta") ///
-			path("`export'") dofile(2011_as1_p1fert) user($user)
+		customsave , idvar(plot_id) filename("2011_pp_as2ap1fert.dta") ///
+			path("`export'") dofile(2011_AS2AP1_2) user($user)
 
 * close the log
 	log	close

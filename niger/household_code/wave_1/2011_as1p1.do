@@ -12,7 +12,7 @@
 	* customsave.ado
 
 * TO DO:
-	* 	*** cant find "extension" variable like they have in wave 2. This is a problem because in wave 2 we make a unique id based on clusterid, hhnumber, extension, order, field, and parcel to uniquely identify
+	* done
 	
 * **********************************************************************
 * 0 - setup
@@ -24,7 +24,7 @@
 	loc		logout	= 		"$data/household_data/niger/logs"
 
 * open log
-	log 	using	"`logout'/2011_as1_p1", append
+	log 	using	"`logout'/2011_as1p1", append
 
 * **********************************************************************
 * 1 - describing plot size - self-reported and GPS
@@ -230,8 +230,8 @@
 	summarize
 
 * save file
-		customsave , idvar(plot_id) filename("2011_as1_p1") ///
-			path("`export'") dofile(2011_as1_p1) user($user)
+		customsave , idvar(plot_id) filename("2011_as1p1") ///
+			path("`export'") dofile(2011_as1p1) user($user)
 
 * close the log
 	log	close
