@@ -24,7 +24,7 @@
 		loc 	logout 		= 	"$data/household_data/nigeria/logs"
 
 	* open log
-		log 	using		"`logout'/ph_secta1", append
+		*log 	using		"`logout'/ph_secta1", append
 
 * **********************************************************************
 * 1 - determine area harvested
@@ -80,12 +80,10 @@
 	gen 			harvestq = sa3iq6i
 	lab	var			harvestq "quantity harvested, not in standardized unit"
 	
-	
 * units of harvest
 	rename 			sa3iq6ii harv_unit
 	tab				harv_unit, nolabel
 
-	
 * create value variable
 	gen 			crop_value = sa3iq6a
 	rename 			crop_value vl_hrv
@@ -227,9 +225,19 @@
 	mdesc 			mz_hrv if harv_unit==1080
 		*** no missing maize observations
 
+* collapse crop level data to plot level
+	collapse (sum) 	mz_hrv vl_hrv mz_damaged, by(zone state lga sector ea hhid plotid)
+	lab var			vl_hrv "Value of harvest (2010 USD)"
+	lab var			mz_hrv "Quantity of maize harvested (kg)"
+	*** sum up cp_hrv and tf_hrv to the plot level, keeping spatial variables
+	
+* replace non-maize harvest values as missing
+	replace			mz_hrv = . if mz_damaged == 0 & mz_hrv == 0
+	drop 			mz_damaged	
+	
 * rename cultivated variable
 	rename 			sa3iq3 cultivated
-		
+	
 * **********************************************************************
 * 4 - end matter, clean up to save
 * **********************************************************************
@@ -252,12 +260,14 @@
 	
 * create unique household-plot identifier
 	sort			hhid plotid 
+
 	egen			plot_id = group(hhid plotid)
 	lab var			plot_id "unique plot identifier"
 	
 	compress
 	describe
 	summarize
+
 * save file
 		customsave , idvar(hhid) filename("ph_secta3i.dta") ///
 			path("`export'/`folder'") dofile(ph_secta3i) user($user)

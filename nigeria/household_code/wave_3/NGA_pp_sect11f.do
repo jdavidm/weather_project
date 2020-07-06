@@ -17,7 +17,6 @@
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
-	
 * define paths	
 	loc root = "$data/household_data/nigeria/wave_3/raw"
 	loc export = "$data/household_data/nigeria/wave_3/refined"

@@ -7,31 +7,19 @@
 	* reads in Nigeria, WAVE 1 POST PLANTING, NIGERIA SECT 11E AG
 	* determines seed use 
 	* converts kilograms, as appropriate
-	* maybe more who knows
 	* outputs clean data file ready for combination with wave 1 hh data
 
 * assumes
 	* customsave.ado
-	
-* other notes: 
-	* still includes some notes from Alison Conley's work in spring 2020
-	
-* TO DO:
-	* from Alison: "NEED TO CONVERT SEED UNITS TO KGS"
-	* unsure - incomplete, runs but maybe not right? 
-	* clarify "does" section
 
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
-
-* set global user
-	global user "aljosephson"
 	
 * define paths	
-	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_1/raw"
-	loc export = "G:/My Drive/weather_project/household_data/nigeria/wave_1/refined"
-	loc logout = "G:/My Drive/weather_project/household_data/nigeria/logs"
+	loc root = "$data/household_data/nigeria/wave_1/raw"
+	loc export = "$data/household_data/nigeria/wave_1/refined"
+	loc logout = "$data/household_data/nigeria/logs"
 
 * close log (in case still open)
 	*log close

@@ -14,23 +14,17 @@
 	* harvconv_wave1_secta1.dta conversion file
 	* land_conversion.dta conversion file 
 	
-* other notes: 
-	* still includes some notes from Alison Conley's work in spring 2020
-	
 * TO DO:
 	* complete 
 
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
-
-* set global user
-	global user "aljosephson"
 	
 * define paths	
-	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_1/raw"
-	loc export = "G:/My Drive/weather_project/household_data/nigeria/wave_1/refined"
-	loc logout = "G:/My Drive/weather_project/household_data/nigeria/logs"
+	loc root = "$data/household_data/nigeria/wave_1/raw"
+	loc export = "$data/household_data/nigeria/wave_1/refined"
+	loc logout = "$data/household_data/nigeria/logs"
 
 * close log (in case still open)
 	*log close
