@@ -34,8 +34,8 @@
 	use 		"`root'/SEC_A_T", clear
 
 * keep variables of interest
-	keep 		hhid region district ward locality ea
-	order		hhid region district ward locality ea
+	keep 		hhid region district ward ea hh_weight clusterid strataid
+	order		hhid region district ward ea
 	
 * prepare for export
 	compress
