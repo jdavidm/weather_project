@@ -7,7 +7,7 @@
 * does
 	* reads in Nigeria, WAVE 3 (2015-2016) POST HARVEST, NIGERIA AG SECTA2
 	* determines harvest labor (only) for preceeding rainy season
-	* outputs clean data file ready for combination with wave 2 plot data
+	* outputs clean data file ready for combination with wave 1 plot data
 
 * assumes
 	* customsave.ado
@@ -19,14 +19,11 @@
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
-
-* set global user
-	global user "emilk"
 	
 * define paths	
-	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_3/raw"
-	loc export = "G:/My Drive/weather_project/household_data/nigeria/wave_3/refined"
-	loc logout = "G:/My Drive/weather_project/household_data/nigeria/logs"
+	loc root = "$data/household_data/nigeria/wave_1/raw"
+	loc export = "$data/household_data/nigeria/wave_1/refined"
+	loc logout = "$data/household_data/nigeria/logs"
 	
 * open log	
 	log using "`logout'/ph_secta2", append
@@ -51,6 +48,16 @@ isid hhid plotid
 * since we can't match household members we deal with each activity seperately
 
 	* create household member labor (weeks x days per week)
+		gen	hh_1	=	(sa2q1a2 * sa2q1a3)
+		replace	hh_1	=	0	if	hh_1	==	.
+
+		gen	hh_2	=	(sa2q1b2 * sa2q1b3)
+		replace	hh_2	=	0	if	hh_2	==	. 
+
+		gen	hh_3 	= 	(sa2q1c2 * sa2q1c3)
+		replace	hh_3	=	0	if	hh_3 	== 	.
+
+* create household member labor (weeks x days per week)
 		gen	hh_1	=	(sa2q1a2 * sa2q1a3)
 		replace	hh_1	=	0	if	hh_1	==	.
 

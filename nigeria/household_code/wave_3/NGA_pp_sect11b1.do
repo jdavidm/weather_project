@@ -7,30 +7,19 @@
 * does
 	* reads in Nigeria, WAVE 3 (2015-2016) POST PLANTING, NIGERIA AG SECT11B1
 	* determines irrigation and plot use
-	* maybe more who knows
 	* outputs clean data file ready for combination with wave 3 hh data
 
 * assumes
 	* customsave.ado
 	
-* other notes: 
-	* still includes some notes from Alison Conley's work in spring 2020
-	
-* TO DO:
-	* unsure - incomplete, runs but maybe not right? 
-	* clarify "does" section
-	
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
-
-* set global user
-	global user "emilk"
 	
 * define paths	
-	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_3/raw"
-	loc export = "G:/My Drive/weather_project/household_data/nigeria/wave_3/refined"
-	loc logout = "G:/My Drive/weather_project/household_data/nigeria/logs"
+	loc root = "$data/household_data/nigeria/wave_3/raw"
+	loc export = "$data/household_data/nigeria/wave_3/refined"
+	loc logout = "$data/household_data/nigeria/logs"
 
 * close log (in case still open)
 	*log close

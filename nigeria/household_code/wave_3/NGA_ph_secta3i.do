@@ -9,20 +9,9 @@
 	* determines harvest information (area and quantity) and that maize is the second most widely cultivated crop///
 	* outputs clean data file ready for combination with wave 3 hh data
 
-	* WILL WANT TO DROP INFORMATION ON LAND AREA
-
 * assumes
 	* customsave.ado
 	* land-conversion.dta conversion file
-
-* other notes:
-	* still includes some notes from Alison Conley's work in spring 2020
-
-* TO DO:
-	* this has info regarding harvest, but the info provided is different from previous waves
-	* cannot identify what isnt merging. identify what isn't merging when converting harvest quantities
-	* make this do file look more like wave 2 NGA_ph_secta3.do file
-
 
 * **********************************************************************
 * 0 - setup
@@ -90,7 +79,7 @@
 * create quantity harvested variable
 	gen 			harvestq = sa3iq6i
 	lab	var			harvestq "quantity harvested, not in standardized unit"
-
+	
 * units of harvest
 	rename 			sa3iq6ii harv_unit
 	tab				harv_unit, nolabel
@@ -236,7 +225,6 @@
 	mdesc 			mz_hrv if harv_unit==1080
 		*** no missing maize observations
 
-
 * collapse crop level data to plot level
 	collapse (sum) 	mz_hrv vl_hrv mz_damaged, by(zone state lga sector ea hhid plotid)
 	lab var			vl_hrv "Value of harvest (2010 USD)"
@@ -247,13 +235,32 @@
 	replace			mz_hrv = . if mz_damaged == 0 & mz_hrv == 0
 	drop 			mz_damaged	
 	
+* rename cultivated variable
+	rename 			sa3iq3 cultivated
+	
 * **********************************************************************
 * 4 - end matter, clean up to save
 * **********************************************************************
 
+* keep what we want, get rid of what we don't
+	keep 				zone state lga sector ea hhid plotid cropid ///
+							cropname cropcode cultivated ///
+							mz_hrv vl_hrv mz_damaged
+							
+* check for duplicates
+	duplicates		report hhid plotid cropid
+	*** there are 0 duplicates
+	*** would drop if some existed
+
+* create unique household-plot-crop identifier
+	isid			hhid plotid cropid
+	sort			hhid plotid cropid
+	egen			cropplot_id = group(hhid plotid cropid)
+	lab var			cropplot_id "unique crop-plot identifier"
+	
 * create unique household-plot identifier
-	isid			hhid plotid
-	sort			hhid plotid
+	sort			hhid plotid 
+
 	egen			plot_id = group(hhid plotid)
 	lab var			plot_id "unique plot identifier"
 	
