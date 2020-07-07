@@ -26,7 +26,7 @@
 	loc		logout	=	"$data/merged_data/tanzania/logs"
 
 * open log
-	log		using	"`logout'/npsy2_merge", append
+*	log		using	"`logout'/npsy2_merge", append
 
 
 * **********************************************************************
@@ -39,7 +39,7 @@
 	isid			crop_id
 
 * merge in plot size data
-	merge 			m:1 plot_id using "`root'/AG_SEC2A", generate(_2A)
+	merge 			m:1 y2_hhid plotnum using "`root'/AG_SEC2A", generate(_2A)
 	*** 0 out of 5,679 missing in master 
 	*** all unmerged obs came from using data 
 	*** meaning we lacked production data
@@ -51,7 +51,7 @@
 	replace			plotsize = percent_field * plotsize if percent_field != .
 	
 * merging in production inputs data
-	merge			m:1 plot_id using "`root'/AG_SEC3A", generate(_3A)
+	merge			m:1 y2_hhid plotnum using "`root'/AG_SEC3A", generate(_3A)
 	*** 0 out of 5,679 missing in master 
 	*** all unmerged obs came from using data 
 	*** meaning we lacked production data
@@ -103,9 +103,9 @@
 						mz_hrv mz_lnd mz_lab mz_frt ///
 			 (max)	pest_any herb_any irr_any  ///
 						mz_pst mz_hrb mz_irr mz_damaged, ///
-						by(y2_hhid plotnum plot_id region district ward ///
-						ea y2_rural clusterid strataid hhweight ///
-						mover_R1R2 location_R1_to_R2)
+						by(y2_hhid plotnum plot_id clusterid strataid hhweight ///
+						region district ward ea y2_rural mover_R1R2 ///
+						location_R1_to_R2)
 						
 * replace non-maize harvest values as missing
 	tab				mz_damaged, missing
@@ -256,7 +256,7 @@
 	gen				mz_yld = mz_hrv / mz_lnd, after(mz_hrv)
 	lab var			mz_yld	"maize yield (kg/ha)"
 
-*maybe imputing zero values	
+* maybe imputing zero values	
 	
 * impute yield outliers
 	sum				mz_yld
@@ -271,10 +271,10 @@
 	assert 			minrep==maxrep
 	generate 		mz_yldimp = mz_yld, after(mz_yld)
 	replace  		mz_yldimp = maxrep if !((mz_yld < median + (3 * stddev)) ///
-					& (mz_yld > median - (3 * stddev))) ///
-					& !inlist(mz_yld,.,0) & !mi(maxrep)
+						& (mz_yld > median - (3 * stddev))) ///
+						& !inlist(mz_yld,.,0) & !mi(maxrep)
 	tabstat 		mz_yld mz_yldimp, ///
-					f(%9.0f) s(n me min p1 p50 p95 p99 max) c(s) longstub
+						f(%9.0f) s(n me min p1 p50 p95 p99 max) c(s) longstub
 	*** reduces mean from 1367 to 1100
 					
 	drop 			stddev median replacement maxrep minrep
