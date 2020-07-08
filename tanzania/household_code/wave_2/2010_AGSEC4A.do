@@ -26,7 +26,7 @@
 	loc logout = "$data/household_data/tanzania/logs"
 
 * open log
-	log using "`logout'/wv2_AGSEC4A", append
+*	log using "`logout'/wv2_AGSEC4A", append
 
 	
 * ***********************************************************************
