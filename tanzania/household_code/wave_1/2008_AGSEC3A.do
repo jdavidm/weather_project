@@ -26,6 +26,7 @@
 	loc logout = "$data/household_data/tanzania/logs"
 
 * open log
+	cap	log close
 	log using "`logout'/wv1_AGSEC3A", append
 
 
@@ -85,10 +86,12 @@
 	
 	rename			s3aq45 kilo_fert
 	lab var			kilo_fert "fertilizer used (kg)"
+	
+	replace			kilo_fert = 0 if kilo_fert == .
 
 * summarize fertilizer
 	sum				kilo_fert, detail
-	*** median 50, mean 512, max 150,000
+	*** median 0, mean 52, max 150,000
 	*** these numbers are way crazy compared to other waves
 
 * replace any +3 s.d. away from median as missing
@@ -96,7 +99,7 @@
 	sum				kilo_fert, detail
 	replace			kilo_fert = . if kilo_fert > `r(p50)'+(3*`r(sd)')
 	sum				kilo_fert, detail
-	*** 11 changes made, max is now 400
+	*** 55 changes made, max is now 400
 	
 * impute missing values
 	mi set 			wide 	// declare the data to be wide.
@@ -114,8 +117,7 @@
 						longstub format(%9.3g) 
 	replace			kilo_fert = kilo_fert_1_
 	drop			kilo_fert_1_
-	*** imputed 3,965 values out of 4,408 total observations
-	*** that's almost 90% of obs. is this okay??
+	*** imputed 57 values out of 4,408 total observations
 	
 	
 * ***********************************************************************
