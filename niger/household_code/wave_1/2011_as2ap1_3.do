@@ -12,8 +12,7 @@
 	* customsave.ado
 
 * TO DO:
-	* 	merge plant and harvest labor
-	* not finished
+	* done
 	
 * **********************************************************************
 * 0 - setup

@@ -5,7 +5,7 @@
 
 * does
 	* reads in Niger, WAVE 1 (2011), Post Planting, ecvmaas1_p1_en
-	* * creates binaries and kg for fertilizer use
+	* creates binaries and kg for fertilizer use
 	* outputs clean data file ready for combination with wave 1 plot data
 
 * assumes

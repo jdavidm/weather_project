@@ -12,9 +12,8 @@
 	* previously cleaned household datasets
 	* customsave.ado
 
-* TO DO:
-	* everything
-
+* to do
+	* review and approve edits
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
@@ -102,7 +101,7 @@
 	gen				mz_yld = mz_hrv / plotsize, after(mz_hrv)
 	lab var			mz_yld	"millet yield (kg/ha)"
 
-*maybe imputing zero values	
+* impute zero values	
 	
 * impute yield outliers
 	sum				mz_yld mz_hrv
@@ -280,13 +279,13 @@
 * **********************************************************************
 
 * generate plot area
-	bysort			hh_num (clusterid field parcel) :	egen tf_lnd = sum(plotsize)
+	bysort			clusterid hh_num :	egen tf_lnd = sum(plotsize)
 	lab var			tf_lnd	"Total farmed area (ha)"
 	assert			tf_lnd > 0 
 	sum				tf_lnd, detail
 
 * value of harvest
-	bysort			hh_num (clusterid field parcel) :	egen tf_hrv = sum(vl_hrvimp)
+	bysort			clusterid hh_num :	egen tf_hrv = sum(vl_hrvimp)
 	lab var			tf_hrv	"Total value of harvest (2010 USD)"
 	sum				tf_hrv, detail
 	
@@ -296,13 +295,13 @@
 	sum				tf_yld, detail
 	
 * labor
-	bysort 			hh_num (clusterid field parcel) : egen lab_tot = sum(labordaysimp)
+	bysort 			clusterid hh_num : egen lab_tot = sum(labordaysimp)
 	generate		tf_lab = lab_tot / tf_lnd
 	lab var			tf_lab	"labor rate (days/ha)"
 	sum				tf_lab, detail
 
 * fertilizer
-	bysort 			hh_num (clusterid field parcel) : egen fert_tot = sum(fertimp)
+	bysort 			clusterid hh_num : egen fert_tot = sum(fertimp)
 	generate		tf_frt = fert_tot / tf_lnd
 	lab var			tf_frt	"fertilizer rate (kg/ha)"
 	sum				tf_frt, detail
@@ -310,14 +309,14 @@
 * pesticide
 	replace			pest_any = 0 if pest_any == 2
 	tab				pest_any, missing
-	bysort 			hh_num (clusterid field parcel) : egen tf_pst = max(pest_any)
+	bysort 			clusterid hh_num : egen tf_pst = max(pest_any)
 	lab var			tf_pst	"Any plot has pesticide"
 	tab				tf_pst
 	
 * herbicide
 	replace			herb_any = 0 if herb_any == 2
 	tab				herb_any, missing
-	bysort 			hh_num (clusterid field parcel) : egen tf_hrb = max(herb_any)
+	bysort 			clusterid hh_num : egen tf_hrb = max(herb_any)
 	lab var			tf_hrb	"Any plot has herbicide"
 	tab				tf_hrb
 	
@@ -326,14 +325,14 @@
 * **********************************************************************	
 	
 * generate plot area
-	bysort			hh_num (clusterid field parcel) :	egen cp_lnd = sum(plotsize) ///
+	bysort			clusterid hh_num :	egen cp_lnd = sum(plotsize) ///
 						if mz_hrvimp != .
 	lab var			cp_lnd	"Total millet area (ha)"
 	assert			cp_lnd > 0 
 	sum				cp_lnd, detail
 
 * value of harvest
-	bysort			hh_num (clusterid field parcel) :	egen cp_hrv = sum(vl_hrvimp) ///
+	bysort			clusterid hh_num :	egen cp_hrv = sum(vl_hrvimp) ///
 						if mz_hrvimp != .
 	lab var			cp_hrv	"Total quantity of millet harvest (kg)"
 	sum				cp_hrv, detail
@@ -344,14 +343,14 @@
 	sum				cp_yld, detail
 	
 * labor
-	bysort 			hh_num (clusterid field parcel) : egen lab_mz = sum(labordaysimp) ///
+	bysort 			clusterid hh_num : egen lab_mz = sum(labordaysimp) ///
 						if mz_hrvimp != .
 	generate		cp_lab = lab_mz / cp_lnd
 	lab var			cp_lab	"labor rate for millet (days/ha)"
 	sum				cp_lab, detail
 
 * fertilizer
-	bysort 			hh_num (clusterid field parcel) : egen fert_mz = sum(fertimp) ///
+	bysort 			clusterid hh_num : egen fert_mz = sum(fertimp) ///
 						if mz_hrvimp != .
 	generate		cp_frt = fert_mz / cp_lnd
 	lab var			cp_frt	"fertilizer rate for millet (kg/ha)"
@@ -359,14 +358,14 @@
 
 * pesticide
 	tab				pest_any, missing
-	bysort 			hh_num (clusterid field parcel) : egen cp_pst = max(pest_any) /// 
+	bysort 			clusterid hh_num : egen cp_pst = max(pest_any) /// 
 						if mz_hrvimp != .
 	lab var			cp_pst	"Any millet plot has pesticide"
 	tab				cp_pst
 	
 * herbicide
 	tab				herb_any, missing
-	bysort 			hh_num (clusterid field parcel) : egen cp_hrb = max(herb_any) ///
+	bysort 			clusterid hh_num : egen cp_hrb = max(herb_any) ///
 						if mz_hrvimp != .
 	lab var			cp_hrb	"Any millet plot has herbicide"
 	tab				cp_hrb
@@ -382,7 +381,7 @@
 	    replace		`v' = 0 if `v' == .
 	}		
 	
-	collapse (max)	tf_* cp_*, by(region dept canton clusterid hh_num)
+	collapse (max)	tf_* cp_*, by(clusterid hh_num)
 	*** we went from 8741 to 2135 observations 
 	
 * return non-maize production to missing
@@ -402,8 +401,8 @@
 	
 * verify values are accurate
 	sum				tf_* cp_*
-	*** values seem too smaller, smaller than wave 2, tf_yld is 7.4 and cp_yld is 9.6
-
+	*** values seem much more reasonable
+	
 * **********************************************************************
 * 4 - end matter, clean up to save
 * **********************************************************************
