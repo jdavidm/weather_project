@@ -43,14 +43,14 @@
 * unique identifier can only be generated including crop code as some fields are mixed (pp_s4q02)
 	describe
 	sort 		holder_id parcel_id field_id crop_code
-	isid 		holder_id parcel_id field_id crop_code, missok
+	isid 		holder_id parcel_id field_id crop_code
 	
 * creating district identifier
 	egen 		district_id = group( saq01 saq02)
 	lab var 	district_id "Unique district identifier"
 	distinct	saq01 saq02, joint
 	*** 69 distinct district
-	*** same as pp sect2 & sect3, good
+	*** same as pp sect3, good
 	
 * creating parcel identifier
 	rename		parcel_id parcel
@@ -113,12 +113,10 @@
 	*** all other obs are blank
 	*** should these be considered as 'no's? seems like a big assumption
 	
-*	replace		pesticide_any = 2 if pesticide_any == .
-*	replace		herbicide_any = 2 if herbicide_any == .
-	*** should these be considered as 'no's? seems like a big assumption
-
 * should (can) we impute a binary variable? - NO!
 * jeff sez "if it's missing, call it a no"
+	replace		pesticide_any = 2 if pesticide_any == .
+	replace		herbicide_any = 2 if herbicide_any == .
 
 * pp_s4q12_a and pp_s4q12_b give month and year seeds were planted
 * the years for some reason mostly say 2005. 
@@ -133,13 +131,13 @@
 	rename 		household_id hhid
 	rename 		household_id2 hhid2
 	rename 		saq01 region
-	rename 		saq02 district
-	label var 	district "District Code"
-	rename 		saq03 ward	
+	rename 		saq02 zone
+	rename 		saq03 woreda
+	rename 		saq05 ea
 	
 * restrict to variables of interest
 	keep  		holder_id- pp_s4q01_b pesticide_any herbicide_any field_prop ///
-					damaged damaged_pct seed_wgt parcel_id field_id crop_id
+					damaged damaged_pct parcel_id field_id crop_id
 	order 		holder_id- saq05
 
 * Final preparations to export

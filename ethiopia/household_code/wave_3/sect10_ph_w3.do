@@ -27,7 +27,7 @@
 	loc logout = "$data/household_data/ethiopia/logs"
 
 * open log
-	log using "`logout'/wv3_PHSEC10", append
+*	log using "`logout'/wv3_PHSEC10", append
 
 
 * **********************************************************************
@@ -60,7 +60,7 @@
 * unique identifier can only be generated including crop code as some fields are mixed
 	describe
 	sort 		holder_id parcel_id field_id crop_code
-	isid 		holder_id parcel_id field_id crop_code, missok
+	isid 		holder_id parcel_id field_id crop_code
 	
 * creating parcel identifier
 	rename		parcel_id parcel
@@ -91,7 +91,7 @@
 	label var 	district_id "Unique district identifier"
 	distinct	saq01 saq02, joint
 	*** 69 distinct districts
-	*** same as pp sect2, pp sect3, and ph sect9, good
+	*** same as pp sect3, and ph sect9, good
 
 	
 * **********************************************************************
@@ -246,7 +246,6 @@
 	rename 		household_id2 hhid2
 	rename 		saq01 region
 	rename 		saq02 zone
-	label var 	district "District Code"
 	rename 		saq03 woreda
 	rename		saq05 ea
 
