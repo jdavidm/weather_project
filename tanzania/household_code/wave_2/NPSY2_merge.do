@@ -26,7 +26,8 @@
 	loc		logout	=	"$data/merged_data/tanzania/logs"
 
 * open log
-*	log		using	"`logout'/npsy2_merge", append
+	cap log close
+	log		using	"`logout'/npsy2_merge", append
 
 
 * **********************************************************************

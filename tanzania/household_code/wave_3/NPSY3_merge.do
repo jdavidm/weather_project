@@ -26,7 +26,8 @@
 	loc		export	=	"$data/household_data/tanzania/wave_3/refined"
 	loc		logout	=	"$data/merged_data/tanzania/logs"
 
-* open log
+* open 
+	cap log close
 	log		using	"`logout'/npsy3_merge", append
 
 	
