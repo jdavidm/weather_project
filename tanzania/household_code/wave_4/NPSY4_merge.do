@@ -411,13 +411,13 @@
 * **********************************************************************	
 	
 * generate plot area
-	bysort			y4_hhid (plot_id) :	egen cp_lnd = sum(plotsize) ///
+	bysort			y4_hhid (plot_id) :	egen cp_lnd = sum(mz_lnd) ///
 						if mz_hrvimp != .
 	assert			cp_lnd > 0 
 	sum				cp_lnd, detail
 
 * value of harvest
-	bysort			y4_hhid (plot_id) :	egen cp_hrv = sum(vl_hrvimp) ///
+	bysort			y4_hhid (plot_id) :	egen cp_hrv = sum(mz_hrvimp) ///
 						if mz_hrvimp != .
 	sum				cp_hrv, detail
 	
@@ -426,32 +426,29 @@
 	sum				cp_yld, detail
 	
 * labor
-	bysort 			y4_hhid (plot_id) : egen lab_mz = sum(labordaysimp) ///
+	bysort 			y4_hhid (plot_id) : egen lab_mz = sum(mz_labimp) ///
 						if mz_hrvimp != .
 	generate		cp_lab = lab_mz / cp_lnd
 	sum				cp_lab, detail
 
 * fertilizer
-	bysort 			y4_hhid (plot_id) : egen fert_mz = sum(fertimp) ///
+	bysort 			y4_hhid (plot_id) : egen fert_mz = sum(mz_frtimp) ///
 						if mz_hrvimp != .
 	generate		cp_frt = fert_mz / cp_lnd
 	sum				cp_frt, detail
 
 * pesticide
-	tab				pest_any, missing
-	bysort 			y4_hhid (plot_id) : egen cp_pst = max(pest_any) /// 
+	bysort 			y4_hhid (plot_id) : egen cp_pst = max(mz_pst) /// 
 						if mz_hrvimp != .
 	tab				cp_pst
 	
 * herbicide
-	tab				herb_any, missing
-	bysort 			y4_hhid (plot_id) : egen cp_hrb = max(herb_any) ///
+	bysort 			y4_hhid (plot_id) : egen cp_hrb = max(mz_hrb) ///
 						if mz_hrvimp != .
 	tab				cp_hrb
 	
 * irrigation
-	tab				irr_any, missing
-	bysort 			y4_hhid (plot_id) : egen cp_irr = max(irr_any) ///
+	bysort 			y4_hhid (plot_id) : egen cp_irr = max(mz_irr) ///
 						if mz_hrvimp != .
 	tab				cp_irr
 
@@ -464,7 +461,7 @@
 	    replace		`v' = 0 if `v' == .
 	}		
 	
-	collapse (sum)	tf_* cp_*, by(y4_hhid clusterid strataid ///
+	collapse (max)	tf_* cp_*, by(y4_hhid clusterid strataid ///
 						hhweight region district ward ea)
 	*** we went frm 3,107 to 1,788 observations 
 	
