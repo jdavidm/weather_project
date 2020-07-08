@@ -26,6 +26,7 @@
 	loc logout = "$data/household_data/tanzania/logs"
 
 * open log
+	cap log close
 	log using "`logout'/wv4_AGSEC4A", append
 
 
@@ -161,12 +162,13 @@
 	*** no obs with damaged maize harvest leading to zero harvested
 
 * summarize value of harvest
+	replace			mz_hrv = . if mz_hrv > 20000
 	sum				mz_hrv, detail
-	*** median 300, mean 727, max 75,180
+	*** median 300, mean 641, max 11,200
 	
 * replace any +3 s.d. away from median as missing
 	replace			mz_hrv = . if mz_hrv > `r(p50)' + (3*`r(sd)')
-	*** replaced 12 values, max is now 7,980
+	*** replaced 46 values, max is now 3,600
 
 * impute missing values
 	mi set 			wide 	// declare the data to be wide.
@@ -185,7 +187,7 @@
 	replace			mz_hrv = mz_hrv_1_  if crop_code == 11
 	lab var			mz_hrv "Quantity of maize harvested (kg)"
 	drop			mz_hrv_1_
-	*** imputed 12 values out of 2,024 total observations	
+	*** imputed 46 values out of 2,024 total observations	
 	
 	
 * **********************************************************************
@@ -222,18 +224,17 @@
 	lab var			any_pure "Is Crop Planted in Full Area of Plot (Purestand)?"
 	lab var			any_mixed "Is Crop Planted in Less Than Full Area of Plot?"
 	lab var			percent_field "Percent of Field Crop Was Planted On"
+						
+* check for duplicates
+	duplicates		report y4_hhid plotnum crop_code
+	*** there are 2 duplicates
 	
-							
-* collapsing to resolve duplicate observations
-	collapse (sum)		mz_hrv hvst_value percent_field mz_damaged, by(y4_hhid ///
-							plotnum plot_id crop_code crop_id clusterid ///
-							strataid hhweight region district ward ea ///
-							any_* pure_stand)
+	collapse (sum)	hvst_value percent_field , by(y4_hhid ///
+						plotnum plot_id crop_code crop_id clusterid ///
+						strataid hhweight region district ward ea ///
+						any_* pure_stand mz_hrv mz_damaged)
 	** two fewer obs, should be the dupes from line 63
-	
-	replace				mz_damaged = . if mz_damaged == 0
 
-	
 * prepare for export
 	isid			y4_hhid plotnum crop_code
 	compress
