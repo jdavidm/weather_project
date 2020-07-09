@@ -1,6 +1,7 @@
 * Project: WB Weather
 * Created on: May 2020
 * Created by: mcg
+* Edited by: alj 
 * Stata v.16
 
 * does
@@ -26,6 +27,7 @@
 	loc		logout 	= 	"$data/merged_data/tanzania/logs"
 
 * open log	
+	cap log close 
 	log 	using 		"`logout'/npsy1_build", append
 
 	
@@ -208,10 +210,27 @@
 	}						
 }
 
+* rename hhid
+	rename			hhid y1_hhid
+	
+* create wide data set 	
+	rename 			* *2008
+	rename 			region2008 region
+	rename 			district2008 district
+	rename 			ward2008 ward
+	rename 			ea2008 ea
+	rename 			*hhid2008 *hhid
+	
+* drop unneeded variables
+	drop			y1_rural2008 year2008 
+	
+* prepare for export
+	qui: compress
+	summarize 
+	sort y1_hhid
 	
 * save file
-	qui: compress
-	customsave 	, idvar(hhid) filename("npsy1_merged.dta") ///
+	customsave 	, idvar(y1_hhid) filename("npsy1_merged.dta") ///
 		path("`export'") dofile(npsy1_build) user($user)
 		
 * close the log

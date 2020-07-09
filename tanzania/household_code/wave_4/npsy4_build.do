@@ -26,6 +26,7 @@
 	loc		logout 	= 	"$data/merged_data/tanzania/logs"
 
 * open log	
+	cap log close 
 	log 	using 		"`logout'/npsy4_build", append
 
 	
@@ -208,6 +209,10 @@
 	}						
 }
 
+* prepare for export
+	qui: compress
+	summarize 
+	sort y4_hhid
 	
 * save file
 	qui: compress

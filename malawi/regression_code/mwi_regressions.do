@@ -423,7 +423,7 @@ foreach l of local levels {
 
 * save complete results
 	customsave 	, idvarname(reg_id) filename("mwi_complete_results.dta") ///
-		path("`results''") dofile(mwi_regression) user($user)
+		path("`results'") dofile(mwi_regression) user($user)
 
 * close the log
 	log	close
