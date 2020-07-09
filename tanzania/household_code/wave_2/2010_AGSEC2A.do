@@ -26,6 +26,7 @@
 	loc logout = "$data/household_data/tanzania/logs"
 
 * open log
+	cap log close 
 	log using "`logout'/wv2_AGSEC2A", append
 
 
@@ -35,20 +36,22 @@
 
 * load data
 	use				"`root'/AG_SEC2A", clear
+	
+* dropping duplicates
+	duplicates 		drop
+	*** 0 obs dropped
 
 * renaming variables of interest
-	rename			y2_hhid hhid
 	rename			ag2a_04 plotsize_self_ac
 	rename			ag2a_09 plotsize_gps_ac
 	
 * check for uniquie identifiers
 	drop			if plotnum == ""
-	isid			hhid plotnum
+	isid			y2_hhid plotnum
 	*** 0 obs dropped that lacked plot ids
 
 * generating unique ob id
-	gen				plot_id = hhid + " " + plotnum
-	lab var			plot_id "Unique plot identifier"
+	gen				plot_id = y2_hhid + " " + plotnum
 	isid			plot_id
 	
 * convert from acres to hectares
@@ -64,9 +67,9 @@
 * ***********************************************************************	
 
 * must merge in regional identifiers from 2012_HHSECA to impute
-	merge			m:1 hhid using "`export'/HH_SECA"
+	merge			m:1 y2_hhid using "`export'/HH_SECA"
 	tab				_merge
-	*** 1,294 not matched, these are the ones we dropped that lacked plotnum
+	*** 1,294 not matched
 	
 	drop if			_merge == 2
 	drop			_merge
@@ -76,10 +79,6 @@
 	egen			uq_dist = group(region district)
 	distinct		uq_dist
 	*** 129 distinct ditricts
-
-* rename household identifier
-	rename			hhid y2_hhid
-	*** allows matching with uncleaned data
 	
 * must merge in regional identifiers from 2012_AG_SEC_3A to impute
 	merge			1:1 y2_hhid plotnum using "`root'/AG_SEC3A"
@@ -87,9 +86,6 @@
 	
 	drop if			_merge == 2
 	drop			_merge
-
-* rename household identifier
-	rename			y2_hhid hhid
 	
 * record if field was cultivated during long rains
 	gen 			status = ag3a_03==1 if ag3a_03!=.
@@ -102,9 +98,6 @@
 	
 	drop			ag3a_02_1- status
 	
-* renaming village variables
-	rename		ea village
-	
 	
 * ***********************************************************************
 * 3 - clean and impute plot size
@@ -112,74 +105,74 @@
 	
 * interrogating plotsize variables
 	count 		if plotsize_gps != . & plotsize_self != .
-	*** 4,723 not mising, out of 6,038
+	*** 3,941 not mising, out of 6,038
 	
 	pwcorr 		plotsize_gps plotsize_self
-	*** high correlation (0.7742)
+	*** high correlation (0.7562)
 
 * inverstingating the high and low end of gps measurments
 	* high end
 		tab			plotsize_gps
 		histogram	plotsize_gps if plotsize_gps > 2
 		sum			plotsize_gps, detail
-		*** mean = 1.095
-		*** 90% of obs < 2.44
+		*** mean = 1.061
+		*** 90% of obs < 2.34
 		
 		sort		plotsize_gps
-		sum 		plotsize_gps if plotsize_gps > 2.4
-		*** 483 obs > 2.4
+		sum 		plotsize_gps if plotsize_gps > 2.3
+		*** 403 obs > 2.3
 		
-		list		plotsize_gps plotsize_self if plotsize_gps > 2.4 & ///
+		list		plotsize_gps plotsize_self if plotsize_gps > 2.3 & ///
 						!missing(plotsize_gps), sep(0)
-		pwcorr		plotsize_gps plotsize_self if plotsize_gps > 2.4 & ///
+		pwcorr		plotsize_gps plotsize_self if plotsize_gps > 2.3 & ///
 						!missing(plotsize_gps)
-		*** corr = 0.6864 (not terrible)
+		*** corr = 0.6652 (not terrible)
 		
-		sum 		plotsize_gps if plotsize_gps>3.958
-		*** 236 obs > 3.958
+		sum 		plotsize_gps if plotsize_gps>3.95
+		*** 184 obs > 3.95
 		
 		list		plotsize_gps plotsize_self if plotsize_gps > 3.95 & ///
 						!missing(plotsize_gps), sep(0)
 		pwcorr		plotsize_gps plotsize_self if plotsize_gps > 3.95 & ///
 						!missing(plotsize_gps)
-		*** corr = 0.6637 (still not terrible)
+		*** corr = 0.6375 (still not terrible)
 	 	
 		sum 		plotsize_gps if plotsize_gps > 20
-		*** 13 obs > 20
+		*** 11 obs > 20
 		
 		list		plotsize_gps plotsize_self if plotsize_gps > 20 & ///
 						!missing(plotsize_gps), sep(0)
 		pwcorr		plotsize_gps plotsize_self if plotsize_gps > 20 & ///
 						!missing(plotsize_gps)
-		*** corr = 0.6791(still not terrible)
+		*** corr = 0.6777 (still not terrible)
 	
 	* low end
 		tab			plotsize_gps
 		histogram	plotsize_gps if plotsize_gps < 0.5
 		sum			plotsize_gps, detail
-		*** mean = 1.095
-		*** 10% of obs < 0.089
+		*** mean = 1.061
+		*** 10% of obs < 0.085
 		
-		sum 		plotsize_gps if plotsize_gps<0.089
-		*** 460 obs < 0.089
+		sum 		plotsize_gps if plotsize_gps<0.085
+		*** 409 obs < 0.085
 		
 		list		plotsize_gps plotsize_self if plotsize_gps<0.09 & ///
 						!missing(plotsize_gps), sep(0)
 		pwcorr		plotsize_gps plotsize_self if plotsize_gps<0.09 & ///
 						!missing(plotsize_gps)
-		*** corr = 0.0394 (very very low correlation)
+		*** corr = 0.0498 (very very low correlation)
 		
-		sum 		plotsize_gps if plotsize_gps<0.053
-		*** 238 obs < 0.05
+		sum 		plotsize_gps if plotsize_gps<0.05
+		*** 201 obs < 0.05
 		
-		list		plotsize_gps plotsize_self if plotsize_gps<0.053 & ///
+		list		plotsize_gps plotsize_self if plotsize_gps<0.05 & ///
 						!missing(plotsize_gps), sep(0)
-		pwcorr		plotsize_gps plotsize_self if plotsize_gps<0.053 & ///
+		pwcorr		plotsize_gps plotsize_self if plotsize_gps<0.05 & ///
 						!missing(plotsize_gps)
-		*** corr = -0.0078 (negative and still very very low)
+		*** corr = -0.0716 (negative and still very very low)
 		
-		tab			plotsize_gps if plotsize_gps<0.053
-		*** 27 obs w/ plotsize_gps < 0.01 (including four zero values)
+		tab			plotsize_gps if plotsize_gps<0.01
+		*** 25 obs w/ plotsize_gps < 0.01 (including four zero values)
 		
 		list		plotsize_gps plotsize_self if plotsize_gps<0.01 & ///
 						!missing(plotsize_gps), sep(0)
@@ -209,7 +202,7 @@
 	mi set 		wide 	// declare the data to be wide.
 	mi xtset	, clear 	// this is a precautinary step to clear any xtset that the analyst may have had in place previously
 	mi register	imputed plotsize_gps // identify plotsize_GPS as the variable being imputed
-	sort		hhid plotnum, stable // sort to ensure reproducability of results
+	sort		y2_hhid plotnum, stable // sort to ensure reproducability of results
 	mi impute 	pmm plotsize_gps plotsize_self i.uq_dist, add(1) rseed(245780) ///
 					noisily dots force knn(5) bootstrap
 	mi 			unset
@@ -221,7 +214,7 @@
 					statistics(n mean min max) columns(statistics) longstub ///
 					format(%9.3g) 
 	rename		plotsize_gps_1_ plotsize
-	lab var			plotsize "Plot size (ha), imputed"
+	lab var		plotsize "Plot size (ha), imputed"
 	*** imputed 963 values out of 4,902 total observations
 	
 	sum				plotsize_self plotsize_gps	plotsize
@@ -238,13 +231,30 @@
 * **********************************************************************
 	
 * keep what we want, get rid of the rest
-	keep			hhid plotnum plot_id plotsize clusterid strataid ///
-						y2_weight region district ward village
-	order			hhid plotnum plot_id clusterid strataid y2_weight ///
-						region district ward village plotsize
+	keep			y2_hhid plotnum plot_id region district ward ///
+						ea y2_rural clusterid strataid hhweight ///
+						mover_R1R2 location_R1_to_R2 plotnum plot_id plotsize
 						
+	order			y2_hhid plotnum plot_id clusterid strataid hhweight ///
+						region district ward ea y2_rural mover_R1R2 ///
+						location_R1_to_R2 plotsize
+						
+* renaming and relabelling variables
+	lab var		y2_hhid "Unique Household Identification NPS Y2"
+	lab var		y2_rural "Cluster Type"
+	lab var		hhweight "Household Weights (Trimmed & Post-Stratified)"
+	lab var		plotnum "Plot ID Within household"
+	lab var		plot_id "Unquie Plot Identifier"
+	lab var		plotsize "Plot size (ha), imputed"
+	lab var		clusterid "Unique Cluster Identification"
+	lab var		strataid "Design Strata"
+	lab var		region "Region Code"
+	lab var		district "District Code"
+	lab var		ward "Ward Code"
+	lab var		ea "Village / Enumeration Area Code"
+	
 * prepare for export
-	isid			hhid plotnum
+	isid			y2_hhid plotnum
 	compress
 	describe
 	summarize 

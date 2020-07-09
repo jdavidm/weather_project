@@ -25,7 +25,8 @@
 	loc export = "$data/household_data/tanzania/wave_4/refined"
 	loc logout = "$data/household_data/tanzania/logs"
 
-* open log
+* open log 
+	cap log close 
 	log using "`logout'/wv4_AGSEC2A", append
 
 	
@@ -36,18 +37,21 @@
 * load data
 	use 		"`root'/ag_sec_2a", clear
 
+* dropping duplicates
+	duplicates 	drop
+	*** 0 obs dropped
+
 * renaming variables of interest
-	rename 		y4_hhid hhid
 	rename 		ag2a_04 plotsize_self_ac
 	rename 		ag2a_09 plotsize_gps_ac
 
 * check for unique identifiers
 	drop		if plotnum == ""
-	isid		hhid plotnum
+	isid		y4_hhid plotnum
 	*** 1,262 obs dropped
 	
 * generating unique observation id for each ob
-	generate 	plot_id = hhid + " " + plotnum
+	generate 	plot_id = y4_hhid + " " + plotnum
 	lab var		plot_id "Unique plot identifier"
 	isid 		plot_id
 	
@@ -64,7 +68,7 @@
 * ***********************************************************************
 	
 * must merge in regional identifiers from 2008_HHSECA to impute
-	merge		m:1 hhid using "`export'/HH_SECA"
+	merge		m:1 y4_hhid using "`export'/HH_SECA"
 	tab			_merge
 	*** 1,262 not merged from using, (dropped obs from line 45)
 	
@@ -77,19 +81,12 @@
 	distinct 	uq_dist
 	*** 159 distinct districts
 	
-* rename household identifier
-	rename		hhid y4_hhid
-	*** allows matching with uncleaned data
-	
 * must merge in regional identifiers from 2012_AG_SEC_3A to impute
 	merge			1:1 y4_hhid plotnum using "`root'/AG_SEC_3A"
 	*** 1,262 not matched from using - good
 
 	drop		if _merge == 2
 	drop		_merge
-	
-* re-rename household identifier
-	rename		y4_hhid hhid
 	
 * record if field was cultivated during long rainy
 	gen 		status = ag3a_03==1 if ag3a_03!=.
@@ -199,7 +196,7 @@
 	mi set 		wide 	// declare the data to be wide.
 	mi xtset	, clear 	// clear any xtset in place previously
 	mi register	imputed plotsize_gps // identify plotsize_GPS as the variable being imputed
-	sort		hhid plotnum, stable // sort to ensure reproducability of results
+	sort		y4_hhid plotnum, stable // sort to ensure reproducability of results
 	mi impute 	pmm plotsize_gps plotsize_self i.uq_dist, add(1) rseed(245780) ///
 					noisily dots force knn(5) bootstrap
 	mi 			unset
@@ -228,13 +225,27 @@
 * **********************************************************************
 	
 * keep what we want, get rid of the rest
-	keep			hhid plotnum plot_id plotsize clusterid strataid ///
-						y4_weight region district ward village
-	order			hhid plotnum plot_id clusterid strataid y4_weight ///
-						region district ward village plotsize
+	keep		y4_hhid plotnum plot_id plotsize clusterid strataid ///
+					hhweight region district ward ea y4_rural
+	order		y4_hhid plotnum plot_id clusterid strataid hhweight ///
+					region district ward ea plotsize
+					
+* renaming and relabelling variables
+	lab var		y4_hhid "Unique Household Identification NPS Y4"
+	lab var		y4_rural "Cluster Type"
+	lab var		hhweight "Household Weights (Trimmed & Post-Stratified)"
+	lab var		plotnum "Plot ID Within household"
+	lab var		plot_id "Unquie Plot Identifier"
+	lab var		plotsize "Plot size (ha), imputed"
+	lab var		clusterid "Unique Cluster Identification"
+	lab var		strataid "Design Strata"
+	lab var		region "Region Code"
+	lab var		district "District Code"
+	lab var		ward "Ward Code"
+	lab var		ea "Village / Enumeration Area Code"
 
 * prepare for export
-	isid			hhid plotnum
+	isid			y4_hhid plotnum
 	compress
 	describe
 	summarize 

@@ -26,6 +26,7 @@
 	loc logout = "$data/household_data/tanzania/logs"
 
 * open log
+	cap log close 
 	log using "`logout'/wv2_AGSEC4A", append
 
 	
@@ -36,28 +37,27 @@
 * load data
 	use "`root'/AG_SEC4A", clear
 	
+* dropping duplicates
+	duplicates 		drop
+	*** 0 obs dropped
+	
 * rename variables of interest
-	rename 			y2_hhid hhid
 	rename 			zaocode crop_code
 	
 * create percent of area to crops
 	gen				pure_stand = ag4a_01 == 1
-	lab var			pure_stand "=1 if crop was pure stand"
 	gen				any_pure = pure_stand == 1
-	lab var			any_pure "=1 if any crop was pure stand"
 	gen				any_mixed = pure_stand == 0
-	lab var			any_mixed "=1 if any crop was mixed"
-	gen				percent_field = 0.25 if ag4a_02 == 1
-	lab var			percent_field "percent of field crop was on"
-
+	
+	gen				percent_field = 0.25 if ag4a_02== 1
 	replace			percent_field = 0.50 if ag4a_02==2
 	replace			percent_field = 0.75 if ag4a_02==3
 	replace			percent_field = 1 if pure_stand==1
-	duplicates		report hhid plotnum crop_code
+	duplicates		report y2_hhid plotnum crop_code
 	*** there are 0 duplicates
 
 * create total area on field (total on plot across ALL crops)
-	bys 			hhid plotnum: egen total_percent_field = total(percent_field)
+	bys 			y2_hhid plotnum: egen total_percent_field = total(percent_field)
 	replace			percent_field = percent_field / total_percent_field ///
 						if total_percent_field > 1	
 	*** 2,626 changes made
@@ -80,17 +80,15 @@
 	*** 1 changes made	
 
 * generate hh x plot x crop identifier
-	isid				hhid plotnum crop_code
-	gen		 			plot_id = hhid + " " + plotnum
-	lab var				plot_id "plot id"
+	isid				y2_hhid plotnum crop_code
+	gen		 			plot_id = y2_hhid + " " + plotnum
 	tostring 			crop_code, generate(crop_num)
-	gen str23 			crop_id = hhid + " " + plotnum + " " + crop_num
+	gen str23 			crop_id = y2_hhid + " " + plotnum + " " + crop_num
 	duplicates report 	crop_id
-	lab var				crop_id "unique crop id"
 	*** 0 duplicate crop_ids	
 	
 * must merge in regional identifiers from 2008_HHSECA to impute
-	merge			m:1 hhid using "`export'/HH_SECA"
+	merge			m:1 y2_hhid using "`export'/HH_SECA"
 	tab				_merge
 	*** 1,808 not matched, from using
 	
@@ -140,7 +138,7 @@
 	mi set 			wide 	// declare the data to be wide.
 	mi xtset		, clear 	// clear any xtset that may have had in place previously
 	mi register		imputed hvst_value // identify kilo_fert as the variable being imputed
-	sort			hhid plotnum crop_num, stable // sort to ensure reproducability of results
+	sort			y2_hhid plotnum crop_num, stable // sort to ensure reproducability of results
 	mi impute 		pmm hvst_value i.uq_dist i.crop_code, add(1) rseed(245780) ///
 						noisily dots force knn(5) bootstrap
 	mi 				unset	
@@ -151,7 +149,6 @@
 						statistics(n mean min max) columns(statistics) ///
 						longstub format(%9.3g) 
 	replace			hvst_value = hvst_value_1_
-	lab var				hvst_value "Value of harvest (2010 USD)"
 	drop			hvst_value_1_
 	*** imputed 54 values out of 5,679 total observations	
 	
@@ -173,7 +170,7 @@
 	mi set 			wide 	// declare the data to be wide.
 	mi xtset		, clear 	// clear any xtset that may have had in place previously
 	mi register		imputed mz_hrv // identify kilo_fert as the variable being imputed
-	sort			hhid plotnum crop_num, stable // sort to ensure reproducability of results
+	sort			y2_hhid plotnum crop_num, stable // sort to ensure reproducability of results
 	mi impute 		pmm mz_hrv i.uq_dist if crop_code == 11, add(1) rseed(245780) ///
 						noisily dots force knn(5) bootstrap
 	mi 				unset	
@@ -184,7 +181,6 @@
 						statistics(n mean min max) columns(statistics) ///
 						longstub format(%9.3g) 
 	replace			mz_hrv = mz_hrv_1_  if crop_code == 11
-	lab var			mz_hrv "Quantity of maize harvested (kg)"
 	drop			mz_hrv_1_
 	*** imputed 20 values out of 1,864 total observations
 	
@@ -193,20 +189,38 @@
 * 3 - end matter, clean up to save
 * **********************************************************************
 
-* rename ea village
-	rename 			ea village
-	
 * keep what we want, get rid of what we don't
-	keep 				hhid plotnum plot_id crop_code crop_id clusterid ///
-							strataid y2_weight region district ward village ///
-							any_* pure_stand percent_field ///
-							mz_hrv hvst_value mz_damaged
-
-	order				hhid plotnum plot_id crop_code crop_id clusterid ///
-							strataid y2_weight region district ward village
+	keep 				y2_hhid plotnum plot_id crop_code crop_id clusterid ///
+							strataid hhweight region district ward ea ///
+							any_* pure_stand percent_field mz_hrv hvst_value ///
+							mz_damaged y2_rural
+	order				y2_hhid plotnum plot_id crop_code crop_id clusterid ///
+							strataid hhweight region district ward ea
+	
+* renaming and relabelling variables
+	lab var			y2_hhid "Unique Household Identification NPS Y2"
+	lab var			y2_rural "Cluster Type"
+	lab var			hhweight "Household Weights (Trimmed & Post-Stratified)"
+	lab var			plotnum "Plot ID Within household"
+	lab var			plot_id "Plot Identifier"
+	lab var			clusterid "Unique Cluster Identification"
+	lab var			strataid "Design Strata"
+	lab var			region "Region Code"
+	lab var			district "District Code"
+	lab var			ward "Ward Code"
+	lab var			ea "Village / Enumeration Area Code"	
+	lab var			mz_hrv "Quantity of Maize Harvested (kg)"
+	lab var			mz_damaged "Was Maize Harvest Damaged to the Point of No Yield"
+	lab var			hvst_value "Value of Harvest (2010 USD)"
+	lab var 		crop_code "Crop Identifier"
+	lab var			crop_id "Unique Crop ID Within Plot"
+	lab var			pure_stand "Is Crop Planted in Full Area of Plot (Purestand)?"
+	lab var			any_pure "Is Crop Planted in Full Area of Plot (Purestand)?"
+	lab var			any_mixed "Is Crop Planted in Less Than Full Area of Plot?"
+	lab var			percent_field "Percent of Field Crop Was Planted On"
 	
 * prepare for export
-	isid			hhid plotnum crop_code
+	isid			y2_hhid plotnum crop_code
 	compress
 	describe
 	summarize 
