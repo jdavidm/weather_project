@@ -12,7 +12,7 @@
 	* subsidiary, wave-specific .do files
 
 * TO DO:
-	* write build.do and append-built.do files
+	* complete
 
 	
 * **********************************************************************

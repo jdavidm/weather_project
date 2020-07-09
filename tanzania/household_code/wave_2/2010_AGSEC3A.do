@@ -97,6 +97,7 @@
 
 * replace any +3 s.d. away from median as missing
 	replace			kilo_fert = . if kilo_fert > 5000
+	replace			kilo_fert = . if y2_hhid == "0603013001002901"
 	sum				kilo_fert, detail
 	replace			kilo_fert = . if kilo_fert > `r(p50)'+(3*`r(sd)')
 	sum				kilo_fert, detail
