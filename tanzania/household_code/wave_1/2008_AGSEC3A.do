@@ -26,6 +26,7 @@
 	loc logout = "$data/household_data/tanzania/logs"
 
 * open log
+	cap	log close
 	log using "`logout'/wv1_AGSEC3A", append
 
 
@@ -35,6 +36,10 @@
 
 * load data
 	use 		"`root'/SEC_3A", clear
+	
+* dropping duplicates
+	duplicates 		drop
+	*** 0 obs dropped
 	
 * check for uniquie identifiers
 	drop			if plotnum == ""
@@ -81,18 +86,22 @@
 	
 	rename			s3aq45 kilo_fert
 	lab var			kilo_fert "fertilizer used (kg)"
+	
+	replace			kilo_fert = 0 if kilo_fert == .
 
 * summarize fertilizer
 	sum				kilo_fert, detail
-	*** median 50, mean 512, max 150,000
+	*** median 0, mean 52, max 150,000
 	*** these numbers are way crazy compared to other waves
 
 * replace any +3 s.d. away from median as missing
 	replace			kilo_fert = . if kilo_fert > 5000
+	replace			kilo_fert = . if plot_id == "13030170030453 M2"
+	replace			kilo_fert = . if plot_id == "14030160020364 M1"
 	sum				kilo_fert, detail
 	replace			kilo_fert = . if kilo_fert > `r(p50)'+(3*`r(sd)')
 	sum				kilo_fert, detail
-	*** 11 changes made, max is now 400
+	*** 55 changes made, max is now 400	
 	
 * impute missing values
 	mi set 			wide 	// declare the data to be wide.
@@ -109,10 +118,8 @@
 						statistics(n mean min max) columns(statistics) ///
 						longstub format(%9.3g) 
 	replace			kilo_fert = kilo_fert_1_
-	lab var			kilo_fert "fertilizer use (kg), imputed"
 	drop			kilo_fert_1_
-	*** imputed 3,965 values out of 4,408 total observations
-	*** that's almost 90% of obs. is this okay??
+	*** imputed 57 values out of 4,408 total observations
 	
 	
 * ***********************************************************************
@@ -122,7 +129,6 @@
 * renaming irrigation
 	rename			s3aq15 irrigated 
 	replace			irrigated = 2 if irrigated == .
-	lab var			irrigated "=1 if any irrigation was used"
 	
 * constructing pesticide/herbicide variables
 	gen				pesticide_any = 2
@@ -132,8 +138,6 @@
 	lab define		pesticide_any 1 "Yes" 2 "No"
 	lab values		pesticide_any pesticide_any
 	lab values		herbicide_any pesticide_any
-	 lab var			pesticide_any "=1 if any pesticide was used"
-	lab var			herbicide_any "=1 if any herbicide was used"
 	
 	
 * ***********************************************************************
@@ -420,8 +424,7 @@
 						other_m hrvst_w hrvst_m)
 
 * generate total labor days (household plus hired)
-	gen				labor_days = hh_labor_days + hired_labor_days
-	lab var			labor_days "total labor (days), imputed"	
+	gen				labor_days = hh_labor_days + hired_labor_days	
 	
 	
 * **********************************************************************
@@ -429,10 +432,29 @@
 * **********************************************************************
 
 * keep what we want, get rid of the rest
-	keep			hhid plot_id irrigated fert_any kilo_fert ///
-						pesticide_any herbicide_any labor_days plotnum
-
+	keep			hhid plotnum plot_id irrigated fert_any kilo_fert ///
+						pesticide_any herbicide_any labor_days plotnum ///
+						region district ward ea y1_rural clusterid strataid ///
+						hhweight
 	order			hhid plotnum plot_id
+	
+* renaming and relabelling variables
+	lab var			hhid "Unique Household Identification NPS Y1"
+	lab var			y1_rural "Cluster Type"
+	lab var			hhweight "Household Weights (Trimmed & Post-Stratified)"
+	lab var			plotnum "Plot ID Within household"
+	lab var			plot_id "Unquie Plot Identifier"
+	lab var			clusterid "Unique Cluster Identification"
+	lab var			strataid "Design Strata"
+	lab var			region "Region Code"
+	lab var			district "District Code"
+	lab var			ward "Ward Code"
+	lab var			ea "Village / Enumeration Area Code"
+	lab var			labor_days "Total Labor (days), Imputed"
+	lab var			irrigated "Is plot irrigated?"
+	lab var			pesticide_any "Was Pesticide Used?"
+	lab var			herbicide_any "Was Herbicide Used?"	
+	lab var			kilo_fert "Fertilizer Use (kg), Imputed"
 	
 * prepare for export
 	isid			hhid plotnum	
