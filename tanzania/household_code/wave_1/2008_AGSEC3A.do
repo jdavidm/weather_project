@@ -96,10 +96,12 @@
 
 * replace any +3 s.d. away from median as missing
 	replace			kilo_fert = . if kilo_fert > 5000
+	replace			kilo_fert = . if plot_id == "13030170030453 M2"
+	replace			kilo_fert = . if plot_id == "14030160020364 M1"
 	sum				kilo_fert, detail
 	replace			kilo_fert = . if kilo_fert > `r(p50)'+(3*`r(sd)')
 	sum				kilo_fert, detail
-	*** 55 changes made, max is now 400
+	*** 55 changes made, max is now 400	
 	
 * impute missing values
 	mi set 			wide 	// declare the data to be wide.
