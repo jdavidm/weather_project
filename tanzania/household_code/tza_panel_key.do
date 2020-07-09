@@ -26,6 +26,7 @@
 	loc		logout 	= 	"$data/household_data/tanzania/logs"
 
 * open log	
+	cap log close 
 	log 	using 		"`logout'/tza_panel_key", append
 
 

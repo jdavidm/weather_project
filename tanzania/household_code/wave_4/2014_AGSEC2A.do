@@ -25,7 +25,8 @@
 	loc export = "$data/household_data/tanzania/wave_4/refined"
 	loc logout = "$data/household_data/tanzania/logs"
 
-* open log
+* open log 
+	cap log close 
 	log using "`logout'/wv4_AGSEC2A", append
 
 	

@@ -30,6 +30,7 @@
 	loc		logout 	= 	"$data/merged_data/tanzania/logs"
 
 * open log	
+	cap log close 
 	log 	using 	"`logout'/tza_append_built", append
 
 * **********************************************************************
