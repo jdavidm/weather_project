@@ -60,6 +60,7 @@
 					irr_any tracked_obs
 
 * create unique household-plot identifier
+	isid			hhid plotid
 	sort			hhid plotid
 	egen			plot_id = group(hhid plotid)
 	lab var			plot_id "unique plot identifier"

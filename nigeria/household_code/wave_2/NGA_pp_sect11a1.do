@@ -16,6 +16,7 @@
 * TO DO:
 	* complete
 
+	
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
@@ -25,9 +26,6 @@
 	loc		cnvrt	=		"$data/household_data/nigeria/conversion_files"
 	loc		export	=		"$data/household_data/nigeria/wave_2/refined"
 	loc		logout	= 		"$data/household_data/nigeria/logs"
-
-* close log if open
-	log 	close
 
 * open log
 	log 	using	"`logout'/wave_2_pp_sect11a1", append
@@ -54,6 +52,7 @@
 	gen 			plot_size_GPS = s11aq4c
 	lab var			plot_size_GPS 	"GPS plot size in sq. meters"
 
+	
 * **********************************************************************
 * 2 - conversion to hectares
 * **********************************************************************
@@ -162,11 +161,12 @@
 	pwcorr 			plot_size_hec_GPS plot_size_hec_SR 	if ///
 						plot_size_hec_GPS < 0.01
 	*** very small relationship between GPS and SR plotsize, correlation = 0.0208
+	
 	list 			plot_size_hec_GPS plot_size_hec_SR 	if 	///
-						plot_size_hec_GPS < 0.005, sep(0)
+						plot_size_hec_GPS < 0.01, sep(0)
 	pwcorr 			plot_size_hec_GPS plot_size_hec_SR 	if ///
-						plot_size_hec_GPS < 0.005
-	*** still small relationship between GPS and SR plotsize, correlation = -0.0401
+						plot_size_hec_GPS < 0.01
+	*** still small relationship between GPS and SR plotsize, correlation = 0.0208
 	
 * compare GPS and SR
 * examine GPS 
@@ -177,17 +177,18 @@
 	
 	histogram 		plot_size_hec_GPS 	if 	plot_size_hec_GPS < 0.3
 	histogram 		plot_size_hec_GPS 	if 	plot_size_hec_GPS < 0.2
-	histogram 		plot_size_hec_GPS 	if 	plot_size_hec_GPS < 0.1
-	histogram 		plot_size_hec_GPS 	if 	plot_size_hec_GPS < 0.05
-	*** seems all right - nothing too unreasonable
-	*** will not drop any GPS measures to impute 
-	*** this differs from Y1 
+	***appears that GPS becomes less accurate around 0.05
+
+*make GPS values missing if below 0.05 for impute
+*	replace plot_size_hec_GPS = . if plot_size_hec_GPS <0.05
+	*** 714 changed to missing
 	
 * impute missing plot sizes using predictive mean matching
 	mi set 			wide // declare the data to be wide.
 	mi xtset		, clear // this is a precautinary step to clear any existing xtset
 	mi register 	imputed plot_size_hec_GPS // identify plotsize_GPS as the variable being imputed
-	mi impute 		pmm plot_size_hec_GPS i.lga, add(1) rseed(245780) noisily dots ///
+	sort			hhid plotid, stable // sort to ensure reproducability of results
+	mi impute 		pmm plot_size_hec_GPS i.state, add(1) rseed(245780) noisily dots ///
 						force knn(5) bootstrap
 	mi unset
 
@@ -205,6 +206,7 @@
 	drop 			if missing(plot_size_hec_GPS_1_)
 	*** 0 observations deleted
 
+	
 * **********************************************************************
 * 3 - end matter, clean up to save
 * **********************************************************************
@@ -215,6 +217,7 @@
 	keep 			hhid zone state lga hhid ea plotid plotsize
 
 * create unique household-plot identifier
+	isid				hhid plotid
 	sort				hhid plotid
 	egen				plot_id = group(hhid plotid)
 	lab var				plot_id "unique plot identifier"
@@ -224,7 +227,7 @@
 	summarize
 
 * save file
-		customsave , idvar(hhid) filename("pp_sect11a1.dta") ///
+		customsave , idvar(plot_id) filename("pp_sect11a1.dta") ///
 			path("`export'") dofile(pp_sect11a1) user($user)
 
 * close the log

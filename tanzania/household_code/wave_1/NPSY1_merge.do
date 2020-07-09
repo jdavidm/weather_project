@@ -26,6 +26,7 @@
 	loc		logout	=	"$data/merged_data/tanzania/logs"
 
 * open log
+	cap log close
 	log		using	"`logout'/npsy1_merge", append
 
 	
@@ -106,7 +107,7 @@
 			 (max)	pest_any herb_any irr_any  ///
 						mz_pst mz_hrb mz_irr mz_damaged, ///
 						by(hhid plotnum plot_id clusterid strataid ///
-						y1_weight region district ward ea y1_rural)
+						hhweight region district ward ea y1_rural)
 
 * replace non-maize harvest values as missing
 	tab				mz_damaged, missing
@@ -411,15 +412,15 @@
 * **********************************************************************
 * 4b - generate maize variables 
 * **********************************************************************	
-	
+
 * generate plot area
-	bysort			hhid (plot_id) :	egen cp_lnd = sum(plotsize) ///
+	bysort			hhid (plot_id) :	egen cp_lnd = sum(mz_lnd) ///
 						if mz_hrvimp != .
 	assert			cp_lnd > 0 
 	sum				cp_lnd, detail
 
 * value of harvest
-	bysort			hhid (plot_id) :	egen cp_hrv = sum(vl_hrvimp) ///
+	bysort			hhid (plot_id) :	egen cp_hrv = sum(mz_hrvimp) ///
 						if mz_hrvimp != .
 	sum				cp_hrv, detail
 	
@@ -428,32 +429,29 @@
 	sum				cp_yld, detail
 	
 * labor
-	bysort 			hhid (plot_id) : egen lab_mz = sum(labordaysimp) ///
+	bysort 			hhid (plot_id) : egen lab_mz = sum(mz_labimp) ///
 						if mz_hrvimp != .
 	generate		cp_lab = lab_mz / cp_lnd
 	sum				cp_lab, detail
 
 * fertilizer
-	bysort 			hhid (plot_id) : egen fert_mz = sum(fertimp) ///
+	bysort 			hhid (plot_id) : egen fert_mz = sum(mz_frtimp) ///
 						if mz_hrvimp != .
 	generate		cp_frt = fert_mz / cp_lnd
 	sum				cp_frt, detail
 
 * pesticide
-	tab				pest_any, missing
-	bysort 			hhid (plot_id) : egen cp_pst = max(pest_any) /// 
+	bysort 			hhid (plot_id) : egen cp_pst = max(mz_pst) /// 
 						if mz_hrvimp != .
 	tab				cp_pst
 	
 * herbicide
-	tab				herb_any, missing
-	bysort 			hhid (plot_id) : egen cp_hrb = max(herb_any) ///
+	bysort 			hhid (plot_id) : egen cp_hrb = max(mz_hrb) ///
 						if mz_hrvimp != .
 	tab				cp_hrb
 	
 * irrigation
-	tab				irr_any, missing
-	bysort 			hhid (plot_id) : egen cp_irr = max(irr_any) ///
+	bysort 			hhid (plot_id) : egen cp_irr = max(mz_irr) ///
 						if mz_hrvimp != .
 	tab				cp_irr
 
@@ -466,8 +464,8 @@
 	    replace		`v' = 0 if `v' == .
 	}		
 	
-	collapse (sum)	tf_* cp_*, by(hhid region district ward ea y1_rural ///
-					clusterid strataid y1_weight)
+	collapse (max)	tf_* cp_*, by(hhid region district ward ea y1_rural ///
+					clusterid strataid hhweight)
 	*** we went from 3,337 to 1,875 observations
 	*** we went frm 3,356 to 1,879 observations 
 	
@@ -522,7 +520,7 @@
 	lab var			year "Year"
 		
 	order 			hhid region district ward ea y1_rural ///
-						clusterid strataid y1_weight year tf_hrv ///
+						clusterid strataid hhweight year tf_hrv ///
 						tf_lnd tf_yld tf_lab tf_frt tf_pst tf_hrb ///
 						tf_irr cp_hrv cp_lnd cp_yld cp_lab cp_frt ///
 						cp_pst cp_hrb cp_irr

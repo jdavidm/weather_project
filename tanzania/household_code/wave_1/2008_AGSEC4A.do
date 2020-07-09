@@ -26,6 +26,7 @@
 	loc logout = "$data/household_data/tanzania/logs"
 
 * open log
+	cap log close 
 	log using "`logout'/wv1_AGSEC4A", append
 
 	
@@ -215,17 +216,17 @@
 	
 * keep what we want, get rid of what we don't
 	keep 				hhid plotnum plot_id crop_code crop_id clusterid ///
-							strataid y1_weight region district ward ea ///
+							strataid hhweight region district ward ea ///
 							any_* pure_stand percent_field mz_hrv hvst_value ///
 							mz_damaged y1_rural
 
 	order				hhid plotnum plot_id crop_code crop_id clusterid ///
-							strataid y1_weight region district ward ea
+							strataid hhweight region district ward ea
 	
 * renaming and relabelling variables
 	lab var			hhid "Unique Household Identification NPS Y1"
 	lab var			y1_rural "Cluster Type"
-	lab var			y1_weight "Household Weights (Trimmed & Post-Stratified)"
+	lab var			hhweight "Household Weights (Trimmed & Post-Stratified)"
 	lab var			plotnum "Plot ID Within household"
 	lab var			plot_id "Plot Identifier"
 	lab var			clusterid "Unique Cluster Identification"

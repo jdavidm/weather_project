@@ -1,227 +1,369 @@
 * Project: WB Weather
 * Created on: June 2020
 * Created by: jdm
+* Edited by: alj
 * Stata v.16
 
 * does
 	* reads in merged data sets
-	* appends merged data sets
-	* outputs foure data sets
-		* all Malawi data
-		* cross section
-		* short panel
-		* long panel
+	* merges panel data sets (W1-W3)
+	* creates cross sectional data set (W4)
+	* appends both to form complete data set (W1-W4)
+	* outputs Tanzania data sets for analysis
 
 * assumes
-	* all Malawi data has been cleaned and merged with rainfall
+	* all Tanzania data has been cleaned and merged with rainfall
 	* customsave.ado
 	* xfill.ado
 
 * TO DO:
-	* complete
-
+	* complete 
 	
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
 
 * define paths
-	loc		cnvrt	=	"$data/household_data/tanzania/wave_3/raw"
-	loc		root 	= 	"$data/merged_data/tanzania"
+	loc		root  	= 	"$data/merged_data/tanzania"
+	loc		key		=	"$data/household_data/tanzania/wave_3/refined"
 	loc		export 	= 	"$data/regression_data/tanzania"
 	loc		logout 	= 	"$data/merged_data/tanzania/logs"
 
 * open log	
-	*log 	using 		"`logout'/tza_append_built", append
+	cap log close 
+	log 	using 	"`logout'/tza_append_built", append
 
+* **********************************************************************
+* 1 - merge first three waves of Tanzania data
+* **********************************************************************
+
+* using merge rather than append
+* households were differently designated in each year 
+* need to merge households together into panel key and then reshape 
+
+* import the panel key file
+	use 			"`key'/panel_key", clear
+	
+* merge in wave 1 
+* matching on y1_hhid - which identifies wave 1 respondents
+
+	merge 			m:1 y1_hhid using "`root'/wave_1/npsy1_merged"
+	*** 2101 matched
+	*** 2909 not matched from master - for households in w2 and w3
+	*** 104 not matched from using - only appear in w1 
+	
+	rename 			_merge _merge2008
+	
+* merge in wave 2
+* matching on y2_hhid which identifies wave 2 respondents 
+
+	merge 			m:1 y2_hhid using "`root'/wave_2/npsy2_merged"
+	*** 2341 matched
+	*** 2773 not matched from master - for households in w1 or w3
+	*** 59 not matched from using - only appear in w2 
+	
+	rename 			_merge _merge2010 
+		
+* merge in wave 3
+* matching on y3_hhid which identifies wave 2 respondents 
+
+	merge 			m:1 y3_hhid using "`root'/wave_3/npsy3_merged"
+	*** 2658 matched
+	*** 2515 not matched from master - for households in w1 or w2
+	*** 0 not matched from using - no households only in w3
+	
+	rename 			_merge _merge2012 
+	
 	
 * **********************************************************************
-* 1 - append all Tanzania data
+* 2 - reshape and format panel
 * **********************************************************************
 
-* import the first wave file
-	use 		"`root'/wave_1/npsy1_merged.dta", clear
+* per https://www.stata.com/support/faqs/data-management/problems-with-reshape/ 
+* create local which will contain all variable names that you want to reshape 
+	unab 			vars : *2008 
+	local			stubs: subinstr local vars "2008" "", all
 	
-* append the second wave file
-	append		using "`root'/wave_2/npsy2_merged.dta", force	
-	
-	order		y2_hhid, after(y1_hhid)	
+	reshape 		long `stubs', ///
+						i(y1_hhid y2_hhid y3_hhid region ///
+						district ward ea) j(year)
+	*** takes about 90 seconds to run
+	*** some issues with weight variable
+	*** this is because no observations for weight 2008 - clean up at end 
 
-* drop split-off households, keep only original households
-	drop if		mover_R1R2 == 1
-	*** drops 315 households
+* count how many observations we have
+	count 
+	*** starting with way too many observations - 15519
 
-* import the third wave file
-	append 		using "`root'/wave_3/npsy3_merged.dta", force	
+	duplicates 		drop
+	*** 0 dropped 
 
-	order		y3_hhid, after(y2_hhid)
-	
-* drop split-off households, keep only original households
-	drop if		mover_R1R2R3 == 1
-	*** drops 565 households	
-	
-* fill in missing y3_hhid
-	sort		y1_hhid year
-	egen		hhid = group(y1_hhid)
-	order		hhid
-	
-	xtset 		hhid
-	xfill 		y3_hhid if hhid != ., i(hhid)	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-*	replace		y1_hhid = substr(y2_hhid, 1, 14) if y1_hhid == ""
+* drop empty obsevations (empty because of the reshape)
+	drop 			if tf_hrv == .
+	* 8256 dropped 
 
-* drop split-off households, keep only original households
-	duplicates 	tag y1_hhid year, generate(dup)	
-	drop if 	dup > 0 & mover_R1R2 == 1
-	drop		dup
-	duplicates 	tag y1_hhid year, generate(dup)	
-	*** there are two duplicate households left and can't tell which to drop
-	*** so I arbitrarily drop one each
-	
-	drop if		dup == 1 & y2_rural == 0
-	drop if 	y2_hhid == "1907007005073510"
-	drop		dup
-	
-* import the third wave file
-	append 		using "`root'/wave_3/npsy3_merged.dta", force
+* drop movers
+	drop 			if mover2010 == 1
+	*** 713 observations dropped
+	drop 			if mover2012 == 1
+	*** 760 observations 
 
-	order		y3_hhid, after(y2_hhid)
-
-* create household panel id
-	sort		y1_hhid y2_hhid y3_hhid
-	egen		hhid = group(y1_hhid)
-	lab var		hhid "panel household id"
-	order		hhid
-
-* drop split-off households, keep only original households
-	duplicates 	tag hhid year, generate(dup)
-	replace		dup = 0 if dup == 745
-	*** replace duplicate value for non-panel households
-	
-	drop if 	dup > 0 & mover_R1R2R3 == 1
-	drop		dup
-	duplicates 	tag hhid year, generate(dup)	
-	replace		dup = 0 if dup == 745
-	
-	
-* fill in missing y2_hhid and y3_hhid
-	xtset 		hhid
-	xfill 		y2_hhid if hhid != ., i(hhid)
-
-	
-	
-	
-	xtset		y1id	
-	xfill		y3_hhid if y3_hhid == "", i(y1id)
-	xfill		y2_hhid if y2_hhid == "", i(y1id)
-
-	duplicates 	drop y1id year if y1id != ., force
-	
-* append the second wave file
-	append		using "`root'/wave_2/hhfinal_npsy2.dta", force	
-	
-* create household panel id for year 1
-	sort		y2_hhid
-	egen		y2id = group(y2_hhid)
-	lab var		y2id "panel household id"
-	order		y2id
-	
-	xtset		y2id	
-	xfill		y3_hhid if y3_hhid == "", i(y2id)
-	xfill		y1_hhid if y1_hhid == "", i(y2id)
-	xfill		y1id if y1id == ., i(y2id)
-
-	duplicates 	drop y2id year if y2id != ., force
-	*** this gives us a data set of 6,173 but we should have 6,649
-
-	
-* append the fourth wave file
-	append		using "`root'/wave_4/npsy4_merged.dta", force	
-	*** this gives us a data set of 6,321 observations
-
-* reformat case_id
-	format %15.0g case_id
-	
-* create household panel id for lp1 and lp2 using case_id
-	egen		lpid = group(case_id)
-	lab var		lpid "Long panel household id"	
-	
-* append the third long panel file	
-	append		using "`root'/wave_4/lp3_merged.dta", force	
-
-* fill in missing lpid for third long panel using y2_hhid
-	egen		aux_id = group(y2_hhid)
-	xtset 		aux_id
-	xfill 		lpid if aux_id != ., i(aux_id)
-	drop		aux_id
-	
-* drop split-off households, keep only original households
-	duplicates 	tag lpid year, generate(dup)
-	drop if		dup > 0 & mover_R1R2R3 == 1
-	drop		dup
-	duplicates 	tag case_id year, generate(dup)
-	drop if 	dup > 0 & splitoffR2 != 1
-	drop if 	dup > 0 & tracking_R1_to_R2 ==1
-	drop		dup
-	duplicates 	tag case_id year, generate(dup)
-	drop if		dup > 0 
-	drop		dup
+* check the number of observations again
+	count
+	*** 5790 observations 
+	*** wave 1 has 1875 observations 
+	*** wave 2 has 2116, but 315 movers = 1801 total
+	*** wave 3 has 2658 but 565 movers = 2093 total
+	*** should be a total of 5769 - 21 too many
+	*** no good way to figure out what these 21 observations are
+	*** so going to include for now 
 
 * create household, country, and data identifiers
-	sort		lpid year
-	egen		lp_id = seq()
-	lab var		lp_id "Long panel unique id"
-
-	gen			country = "malawi"
-	lab var		country "Country"
-
-	gen			dtype = "lp"
-	lab var		dtype "Data type"
-
-* combine variables
-	replace		urban		= urbanR2 if urban == .
-	replace		urban		= urbanR3 if urban == .
-	replace		strata 		= strataR2 if strata == .
-	replace		strata 		= strataR3 if strata == .
-	rename		hhweightR1 	hhweight
-	drop		urbanR2- distance_R1_to_R2 urbanR3- distance_R2_to_R3
+* need to first replace empty places - otherwise will create hhid = . 
+	replace 		y1_hhid = "0" if y1_hhid == ""
+	replace 		y2_hhid = "0" if y2_hhid == ""
+	replace 		y3_hhid = "0" if y3_hhid == ""
 	
+	egen			pl_id = group(y1_hhid y2_hhid y3_hhid)
+	lab var			pl_id "panel household id"
+
+	gen				country = "tanzania"
+	lab var			country "Country"
+
+	gen				dtype = "lp"
+	lab var			dtype "Data type"
+	
+	isid			pl_id year
+
+* drop unnecessary variables
+	drop			y1_hhid y2_hhid y3_hhid mover2010 mover2012 _merge
+						
 * order variables
-	order		country dtype region district urban ta strata cluster ///
-				ea_id lpid lp_id case_id y2_hhid y3_hhid hhweight
+	order			country dtype region district ward ea strataid clusterid ///
+						pl_id hhweight year
+				
+* label household variables	
+	lab var			strataid  "Design Strata"
+	lab var			clusterid "Unique Cluster Identification"	
+	lab var			hhweight "Household Weights (Trimmed & Post-Stratified)"
+	lab var			year "Year"
+	lab var			tf_lnd	"Total farmed area (ha)"
+	lab var			tf_hrv	"Total value of harvest (2010 USD)"
+	lab var			tf_yld	"value of yield (2010 USD/ha)"
+	lab var			tf_lab	"labor rate (days/ha)"
+	lab var			tf_frt	"fertilizer rate (kg/ha)"
+	lab var			tf_pst	"Any plot has pesticide"
+	lab var			tf_hrb	"Any plot has herbicide"
+	lab var			tf_irr	"Any plot has irrigation"
+	lab var			cp_lnd	"Total maize area (ha)"
+	lab var			cp_hrv	"Total quantity of maize harvest (kg)"
+	lab var			cp_yld	"Maize yield (kg/ha)"
+	lab var			cp_lab	"labor rate for maize (days/ha)"
+	lab var			cp_frt	"fertilizer rate for maize (kg/ha)"
+	lab var			cp_pst	"Any maize plot has pesticide"
+	lab var			cp_hrb	"Any maize plot has herbicide"
+	lab var			cp_irr	"Any maize plot has irrigation"
+	lab var 		data "Data Source"	
+
+* label satellites variables
+	loc	sat			rf* tp*
+	foreach v of varlist `sat' {
+		lab var 		`v' "Satellite/Extraction"		
+	}
 	
+* label rainfall variables	
+	loc	v01			v01*
+	foreach v of varlist `v01' {
+		lab var 		`v' "Mean Daily Rainfall"	
+	}	
+	
+	loc	v02			v02*
+	foreach v of varlist `v02' {
+		lab var 		`v' "Median Daily Rainfall"
+	}					
+	
+	loc	v03			v03*
+	foreach v of varlist `v03' {
+		lab var 		`v' "Variance of Daily Rainfall"
+	}					
+	
+	loc	v04			v04*
+	foreach v of varlist `v04' {
+		lab var 		`v'  "Skew of Daily Rainfall"
+	}					
+	
+	loc	v05			v05*
+	foreach v of varlist `v05' {
+		lab var 		`v'  "Total Rainfall"
+	}					
+	
+	loc	v06			v06*
+	foreach v of varlist `v06' {
+		lab var 		`v' "Deviation in Total Rainfalll"
+	}					
+	
+	loc	v07			v07*
+	foreach v of varlist `v07' {
+		lab var 		`v' "Z-Score of Total Rainfall"	
+	}					
+	
+	loc	v08			v08*
+	foreach v of varlist `v08' {
+		lab var 		`v' "Rainy Days"
+	}					
+	
+	loc	v09			v09*
+	foreach v of varlist `v09' {
+		lab var 		`v' "Deviation in Rainy Days"	
+	}					
+	
+	loc	v10			v10*
+	foreach v of varlist `v10' {
+		lab var 		`v' "No Rain Days"
+	}					
+	
+	loc	v11			v11*
+	foreach v of varlist `v11' {
+		lab var 		`v' "Deviation in No Rain Days"
+	}					
+	
+	loc	v12			v12*
+	foreach v of varlist `v12' {
+		lab var 		`v' "% Rainy Days"	
+	}					
+	
+	loc	v13			v13*
+	foreach v of varlist `v13' {
+		lab var 		`v' "Deviation in % Rainy Days"	
+	}					
+	
+	loc	v14			v14*
+	foreach v of varlist `v14' {
+		lab var 		`v' "Longest Dry Spell"	
+	}									
+
+* label weather variables	
+	loc	v15			v15*
+	foreach v of varlist `v15' {
+		lab var 		`v' "Mean Daily Temperature"
+	}
+	
+	loc	v16			v16*
+	foreach v of varlist `v16' {
+		lab var 		`v' "Median Daily Temperature"
+	}
+	
+	loc	v17			v17*
+	foreach v of varlist `v17' {
+		lab var 		`v' "Variance of Daily Temperature"
+	}
+	
+	loc	v18			v18*
+	foreach v of varlist `v18' {
+		lab var 		`v' "Skew of Daily Temperature"	
+	}
+	
+	loc	v19			v19*
+	foreach v of varlist `v19' {
+		lab var 		`v' "Growing Degree Days (GDD)"	
+	}
+	
+	loc	v20			v20*
+	foreach v of varlist `v20' {
+		lab var 		`v' "Deviation in GDD"		
+	}
+	
+	loc	v21			v21*
+	foreach v of varlist `v21' {
+		lab var 		`v' "Z-Score of GDD"	
+	}
+	
+	loc	v22			v22*
+	foreach v of varlist `v22' {
+		lab var 		`v' "Maximum Daily Temperature"
+	}
+	
+	loc	v23			v23*
+	foreach v of varlist `v23' {
+		lab var 		`v' "Temperature Bin 0-20"	
+	}
+	
+	loc	v24			v24*
+	foreach v of varlist `v24' {
+		lab var 		`v' "Temperature Bin 20-40"	
+	}
+	
+	loc	v25			v25*
+	foreach v of varlist `v25' {
+		lab var 		`v' "Temperature Bin 40-60"
+	}
+	
+	loc	v26			v26*
+	foreach v of varlist `v26' {
+		lab var 		`v' "Temperature Bin 60-80"		
+	}
+	
+	loc	v27			v27*
+	foreach v of varlist `v27' {
+		lab var 		`v' "Temperature Bin 80-100"	
+	}
+		
+		
 * save file
 	qui: compress
-	customsave 	, idvarname(case_id) filename("mwi_lp.dta") ///
-		path("`export'") dofile(mwi_append_built) user($user)
-
+	customsave 	, idvarname(pl_id) filename("tza_lp.dta") ///
+		path("`export'") dofile(tza_append_built) user($user)
+		
 * **********************************************************************
-* 4 - append all Malawi data
+* 4 - generate wave 4 cross section Tanzania 
+* **********************************************************************
+
+* import the first cross section file
+	use 			"`root'/wave_4/npsy4_merged", clear
+
+* create household, country, and data identifiers
+	egen			cx_id = seq()
+	lab var			cx_id "Cross section unique id"
+
+	gen				country = "tanzania"
+	lab var			country "Country"
+
+	gen				dtype = "cx"
+	lab var			dtype "Data type"
+
+* order variables
+	order			country dtype region district ward ea strataid clusterid ///
+						cx_id hhweight year
+	
+	drop y4_hhid
+
+* save file
+	qui: compress
+	customsave 	, idvarname(cx_id) filename("tza_cx.dta") ///
+		path("`export'") dofile(tza_append_built) user($user)
+		
+		
+* **********************************************************************
+* 4 - append all Tanzania data
 * **********************************************************************
 	
 * import the cross section file
-	use 		"`export'/mwi_cx.dta", clear
+	use 		"`export'/tza_lp.dta", clear
 
 * append the two panel files
-	append		using "`export'/mwi_sp.dta", force	
-	append		using "`export'/mwi_lp.dta", force	
+	append		using "`export'/tza_cx.dta", force	
 
+* create household, country, and data identifiers
+	egen			uid = seq()
+	lab var			uid "unique id"
+	
 * order variables
-	order		country dtype region district urban ta strata cluster ///
-				ea_id case_id spid- y3_hhid hhweight	
+	order		uid pl_id cx_id, after(clusterid)
+	
 * save file
 	qui: compress
-	customsave 	, idvarname(case_id) filename("mwi_complete.dta") ///
-		path("`export'") dofile(mwi_append_built) user($user)
+	customsave 	, idvarname(uid) filename("tza_complete.dta") ///
+		path("`export'") dofile(tza_append_built) user($user)
 
 * close the log
 	log	close

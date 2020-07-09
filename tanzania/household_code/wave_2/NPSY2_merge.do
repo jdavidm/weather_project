@@ -26,6 +26,7 @@
 	loc		logout	=	"$data/merged_data/tanzania/logs"
 
 * open log
+	cap log close
 	log		using	"`logout'/npsy2_merge", append
 
 
@@ -39,7 +40,7 @@
 	isid			crop_id
 
 * merge in plot size data
-	merge 			m:1 plot_id using "`root'/AG_SEC2A", generate(_2A)
+	merge 			m:1 y2_hhid plotnum using "`root'/AG_SEC2A", generate(_2A)
 	*** 0 out of 5,679 missing in master 
 	*** all unmerged obs came from using data 
 	*** meaning we lacked production data
@@ -51,7 +52,7 @@
 	replace			plotsize = percent_field * plotsize if percent_field != .
 	
 * merging in production inputs data
-	merge			m:1 plot_id using "`root'/AG_SEC3A", generate(_3A)
+	merge			m:1 y2_hhid plotnum using "`root'/AG_SEC3A", generate(_3A)
 	*** 0 out of 5,679 missing in master 
 	*** all unmerged obs came from using data 
 	*** meaning we lacked production data
@@ -103,9 +104,9 @@
 						mz_hrv mz_lnd mz_lab mz_frt ///
 			 (max)	pest_any herb_any irr_any  ///
 						mz_pst mz_hrb mz_irr mz_damaged, ///
-						by(y2_hhid plotnum plot_id region district ward ///
-						ea y2_rural clusterid strataid y2_weight ///
-						mover_R1R2 location_R1_to_R2)
+						by(y2_hhid plotnum plot_id clusterid strataid hhweight ///
+						region district ward ea y2_rural mover_R1R2 ///
+						location_R1_to_R2)
 						
 * replace non-maize harvest values as missing
 	tab				mz_damaged, missing
@@ -256,7 +257,7 @@
 	gen				mz_yld = mz_hrv / mz_lnd, after(mz_hrv)
 	lab var			mz_yld	"maize yield (kg/ha)"
 
-*maybe imputing zero values	
+* maybe imputing zero values	
 	
 * impute yield outliers
 	sum				mz_yld
@@ -271,10 +272,10 @@
 	assert 			minrep==maxrep
 	generate 		mz_yldimp = mz_yld, after(mz_yld)
 	replace  		mz_yldimp = maxrep if !((mz_yld < median + (3 * stddev)) ///
-					& (mz_yld > median - (3 * stddev))) ///
-					& !inlist(mz_yld,.,0) & !mi(maxrep)
+						& (mz_yld > median - (3 * stddev))) ///
+						& !inlist(mz_yld,.,0) & !mi(maxrep)
 	tabstat 		mz_yld mz_yldimp, ///
-					f(%9.0f) s(n me min p1 p50 p95 p99 max) c(s) longstub
+						f(%9.0f) s(n me min p1 p50 p95 p99 max) c(s) longstub
 	*** reduces mean from 1367 to 1100
 					
 	drop 			stddev median replacement maxrep minrep
@@ -413,13 +414,13 @@
 * **********************************************************************	
 	
 * generate plot area
-	bysort			y2_hhid (plot_id) :	egen cp_lnd = sum(plotsize) ///
+	bysort			y2_hhid (plot_id) :	egen cp_lnd = sum(mz_lnd) ///
 						if mz_hrvimp != .
 	assert			cp_lnd > 0 
 	sum				cp_lnd, detail
 
 * value of harvest
-	bysort			y2_hhid (plot_id) :	egen cp_hrv = sum(vl_hrvimp) ///
+	bysort			y2_hhid (plot_id) :	egen cp_hrv = sum(mz_hrvimp) ///
 						if mz_hrvimp != .
 	sum				cp_hrv, detail
 	
@@ -428,32 +429,29 @@
 	sum				cp_yld, detail
 	
 * labor
-	bysort 			y2_hhid (plot_id) : egen lab_mz = sum(labordaysimp) ///
+	bysort 			y2_hhid (plot_id) : egen lab_mz = sum(mz_labimp) ///
 						if mz_hrvimp != .
 	generate		cp_lab = lab_mz / cp_lnd
 	sum				cp_lab, detail
 
 * fertilizer
-	bysort 			y2_hhid (plot_id) : egen fert_mz = sum(fertimp) ///
+	bysort 			y2_hhid (plot_id) : egen fert_mz = sum(mz_frtimp) ///
 						if mz_hrvimp != .
 	generate		cp_frt = fert_mz / cp_lnd
 	sum				cp_frt, detail
 
 * pesticide
-	tab				pest_any, missing
-	bysort 			y2_hhid (plot_id) : egen cp_pst = max(pest_any) /// 
+	bysort 			y2_hhid (plot_id) : egen cp_pst = max(mz_pst) /// 
 						if mz_hrvimp != .
 	tab				cp_pst
 	
 * herbicide
-	tab				herb_any, missing
-	bysort 			y2_hhid (plot_id) : egen cp_hrb = max(herb_any) ///
+	bysort 			y2_hhid (plot_id) : egen cp_hrb = max(mz_hrb) ///
 						if mz_hrvimp != .
 	tab				cp_hrb
 	
 * irrigation
-	tab				irr_any, missing
-	bysort 			y2_hhid (plot_id) : egen cp_irr = max(irr_any) ///
+	bysort 			y2_hhid (plot_id) : egen cp_irr = max(mz_irr) ///
 						if mz_hrvimp != .
 	tab				cp_irr
 
@@ -466,8 +464,8 @@
 	    replace		`v' = 0 if `v' == .
 	}		
 	
-	collapse (sum)	tf_* cp_*, by(y2_hhid region district ward ///
-						ea y2_rural clusterid strataid y2_weight ///
+	collapse (max)	tf_* cp_*, by(y2_hhid region district ward ///
+						ea y2_rural clusterid strataid hhweight ///
 						mover_R1R2 location_R1_to_R2)
 	*** we went frm 3,705 to 2,116 observations 
 	
@@ -522,7 +520,7 @@
 	lab var			year "Year"
 		
 	order 			y2_hhid region district ward ea y2_rural ///
-						clusterid strataid y2_weight ///
+						clusterid strataid hhweight ///
 						mover_R1R2 location_R1_to_R2 year tf_hrv ///
 						tf_lnd tf_yld tf_lab tf_frt tf_pst ///
 						tf_hrb tf_irr cp_hrv cp_lnd cp_yld cp_lab ///

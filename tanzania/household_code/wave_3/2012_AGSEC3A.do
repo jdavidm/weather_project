@@ -25,6 +25,7 @@
 	loc		logout	=	"$data/household_data/tanzania/logs"
 
 * open log
+	cap log close
 	log		using	"`logout'/wv3_AGSEC3A", append
 
 	
@@ -240,7 +241,7 @@
 	replace			other_m = . if other_m > 181 
 	replace			hrvst_w = . if hrvst_w > 90
 	replace			hrvst_m = . if hrvst_m > 90
-	*** only 5 values replaced
+	*** only 1 values replaced
 
 * impute missing values (only need to do it for women's planting and harvesting)
 	mi set 			wide 	// declare the data to be wide.
@@ -261,8 +262,8 @@
 	mi 				unset
 	
 * how did the imputation go?
-	replace			plant_w = plant_w_1_
-	replace			hrvst_w = hrvst_w_2_
+	replace			plant_w = plant_w_1_ // 1 change made
+	replace			hrvst_w = hrvst_w_2_ // 1 change made
 	drop			plant_w_1_ hrvst_w_1_ plant_w_2_ hrvst_w_2_
 	*** imputed 3 values (this is a bit of overkill to deal with 3 values)
 
@@ -282,13 +283,13 @@
 	keep			y3_hhid plotnum plot_id irrigated fert_any kilo_fert ///
 						pesticide_any herbicide_any labor_days plotnum ///
 						region district ward ea y3_rural clusterid strataid ///
-						y3_weight
+						hhweight
 	order			y3_hhid plotnum plot_id
 	
 * renaming and relabelling variables
 	lab var			y3_hhid "Unique Household Identification NPS Y3"
 	lab var			y3_rural "Cluster Type"
-	lab var			y3_weight "Household Weights (Trimmed & Post-Stratified)"
+	lab var			hhweight "Household Weights (Trimmed & Post-Stratified)"
 	lab var			plotnum "Plot ID Within household"
 	lab var			plot_id "Unquie Plot Identifier"
 	lab var			clusterid "Unique Cluster Identification"

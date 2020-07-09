@@ -24,6 +24,7 @@
 	loc	logout	=	"$data/household_data/tanzania/logs"
 
 * open log
+	cap log close 
 	log	using	"`logout'/wv3_HHSECA", append
 
 * ***********************************************************************
@@ -64,6 +65,8 @@
 	order		y3_hhid region district ward ea y3_rural ///
 					clusterid strataid y3_weight mover_R1R2R3 location_R2_to_R3	
 
+	rename		y3_weight hhweight
+	
 * relabel variables
 	lab var		y3_hhid "Unique Household Identification NPS Y3"
 	lab var		region "Region Code"
@@ -73,7 +76,7 @@
 	lab var		y3_rural "Cluster Type"
 	lab var		clusterid "Unique Cluster Identification"
 	lab var		strataid "Design Strata"
-	lab var		y3_weight "Household Weights (Trimmed & Post-Stratified)"
+	lab var		hhweight "Household Weights (Trimmed & Post-Stratified)"
 					
 * prepare for export
 	compress

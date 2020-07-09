@@ -12,7 +12,7 @@
 	* subsidiary, wave-specific .do files
 
 * TO DO:
-	* write build.do and append-built.do files
+	* complete
 
 	
 * **********************************************************************
@@ -25,14 +25,6 @@
 
 * **********************************************************************
 * 1 - run individual HH and AG cleaning .do files
-* **********************************************************************
-
-* run panel key cleaning file
-	do			"`dofile'/tza_panel_key.do"				// panel key
-	
-
-* **********************************************************************
-* 2 - run individual HH and AG cleaning .do files
 * **********************************************************************
 
 * loops through four waves of tza hh code
@@ -66,6 +58,14 @@
 
 
 * **********************************************************************
+* 2 - run individual HH and AG cleaning .do files
+* **********************************************************************
+
+* run panel key cleaning file
+	do			"`dofile'/tza_panel_key.do"				// panel key
+
+	
+* **********************************************************************
 * 3 - run wave specific .do files to merge hh data together
 * **********************************************************************
 
@@ -91,7 +91,7 @@
 * 5 - run .do file to append each wave
 * **********************************************************************
 
-*	do			"`dofile'/TZA_append_built.do"				// append waves
+	do			"`dofile'/TZA_append_built.do"				// append waves
 	
 /* END */
 
