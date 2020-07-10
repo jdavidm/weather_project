@@ -415,8 +415,8 @@
 * check correlation at high values of labor with value
 	sum 			tf_lab, detail
 	sum 			tf_hrv, detail
-	tab 			tf_hrv tf_lab 	if tf_lab > 5000
-	*** at the higher end high labor has low yields
+	tab 			tf_hrv tf_lab 	if tf_lab > 11000
+	*** outliers show that a very high labor input is returning a tiny output
 	pwcorr 			tf_lab tf_hrv 	if tf_lab> 300
 	*** really poor correlation and unexpectadly negative with labor and yield: -0.062
 	
@@ -428,9 +428,9 @@
 	sum tf_lab, detail
 	*** mean 188, max 61666
 	
-	replace tf_lab = . if tf_lab >5000
+	replace tf_lab = . if tf_lab >11000
 	replace tf_lab = . if tf_lab == 0 & tf_yld != 0
-	*** 21 changes made
+	*** 16 changes made
 	
 * impute missing labor values using predictive mean matching
 	mi set 			wide // declare the data to be wide.
@@ -442,14 +442,14 @@
 	mi unset
 	
 	sum 			tf_lab_1_, detail
-	*** mean 89.8, max 4277
+	*** mean 106.37, max 10837
 	*** looks good
 	
 	replace 		tf_lab = tf_lab_1_
 	drop 			tf_lab_1_
 	
 	pwcorr 			tf_lab tf_hrv
-	*** larger negative correlation between hours/ha and value of harvest after impute: -0.11
+	*** low correlation but smaller negative correlation between hours/ha and value of harvest after impute: -0.04
 
 * check correlation at high values of labor with crop value
 	sum 			cp_lab, detail
@@ -467,9 +467,9 @@
 	sum 			cp_lab, detail
 	*** mean 149.4, max 61666
 	
-	replace 		cp_lab = . 	if cp_lab >5000
+	replace 		cp_lab = . 	if cp_lab >20000
 	replace 		cp_lab = . 	if cp_lab == 0 & cp_yld != 0
-	*** 13 changes made
+	*** 9 changes made
 	
 * impute missing labor values using predictive mean matching
 	mi set 			wide // declare the data to be wide.
@@ -481,17 +481,88 @@
 	mi unset
 	
 	sum 			cp_lab_1_, detail
-	*** mean 74.6, max 4634
+	*** mean 93.3, max 10838
 	*** looks good
 	
 	replace 		cp_lab = cp_lab_1_
 	drop 			cp_lab_1_
 	
 	pwcorr 			cp_lab cp_hrv
-	*** reduced the negative correlation between cp_lab and cp_hrv but closer to 0 after impute (-.086)
+	*** reduced the negative correlation between cp_lab and cp_hrv but closer to 0 after impute (-.051)
 	
 * verify values are accurate
 	sum				tf_* cp_*
+	
+* address fertilizer outliers	
+
+	scatter 		tf_frt tf_lnd
+	*** appears to be one major outlier using 26000 kg's of fertilizer and using almost no hectares of land
+	
+	replace 		tf_frt = . 	if tf_frt > 20000
+	*** 1 change made
+	
+* impute missing labor values using predictive mean matching
+	mi set 			wide // declare the data to be wide.
+	mi xtset		, clear // this is a precautinary step to clear any existing xtset
+	mi register 	imputed tf_frt // identify tf_fert as the variable being imputed
+	sort			clusterid tf_hrv, stable // sort to ensure reproducability of results
+	mi impute 		pmm tf_frt i.clusterid tf_hrv, add(1) rseed(245780) noisily dots ///
+						force knn(5) bootstrap
+	mi unset
+	
+	sum 			tf_frt_1_, detail
+	*** mean 5.83, max 1351
+	*** looks good
+	
+	replace 		tf_frt = tf_frt_1_
+	drop 			tf_frt_1_
+	
+* crop fertilizer outliers
+
+	scatter 		cp_frt cp_lnd
+	*** appears to be one major outlier using 26000 kg's of fertilizer and using almost no hectares of land
+	
+	replace 		cp_frt = . 		if cp_frt > 20000
+	*** 1 change made
+	
+* impute missing labor values using predictive mean matching
+	mi set 			wide // declare the data to be wide.
+	mi xtset		, clear // this is a precautinary step to clear any existing xtset
+	mi register 	imputed cp_frt // identify tf_fert as the variable being imputed
+	sort			clusterid cp_hrv, stable // sort to ensure reproducability of results
+	mi impute 		pmm cp_frt i.clusterid cp_hrv, add(1) rseed(245780) noisily dots ///
+						force knn(5) bootstrap
+	mi unset
+	
+	sum 			cp_frt_1_, detail
+	*** mean 3.21, max 603.8
+	*** looks good
+	
+	replace 		cp_frt = cp_frt_1_
+	drop 			cp_frt_1_
+	
+* addressing total yield outliers
+	scatter 		tf_yld tf_lab
+	tab 			tf_yld tf_lab 	if tf_yld > 5000
+	*** a handfull of observations have the highest yields but almost no labor input
+
+* impute missing labor values using predictive mean matching
+	replace 		tf_yld = . 		if tf_yld > 5000 & tf_lab < 50
+
+	mi set 			wide // declare the data to be wide.
+	mi xtset		, clear // this is a precautinary step to clear any existing xtset
+	mi register 	imputed tf_yld // identify tf_fert as the variable being imputed
+	sort			clusterid tf_lab, stable // sort to ensure reproducability of results
+	mi impute 		pmm tf_yld i.clusterid tf_lab, add(1) rseed(245780) noisily dots ///
+						force knn(5) bootstrap
+	mi unset
+
+	sum 			tf_yld_1_, detail
+	*** mean 39.8, max 9572
+	*** looks good
+	
+	replace 		tf_yld = tf_yld_1_
+	drop 			tf_yld_1_
 	
 * **********************************************************************
 * 4 - end matter, clean up to save
