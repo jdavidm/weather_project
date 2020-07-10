@@ -12,7 +12,7 @@
 	* customsave.ado
 
 * TO DO:
-	* done
+	* confirm decision not to impute hired labor
 	
 * **********************************************************************
 * 0 - setup
@@ -65,7 +65,7 @@
 * 2 - determine labor allocation 
 * **********************************************************************
 
-* per Palacios-Lopez et al. (2017) in Food Policy, we cap labor per activity
+* per Palacios-Lopez et al. (2017) in Food Policy, we cap labor per person per activity
 * 7 days * 13 weeks = 91 days for land prep and planting
 * 7 days * 26 weeks = 182 days for weeding and other non-harvest activities
 * 7 days * 13 weeks = 91 days for harvesting
@@ -162,40 +162,41 @@
 	
 * summarize household individual labor for land prep to look for outliers
 	sum				hh_1 hh_2 hh_3 hh_4 hh_5 hh_6 hired_men hired_women mutual_men mutual_women
-	*** hh_1, hh_2, hh_3, hh_4, hh_5, hh_6, mutual_men, mutual_women, hired_women are all less than the minimum (91 days)
-	*** only hired_men (124) is larger than the minimum
+	*** hh_1, hh_2, hh_3, hh_4, hh_5, hh_6 are all less than the minimum (91 days)
+	*** only hired_men (124) is larger than the minimum and hired men is not disaggregated into the number of people hired and our labor caps are per person so we leave this
+	
 	
 * generate local for variables that contain outliers
-	loc				labor hired_men
+*	loc				labor hired_men
 
 * replace zero to missing, missing to zero, and outliers to missing
-	foreach var of loc labor {
-	    mvdecode 		`var', mv(0)
-		mvencode		`var', mv(0)
-	    replace			`var' = . if `var' > 90
-	}
+*	foreach var of loc labor {
+*	    mvdecode 		`var', mv(0)
+*		mvencode		`var', mv(0)
+*	    replace			`var' = . if `var' > 90
+*	}
 	*** 3 outliers changed to missing
 
 * impute missing values (only need to do one variable - set new local)
-	loc 			laborimp hired_men
-	mi set 			wide 	// declare the data to be wide.
-	mi xtset		, clear 	// clear any xtset that may have had in place previously
+*	loc 			laborimp hired_men
+*	mi set 			wide 	// declare the data to be wide.
+*	mi xtset		, clear 	// clear any xtset that may have had in place previously
 
 
 * impute each variable in local		
-	foreach var of loc laborimp {
-		mi register			imputed `var' // identify variable to be imputed
-		sort				clusterid hh_num ord field parcel, stable 
+*	foreach var of loc laborimp {
+*		mi register			imputed `var' // identify variable to be imputed
+*		sort				clusterid hh_num ord field parcel, stable 
 		// sort to ensure reproducability of results
-		mi impute 			pmm `var' i.clusterid, add(1) rseed(245780) ///
-								noisily dots force knn(5) bootstrap
-	}						
-	mi 				unset	
+*		mi impute 			pmm `var' i.clusterid, add(1) rseed(245780) ///
+*								noisily dots force knn(5) bootstrap
+*	}						
+*	mi 				unset	
 	
 * summarize imputed variables
-	sum				hired_men_1_
+*	sum				hired_men_1_
 	
-	replace 		hired_men = hired_men_1_ 
+*	replace 		hired_men = hired_men_1_ 
 
 * total labor days for prep
 	egen			hh_prep_labor = rowtotal(hh_1 hh_2 hh_3 hh_4 hh_5 hh_6)
@@ -211,7 +212,7 @@
 	*** no missing values
 	sum 			prep_labor prep_labor_all
 	*** with free labor: average = 11.4, max = 540
-	*** without free labor: average = 11.1, max = 540
+	*** without free labor: average = 11.15, max = 540
 	
 * **********************************************************************
 * 3 - combine planting and harvest labor 

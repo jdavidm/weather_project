@@ -12,6 +12,9 @@
 	* previously cleaned household datasets
 	* customsave.ado
 
+* note
+	* region, dept, and canton are missing for all variables
+	
 * to do
 	* review and approve edits
 * **********************************************************************
@@ -234,7 +237,7 @@
 	lab var			fert_ha "fertilizer use (kg/ha)"
 	sum				fert fert_ha
 
-* impute labor outliers, right side only 
+* impute fert outliers, right side only 
 	sum				fert_ha, detail
 	bysort canton :	egen stddev = sd(fert_ha) if !inlist(fert_ha,.,0)
 	recode 			stddev (.=0)
@@ -299,7 +302,7 @@
 	generate		tf_lab = lab_tot / tf_lnd
 	lab var			tf_lab	"labor rate (days/ha)"
 	sum				tf_lab, detail
-
+	
 * fertilizer
 	bysort 			clusterid hh_num : egen fert_tot = sum(fertimp)
 	generate		tf_frt = fert_tot / tf_lnd
@@ -401,7 +404,94 @@
 	
 * verify values are accurate
 	sum				tf_* cp_*
-	*** values seem much more reasonable
+	*** most values seem much more reasonable
+	*** labor has a very large max
+
+* checks and balances
+	*** Production variables should corroborate each other. 
+	*** Use discrepencies between production variables to determine if an outlier is a mistake and replace that outlier with missing then impute them.
+	*** A high labor should be associated with a high land area and yield and a high yield should be associated with a high value. 
+
+* check correlation at high values of labor with value
+	sum 			tf_lab, detail
+	sum 			tf_hrv, detail
+	tab 			tf_hrv tf_lab 	if tf_lab > 5000
+	*** at the higher end high labor has low yields
+	pwcorr 			tf_lab tf_hrv 	if tf_lab> 300
+	*** really poor correlation and unexpectadly negative with labor and yield: -0.062
+	
+	tab tf_hrv if tf_lab==0
+	*** 10 observations have no labor but a non-negative harvest
+	scatter 		tf_hrv tf_lab
+	*** the outliers show that at the highest applications of labor to land we see some of the lowest harvest values
+	
+	sum tf_lab, detail
+	*** mean 188, max 61666
+	
+	replace tf_lab = . if tf_lab >5000
+	replace tf_lab = . if tf_lab == 0 & tf_yld != 0
+	*** 21 changes made
+	
+* impute missing labor values using predictive mean matching
+	mi set 			wide // declare the data to be wide.
+	mi xtset		, clear // this is a precautinary step to clear any existing xtset
+	mi register 	imputed tf_lab // identify tf_lab as the variable being imputed
+	sort			tf_hrv clusterid, stable // sort to ensure reproducability of results
+	mi impute 		pmm tf_lab i.clusterid tf_hrv, add(1) rseed(245780) noisily dots ///
+						force knn(5) bootstrap
+	mi unset
+	
+	sum 			tf_lab_1_, detail
+	*** mean 89.8, max 4277
+	*** looks good
+	
+	replace 		tf_lab = tf_lab_1_
+	drop 			tf_lab_1_
+	
+	pwcorr 			tf_lab tf_hrv
+	*** larger negative correlation between hours/ha and value of harvest after impute: -0.11
+
+* check correlation at high values of labor with crop value
+	sum 			cp_lab, detail
+	sum 			cp_hrv, detail
+	tab 			cp_hrv cp_lab 	if cp_lab > 5000
+	*** at the higher end high labor has mostly low harvests
+	pwcorr 			cp_lab tf_hrv 	if cp_lab> 300
+	*** poor correlation and unexpectadly negative with labor and harvest: -0.108
+	
+	tab 			cp_hrv if cp_lab==0
+	*** 6 observations have no labor but a non-negative harvest
+	scatter 		cp_hrv cp_lab
+	*** the outliers show that at the highest applications of labor to land we see some of the lowest harvest values
+	
+	sum 			cp_lab, detail
+	*** mean 149.4, max 61666
+	
+	replace 		cp_lab = . 	if cp_lab >5000
+	replace 		cp_lab = . 	if cp_lab == 0 & cp_yld != 0
+	*** 13 changes made
+	
+* impute missing labor values using predictive mean matching
+	mi set 			wide // declare the data to be wide.
+	mi xtset		, clear // this is a precautinary step to clear any existing xtset
+	mi register 	imputed cp_lab // identify cp_lab as the variable being imputed
+	sort			cp_hrv clusterid, stable // sort to ensure reproducability of results
+	mi impute 		pmm cp_lab i.clusterid tf_hrv, add(1) rseed(245780) noisily dots ///
+						force knn(5) bootstrap
+	mi unset
+	
+	sum 			cp_lab_1_, detail
+	*** mean 74.6, max 4634
+	*** looks good
+	
+	replace 		cp_lab = cp_lab_1_
+	drop 			cp_lab_1_
+	
+	pwcorr 			cp_lab cp_hrv
+	*** reduced the negative correlation between cp_lab and cp_hrv but closer to 0 after impute (-.086)
+	
+* verify values are accurate
+	sum				tf_* cp_*
 	
 * **********************************************************************
 * 4 - end matter, clean up to save
@@ -414,11 +504,11 @@
 * create unique household identifier
 	*** all observations are missing region, canton and dept, will create id without region, canton and dept for now
 	isid				 clusterid hh_num
-	sort				 clusterid hh_num, stable 
-	egen				hh_id = group( clusterid hh_num)
+	sort				clusterid hh_num, stable 
+	egen				hh_id = group(clusterid hh_num)
 	lab var				hh_id "unique household identifier"
 		
-	order 			dept canton clusterid hh_num hh_id year tf_hrv tf_lnd tf_yld ///
+	order 			clusterid hh_num hh_id year tf_hrv tf_lnd tf_yld ///
 						tf_lab tf_frt tf_pst tf_hrb cp_hrv cp_lnd ///
 						cp_yld cp_lab cp_frt cp_pst cp_hrb
 	compress

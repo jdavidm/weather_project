@@ -12,7 +12,7 @@
 	* customsave.ado
 
 * TO DO:
-	* done
+	* confirm decision to not impute hired men
 	
 	
 * **********************************************************************
@@ -125,6 +125,7 @@
 	gen				hired_women = .
 	replace			hired_women = as02aq35c if as02aq35a == 1
 	replace			hired_women = 0 if as02aq35a == 2
+	replace 		hired_women = 0 if as02aq35c == 999
 	replace			hired_women = 0 if as02aq35a == .
 	replace 		hired_women = 0 if hired_women == .  
 	
@@ -156,43 +157,38 @@
 * summarize household individual labor for land prep to look for outliers
 	sum				hh_1 hh_2 hh_3 hh_4 hh_5 hh_6 hired_men hired_women mutual_men mutual_women
 	*** hired_men, hired_women are greater than the maximum (182 days)
+	*** max labor guidelines are per person and hired men and hired women is not disaggregated so those we leave the higher values
 	
 * generate local for variables that contain outliers
-	loc				labor hh_1 hh_2 hh_3 hh_4 hh_5 hired_men hired_women
+*	loc				labor hired_men
 
 * replace zero to missing, missing to zero, and outliers to missing
-	foreach var of loc labor {
-	    mvdecode 		`var', mv(0)
-		mvencode		`var', mv(0)
-	    replace			`var' = . if `var' > 90
-	}
-	*** 36 outliers changed to missing
+*	foreach var of loc labor {
+	*    mvdecode 		`var', mv(0)
+	*	mvencode		`var', mv(0)
+	*    replace			`var' = . if `var' > 90
+*	}
+	*** 23 outliers changed to missing
 
 * impute missing values (going to impute all variables - rather than subset)
-	mi set 			wide 	// declare the data to be wide.
-	mi xtset		, clear 	// clear any xtset that may have had in place previously
+*	mi set 			wide 	// declare the data to be wide.
+*	mi xtset		, clear 	// clear any xtset that may have had in place previously
 
 
 * impute each variable in local		
-	foreach var of loc labor {
-		mi register			imputed `var' // identify variable to be imputed
-		sort				clusterid hh_num ord field parcel, stable 
+*	foreach var of loc labor {
+*		mi register			imputed `var' // identify variable to be imputed
+*		sort				clusterid hh_num ord field parcel, stable 
 		// sort to ensure reproducability of results
-		mi impute 			pmm `var' i.clusterid, add(1) rseed(245780) ///
-								noisily dots force knn(5) bootstrap
-	}						
-	mi 				unset	
+	*	mi impute 			pmm `var' i.clusterid, add(1) rseed(245780) ///
+*								noisily dots force knn(5) bootstrap
+*	}						
+	*mi 				unset	
 	
 * summarize imputed variables
-	sum				hh_1_1_ hh_2_2_ hh_3_3_ hh_4_4_ hh_5_5_ hired_men_6_ hired_women_7_
+*	sum				hired_men_1_
 	* all values seem fine
-	replace			hh_1 = hh_1_1_
-	replace			hh_2 = hh_2_2_	
-	replace 		hh_3 = hh_3_3_
-	replace			hh_4 = hh_4_4_
-	replace			hh_5 = hh_5_5_
-	replace 		hired_men = hired_men_6_ 
-	replace			hired_women = hired_women_7_ 
+*	replace 		hired_men = hired_men_1_ 
 
 * total labor days for harvest
 	egen			hh_plant_labor = rowtotal(hh_1 hh_2 hh_3 hh_4 hh_5 hh_6)
@@ -208,8 +204,8 @@
 	*** no missing values
 	sum 			plant_labor plant_labor_all
 	*** which is used will not make that much of a difference
-	*** with free labor: average = 39.2, max = 554
-	*** without free labor: average = 38.49, max = 554
+	*** with free labor: average = 40.05, max = 554
+	*** without free labor: average = 39.2, max = 554
 	
 * **********************************************************************
 * 3 - end matter, clean up to save
