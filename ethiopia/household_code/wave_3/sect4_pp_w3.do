@@ -27,6 +27,7 @@
 	loc logout = "$data/household_data/ethiopia/logs"
 
 * open log
+	cap log close
 	log using "`logout'/wv3_PPSEC4", append
 
 
@@ -138,7 +139,7 @@
 * restrict to variables of interest
 	keep  		holder_id- pp_s4q01_b pesticide_any herbicide_any field_prop ///
 					damaged damaged_pct parcel_id field_id crop_id
-	order 		holder_id- saq05
+	order 		holder_id- ea
 
 * Final preparations to export
 	isid 		holder_id parcel field crop_code

@@ -16,6 +16,7 @@
 * TO DO:
 	* the only isid variable i found is individual_id2
 	* where is the isid for wave 3?
+	* otherwise complete
 
 	
 * **********************************************************************
@@ -28,6 +29,7 @@
 	loc logout = "$data/household_data/ethiopia/logs"
 
 * open log
+	cap log close
 	log using "`logout'/wv3_HHSEC1", append
 
 	

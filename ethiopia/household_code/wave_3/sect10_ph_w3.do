@@ -14,7 +14,7 @@
 	* distinct.ado
 	
 * TO DO:
-	* all done
+	* done
 	
 	
 * **********************************************************************
@@ -27,7 +27,8 @@
 	loc logout = "$data/household_data/ethiopia/logs"
 
 * open log
-*	log using "`logout'/wv3_PHSEC10", append
+	cap log close
+	log using "`logout'/wv3_PHSEC10", append
 
 
 * **********************************************************************

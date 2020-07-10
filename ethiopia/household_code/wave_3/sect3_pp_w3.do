@@ -14,7 +14,7 @@
 	* distinct.ado
 
 * TO DO:
-	* figure out why so many observations arent matched from master data when merging
+	* done
 
 	
 * **********************************************************************
@@ -27,7 +27,8 @@
 	loc logout = "$data/household_data/ethiopia/logs"
 
 * open log
-*	log using "`logout'/wv3_PPSEC3", append
+	cap log close
+	log using "`logout'/wv3_PPSEC3", append
 
 
 * **********************************************************************
@@ -84,6 +85,9 @@
 	merge 		m:1 region zone woreda local_unit using "`root'/ET_local_area_unit_conversion.dta"
 	*** 13,748 obs not matched from master data
 	*** why is this...
+	*** conversion facotrs only given for timad, boy, senga, and kert
+	** but measurements are also given in tilm, medeb, rope, ermija, and other
+	*** will set self-reported value = . if no conversion factor is given
 	
 	drop		if _merge == 2
 	
@@ -112,7 +116,7 @@
 **	3a - constructing area measurements (self-reported) 
 ************************************************************************	
 	
-* problem! There are over 12,000 obs with units of measure not included in the conversion file
+* problem? There are over 12,000 obs with units of measure not included in the conversion file
 	summarize 	local_unit, detail // Quantity of land units, self-reported
 	generate 	selfreport_sqm = conversion * pp_s3q02_a if local_unit !=0
 	summarize 	selfreport_sqm, detail // resulting land area (sq. meters)

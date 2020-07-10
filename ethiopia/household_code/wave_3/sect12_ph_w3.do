@@ -28,6 +28,7 @@
 	loc logout = "$data/household_data/ethiopia/logs"
 
 * open log
+	cap log close
 	log using "`logout'/wv3_PHSEC12", append
 
 
@@ -40,13 +41,6 @@
 
 * dropping duplicates
 	duplicates drop
-	
-/* drop if obs haven't sold any crop
-	tab			ph_s12q06
-	*** 4,704 answered no
-	
-	drop 		if ph_s12q06 == 2
-*/
 	
 * drop trees and other perennial crops
 	drop if crop_code == 41 	// apples
@@ -84,17 +78,12 @@
 * generate unique identifier
 	describe
 	sort 		holder_id crop_code
-*	isid 		holder_id crop_code
-	*** these variables do not uniquely identify observations
-	
-	duplicates	list holder_id crop_code
-	*** four sets of duplicates, all crop_codes listed as other
-	*** likely different crops that fall under other
+	isid 		holder_id crop_code
 	
 * creating unique crop identifier
 	tostring	crop_code, generate(crop_codeS)
 	generate 	crop_id = holder_id + " " + crop_codeS
-*	isid		crop_id			// not unique due to the 4 dupes
+	isid		crop_id	
 	drop		crop_codeS	
 
 * creating unique region identifier
@@ -108,21 +97,48 @@
 	*** this is supposed to be fruits and nuts 
 	*** but still a few obs w/ maize and sorghum and the like
 	*** like in Sect9, no crop codes are missing
+	
+* look for correlation b/w units of measure (harvest and sales)
+	pwcorr		ph_s12q03_b ph_s12q0b
+	*** 0.9848 - very very very high
 
 * create conversion key 
-	rename 		ph_s12q0b unit_cd
+	rename 		ph_s12q03_b unit_cd
 	merge 		m:1 crop_code unit_cd using "`root'/Crop_CF_Wave3_use.dta"
-	*** 289 not matched from master
+	*** 572 not matched from master
+	*** this seems like a lot, only 399 matched
 
 	tab 		_merge
 	drop		if _merge == 2
 	drop		_merge
 
-	
 * **********************************************************************
-* 2 - generating sales values and sales quantities
-* **********************************************************************
+* X - dummy code
+* **********************************************************************	
+
+	gen 		hrv_wgt = mean_cf_nat * ph_s12q03_a if mean_cf_nat != .	
 	
+	mi set 		wide  
+	mi xtset, 	clear 
+	mi register imputed hrv_wgt 
+	sort		holder_id crop_code, stable
+	mi impute 	pmm hrv_wgt i.district_id, add(1) rseed(245780) ///
+					noisily dots force knn(5) bootstrap 
+	mi 			unset	
+	
+	drop 		hrv_wgt
+	rename 		hrv_wgt_1_ hrv_wgt
+	
+	* renaming key variables	
+	rename		ph_s12q07 sales_qty	
+	gen			sales_qty_kg = sales_qty * mean_cf_nat if mean_cf_nat != .
+	
+	rename		ph_s12q08 sales_val
+	gen 		price = sales_val/sales_qty_kg
+	lab var		price "Sales price (BIRR/kg)"
+	
+	
+/*	
 * ***********************************************************************
 * 2a - generating conversion factors
 * ***********************************************************************	
@@ -131,41 +147,35 @@
 * exploring conversion factors - are any the same across all regions and obs?
 	tab 		unit_cd
 	egen		unitnum = group(unit_cd)
-	*** 29 units listed
+	*** 60 units listed
 	
 	gen			cfavg = (mean_cf1 + mean_cf2 + mean_cf3 + mean_cf4 + mean_cf6 ///
 							+ mean_cf7 + mean_cf12 + mean_cf99)/8
 	pwcorr 		cfavg mean_cf_nat	
-	*** correlation of 1!
+	*** correlation of 0.9999
 	
-	local 		units = 43
+	local 		units = 60
 	forvalues	i = 1/`units'{
 	    
 		tab		unit_cd if unitnum == `i'
 		tab 	cfavg if unitnum == `i', missing
 	} 
 	*** results! universal units are:
-	*** kilogram, gram, quintal, box, jenbe, piece (sm) (only 2 obs),
+	*** kilogram, gram, quintal, box, shekim (md)
+	
+	*** "universal" with only one ob w/ a value
+	*** jenbe, bumch (sm, md, lg), chinet (sm, md, lg), shekim (sm, lg)
+	*** zorba (sm, md, lg)
 	
 	*** no conversion values for:
-	*** akumada/dawla/lekota (sm), bunch (sm), chinets (as in previous sections), 
-	*** kunna/mishe/kefer/enkib (sm & lg), kubaya (sm), shekim (sm & lg), 
-	*** korba/akara (md),
-	*** and 28 obs labelled 'other' missing cfs
-	
-	*** kerchat/kemba (lg), kubaya (md), piece (md) are "universal", only one ob with value
-	*** kunna/mishe/kefer/enkib (md) has cf for one ob and missing values for 7
+	*** and 17 obs labelled 'other' missing cfs
 
 * generating conversion factors
 * starting with units found to be universal
 	gen			cf = 1 if unit_cd == 1 			// kilogram
 	replace		cf = .001 if unit_cd == 2 		// gram
 	replace		cf = 100 if unit_cd == 3 		// quintal
-	replace 	cf = 48.05125 if unit_cd == 6	// box
-	replace 	cf = 31.487 if unit_cd == 7		// jenbe	
-	replace 	cf = 30 if unit_cd == 51		// chinets
-	replace 	cf = 50 if unit_cd == 52
-	replace 	cf = 70 if unit_cd == 53
+	replace 	cf = 21.66 if unit_cd == 162		// sjekim (md)
 	
 * now moving on to region specific units
 	replace 	cf = mean_cf1 if saq01 == 1 & cf == .
@@ -183,45 +193,80 @@
 	
 * checking veracity of kg estimates
 	tab 		cf, missing
-	*** missing 53 converstion factors
+	*** missing 2,017 converstion factors!
 	
 	sort		cf unit_cd
 	*** missing obs are spread out across different units
+	*** jenbe
+	*** chinet (md, lg)
+	*** esir (sm, md, lg)
+	*** joniya/kasha (sm, lg)
+	*** kerchat/kemba (sm, md, lg)
 	*** kubaya (sm)
-	*** kunna/mishe/kefer/enkib (sm, md, lg) 
+	*** kunna/mishe/kefer/enkib (sm, md) 
 	*** madaberia/nuse/shera/cheret (sm, md, lg)
-	*** tasa/tanika/shember/selmon (md, lg)
+	*** medeb (sm, md)
+	*** sahin (sm, md, lg)
+	*** tasa/tanika/shember/selmon (sm)
+	*** zorba/akara (md)
+	*** other
 
-	*** all the units above have lots of other obs w/ values
+	*** some of the units above have lots of other obs w/ values, including
+	*** esir (sm, md, lg), kerchat/kemba (sm, md), 
+	*** madaberia/nuse/shera/cheret (sm, md, lg), medeb (sm, md),
+	*** sahin (sm, md, lg), tasa/tanika/shember/selmon (sm)
+	
+	*** some have only one or no obs w/ cfs, including:
+	*** jenbe (0 values), chinet md (0), chinet lg (0), joniya/kasha sm (1), 
+	*** joniya/kasha lg (1), kerchat/kemba lg (1), kubaya sm (0), 
+	*** kunna/mishe/kefer/enkib sm (0), kunna/mishe/kefer/enkib md (1), 
+	*** zorba/akara md (0)
+	
 	*** all units labelled 'other' missing a conversion factor
 
 * filling in as many missing cfs as possible
-	sum			cf if unit_cd == 101	// kubaya (sm), mean = 0.26825
+* only using means of units w/ multiple other obs with values
+	sum			cf if unit_cd == 101	// esir (sm), mean = 
 	replace 	cf = .26825 if unit_cd == 101 & cf == .
 	
-	sum			cf if unit_cd == 111	// kunna/mishe/kefer/enkib (sm), mean = 6.073
+	sum			cf if unit_cd == 111	// esir (md), mean = 
 	replace 	cf = 6.073 if unit_cd == 111 & cf == .
 	
-	sum			cf if unit_cd == 112	// kunna/mishe/kefer/enkib (md), mean = 9.9388
+	sum			cf if unit_cd == 112	// esir (lg), mean = 
 	replace 	cf = 9.9388 if unit_cd == 112 & cf == .
 	
-	sum			cf if unit_cd == 113	// kunna/mishe/kefer/enkib (lg), mean = 17.2898
+	sum			cf if unit_cd == 113	// kerchat/kemba (sm), mean = 
 	replace 	cf = 17.2898 if unit_cd == 113 & cf == .
 	
-	sum			cf if unit_cd == 121	// madaberia/nuse/shera/cheret (sm), mean = 36.806
+	sum			cf if unit_cd == 121	// kerchat/kemba (md), mean = 
 	replace 	cf = 36.806 if unit_cd == 121 & cf == .
 	
-	sum			cf if unit_cd == 122	// madaberia/nuse/shera/cheret (md), mean = 82.231
+	sum			cf if unit_cd == 122	// madaberia/nuse/shera/cheret (sm), mean = 
 	replace 	cf = 82.231 if unit_cd == 122 & cf == .
 	
-	sum			cf if unit_cd == 123	// madaberia/nuse/shera/cheret (lg), mean = 104.42
+	sum			cf if unit_cd == 122	// madaberia/nuse/shera/cheret (md), mean = 
+	replace 	cf = 82.231 if unit_cd == 122 & cf == .
+	
+	sum			cf if unit_cd == 123	// madaberia/nuse/shera/cheret (lg), mean = 
 	replace 	cf = 104.42 if unit_cd == 123 & cf == .
 	
-	sum			cf if unit_cd == 182	// tasa/tanika/shember/selmon (md), mean = 0.66792
+	sum			cf if unit_cd == 183	// medeb (sm), mean = 
+	replace 	cf = 1.0824 if unit_cd == 183 & cf == .
+	
+	sum			cf if unit_cd == 182	// medeb (md), mean = 
 	replace 	cf = .66792 if unit_cd == 182 & cf == .
 	
-	sum			cf if unit_cd == 183	// tasa/tanika/shember/selmon (lg), mean = 1.0824
-	replace 	cf = 1.0824 if unit_cd == 183 & cf == .
+	sum			cf if unit_cd == 101	// sahin (sm), mean = 
+	replace 	cf = .26825 if unit_cd == 101 & cf == .
+
+	sum			cf if unit_cd == 101	// sahin (md), mean = 
+	replace 	cf = .26825 if unit_cd == 101 & cf == .
+	
+	sum			cf if unit_cd == 101	// sahin (lg), mean = 
+	replace 	cf = .26825 if unit_cd == 101 & cf == .
+	
+	sum			cf if unit_cd == 111	// tasa/tanika/shember/selmon (sm), mean = 
+	replace 	cf = 6.073 if unit_cd == 111 & cf == .
 	
 * check results
 	sort		cf unit_cd
@@ -265,7 +310,7 @@
 	*** still missing those 23
 	
 	lab var		price "Sales price (BIRR/kg)"
-	
+*/	
 
 * ***********************************************************************
 * 3 - cleaning and keeping
@@ -280,7 +325,7 @@
 	rename 		saq03 ward	
 
 *	Restrict to variables of interest
-	keep  		holder_id- crop_code
+	keep  		holder_id- crop_code hrv_wgt price
 	order 		holder_id- crop_code
 
 * final preparations to export

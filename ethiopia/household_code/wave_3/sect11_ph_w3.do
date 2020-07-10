@@ -13,7 +13,7 @@
 	* customsave.ado
 	
 * TO DO:
-	* maybe drop obs w/ unit of measure = 0
+	* done
 	
 	
 * **********************************************************************
@@ -26,6 +26,7 @@
 	loc logout = "$data/household_data/ethiopia/logs"
 
 * open log
+	cap log close
 	log using "`logout'/wv3_PHSEC11", append
 
 
@@ -149,34 +150,33 @@
 	sum			cf if unit_cd == 101, detail	// kubaya (sm)
 	replace 	cf = `r(p50)' if unit_cd == 101 & cf == .
 	
-	sum			cf if unit_cd == 111	// kunna/mishe/kefer/enkib (sm)
+	sum			cf if unit_cd == 111, detail	// kunna/mishe/kefer/enkib (sm)
 	replace 	cf = `r(p50)' if unit_cd == 111 & cf == .
 	
-	sum			cf if unit_cd == 112	// kunna/mishe/kefer/enkib (md)
-	replace 	cf = `r(p50)'if unit_cd == 112 & cf == .
+	sum			cf if unit_cd == 112, detail	// kunna/mishe/kefer/enkib (md)
+	replace 	cf = `r(p50)' if unit_cd == 112 & cf == .
 	
-	sum			cf if unit_cd == 113	// kunna/mishe/kefer/enkib (lg)
+	sum			cf if unit_cd == 113, detail	// kunna/mishe/kefer/enkib (lg)
 	replace 	cf = `r(p50)' if unit_cd == 113 & cf == .
 	
-	sum			cf if unit_cd == 121	// madaberia/nuse/shera/cheret (sm)
+	sum			cf if unit_cd == 121, detail	// madaberia/nuse/shera/cheret (sm)
 	replace 	cf = `r(p50)' if unit_cd == 121 & cf == .
 	
-	sum			cf if unit_cd == 122	// madaberia/nuse/shera/cheret (md)
+	sum			cf if unit_cd == 122, detail	// madaberia/nuse/shera/cheret (md)
 	replace 	cf = `r(p50)' if unit_cd == 122 & cf == .
 	
-	sum			cf if unit_cd == 123	// madaberia/nuse/shera/cheret (lg)
+	sum			cf if unit_cd == 123, detail	// madaberia/nuse/shera/cheret (lg)
 	replace 	cf = `r(p50)' if unit_cd == 123 & cf == .
 	
-	sum			cf if unit_cd == 182	// tasa/tanika/shember/selmon (md)
+	sum			cf if unit_cd == 182, detail	// tasa/tanika/shember/selmon (md)
 	replace 	cf = `r(p50)' if unit_cd == 182 & cf == .
 	
-	sum			cf if unit_cd == 183	// tasa/tanika/shember/selmon (lg)
+	sum			cf if unit_cd == 183, detail	// tasa/tanika/shember/selmon (lg)
 	replace 	cf = `r(p50)' if unit_cd == 183 & cf == .
 	
 * check results
 	sort		cf unit_cd
 	*** 23 obs still missing cfs are all labelled 'other'
-
 	
 * ultimate goal is to create a region based set of prices (birr/kg) by crop
 * we can therefore probably throw out those 23 obs

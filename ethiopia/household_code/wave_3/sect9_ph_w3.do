@@ -14,7 +14,7 @@
 	* distinct.ado
 	
 * TO DO:
-	* like in pp_sect3, many observtions from master are not being matched
+	* done
 	
 	
 * **********************************************************************
@@ -27,6 +27,7 @@
 	loc logout = "$data/household_data/ethiopia/logs"
 
 * open log
+	cap log close
 	log using "`logout'/wv3_PHSEC9", append
 
 
@@ -95,7 +96,7 @@
 	label var 	district_id "Unique district identifier"
 	distinct	saq01 saq02, joint
 	*** 69 distinct districts
-	*** same as pp sect2 & pp sect3, good
+	*** same as pp sect3, good
 	
 * check for missing crop codes
 	tab			crop_code, missing
@@ -107,9 +108,8 @@
 	*** missing 4,398 units of measure
 	
 	merge 		m:1 crop_code unit_cd using "`root'/Crop_CF_Wave3.dta"
-	*** 7,127 obs not matched from master data
-	*** 4,398 due to no unit_cd
-	*** why are the others missing?
+	*** 2,789 obs not matched from master data
+	*** liekly due to no unit_cd
 	
 	tab 		_merge
 	drop		if _merge == 2
@@ -126,8 +126,6 @@
 	
 * creating harvest (kg) based on self reported values
 * self reported values listed in various units of measure
-* if self reported values are missing, we will attempt to replace with dried cutting weight
-* will require data merging from another section (I believe sect3_pp_w1)
 	rename		ph_s9q04_a hrvqty_self
 	rename 		ph_s9q05 hrvqty_self_kgest	
 	
@@ -147,7 +145,7 @@
 		tab		unit_cd if unitnum == `i'
 		tab 	cfavg if unitnum == `i', missing
 	} 
-	*** results! universla units are:
+	*** results! universal units are:
 	*** kilogram, gram, quintal, and jenbe
 	*** bunch (small, medium, and large)
 	*** shekim (small, medium, and large)
