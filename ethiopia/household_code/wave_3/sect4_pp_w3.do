@@ -5,7 +5,8 @@
 
 * does
 	* cleans Ethiopia household variables, wave 3 PP sec4
-	* looks like a crop level field roster (divides fields by crop)
+	* looks like a crop level field roster, includes pesticide and herbicide use
+	* pct_field, damage, field proportion (of crop planted)
 	* hierarchy: holder > parcel > field > crop
 	* some information on inputs
 

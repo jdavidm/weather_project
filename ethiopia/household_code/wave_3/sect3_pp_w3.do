@@ -5,7 +5,7 @@
 
 * does
 	* cleans Ethiopia household variables, wave 3 PP sec3
-	* looks like a field roster
+	* provides plot size, labor, fertilizer, irrigated
 	* hierarchy: holder > parcel > field > crop
 	* seems to correspond to Malawi ag-modC and ag-modJ
 	

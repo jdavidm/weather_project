@@ -190,7 +190,7 @@
 
 	
 * ***********************************************************************
-* 2b - constructing harvest weights
+* 2b - constructing harvest weights and prices
 * ***********************************************************************	
 	
 * renaming key variables	
