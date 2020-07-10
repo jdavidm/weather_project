@@ -411,6 +411,90 @@
 	*** mostly looks good
 	*** labor seems a little high
 	
+* checks and balances
+	*** Production variables should corroborate each other. 
+	*** Use discrepencies between production variables to determine if an outlier is a mistake and replace that outlier with missing then impute them.
+	*** A high labor should be associated with a high land area and yield and a high yield should be associated with a high value. 
+
+* check correlation at high values of labor with value
+	sum 			tf_lab, detail
+	*** labor is very high
+	pwcorr 			tf_lab tf_hrv 	if tf_lab> 300
+	*** poor correlation and unexpectadly negative with labor and harvest: -0.1
+	
+	tab tf_hrv if tf_lab==0
+	*** 10 observations have no labor but a non-negative harvest
+	scatter 		tf_hrv tf_lab
+	*** the outliers show that at the highest applications of labor to land we see some of the lowest harvest values
+	
+	sum tf_lab, detail
+	*** mean 369, max 93200
+	
+	replace 	tf_lab = . if tf_lab > 6000
+	replace 	tf_lab = . if tf_lab == 0 & tf_yld != 0
+	*** 30 changes made
+	
+* impute missing labor values using predictive mean matching
+	mi set 			wide // declare the data to be wide.
+	mi xtset		, clear // this is a precautinary step to clear any existing xtset
+	mi register 	imputed tf_lab // identify tf_lab as the variable being imputed
+	sort			tf_hrv clusterid, stable // sort to ensure reproducability of results
+	mi impute 		pmm tf_lab i.clusterid tf_hrv, add(1) rseed(245780) noisily dots ///
+						force knn(5) bootstrap
+	mi unset
+	
+	sum 			tf_lab_1_, detail
+	*** mean 137.6, max 5633.8
+	*** looks good
+	
+	replace 		tf_lab = tf_lab_1_
+	drop 			tf_lab_1_
+	
+	pwcorr 			tf_lab tf_hrv
+	*** negative correlation between labor and harvest : -0.06
+
+* check correlation at high values of labor with crop value
+	sum 			cp_lab, detail
+	sum 			cp_hrv, detail
+	tab 			cp_hrv cp_lab 	if cp_lab > 6000
+	*** at the higher end high labor has mostly low harvests
+	pwcorr 			cp_lab tf_hrv 	if cp_lab> 300
+	*** poor correlation and unexpectadly negative with labor and harvest: -0.11
+	
+	tab 			cp_hrv if cp_lab==0
+	*** 7 observations have no labor but a non-negative harvest
+	scatter 		cp_hrv cp_lab
+	*** the outliers show that at the highest applications of labor to land we see some of the lowest harvest values
+	
+	sum 			cp_lab, detail
+	*** mean 302.1, max 52857
+	
+	replace 		cp_lab = . 	if cp_lab >6000
+	replace 		cp_lab = . 	if cp_lab == 0 & cp_yld != 0
+	*** 24 changes made
+	
+* impute missing labor values using predictive mean matching
+	mi set 			wide // declare the data to be wide.
+	mi xtset		, clear // this is a precautinary step to clear any existing xtset
+	mi register 	imputed cp_lab // identify cp_lab as the variable being imputed
+	sort			cp_hrv clusterid, stable // sort to ensure reproducability of results
+	mi impute 		pmm cp_lab i.clusterid tf_hrv, add(1) rseed(245780) noisily dots ///
+						force knn(5) bootstrap
+	mi unset
+	
+	sum 			cp_lab_1_, detail
+	*** mean 107, max 5633
+	*** looks good
+	
+	replace 		cp_lab = cp_lab_1_
+	drop 			cp_lab_1_
+	
+	pwcorr 			cp_lab cp_hrv
+	*** reduced the negative correlation between cp_lab and cp_hrv but closer to 0 after impute (-.08)
+	
+* verify values are accurate
+	sum				tf_* cp_*
+	
 * **********************************************************************
 * 4 - end matter, clean up to save
 * **********************************************************************
