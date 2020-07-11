@@ -43,12 +43,12 @@
 * **********************************************************************
 
 * start by loading harvest quantity and value, since this is our limiting factor
-	use 			"`root'/PP_SEC9", clear
+	use 			"`root'/PH_SEC9", clear
 
 	isid			holder_id parcel field crop_code
 	
 * merge in crop labor data
-	merge 			1:1 holder_id parcel field crop_code using "`root'/PP_SEC10", generate(_10A)
+	merge 			1:1 holder_id parcel field crop_code using "`root'/PH_SEC10", generate(_10A)
 	*** all unmerged obs coming from using data w/ labor values = 0
 	
 	drop 			if _10A == 2

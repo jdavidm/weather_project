@@ -42,6 +42,9 @@
 * dropping duplicates
 	duplicates drop
 	
+/* drop those obs w/out sales data
+	drop		if ph_s12q06 != 1 */
+	
 * drop trees and other perennial crops
 	drop if crop_code == 41 	// apples
 	drop if crop_code == 42 	// bananas
@@ -334,7 +337,7 @@
 	describe
 	summarize 
 	sort 		holder_id ea_id crop_code
-	customsave , idvar(holder_id) filename(PP_SEC12.dta) path("`export'") ///
+	customsave , idvar(holder_id) filename(PH_SEC12.dta) path("`export'") ///
 		dofile(PP_SEC12) user($user)
 
 * close the log

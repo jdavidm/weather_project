@@ -264,7 +264,7 @@
 	replace		ea = 6 if ea == .
 	summarize
 	sort 		holder_id ea_id parcel field crop_code
-	customsave , idvar(crop_id) filename(PP_SEC10.dta) path("`export'") ///
+	customsave , idvar(crop_id) filename(PH_SEC10.dta) path("`export'") ///
 		dofile(PP_SEC10) user($user)
 
 * close the log

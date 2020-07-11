@@ -68,6 +68,40 @@
 	*** 4,398 answered no
 	
 	drop 		if ph_s9q03 == 2
+	
+* drop trees and other perennial crops
+	drop if crop_code == 41 	// apples
+	drop if crop_code == 42 	// bananas
+	drop if crop_code == 44 	// lemons
+	drop if crop_code == 45 	// mandarins
+	drop if crop_code == 46 	// mangos
+	drop if crop_code == 47 	// oranges
+	drop if crop_code == 48 	// papaya
+	drop if crop_code == 49 	// pineapples
+	drop if crop_code == 50 	// citron
+	drop if crop_code == 65 	// guava
+	drop if crop_code == 66 	// peach
+	drop if crop_code == 71 	// chat
+	drop if crop_code == 72 	// coffee 
+	drop if crop_code == 73 	// cotton
+	drop if crop_code == 76 	// sugar cane
+	drop if crop_code == 78 	// tobacco
+	drop if crop_code == 84 	// avocados
+	drop if crop_code == 85		// grazing land
+	drop if crop_code == 64 	// godere
+	drop if crop_code == 74 	// enset
+	drop if crop_code == 75 	// gesho
+	drop if crop_code == 81 	// rue
+	drop if crop_code == 82 	// gishita
+	drop if crop_code == 112 	// kazmir
+	drop if crop_code == 98 	// other, root
+	drop if crop_code == 115	// other, fruits
+	drop if crop_code == 117	// other, spices
+	drop if crop_code == 118	// other, pulses (?)
+	drop if crop_code == 119	// other, oil seed
+	drop if crop_code == 120	// other, cereal
+	drop if crop_code == 121	// other, case crops
+	drop if crop_code == 123	// other, vegetable
 				
 * finding unique identifier
 	describe
@@ -363,9 +397,114 @@
 * generate maize harvest weights
 	gen 		mz_hrv = hrvqty_selfr if crop_code == 2
 	
+
+* ***********************************************************************
+* 3 - constructing prices
+* ***********************************************************************	
+	
+* renaming key variables	
+	rename 		saq01 region
+	rename		saq02 zone
+	rename 		saq03 woreda
+	rename 		saq05 ea 
+	rename		hrvqty_selfr hvst_qty	
+	
+* merging in holder level price data	
+	merge 		m:1 crop_code region zone woreda ea holder_id using "`export'/w3_sect11_pholder.dta"
+	*** 22,134 not matched from master, only a few not matched from using
+	*** this is expected	
+	
+	drop 		if _merge == 2
+	drop 		_merge
+	
+* merging in ea level price data	
+	merge 		m:1 crop_code region zone woreda ea using "`export'/w3_sect11_pea.dta"
+	*** 22,134 not matched from master, only a few not matched from using
+	*** this is expected	
+
+	drop 		if _merge == 2
+	drop 		_merge	
+	
+* merging in woreda level price data	
+	merge 		m:1 crop_code region zone woreda using "`export'/w3_sect11_pworeda.dta"
+	*** 22,134 not matched from master, only a few not matched from using
+	*** this is expected	
+	
+	drop 		if _merge == 2
+	drop 		_merge	
+	
+* merging in zone level price data	
+	merge 		m:1 crop_code region zone using "`export'/w3_sect11_pzone.dta"
+	*** 22,134 not matched from master, only a few not matched from using
+	*** this is expected	
+	
+	drop 		if _merge == 2
+	drop 		_merge	
+	
+* merging in region level price data	
+	merge 		m:1 crop_code region using "`export'/w3_sect11_pregion.dta"
+	*** 22,134 not matched from master, only a few not matched from using
+	*** this is expected	
+	
+	drop 		if _merge == 2
+	drop 		_merge	
+	
+* merging in crop level price data	
+	merge 		m:1 crop_code using "`export'/w3_sect11_pcrop.dta"
+	*** 22,134 not matched from master, only a few not matched from using
+	*** this is expected	
+	
+	drop 		if _merge == 2
+	drop 		_merge	
+	
+* generating implied crop values, using median price whee we have 10+ obs
+	generate 	croppricei = p_holder if p_holder != .
+	*** 13,773 missing values generated
+	
+	replace 	croppricei = p_ea if n_ea>=10 & missing(croppricei)
+	*** 81 replaced
+	
+	replace 	croppricei = p_woreda if n_woreda>=10 & missing(croppricei)
+	*** 116 replaced
+	
+	replace 	croppricei = p_zone if n_zone>=10 & missing(croppricei)
+	*** 958 replaced 
+	
+	replace 	croppricei = p_region if n_region>=10 & missing(croppricei)
+	*** 7,162 replaced
+	
+	replace 	croppricei = p_crop if missing(croppricei)
+	*** 3,616 replaced 
+	
+	label variable croppricei	"implied unit value of crop"
+
+* examine the results
+	sum			hvst_qty croppricei
+	*** still missing prices for over 1,788
+	*** assuming these missing prices all come from the same group of crops
+	
+	tab crop_code if croppricei != .
+	tab crop_code if croppricei == .
+	*** fennel, cardamon*, chilies*, ginger*, RED PEPPER*, tumeric*, BEER ROOT*,
+	*** carrot*, kale*, lettuce, pumpkin*, spinach*, coriander*, TIMEZ KIMEM
+	*** none of these crops appear when price isn't missing
+	*** those w/ asterisks have price info in section 12
+	
 	
 * ***********************************************************************
-* 3 - cleaning and keeping
+* 4 - finding harvest values
+* ***********************************************************************	
+	
+* creating harvest values
+	generate			hvst_value = hvst_qty*croppricei
+
+* currency conversion
+	replace				hvst_value = hvst_value/26.67018592
+	*** using 2015 conversion value as most harvest months are in the fall
+	
+	
+* ***********************************************************************
+* 4 - cleaning and keeping
 * ***********************************************************************
 
 * purestand or mixed and if mixed what percent was planted with this crop?
@@ -375,17 +514,12 @@
 * renaming some variables of interest
 	rename 		household_id hhid
 	rename 		household_id2 hhid2	
-	rename 		saq01 region
-	rename		saq02 zone
-	rename 		saq03 woreda
-	rename 		saq05 ea 
-	rename		hrvqty_selfr harvest_qty
 	
 * restrict to variables of interest 
 * this is how world bank has their do-file set up
 * if we want to keep all identifiers (i.e. region, zone, etc) we can do that easily
-	keep  		holder_id- crop_code crop_id mz_hrv harvest_qty purestand ///
-					mixedcrop_pct
+	keep  		holder_id- crop_code crop_id mz_hrv hvst_value ///
+					croppricei hvst_qty purestand mixedcrop_pct
 	*** keeping harvest quantity for all crops as a precaution
 	
 	drop		crop_name
@@ -399,6 +533,7 @@
 	lab var			mz_hrv "Quantity of Maize Harvested (kg)"
 	lab var 		crop_code "Crop Identifier"
 	lab var			crop_id "Unique Crop ID Within Plot"
+	lab var			hvst_value "Value of Harvest (2010 USD)"
 
 * final preparations to export
 	isid 		crop_id
@@ -410,7 +545,7 @@
 	replace		ea = 6 if ea == .
 	summarize
 	sort 		holder_id ea_id parcel field crop_code
-	customsave , idvar(crop_id) filename(PP_SEC9.dta) path("`export'") ///
+	customsave , idvar(crop_id) filename(PH_SEC9.dta) path("`export'") ///
 		dofile(PP_SEC9) user($user)
 
 * close the log

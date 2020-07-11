@@ -45,7 +45,7 @@
 	label var 	district_id "Unique district identifier"
 	distinct	saq01 saq02, joint
 	*** 69 distinct districts
-	*** same as pp sect2, pp sect3, and ph sect9, good
+	*** same as pp sect2, pp sect3, and ph sect9, good	
 	
 * drop if obs haven't sold any crop
 	tab			ph_s11q01
@@ -211,21 +211,91 @@
 	
 	lab var		price "Sales Price (BIRR/kg)"
 	
-	
+
 * ***********************************************************************
-* 3 - cleaning and keeping
+* 3 - generating price dataset
+* ***********************************************************************
+	
+* renaming regional variables
+	rename 		saq01 region
+	rename 		saq02 zone
+	rename 		saq03 woreda
+	rename 		saq05 ea	
+	
+* distinct geographical areas by crop
+	distinct 	crop_code, joint
+	*** 42 distinct crops
+	
+	distinct 	crop_code region, joint
+	*** 117 distinct regions by crop
+
+	distinct 	crop_code region zone, joint
+	*** 407 distinct zones by crop
+	
+	distinct 	crop_code region zone woreda, joint
+	*** 652 distinct woreda by crop
+	
+	distinct 	crop_code region zone woreda ea, joint
+	*** 677 distinct eas by crop
+
+	distinct 	crop_code region zone woreda ea holder_id, joint
+	*** 1963 distinct holders by crop (this is the dataset)
+	
+* summarize prices	
+	sum 			price, detail
+	*** mean = 14.75, max = 1500, min = 0 (??)
+	*** will do some imputations later
+	
+* make datasets with crop price information	
+
+	preserve
+	collapse 		(p50) p_holder=price (count) n_holder=price, by(crop_code holder_id ea woreda zone region)
+	save 			"`export'/w3_sect11_pholder.dta", replace 	
+	restore
+	
+	preserve
+	collapse 		(p50) p_ea=price (count) n_ea=price, by(crop_code ea woreda zone region)
+	save 			"`export'/w3_sect11_pea.dta", replace 	
+	restore
+	
+	preserve
+	collapse 		(p50) p_woreda=price (count) n_woreda=price, by(crop_code woreda zone region)
+	save 			"`export'/w3_sect11_pworeda.dta", replace 	
+	restore
+	
+	preserve
+	collapse 		(p50) p_zone=price (count) n_zone=price, by(crop_code zone region)
+	save 			"`export'/w3_sect11_pzone.dta", replace 
+	restore
+	
+	preserve
+	collapse 		(p50) p_region=price (count) n_region=price, by(crop_code region)
+	save 			"`export'/w3_sect11_pregion.dta", replace 
+	restore
+	
+	preserve
+	collapse 		(p50) p_crop=price (count) n_crop=price, by(crop_code)
+	save 			"`export'/w3_sect11_pcrop.dta", replace 
+	restore	
+	
+* merge price data back into dataset
+	merge 			m:1 crop_code ea woreda zone region	        using "`export'/w3_sect11_pea.dta", assert(3) nogenerate
+	merge 			m:1 crop_code woreda zone region	        using "`export'/w3_sect11_pworeda.dta", assert(3) nogenerate
+	merge 			m:1 crop_code zone region	        		using "`export'/w3_sect11_pzone.dta", assert(3) nogenerate
+	merge 			m:1 crop_code region						using "`export'/w3_sect11_pregion.dta", assert(3) nogenerate
+	merge 			m:1 crop_code 						        using "`export'/w3_sect11_pcrop.dta", assert(3) nogenerate
+
+
+* ***********************************************************************
+* 4 - cleaning and keeping
 * ***********************************************************************
 
 * renaming some variables of interest
 	rename 		household_id hhid
 	rename 		household_id2 hhid2
-	rename 		saq01 region
-	rename 		saq02 zone
-	rename 		saq03 woreda
-	rename 		saq05 ea
 
 *	Restrict to variables of interest
-	keep  		holder_id- crop_code price crop_id
+	keep  		holder_id- crop_code price crop_id p_ea- n_crop
 	order 		holder_id- crop_code price crop_id
 
 * final preparations to export
@@ -234,7 +304,7 @@
 	describe
 	summarize 
 	sort 		holder_id ea_id crop_code
-	customsave , idvar(crop_id) filename(PP_SEC11.dta) path("`export'") ///
+	customsave , idvar(crop_id) filename(PH_SEC11.dta) path("`export'") ///
 		dofile(PP_SEC11) user($user)
 
 * close the log
