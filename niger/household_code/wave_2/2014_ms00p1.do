@@ -4,15 +4,13 @@
 * Stata v.16
 
 * does
-	* identifies regional elements
-	* for use in price data contruction 
-	* outputs clean data file ready for combination with wave 2 data
+	* identifies regional elements, for use in price data contruction 
 
 * assumes
 	* customsave.ado
 
 * TO DO:
-	* all of it
+	* done 
 
 	
 * **********************************************************************

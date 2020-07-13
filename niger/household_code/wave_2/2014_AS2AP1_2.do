@@ -12,8 +12,9 @@
 	* customsave.ado
 	
 * TO DO:
-	* add conversion factors for black and white sachets 
-	* run file with those conversions 
+	* done
+	* later:
+		*** combine with as2ap1_1 and as2ap1_3 so that files are file based not variable based
 	
 * **********************************************************************
 * 0 - setup
