@@ -18,6 +18,7 @@
 * TO DO:
 	* EVERYTHING
 	* clarify "does"
+	* DELETE THIS FILE
 	
 * **********************************************************************
 * 0 - setup

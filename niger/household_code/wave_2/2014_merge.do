@@ -13,7 +13,8 @@
 	* customsave.ado
 
 * TO DO:
-	* everything
+	* done
+	* later: update with new files, when combined into file based rather than variable based do files 
 
 * **********************************************************************
 * 0 - setup

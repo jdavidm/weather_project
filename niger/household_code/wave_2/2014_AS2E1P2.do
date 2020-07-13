@@ -6,13 +6,13 @@
 * does
 	* reads in Niger, WAVE 2 (2014), POST HARVEST, ECVMA2 AS2E1P2
 	* determines primary crops, cleans harvest (quantity in kg)
-	* determines harvest for all crops - to determine value (based on prices)
+	* determines harvest for all crops - to determine value 
+	* merges in 2014_ase1p2_p* files to determine value (using price data)
 	* outputs clean data file ready for combination with wave 2 plot data
 
 * assumes
 	* customsave.ado
-	* mdesc.ado
-
+	
 * TO DO:
 	* done
 
@@ -27,8 +27,8 @@
 	loc 	logout	= 	"$data/household_data/niger/logs"
 
 * open log
+	cap log close 
 	log 	using 	"`logout'/2014_AS2E1P2_1", append
-
 	
 * **********************************************************************
 * 1 - harvest information
@@ -186,7 +186,8 @@
 	*** dropped 17 observations
 	
 * make imputed price, using median price where we have at least 10 observations
-* this code differs from Malawi - seems like their code ignores prices 
+* this code generlaly files parts of malawi ag_i
+* but this differs from Malawi - seems like their code ignores prices 
 	generate 		croppricei = .
 	*** 8659 missing values generated
 	
