@@ -398,14 +398,6 @@
 * 3 - cleaning and keeping harvest quantities
 * ***********************************************************************
 
-* renaming some variables of interest
-	rename 		household_id hhid
-	rename 		household_id2 hhid2
-	rename 		saq01 region
-	rename 		saq02 zone
-	rename 		saq03 woreda
-	rename		saq05 ea
-
 *	Restrict to variables of interest
 	keep  		holder_id- crop_code hrvqty_selfr mz_hrv
 	order 		holder_id- crop_code
@@ -594,32 +586,36 @@
 	
 * checking veracity of kg estimates
 	tab 		cf, missing
-	*** missing 393 converstion factors
+	*** missing 86 converstion factors
 	
 	sort		cf unit_cd
 	*** missing obs are spread out across different units
-	*** jenbe, jog, akumada/dawla/lekota (lg) bunch (sm, md, lg), birchiko (sm),
-	*** chinet (sm, md, lg), esir (sm, md, lg), festal (md, lg), 
-	*** joniya/kasha (sm, md, lg), kerchat/kemba (sm, md, lg),
-	*** kunna/mishe/kefer/enkib (sm, md, lg), 
-	*** madaberia/nuse/shera/cheret (sm, md, lg), medeb (sm, md, lg),
-	*** piece/number (lg), sahin (sm, md, lg), 
-	*** tasa/tanika/shember/selmon (sm, md, lg), zorba/akara (sm, md)
+	*** jenbe, chinet (md, lg), esir (sm, md, lg), joniya/kasha (sm, lg),
+	*** kerchat/kemba (sm, md, lg), kubaya (sm), kunna/mishe/kefer/enkib (sm, md),
+	*** madaberia/nuse/shera/cheret (sm, md, lg), medeb (sm, md), sahin (sm, lg),
+	*** tasa/tanika/shember/selmon (sm), zorba/akara (md)
 
 	*** some of the units above have lots of other obs w/ values, including
-	*** esir (sm, md, lg), joniya/kasha (sm, md, lg), 
-	*** kerchat/kemba (sm, md, lg), kunna/mishe/kefer/enkib (sm, md, lg), 
-	*** madaberia/nuse/shera/cheret (sm, md, lg), medeb (sm, md, lg),
-	*** piece/number (lg), sahin (sm, md, lg), 
-	*** tasa/tanika/shember/selmon (sm, md, lg)
+	*** esir (sm, md, lg), kerchat/kemba (sm, md), 
+	*** madaberia/nuse/shera/cheret (sm, md, lg), medeb (sm, md), sahin (sm, lg),
+	*** tasa/tanika/shember/selmon (sm), 
+	
+	*** some are "universal" with only one ob w/ a value and many obs missing
+	*** joniya/kasha (sm, lg), kerchat/kemba (lg), kunna/mishe/kefer/enkib (md),
 	
 	*** some have no obs w/ cfs, including:
-	*** jenbe, jog, akumada/dawla/lekota (lg) bunch (sm, md, lg), 
-	*** chinet (sm, md, lg), birchiko (sm), festal (md, lg),
-	*** zorba/akara (sm, md)
+	*** jenbe, chinet (md, lg), kubaya (sm), kunna/mishe/kefer/enkib (sm),
+	*** zorba/akara (md)
 
 * filling in as many missing cfs as possible
 * only using means of units w/ multiple other obs with values
+
+	local 		units = 36
+	forvalues	i = 1/`units'{
+	    
+		sum		cf if unitnum == `i'
+		replace cf = `r(mean)' if unitnum == `i' & cf == . // & `r(mean)' != .
+	} 
 
 	sum			cf if unit_cd == 61	// esir (sm), mean = 0.5155963
 	replace 	cf = 0.5155963 if unit_cd == 61 & cf == .
