@@ -318,7 +318,6 @@
 	*** could there be matches for the same unit in the same region?
 
 * what cf's am i needing?
-*	order		hrvqty_selfr holder_id unit_cd saq01 
 	sort		hrvqty_selfr holder_id unit_cd
 	*** i need: 	a medium chinet (52) in snnp, a small chinet (51) in snnp, 
 	***				a small kerchat/kemba (91) in snnp, box/casa (6) in harari
@@ -406,21 +405,18 @@
 * ***********************************************************************	
 
 * append fruit/root data
-	append		using "`export'/PH_SEC12.dta"
+*	append		using "`export'/PH_SEC12.dta"
+
+* am now moving this to merge file due to isid issues
 	
 
 * ***********************************************************************
 * 3 - constructing prices
 * ***********************************************************************	
 	
-* renaming key variables	
-	rename 		saq01 region
-	rename		saq02 zone
-	rename 		saq03 woreda
-	rename 		saq05 ea 
-	rename		hrvqty_selfr hvst_qty	
-	
-* merging in sec 11 price data
+* will now only do price info in ess3_merge.do
+
+/* merging in sec 11 price data
 * merging in ea level price data	
 	merge 		m:1 crop_code region zone woreda ea using "`export'/w3_sect11_pea.dta"
 
@@ -545,22 +541,18 @@
 	*** will drop
 	
 	drop		if croppricei == .
-	
-* ***********************************************************************
-* 4 - finding harvest values
-* ***********************************************************************	
-	
-* creating harvest values
-	generate			hvst_value = hvst_qty*croppricei
-
-* currency conversion
-	replace				hvst_value = hvst_value/26.67018592
-	*** using 2015 conversion value as most harvest months are in the fall
-	
+*/	
 	
 * ***********************************************************************
 * 5 - cleaning and keeping
 * ***********************************************************************
+
+* renaming key variables	
+	rename 		saq01 region
+	rename		saq02 zone
+	rename 		saq03 woreda
+	rename 		saq05 ea 
+	rename		hrvqty_selfr hvst_qty
 
 * purestand or mixed and if mixed what percent was planted with this crop?
 	rename		ph_s9q01 purestand
@@ -570,12 +562,15 @@
 	rename 		household_id hhid
 	rename 		household_id2 hhid2	
 	
+* generate section id variable
+	gen			sec = 9
+	
 * restrict to variables of interest 
 * this is how world bank has their do-file set up
 * if we want to keep all identifiers (i.e. region, zone, etc) we can do that easily
-	keep  		holder_id- crop_code crop_id mz_hrv hvst_value ///
-					croppricei hvst_qty purestand mixedcrop_pct
-	*** keeping harvest quantity, price, purestand/mixed as a precaution
+	keep  		holder_id- crop_code crop_id mz_hrv hvst_qty ///
+					purestand mixedcrop_pct sec
+	*** keeping purestand/mixed as a precaution
 	
 	drop		crop_name
 	order 		holder_id- crop_code
@@ -588,10 +583,10 @@
 	lab var			mz_hrv "Quantity of Maize Harvested (kg)"
 	lab var 		crop_code "Crop Identifier"
 	lab var			crop_id "Unique Crop ID Within Plot"
-	lab var			hvst_value "Value of Harvest (2010 USD)"
 
 * final preparations to export
-*	isid 			crop_id
+	isid 			holder_id field parcel crop_code
+	isid			crop_id
 	compress
 	describe
 	summarize 

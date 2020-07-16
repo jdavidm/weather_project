@@ -395,8 +395,21 @@
 * 3 - cleaning and keeping harvest quantities
 * ***********************************************************************
 
-*	Restrict to variables of interest
-	keep  		holder_id- crop_code hrvqty_selfr mz_hrv
+*renaming variables of interest
+	rename 		household_id hhid
+	rename 		household_id2 hhid2	
+	rename 		saq01 region
+	rename		saq02 zone
+	rename 		saq03 woreda
+	rename 		saq05 ea 
+	drop		hvst_qty
+	rename		hrvqty_selfr hvst_qty	
+
+* generate section id variable
+	gen			sec = 12
+	
+* restrict to variables of interest
+	keep  		holder_id- crop_code hvst_qty mz_hrv sec
 	order 		holder_id- crop_code
 
 * final preparations to export
