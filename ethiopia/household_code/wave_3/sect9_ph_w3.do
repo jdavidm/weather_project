@@ -8,13 +8,15 @@
 	* seems to roughly correspong to Malawi ag-modG and ag-modM
 	* contains harvest weights and other info (dates, etc.)
 	* hierarchy: holder > parcel > field > crop
+	* WRITE whAT THIS IS DOIng
 
 * assumes
 	* customsave.ado
 	* distinct.ado
 	
 * TO DO:
-	* done
+	* isid issues to be resolve
+	* section 9 and section 12 qty data has different unique ids
 	
 	
 * **********************************************************************
@@ -418,58 +420,41 @@
 	rename 		saq05 ea 
 	rename		hrvqty_selfr hvst_qty	
 	
-* merging in holder level price data	
-	merge 		m:1 crop_code region zone woreda ea holder_id using "`export'/w3_sect11_pholder.dta"
-	*** 22,134 not matched from master, only a few not matched from using
-	*** this is expected	
-	
-	drop 		if _merge == 2
-	drop 		_merge
-	
+* merging in sec 11 price data
 * merging in ea level price data	
 	merge 		m:1 crop_code region zone woreda ea using "`export'/w3_sect11_pea.dta"
-	*** 22,134 not matched from master, only a few not matched from using
-	*** this is expected	
 
 	drop 		if _merge == 2
 	drop 		_merge	
 	
 * merging in woreda level price data	
 	merge 		m:1 crop_code region zone woreda using "`export'/w3_sect11_pworeda.dta"
-	*** 22,134 not matched from master, only a few not matched from using
-	*** this is expected	
 	
 	drop 		if _merge == 2
 	drop 		_merge	
 	
 * merging in zone level price data	
 	merge 		m:1 crop_code region zone using "`export'/w3_sect11_pzone.dta"
-	*** 22,134 not matched from master, only a few not matched from using
-	*** this is expected	
 	
 	drop 		if _merge == 2
 	drop 		_merge	
 	
 * merging in region level price data	
 	merge 		m:1 crop_code region using "`export'/w3_sect11_pregion.dta"
-	*** 22,134 not matched from master, only a few not matched from using
-	*** this is expected	
 	
 	drop 		if _merge == 2
 	drop 		_merge	
 	
 * merging in crop level price data	
 	merge 		m:1 crop_code using "`export'/w3_sect11_pcrop.dta"
-	*** 22,134 not matched from master, only a few not matched from using
-	*** this is expected	
 	
 	drop 		if _merge == 2
 	drop 		_merge	
 	
-* generating implied crop values, using median price whee we have 10+ obs
-	generate 	croppricei = p_holder if p_holder != .
-	*** 13,773 missing values generated
-	
+* generating implied crop values, using median price whee we have 10+ obs	
+
+	gen			croppricei = .
+
 	replace 	croppricei = p_ea if n_ea>=10 & missing(croppricei)
 	*** 81 replaced
 	
@@ -489,7 +474,7 @@
 
 * examine the results
 	sum			hvst_qty croppricei
-	*** still missing prices for over 1,788
+	*** still missing prices for 2,904
 	*** assuming these missing prices all come from the same group of crops
 	
 	tab crop_code if croppricei != .
@@ -498,7 +483,68 @@
 	*** carrot*, kale*, lettuce, pumpkin*, spinach*, coriander*, TIMEZ KIMEM
 	*** none of these crops appear when price isn't missing
 	*** those w/ asterisks have price info in section 12
+
+* merging in sec 12 price data	
+	drop 		p_ea- n_crop
 	
+* merging in ea level price data	
+	merge 		m:1 crop_code region zone woreda ea using "`export'/w3_sect12_pea.dta"
+
+	drop 		if _merge == 2
+	drop 		_merge	
+	
+* merging in woreda level price data	
+	merge 		m:1 crop_code region zone woreda using "`export'/w3_sect12_pworeda.dta"
+	
+	drop 		if _merge == 2
+	drop 		_merge	
+	
+* merging in zone level price data	
+	merge 		m:1 crop_code region zone using "`export'/w3_sect12_pzone.dta"
+	
+	drop 		if _merge == 2
+	drop 		_merge	
+	
+* merging in region level price data	
+	merge 		m:1 crop_code region using "`export'/w3_sect12_pregion.dta"
+
+	drop 		if _merge == 2
+	drop 		_merge	
+	
+* merging in crop level price data	
+	merge 		m:1 crop_code using "`export'/w3_sect12_pcrop.dta"	
+	
+	drop 		if _merge == 2
+	drop 		_merge	
+	
+* generating implied crop values, using median price whee we have 10+ obs	
+	replace 	croppricei = p_ea if n_ea>=10 & missing(croppricei)
+	*** 57 replaced
+	
+	replace 	croppricei = p_woreda if n_woreda>=10 & missing(croppricei)
+	*** 41 replaced
+	
+	replace 	croppricei = p_zone if n_zone>=10 & missing(croppricei)
+	*** 108 replaced 
+	
+	replace 	croppricei = p_region if n_region>=10 & missing(croppricei)
+	*** 1,607 replaced
+	
+	replace 	croppricei = p_crop if missing(croppricei)
+	*** 1,075 replaced 
+	
+* checking results
+	sum			hvst_qty croppricei
+	*** still missing prices for over 1,788
+	*** assuming these missing prices all come from the same group of crops
+	
+	tab 		crop_code if croppricei != .
+	tab 		crop_code if croppricei == .
+	*** still missing prices for fennel, lettuce, timiz kenem
+	*** 16 obs total - no prices in either sec 11 or 12
+	*** will drop
+	
+	drop		if croppricei == .
 	
 * ***********************************************************************
 * 4 - finding harvest values
@@ -529,7 +575,7 @@
 * if we want to keep all identifiers (i.e. region, zone, etc) we can do that easily
 	keep  		holder_id- crop_code crop_id mz_hrv hvst_value ///
 					croppricei hvst_qty purestand mixedcrop_pct
-	*** keeping harvest quantity for all crops as a precaution
+	*** keeping harvest quantity, price, purestand/mixed as a precaution
 	
 	drop		crop_name
 	order 		holder_id- crop_code
@@ -545,7 +591,7 @@
 	lab var			hvst_value "Value of Harvest (2010 USD)"
 
 * final preparations to export
-	isid 		crop_id
+*	isid 			crop_id
 	compress
 	describe
 	summarize 

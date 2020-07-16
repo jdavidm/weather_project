@@ -325,14 +325,11 @@
 	* 11 of 26 obs are kale
 	* also included is cassava, sorghum, pumpkins, sweet potato, among others
 	
-* for now, not dropping obs with no known cf, will impute instead		
-*	drop		if cf == .
+* for now, dropping obs with no known cf		
+	drop		if cf == .
 	*** 26 obs dropped
+
 	
-* there may be a wy to use cfs from section 9 here 
-* instead of dropping/imputing these obs...
-
-
 * ***********************************************************************
 * 2b - constructing harvest weights and imputing outliers
 * ***********************************************************************	
@@ -608,128 +605,117 @@
 	*** zorba/akara (md)
 
 * filling in as many missing cfs as possible
-* only using means of units w/ multiple other obs with values
 
-	local 		units = 36
+* dropping those obs w/ no conversion information at all
+	drop 		if unit_cd == 7 	// jenbe
+	drop 		if unit_cd == 52 	// chinet (md)
+	drop 		if unit_cd == 53 	// chinet (lg)
+	drop 		if unit_cd == 101	// kubaya (sm)
+	drop 		if unit_cd == 111 	// kunna/mishe/kefer/enkib (sm)
+	drop 		if unit_cd == 192 	// zorba/akara (md)
+	*** six drops made
+	
+* generating new unit numbering	
+	drop 		unitnum
+	egen		unitnum = group(unit_cd)
+
+* using means of units w/ multiple other obs with values as cf
+	local 		units = 30
 	forvalues	i = 1/`units'{
 	    
 		sum		cf if unitnum == `i'
-		replace cf = `r(mean)' if unitnum == `i' & cf == . // & `r(mean)' != .
+		replace cf = `r(mean)' if unitnum == `i' & cf == .
 	} 
-
-	sum			cf if unit_cd == 61	// esir (sm), mean = 0.5155963
-	replace 	cf = 0.5155963 if unit_cd == 61 & cf == .
 	
-	sum			cf if unit_cd == 62	// esir (md), mean = 0.8824194
-	replace 	cf = 0.8824194 if unit_cd == 62 & cf == .
-	
-	sum			cf if unit_cd == 63	// esir (lg), mean = 1.907071
-	replace 	cf = 1.907071 if unit_cd == 63 & cf == .
-
-	sum			cf if unit_cd == 81	// joniya/kasha (sm), mean = 29.08775
-	replace 	cf = 29.08775 if unit_cd == 81 & cf == .
-	
-	sum			cf if unit_cd == 82	// joniya/kasha (md), mean = 62.46047
-	replace 	cf = 62.46047 if unit_cd == 82 & cf == .
-	
-	sum			cf if unit_cd == 83	// joniya/kasha (lg), mean = 96.2272
-	replace 	cf = 96.2272 if unit_cd == 83 & cf == .	
-
-	sum			cf if unit_cd == 91	// kerchat/kemba (sm), mean = 7.609826
-	replace 	cf = 7.609826 if unit_cd == 91 & cf == .
-	
-	sum			cf if unit_cd == 92	// kerchat/kemba (md), mean = 13.02528
-	replace 	cf = 13.02528 if unit_cd == 92 & cf == .
-	
-	sum			cf if unit_cd == 93	// kerchat/kemba (lg), mean = 22.836
-	replace 	cf = 22.836 if unit_cd == 93 & cf == .
-
-	sum			cf if unit_cd == 111	// kunna/mishe/kefer/enkib (sm), mean = 4.8624
-	replace 	cf = 4.8624 if unit_cd == 111 & cf == .
-	
-	sum			cf if unit_cd == 112	// kunna/mishe/kefer/enkib (md), mean = 3.575765
-		*** the mean medium observation is smaller than the mean small observation
-	
-	replace 	cf = 3.575765 if unit_cd == 112 & cf == .
-	
-	sum			cf if unit_cd == 113	// kunna/mishe/kefer/enkib (lg), mean = 12.327
-	replace 	cf = 12.327 if unit_cd == 113 & cf == .
-	
-	sum			cf if unit_cd == 121	// madaberia/nuse/shera/cheret (sm), mean = 28.28729
-	replace 	cf = 28.28729 if unit_cd == 121 & cf == .
-	
-	sum			cf if unit_cd == 122	// madaberia/nuse/shera/cheret (md), mean = 55.9465
-	replace 	cf = 55.9465 if unit_cd == 122 & cf == .
-	
-	sum			cf if unit_cd == 123	// madaberia/nuse/shera/cheret (lg), mean = 93.53575
-	replace 	cf = 93.53575 if unit_cd == 123 & cf == .
-
-	sum			cf if unit_cd == 131	// medeb (sm), mean = 0.1902564
-	replace 	cf = 0.1902564 if unit_cd == 131 & cf == .
-	
-	sum			cf if unit_cd == 132	// medeb (md), mean = 0.8734783 
-	replace 	cf = 0.8734783  if unit_cd == 132 & cf == .
-	
-	sum			cf if unit_cd == 133	// medeb (lg), mean = 1.492613
-	replace 	cf = 1.492613 if unit_cd == 133 & cf == .	
-
-	sum			cf if unit_cd == 151	// sahin (sm), mean = 1.176931
-	replace 	cf = 1.176931 if unit_cd == 151 & cf == .
-	
-	sum			cf if unit_cd == 152	// sahin (md), mean = 0.73625 
-		*** odd that the mean value for sahin (med) is smaller than for sahin (sm)
-		
-	replace 	cf = 0.73625 if unit_cd == 152 & cf == .
-	
-	sum			cf if unit_cd == 153	// sahin (lg), mean = 5.46625
-	replace 	cf = 5.46625 if unit_cd == 153 & cf == .
-
-	sum			cf if unit_cd == 181	// tasa/tanika/shember/selmon (sm), mean = 0.2553478
-	replace 	cf = 0.2553478 if unit_cd == 181 & cf == .
-	
-	sum			cf if unit_cd == 182	// tasa/tanika/shember/selmon (md), mean = 0.2662195
-	replace 	cf = 0.2662195 if unit_cd == 182 & cf == .
-	
-	sum			cf if unit_cd == 183	// tasa/tanika/shember/selmon (lg), mean = 0.8717742 
-	replace 	cf = 0.8717742 if unit_cd == 183 & cf == .
-
-	sum			cf if unit_cd == 143	// piece/number (lg), mean = 6.92 
-	replace 	cf = 6.92 if unit_cd == 143 & cf == .	
-	
-* check results
-	sort		cf unit_cd
-	*** 26 obs still missing cfs
-	*** units include jenbe, jog, birchiko (sm), bunch (sm, md, lg),
-	***'chinet (sm, md, lg), festal (md, lg), zorba/akara (sm, md) 
-	*** not sure how to address this
-
-* investigating crops in obs missing cf
-	tab			crop_code if cf == .
-	* 11 of 26 obs are kale
-	* also included is cassava, sorghum, pumpkins, sweet potato, among others
-	
-* for now, not dropping obs with no known cf, will impute instead		
-*	drop		if cf == .
-	*** 26 obs dropped
-	
-* there may be a wy to use cfs from section 9 here 
-* instead of dropping/imputing these obs...
-
+* checking results	
+	tab			cf, missing
+	*** no conversion factors missing for obs that remain
 	
 	
+* ***********************************************************************
+* 4.2b - constructing harvest weights and prices
+* ***********************************************************************	
 	
-	rename		ph_s11q04 sales_val
+* renaming key variables	
+	rename		ph_s12q07 sales_qty
+	tab			sales_qty, missing
+	*** not missing any values
+	
+	rename		ph_s12q08 sales_val
+	tab 		sales_val
+	*** not missing any sales values
 	
 * converting sales quantity to kilos
 	gen			sales_qty_kg = sales_qty * cf
-	*** missing 23 values, this is expected (line 178)
-	
-	tab 		sales_val
-	*** full information on sales values
 	
 * generate a price per kilogram
 	gen 		price = sales_val/sales_qty_kg
 	*** this can be applied to harvested crops which weren't sold
-	*** still missing those 23
 	
-	lab var		price "Sales price (BIRR/kg)"	
+	lab var		price "Sales Price (BIRR/kg)"
+
+	
+* ***********************************************************************
+* 4.3 - generating price dataset
+* ***********************************************************************	
+	
+* renaming regional variables
+	rename 		saq01 region
+	rename 		saq02 zone
+	rename 		saq03 woreda
+	rename 		saq05 ea	
+	
+* distinct geographical areas by crop
+	distinct 	crop_code, joint
+	*** 20 distinct crops
+	
+	distinct 	crop_code region, joint
+	*** 76 distinct regions by crop
+
+	distinct 	crop_code region zone, joint
+	*** 207 distinct zones by crop
+	
+	distinct 	crop_code region zone woreda, joint
+	*** 243 distinct woreda by crop
+	
+	distinct 	crop_code region zone woreda ea, joint
+	*** 257 distinct eas by crop
+
+	distinct 	crop_code region zone woreda ea holder_id, joint
+	*** 490 distinct holders by crop (this is the dataset)
+	
+* summarize prices	
+	sum 			price, detail
+	*** mean = 21.76, max = 363.64, min = 0.3
+	
+* make datasets with crop price information	
+
+	preserve
+	collapse 		(p50) p_holder=price (count) n_holder=price, by(crop_code holder_id ea woreda zone region)
+	save 			"`export'/w3_sect12_pholder.dta", replace 	
+	restore
+	
+	preserve
+	collapse 		(p50) p_ea=price (count) n_ea=price, by(crop_code ea woreda zone region)
+	save 			"`export'/w3_sect12_pea.dta", replace 	
+	restore
+	
+	preserve
+	collapse 		(p50) p_woreda=price (count) n_woreda=price, by(crop_code woreda zone region)
+	save 			"`export'/w3_sect12_pworeda.dta", replace 	
+	restore
+	
+	preserve
+	collapse 		(p50) p_zone=price (count) n_zone=price, by(crop_code zone region)
+	save 			"`export'/w3_sect12_pzone.dta", replace 
+	restore
+	
+	preserve
+	collapse 		(p50) p_region=price (count) n_region=price, by(crop_code region)
+	save 			"`export'/w3_sect12_pregion.dta", replace 
+	restore
+	
+	preserve
+	collapse 		(p50) p_crop=price (count) n_crop=price, by(crop_code)
+	save 			"`export'/w3_sect12_pcrop.dta", replace 
+	restore	
