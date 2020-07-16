@@ -81,6 +81,7 @@
 	rename		saq01 region
 	rename		saq02 zone
 	rename 		saq03 woreda
+	rename		saq05 ea
 	rename		pp_s3q02_c local_unit
 	merge 		m:1 region zone woreda local_unit using "`root'/ET_local_area_unit_conversion.dta"
 	*** 13,748 obs not matched from master data
@@ -182,7 +183,7 @@
 					& inrange(selfreport_ha,0.002,4)
 	*** 0.6811 - much much higher when range is restricted for both	
 	
-	twoway 		(scatter selfreport_ha gps if inrange(gps,0.002,4) ///
+*	twoway 		(scatter selfreport_ha gps if inrange(gps,0.002,4) ///
 					& inrange(selfreport_ha,0.002,4))
 
 
@@ -198,6 +199,9 @@
 	
 	summarize 	selfreport_ha if missing(plotsize), detail
 	*** 109 obs w/ selfreport_ha missing plotsize
+	
+* replace any zero values as missing
+	replace		plotsize = . if plotsize <= 0
 
 * impute missing plot sizes using predictive mean matching 
 	mi set 		wide //	declare the data to be wide. 
@@ -221,7 +225,7 @@
 	list 		gps rap selfreport_ha plotsize if missing(plotsize_1_), sep(0)
 	*** there are some missing values that we have GPS for
 	
-	replace 	plotsize_1_ = gps if missing(plotsize_1_) & !missing(gps) // replace with existing gps values
+	replace 	plotsize_1_ = gps if missing(plotsize_1_) & !missing(gps) & gps > 0 // replace with existing gps values
 	drop 		if missing(plotsize_1_) // drop remaining missing values
 
 * manipulate variables for export
@@ -229,10 +233,6 @@
 	label 		variable plotsize		"Plot Size (ha)"
 	sum 		plotsize, detail
 	*** i'm not a fan of the one negative plotsize
-	
-* replacing negative plotsize value equal to zero
-	replace		plotsize = 0 if plotsize < 0
-	*** one change made, good
 	
 
 ************************************************************************
@@ -413,8 +413,8 @@
 * this is how world bank has their do-file set up
 * if we want to keep all identifiers (i.e. region, zone, etc) we can do that easily
 	keep  		holder_id- pp_s3q0a purestand kilo_fert labordays_plant plotsize ///
-					irrigated fert_any parcel_id field_id district_id
-	order 		holder_id- saq06 district_id parcel_id field_id
+					irrigated fert_any field_id
+	order 		holder_id- saq06
 
 * final preparations to export
 	isid 		holder_id parcel field
@@ -422,7 +422,7 @@
 	compress
 	describe
 	summarize
-	sort 		holder_id parcel_id field_id
+	sort 		holder_id parcel field
 	customsave , idvar(field_id) filename(PP_SEC3.dta) path("`export'") ///
 		dofile(PP_SEC3) user($user)
 
