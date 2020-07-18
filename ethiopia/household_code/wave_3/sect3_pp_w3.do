@@ -87,7 +87,7 @@
 	*** 13,748 obs not matched from master data
 	*** why is this...
 	*** conversion facotrs only given for timad, boy, senga, and kert
-	** but measurements are also given in tilm, medeb, rope, ermija, and other
+	*** but measurements are also given in tilm, medeb, rope, ermija, and other
 	*** will set self-reported value = . if no conversion factor is given
 	
 	drop		if _merge == 2
@@ -405,8 +405,7 @@
 
 * renaming some variables of interest
 	rename 		household_id hhid
-	rename 		household_id2 hhid2	
-	drop		region	
+	rename 		household_id2 hhid2
 	rename		pp_s3q03b purestand
 	
 * restrict to variables of interest 

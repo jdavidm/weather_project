@@ -14,8 +14,7 @@
 	* customsave.ado
 
 * TO DO:
-	* pesticide_any and herbicide_any are well short of the other variables
-	* can we impute a binary variable?
+	* done
 	
 	
 * **********************************************************************
@@ -57,12 +56,12 @@
 * creating parcel identifier
 	rename		parcel_id parcel
 	tostring	parcel, replace
-	generate 	parcel_id = holder_id + " " + ea_id + " " + parcel
+	generate 	parcel_id = holder_id + " " + parcel
 	
 * creating field identifier
 	rename		field_id field
 	tostring	field, replace
-	generate 	field_id = holder_id + " " + ea_id + " " + parcel + " " + field
+	generate 	field_id = holder_id + " " + parcel + " " + field
 	
 * creating unique crop identifier
 	tostring	crop_code, generate(crop_codeS)
