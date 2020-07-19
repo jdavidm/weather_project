@@ -1,5 +1,5 @@
 * Project: WB Weather
-* Created on: June 2020
+* Created on: July 2020
 * Created by: McG
 * Stata v.16
 

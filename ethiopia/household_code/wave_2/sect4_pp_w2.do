@@ -1,5 +1,5 @@
 * Project: WB Weather
-* Created on: June 2020
+* Created on: July 2020
 * Created by: McG
 * Stata v.16
 
@@ -33,7 +33,7 @@
 
 
 * **********************************************************************
-* 1 - preparing ESS (Wave 3) - Post Planting Section 4
+* 1 - preparing ESS 2013/14 (Wave 3) - Post Planting Section 4
 * **********************************************************************
 
 * load data

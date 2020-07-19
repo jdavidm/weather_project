@@ -15,8 +15,7 @@
 	* distinct.ado
 	
 * TO DO:
-	* isid issues to be resolve
-	* section 9 and section 12 qty data has different unique ids
+	* done
 	
 	
 * **********************************************************************
@@ -66,7 +65,7 @@
 	*** 3,380 maize obs
 	
 * drop if obs haven't harvested crop
-	tab			ph_s9q03
+	tab			ph_s9q03, missing
 	*** 4,398 answered no
 	
 	drop 		if ph_s9q03 == 2
