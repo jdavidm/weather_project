@@ -85,10 +85,9 @@
 	isid		crop_id
 	drop		crop_codeS	
 
-
 	
 * ***********************************************************************
-* 2 - harvest weights and prices
+* 2 - sales weights and prices
 * ***********************************************************************	
 	
 * renaming key variables	
@@ -180,6 +179,7 @@
 	save 			"`export'/w2_sect11_pcrop.dta", replace 
 	restore	
 
-* end of do-file
 * close the log
 	log	close
+	
+/* END */
