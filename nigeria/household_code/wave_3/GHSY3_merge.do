@@ -119,7 +119,7 @@
 * generate mz_variables
 	gen				mz_lnd = plotsize	if mz_hrv != .
 	gen				mz_lab = labordays	if mz_hrv != .
-	gen				mz_frt = fert		if mz_hrv != .
+	gen				mz_frt = fert		if mz_hrv != . 
 	gen				mz_pst = pest_any	if mz_hrv != .
 	gen				mz_hrb = herb_any	if mz_hrv != .
 	gen				mz_irr = irr_any	if mz_hrv != .
@@ -354,7 +354,7 @@
 	lab var			mz_frt_ha "fertilizer use (kg/ha)"
 	sum				mz_frt mz_frt_ha
 
-* impute labor outliers, right side only 
+* impute fertilizer outliers, right side only 
 	sum				mz_frt_ha, detail
 	bysort state :	egen stddev = sd(mz_frt_ha) if !inlist(mz_frt_ha,.,0)
 	recode 			stddev (.=0)
@@ -501,7 +501,7 @@
 	count
 	*** 5367 obs
 	
-	collapse (max)	tf_* cp_*, by(zone state lga sector ea hhid)
+	collapse (max) tf_* cp_*, by(zone state lga sector ea hhid)
 
 * count after collapse 
 	count 
@@ -541,6 +541,99 @@
 	lab var			cp_hrb	"Any maize plot has herbicide"
 	lab var			cp_irr	"Any maize plot has irrigation"
 	
+* clean tf yield outliers
+	scatter 		tf_yld tf_lnd
+	scatter 		tf_yld tf_lnd if tf_lnd < 0.5
+	hist 			tf_yld
+	*** yield outliers appear unreasonable above 5000 yields
+	
+	sum 			tf_yld
+	
+	replace 		tf_hrv = . if tf_yld > 6000
+	*** 58 changes made
+	replace 		tf_yld = . if tf_yld > 6000
+	*** 58 changes made
+
+	scatter 		tf_yld tf_lnd 
+
+* impute missing values (impute in stages based on proximity of similar land values, first the harvests on land smaller than 0.1 then land smaller than 0.6)
+	sum 			tf_hrv
+	
+	mi set 			wide 	// declare the data to be wide.
+	mi xtset		, clear 	// clear any xtset that may have had in place previously
+	mi register		imputed tf_hrv // identify tf_hrv as the variable being imputed
+	sort			hhid state zone, stable // sort to ensure reproducability of results
+	mi impute 		pmm tf_hrv i.state tf_lnd if tf_lnd < 0.1, add(1) rseed(245780) ///
+						noisily dots force knn(5) bootstrap
+
+* impute missing values
+	sort			hhid state zone, stable // sort to ensure reproducability of results
+	mi impute 		pmm tf_hrv i.state tf_lnd if tf_lnd < 0.6, add(1) rseed(245780) ///
+						noisily dots force knn(5) bootstrap
+	mi 				unset	
+
+	sort 			tf_hrv
+	replace 		tf_hrv = tf_hrv_2_ 	if 	tf_hrv == . & tf_hrv_1_ == .
+	replace 		tf_hrv = tf_hrv_1_ 	if 	tf_hrv == .
+	replace 		tf_yld = tf_hrv / tf_lnd
+	sum 			tf_yld, detail
+	sort			tf_yld
+	
+	drop 			tf_hrv_1_ tf_hrv_2_ mi_miss
+	
+* clean cp yield outliers
+	scatter 		cp_yld cp_lnd
+	scatter 		cp_yld cp_lnd if cp_lnd < 0.5
+	hist 			cp_yld
+	*** maize yield is higher on average than the total crop yield, mean is 5221.5
+	
+	sum 			cp_yld, detail
+	*** mean 5221.55, std dev 31808.34, max is 720661
+	sum 			cp_hrv, detail
+	*** mean 894.53, std dev 1183.46, max 10466.78
+	
+	replace 		cp_hrv = . if cp_yld > 12000
+	replace 		cp_yld = . if cp_yld > 12000
+	*** 77 changes made
+	
+	sum 			cp_lnd if cp_yld == ., detail
+	*** mean 0.0837, std dev 0.084, max 0.4
+	scatter 		cp_yld cp_lnd 
+	
+
+* impute missing values (impute in stages to get imputation near similar land values)
+	sum 			cp_hrv
+	
+	mi set 			wide 	// declare the data to be wide.
+	mi xtset		, clear 	// clear any xtset that may have had in place previously
+	mi register		imputed cp_hrv // identify cp_hrv as the variable being imputed
+	sort			hhid state zone, stable // sort to ensure reproducability of results
+	mi impute 		pmm cp_hrv i.state cp_lnd if cp_lnd < 0.03, add(1) rseed(245780) ///
+						noisily dots force knn(5) bootstrap
+
+	sort			hhid state zone, stable // sort to ensure reproducability of results
+	mi impute 		pmm cp_hrv i.state cp_lnd if cp_lnd < 0.1, add(1) rseed(245780) ///
+						noisily dots force knn(5) bootstrap
+					
+	sort			hhid state zone, stable // sort to ensure reproducability of results
+	mi impute 		pmm cp_hrv i.state cp_lnd if cp_lnd < 0.6, add(1) rseed(245780) ///
+						noisily dots force knn(5) bootstrap
+						
+	sort 			cp_hrv
+	replace 		cp_hrv = _3_cp_hrv if cp_hrv == . & _1_cp_hrv == . & _2_cp_hrv == .
+	replace 		cp_hrv = _2_cp_hrv if cp_hrv == . & _1_cp_hrv == .
+	replace 		cp_hrv = _1_cp_hrv if cp_hrv == . 
+
+	
+	replace 		cp_yld = cp_hrv / cp_lnd
+	sum 			cp_yld, detail
+	*** mean 2324.08, std. dev 2820.96, max 52003.29
+	*** still high but those outliers will be removed when we winsorize
+	
+	drop 			_mi_miss _1_cp_hrv _2_cp_hrv _3_cp_hrv
+
+	sum				tf_* cp_*
+
 * **********************************************************************
 * 4 - end matter, clean up to save
 * **********************************************************************
