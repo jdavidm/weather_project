@@ -112,23 +112,23 @@
 	gen			croppricei = .
 	
 	replace 	croppricei = p_ea if n_ea>=10 & missing(croppricei)
-	*** 0 replaced
+	*** 584 replaced
 	
 	replace 	croppricei = p_woreda if n_woreda>=10 & missing(croppricei)
-	*** 0 replaced
+	*** 193 replaced
 	
 	replace 	croppricei = p_zone if n_zone>=10 & missing(croppricei)
-	*** 1 replaced 
+	*** 2,236 replaced 
 	
 	replace 	croppricei = p_region if n_region>=10 & missing(croppricei)
-	*** 3 replaced
+	*** 8,814 replaced
 	
 	replace 	croppricei = p_crop if missing(croppricei)
-	*** 1,106 replaced 
+	*** 3,869 replaced 
 
 * examine the results
 	sum			hvst_qty croppricei
-	*** still missing prices for 1,116 obs
+	*** still missing prices for 1,788 obs
 	*** assuming these missing prices all come from the same group of crops
 	
 	tab crop_code if croppricei != .
@@ -173,23 +173,23 @@
 	
 * generating implied crop values, using sec 12 median price whee we have 10+ obs	
 	replace 	croppricei = p_ea if n_ea>=10 & missing(croppricei)
-	*** 22 replaced
+	*** 35 replaced
 	
 	replace 	croppricei = p_woreda if n_woreda>=10 & missing(croppricei)
-	*** 15 replaced
+	*** 26 replaced
 	
 	replace 	croppricei = p_zone if n_zone>=10 & missing(croppricei)
-	*** 44 replaced 
+	*** 64 replaced 
 	
 	replace 	croppricei = p_region if n_region>=10 & missing(croppricei)
-	*** 632 replaced
+	*** 975 replaced
 	
 	replace 	croppricei = p_crop if missing(croppricei)
-	*** 395 replaced 
+	*** 680 replaced 
 	
 * checking results
 	sum			hvst_qty croppricei
-	*** still missing prices for over 1,788
+	*** missing prices for 8 obs
 	*** assuming these missing prices all come from the same group of crops
 	
 	tab 		crop_code if croppricei != .
@@ -199,6 +199,8 @@
 	*** will drop
 	
 	drop		if croppricei == .
+	*** 8 obs dropped
+	
 	drop		p_ea- n_crop
 		
 	

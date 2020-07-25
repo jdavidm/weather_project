@@ -115,15 +115,14 @@
 
 * examine the results
 	sum			hvst_qty croppricei
-	*** still missing prices for 1,116 obs
+	*** still missing prices for 658 obs
 	*** assuming these missing prices all come from the same group of crops
 	
 	tab crop_code if croppricei != .
 	tab crop_code if croppricei == .
-	*** fennel, cardamon*, chilies*, ginger*, RED PEPPER*, tumeric*, BEER ROOT*,
-	*** carrot*, kale*, lettuce, pumpkin*, spinach*, coriander*, TIMEZ KIMEM
+	*** cactus, fennel, black pepper, ginger, white lumin, beer root, cabbage, carrot, 
+	*** cauliflower, garlic, lettuce, spinach, boye/yam, amboshika, timiz kimem
 	*** none of these crops appear when price isn't missing
-	*** those w/ asterisks have price info in section 12
 
 * merging in sec 12 price data	
 	drop 		p_ea- n_crop
@@ -186,6 +185,8 @@
 	*** will drop
 	
 	drop		if croppricei == .
+	*** 12 obs dropped
+	
 	drop		p_ea- n_crop
 		
 	
