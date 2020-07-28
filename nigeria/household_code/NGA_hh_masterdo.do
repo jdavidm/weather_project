@@ -64,12 +64,10 @@
 	do 			"`dofile'/wave_2/GHSY2_build.do"			//	merges NPSY2 to weather
 	do 			"`dofile'/wave_3/GHSY3_build.do"			//	merges NPSY3 to weather
 
-
-
 * **********************************************************************
 * 5 - run .do file to append each wave
 * **********************************************************************
 
-	do			"$code/nigeria/NGA_append_built.do"				// append waves
+	do			"$code/nigeria/household_code/NGA_append_built.do"				// append waves
 	
 /* END */
