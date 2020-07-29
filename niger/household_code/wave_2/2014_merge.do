@@ -25,6 +25,7 @@
 	loc 	logout	=	"$data/household_data/niger/logs"
 
 * open log
+	cap		log close
 	log 	using 	"`logout'/2014_niger_merge", append
 
 	
@@ -277,119 +278,33 @@
 	*** mean reduces from 28 to 26
 	*** max still at 22500 
 
+	
 * **********************************************************************
 * 3 - collapse to household level
 * **********************************************************************
 
-* **********************************************************************
-* 3a - generate total farm variables
-* **********************************************************************
+	gen 	cpplotsize 		= 	plotsize 		if mz_hrvimp !=	.
+	gen 	cpvl_hrvimp 	= 	vl_hrvimp 		if mz_hrvimp !=	.
+	gen 	cplabordaysimp 	= 	labordaysimp 	if mz_hrvimp !=	.
+	gen 	cpfertimp		=	fertimp 		if mz_hrvimp !=	.
+	gen	 	cppest_any		=	pest_any 		if mz_hrvimp != .
+	gen 	cpherb_any 		= 	herb_any 		if mz_hrvimp != .
 
-* generate plot area
-	bysort			hh_num (clusterid extension field parcel) :	egen tf_lnd = sum(plotsize)
-	lab var			tf_lnd	"Total farmed area (ha)"
-	assert			tf_lnd > 0 
-	sum				tf_lnd, detail
+	
+	collapse (sum) tf_lnd=plotsize  tf_hrv=vl_hrvimp  lab_tot=labordaysimp ///
+		fert_tot=fertimp cp_lnd=cpplotsize cp_hrv=cpvl_hrvimp cplab_tot=cplabordaysimp ///
+		fert_mz=cpfertimp (max) tf_pst=pest_any tf_hrb=herb_any cp_pst=cppest_any ///
+		cp_hrb=cpherb_any, by(region dept canton zd clusterid hh_num)
 
-* value of harvest
-	bysort			hh_num (clusterid extension field parcel) :	egen tf_hrv = sum(vl_hrvimp)
-	lab var			tf_hrv	"Total value of harvest (2010 USD)"
-	sum				tf_hrv, detail
-	
-* value of yield
-	generate		tf_yld = tf_hrv / tf_lnd
-	lab var			tf_yld	"value of yield (2010 USD/ha)"
-	sum				tf_yld, detail
-	
-* labor
-	bysort 			hh_num (clusterid extension field parcel) : egen lab_tot = sum(labordaysimp)
-	generate		tf_lab = lab_tot / tf_lnd
-	lab var			tf_lab	"labor rate (days/ha)"
-	sum				tf_lab, detail
+	gen 	tf_yld 		= 	tf_hrv/tf_lnd
+	gen 	tf_lab 		= 	lab_tot/tf_lnd
+	gen		tf_frt 		= 	fert_tot / tf_lnd
 
-* fertilizer
-	bysort 			hh_num (clusterid extension field parcel) : egen fert_tot = sum(fertimp)
-	generate		tf_frt = fert_tot / tf_lnd
-	lab var			tf_frt	"fertilizer rate (kg/ha)"
-	sum				tf_frt, detail
+	gen 	cp_yld 		= 	cp_hrv/cp_lnd
+	gen		cp_lab 		= 	cplab_tot/cp_lnd
+	gen		cp_frt 		= 	fert_mz / cp_lnd
 
-* pesticide
-	replace			pest_any = 0 if pest_any == 2
-	tab				pest_any, missing
-	bysort 			hh_num (clusterid extension field parcel) : egen tf_pst = max(pest_any)
-	lab var			tf_pst	"Any plot has pesticide"
-	tab				tf_pst
-	
-* herbicide
-	replace			herb_any = 0 if herb_any == 2
-	tab				herb_any, missing
-	bysort 			hh_num (clusterid extension field parcel) : egen tf_hrb = max(herb_any)
-	lab var			tf_hrb	"Any plot has herbicide"
-	tab				tf_hrb
-	
-* **********************************************************************
-* 3b - generate maize variables 
-* **********************************************************************	
-	
-* generate plot area
-	bysort			hh_num (clusterid extension field parcel) :	egen cp_lnd = sum(plotsize) ///
-						if mz_hrvimp != .
-	lab var			cp_lnd	"Total millet area (ha)"
-	assert			cp_lnd > 0 
-	sum				cp_lnd, detail
-
-* value of harvest
-	bysort			hh_num (clusterid extension field parcel) :	egen cp_hrv = sum(vl_hrvimp) ///
-						if mz_hrvimp != .
-	lab var			cp_hrv	"Total quantity of millet harvest (kg)"
-	sum				cp_hrv, detail
-	
-* value of yield
-	generate		cp_yld = cp_hrv / cp_lnd if mz_hrvimp != .
-	lab var			cp_yld	"Millet yield (kg/ha)"
-	sum				cp_yld, detail
-	
-* labor
-	bysort 			hh_num (clusterid extension field parcel) : egen lab_mz = sum(labordaysimp) ///
-						if mz_hrvimp != .
-	generate		cp_lab = lab_mz / cp_lnd
-	lab var			cp_lab	"labor rate for millet (days/ha)"
-	sum				cp_lab, detail
-
-* fertilizer
-	bysort 			hh_num (clusterid extension field parcel) : egen fert_mz = sum(fertimp) ///
-						if mz_hrvimp != .
-	generate		cp_frt = fert_mz / cp_lnd
-	lab var			cp_frt	"fertilizer rate for millet (kg/ha)"
-	sum				cp_frt, detail
-
-* pesticide
-	tab				pest_any, missing
-	bysort 			hh_num (clusterid extension field parcel) : egen cp_pst = max(pest_any) /// 
-						if mz_hrvimp != .
-	lab var			cp_pst	"Any millet plot has pesticide"
-	tab				cp_pst
-	
-* herbicide
-	tab				herb_any, missing
-	bysort 			hh_num (clusterid extension field parcel) : egen cp_hrb = max(herb_any) ///
-						if mz_hrvimp != .
-	lab var			cp_hrb	"Any millet plot has herbicide"
-	tab				cp_hrb
-
-* verify values are accurate
-	sum				tf_* cp_*
-	*** not wild about these values
-	*** evaluate once W1 is also done 
-	
-* collapse to the household level
-	loc	cp			cp_*
-	foreach v of varlist `cp'{
-	    replace		`v' = 0 if `v' == .
-	}		
-	
-	collapse (max)	tf_* cp_*, by(region dept canton zd clusterid hh_num)
-	*** we went from 8405 to 1725 observations 
+	sum tf_* cp_*
 	
 * return non-maize production to missing
 	replace			cp_yld = . if cp_yld == 0
@@ -406,10 +321,7 @@
 	replace			tf_pst = 1 if tf_pst > 0
 	replace			tf_hrb = 1 if tf_hrb > 0
 	
-* verify values are accurate
-	sum				tf_* cp_*
-	*** not wild about these values either
-	*** some seem too small? like tf_yld is 23? cp_yld is 33? 
+	sum tf_* cp_*
 	
 * **********************************************************************
 * 4 - end matter, clean up to save

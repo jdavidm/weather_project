@@ -272,120 +272,33 @@
 	sum				fert_ha fert_haimp
 	*** mean reduces from 21.2 to 9.4
 	*** max is 4166
-	
+
 * **********************************************************************
 * 3 - collapse to household level
 * **********************************************************************
 
-* **********************************************************************
-* 3a - generate total farm variables
-* **********************************************************************
+	gen 	cpplotsize 		= 	plotsize 		if mz_hrvimp !=	.
+	gen 	cpvl_hrvimp 	= 	vl_hrvimp 		if mz_hrvimp !=	.
+	gen 	cplabordaysimp 	= 	labordaysimp 	if mz_hrvimp !=	.
+	gen 	cpfertimp		=	fertimp 		if mz_hrvimp !=	.
+	gen	 	cppest_any		=	pest_any 		if mz_hrvimp != .
+	gen 	cpherb_any 		= 	herb_any 		if mz_hrvimp != .
 
-* generate plot area
-	bysort			clusterid hh_num :	egen tf_lnd = sum(plotsize)
-	lab var			tf_lnd	"Total farmed area (ha)"
-	assert			tf_lnd > 0 
-	sum				tf_lnd, detail
+	
+	collapse (sum) tf_lnd=plotsize  tf_hrv=vl_hrvimp  lab_tot=labordaysimp ///
+		fert_tot=fertimp cp_lnd=cpplotsize cp_hrv=cpvl_hrvimp cplab_tot=cplabordaysimp ///
+		fert_mz=cpfertimp (max) tf_pst=pest_any tf_hrb=herb_any cp_pst=cppest_any ///
+		cp_hrb=cpherb_any, by(clusterid hh_num)
 
-* value of harvest
-	bysort			clusterid hh_num :	egen tf_hrv = sum(vl_hrvimp)
-	lab var			tf_hrv	"Total value of harvest (2010 USD)"
-	sum				tf_hrv, detail
-	
-* value of yield
-	generate		tf_yld = tf_hrv / tf_lnd
-	lab var			tf_yld	"value of yield (2010 USD/ha)"
-	sum				tf_yld, detail
-	
-* labor
-	bysort 			clusterid hh_num : egen lab_tot = sum(labordaysimp)
-	generate		tf_lab = lab_tot / tf_lnd
-	lab var			tf_lab	"labor rate (days/ha)"
-	sum				tf_lab, detail
-	
-* fertilizer
-	bysort 			clusterid hh_num : egen fert_tot = sum(fertimp)
-	generate		tf_frt = fert_tot / tf_lnd
-	lab var			tf_frt	"fertilizer rate (kg/ha)"
-	sum				tf_frt, detail
+	gen 	tf_yld 		= 	tf_hrv/tf_lnd
+	gen 	tf_lab 		= 	lab_tot/tf_lnd
+	gen		tf_frt 		= 	fert_tot / tf_lnd
 
-* pesticide
-	replace			pest_any = 0 if pest_any == 2
-	tab				pest_any, missing
-	bysort 			clusterid hh_num : egen tf_pst = max(pest_any)
-	lab var			tf_pst	"Any plot has pesticide"
-	tab				tf_pst
-	
-* herbicide
-	replace			herb_any = 0 if herb_any == 2
-	tab				herb_any, missing
-	bysort 			clusterid hh_num : egen tf_hrb = max(herb_any)
-	lab var			tf_hrb	"Any plot has herbicide"
-	tab				tf_hrb
-	
-* **********************************************************************
-* 3b - generate maize variables 
-* **********************************************************************	
-	
-* generate plot area
-	bysort			clusterid hh_num :	egen cp_lnd = sum(plotsize) ///
-						if mz_hrvimp != .
-	lab var			cp_lnd	"Total millet area (ha)"
-	assert			cp_lnd > 0 
-	sum				cp_lnd, detail
+	gen 	cp_yld 		= 	cp_hrv/cp_lnd
+	gen		cp_lab 		= 	cplab_tot/cp_lnd
+	gen		cp_frt 		= 	fert_mz / cp_lnd
 
-* value of harvest
-	bysort			clusterid hh_num :	egen cp_hrv = sum(vl_hrvimp) ///
-						if mz_hrvimp != .
-	lab var			cp_hrv	"Total quantity of millet harvest (kg)"
-	sum				cp_hrv, detail
-	
-* value of yield
-	generate		cp_yld = cp_hrv / cp_lnd if mz_hrvimp != .
-	lab var			cp_yld	"Millet yield (kg/ha)"
-	sum				cp_yld, detail
-	
-* labor
-	bysort 			clusterid hh_num : egen lab_mz = sum(labordaysimp) ///
-						if mz_hrvimp != .
-	generate		cp_lab = lab_mz / cp_lnd
-	lab var			cp_lab	"labor rate for millet (days/ha)"
-	sum				cp_lab, detail
-
-* fertilizer
-	bysort 			clusterid hh_num : egen fert_mz = sum(fertimp) ///
-						if mz_hrvimp != .
-	generate		cp_frt = fert_mz / cp_lnd
-	lab var			cp_frt	"fertilizer rate for millet (kg/ha)"
-	sum				cp_frt, detail
-
-* pesticide
-	tab				pest_any, missing
-	bysort 			clusterid hh_num : egen cp_pst = max(pest_any) /// 
-						if mz_hrvimp != .
-	lab var			cp_pst	"Any millet plot has pesticide"
-	tab				cp_pst
-	
-* herbicide
-	tab				herb_any, missing
-	bysort 			clusterid hh_num : egen cp_hrb = max(herb_any) ///
-						if mz_hrvimp != .
-	lab var			cp_hrb	"Any millet plot has herbicide"
-	tab				cp_hrb
-
-* verify values are accurate
-	sum				tf_* cp_*
-
-	*** the total farm land and crop land are a bit high and so are total harvests.
-	
-* collapse to the household level
-	loc	cp			cp_*
-	foreach v of varlist `cp'{
-	    replace		`v' = 0 if `v' == .
-	}		
-	
-	collapse (max)	tf_* cp_*, by(clusterid hh_num)
-	*** we went from 8741 to 2135 observations 
+	sum tf_* cp_*
 	
 * return non-maize production to missing
 	replace			cp_yld = . if cp_yld == 0
@@ -402,167 +315,7 @@
 	replace			tf_pst = 1 if tf_pst > 0
 	replace			tf_hrb = 1 if tf_hrb > 0
 	
-* verify values are accurate
-	sum				tf_* cp_*
-	*** most values seem much more reasonable
-	*** labor has a very large max
-
-* checks and balances
-	*** Production variables should corroborate each other. 
-	*** Use discrepencies between production variables to determine if an outlier is a mistake and replace that outlier with missing then impute them.
-	*** A high labor should be associated with a high land area and yield and a high yield should be associated with a high value. 
-
-* check correlation at high values of labor with value
-	sum 			tf_lab, detail
-	sum 			tf_hrv, detail
-	tab 			tf_hrv tf_lab 	if tf_lab > 11000
-	*** outliers show that a very high labor input is returning a tiny output
-	pwcorr 			tf_lab tf_hrv 	if tf_lab> 300
-	*** really poor correlation and unexpectadly negative with labor and yield: -0.062
-	
-	tab tf_hrv if tf_lab==0
-	*** 10 observations have no labor but a non-negative harvest
-	scatter 		tf_hrv tf_lab
-	*** the outliers show that at the highest applications of labor to land we see some of the lowest harvest values
-	
-	sum tf_lab, detail
-	*** mean 188, max 61666
-	
-	replace tf_lab = . if tf_lab >11000
-	replace tf_lab = . if tf_lab == 0 & tf_yld != 0
-	*** 16 changes made
-	
-* impute missing labor values using predictive mean matching
-	mi set 			wide // declare the data to be wide.
-	mi xtset		, clear // this is a precautinary step to clear any existing xtset
-	mi register 	imputed tf_lab // identify tf_lab as the variable being imputed
-	sort			tf_hrv clusterid, stable // sort to ensure reproducability of results
-	mi impute 		pmm tf_lab i.clusterid tf_hrv, add(1) rseed(245780) noisily dots ///
-						force knn(5) bootstrap
-	mi unset
-	
-	sum 			tf_lab_1_, detail
-	*** mean 106.37, max 10837
-	*** looks good
-	
-	replace 		tf_lab = tf_lab_1_
-	drop 			tf_lab_1_
-	
-	pwcorr 			tf_lab tf_hrv
-	*** low correlation but smaller negative correlation between hours/ha and value of harvest after impute: -0.04
-
-* check correlation at high values of labor with crop value
-	sum 			cp_lab, detail
-	sum 			cp_hrv, detail
-	tab 			cp_hrv cp_lab 	if cp_lab > 5000
-	*** at the higher end high labor has mostly low harvests
-	pwcorr 			cp_lab tf_hrv 	if cp_lab> 300
-	*** poor correlation and unexpectadly negative with labor and harvest: -0.108
-	
-	tab 			cp_hrv if cp_lab==0
-	*** 6 observations have no labor but a non-negative harvest
-	scatter 		cp_hrv cp_lab
-	*** the outliers show that at the highest applications of labor to land we see some of the lowest harvest values
-	
-	sum 			cp_lab, detail
-	*** mean 149.4, max 61666
-	
-	replace 		cp_lab = . 	if cp_lab >20000
-	replace 		cp_lab = . 	if cp_lab == 0 & cp_yld != 0
-	*** 9 changes made
-	
-* impute missing labor values using predictive mean matching
-	mi set 			wide // declare the data to be wide.
-	mi xtset		, clear // this is a precautinary step to clear any existing xtset
-	mi register 	imputed cp_lab // identify cp_lab as the variable being imputed
-	sort			cp_hrv clusterid, stable // sort to ensure reproducability of results
-	mi impute 		pmm cp_lab i.clusterid tf_hrv, add(1) rseed(245780) noisily dots ///
-						force knn(5) bootstrap
-	mi unset
-	
-	sum 			cp_lab_1_, detail
-	*** mean 93.3, max 10838
-	*** looks good
-	
-	replace 		cp_lab = cp_lab_1_
-	drop 			cp_lab_1_
-	
-	pwcorr 			cp_lab cp_hrv
-	*** reduced the negative correlation between cp_lab and cp_hrv but closer to 0 after impute (-.051)
-	
-* verify values are accurate
-	sum				tf_* cp_*
-	
-* address fertilizer outliers	
-
-	scatter 		tf_frt tf_lnd
-	*** appears to be one major outlier using 26000 kg's of fertilizer and using almost no hectares of land
-	
-	replace 		tf_frt = . 	if tf_frt > 20000
-	*** 1 change made
-	
-* impute missing labor values using predictive mean matching
-	mi set 			wide // declare the data to be wide.
-	mi xtset		, clear // this is a precautinary step to clear any existing xtset
-	mi register 	imputed tf_frt // identify tf_fert as the variable being imputed
-	sort			clusterid tf_hrv, stable // sort to ensure reproducability of results
-	mi impute 		pmm tf_frt i.clusterid tf_hrv, add(1) rseed(245780) noisily dots ///
-						force knn(5) bootstrap
-	mi unset
-	
-	sum 			tf_frt_1_, detail
-	*** mean 5.83, max 1351
-	*** looks good
-	
-	replace 		tf_frt = tf_frt_1_
-	drop 			tf_frt_1_
-	
-* crop fertilizer outliers
-
-	scatter 		cp_frt cp_lnd
-	*** appears to be one major outlier using 26000 kg's of fertilizer and using almost no hectares of land
-	
-	replace 		cp_frt = . 		if cp_frt > 20000
-	*** 1 change made
-	
-* impute missing labor values using predictive mean matching
-	mi set 			wide // declare the data to be wide.
-	mi xtset		, clear // this is a precautinary step to clear any existing xtset
-	mi register 	imputed cp_frt // identify tf_fert as the variable being imputed
-	sort			clusterid cp_hrv, stable // sort to ensure reproducability of results
-	mi impute 		pmm cp_frt i.clusterid cp_hrv, add(1) rseed(245780) noisily dots ///
-						force knn(5) bootstrap
-	mi unset
-	
-	sum 			cp_frt_1_, detail
-	*** mean 3.21, max 603.8
-	*** looks good
-	
-	replace 		cp_frt = cp_frt_1_
-	drop 			cp_frt_1_
-	
-* addressing total yield outliers
-	scatter 		tf_yld tf_lab
-	tab 			tf_yld tf_lab 	if tf_yld > 5000
-	*** a handfull of observations have the highest yields but almost no labor input
-
-* impute missing labor values using predictive mean matching
-	replace 		tf_yld = . 		if tf_yld > 5000 & tf_lab < 50
-
-	mi set 			wide // declare the data to be wide.
-	mi xtset		, clear // this is a precautinary step to clear any existing xtset
-	mi register 	imputed tf_yld // identify tf_fert as the variable being imputed
-	sort			clusterid tf_lab, stable // sort to ensure reproducability of results
-	mi impute 		pmm tf_yld i.clusterid tf_lab, add(1) rseed(245780) noisily dots ///
-						force knn(5) bootstrap
-	mi unset
-
-	sum 			tf_yld_1_, detail
-	*** mean 39.8, max 9572
-	*** looks good
-	
-	replace 		tf_yld = tf_yld_1_
-	drop 			tf_yld_1_
+	sum tf_* cp_*
 	
 * **********************************************************************
 * 4 - end matter, clean up to save
@@ -574,9 +327,9 @@
 	
 * create unique household identifier
 	*** all observations are missing region, canton and dept, will create id without region, canton and dept for now
-	isid				 clusterid hh_num
+	isid				clusterid hh_num
 	sort				clusterid hh_num, stable 
-	egen				hh_id = group(clusterid hh_num)
+	egen				hh_id = group( clusterid hh_num)
 	lab var				hh_id "unique household identifier"
 		
 	order 			clusterid hh_num hh_id year tf_hrv tf_lnd tf_yld ///
