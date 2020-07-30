@@ -5,16 +5,15 @@
 * Stata v.16
 
 * does
-	* merges weather data into GHSY1 household data
-	* does this for north and south seperately
+	* merges weather data into GHSY2 household data
 
 * assumes
-	* cleaned GHSY1 data
+	* cleaned IHPS short panel data
 	* processed wave 1 weather data
 	* customsave.ado
 
 * TO DO:
-	* complete
+	* update Malawi template for Nigeria
 
 	
 * **********************************************************************
@@ -26,7 +25,7 @@
 	loc		rooth 	= 	"$data/household_data/nigeria/wave_1/refined"
 	loc		export 	= 	"$data/merged_data/nigeria/wave_1"
 	loc		logout 	= 	"$data/merged_data/nigeria/logs"
-	
+	loc 	archive =   "$data/archived_code/nigeria"
 * open log	
 	cap 	log			 close
 	log 	using 		"`logout'/ghsy1_build_wave1", append
@@ -132,7 +131,6 @@
 		}
 }
 
-
 * **********************************************************************
 * 2 - merge northern temperature data with household data
 * **********************************************************************
@@ -219,7 +217,6 @@
 	customsave 	, idvar(hhid) filename("ghsy1_merged_n.dta") ///
 		path("`export'") dofile(ghsy1_build) user($user)
 
-		
 * **********************************************************************
 * 3 - merge southern household data with rainfall data
 * **********************************************************************
@@ -407,6 +404,33 @@
 	customsave 	, idvar(hhid) filename("ghsy1_merged_s.dta") ///
 		path("`export'") dofile(ghsy1_build) user($user)
 
+* rename hhid
+	gen	y1_hhid = hhid 
+	
+* create wide data set 	
+	rename 			* *2010
+	rename 			zone2010 zone
+	rename 			state2010 state
+	rename 			lga2010 lga
+	rename 			ea2010 ea
+	rename 			sector2010 sector
+	rename 			*hhid2010 *hhid
+	rename			 tf_hrv2010 tf_hrv
+	rename			 tf_lnd2010 tf_lnd
+	rename			 tf_yld2010 tf_yld
+	rename			 tf_lab2010 tf_lab
+	rename			 tf_frt2010 tf_frt
+	rename			 tf_pst2010 tf_pst
+	rename			 tf_hrb2010 tf_hrb
+	rename			 tf_irr2010 tf_irr
+	rename			 cp_hrv2010 cp_hrv
+	rename			 cp_lnd2010 cp_lnd
+	rename			 cp_yld2010 cp_yld
+	rename			 cp_lab2010 cp_lab
+	rename			 cp_frt2010 cp_frt
+	rename			 cp_pst2010 cp_pst
+	rename			 cp_hrb2010 cp_hrb
+	rename			 cp_irr2010 cp_irr	
 	
 * **********************************************************************
 * 5 - append northern and southern data sets
@@ -418,20 +442,6 @@
 * append southern data
 	append		using "`export'/ghsy1_merged_s.dta", force
 
-
-* check to verify that there are observations for all variables
-	sum
-	*** missing observations in z-gdd
-	*** this is because those osbervations always have the same number of gdd
-	*** thus, they have no standard deviation and thus a z-score of infinity
-	*** we recode these as zeros because a z-score equal to 0 represents an element equal to the mean
-	
-* replace missing z-gdd with missing
-	loc	zgdd			v21_*
-	foreach v of varlist `zgdd'{
-	    replace		`v' = 0 if `v' == .
-	}		
-	
 	qui: compress	
 	describe
 	summarize 
@@ -443,7 +453,36 @@
 * erase northern and southern files
 	erase		"`export'/ghsy1_merged_n.dta"
 	erase		"`export'/ghsy1_merged_s.dta"
-
+	
+* create wide data set 	
+	rename 			* *2010
+	rename 			zone2010 zone
+	rename 			state2010 state
+	rename 			lga2010 lga
+	rename 			ea2010 ea
+	rename 			sector2010 sector
+	rename 			*hhid2010 *hhid
+	rename			 tf_hrv2010 tf_hrv
+	rename			 tf_lnd2010 tf_lnd
+	rename			 tf_yld2010 tf_yld
+	rename			 tf_lab2010 tf_lab
+	rename			 tf_frt2010 tf_frt
+	rename			 tf_pst2010 tf_pst
+	rename			 tf_hrb2010 tf_hrb
+	rename			 tf_irr2010 tf_irr
+	rename			 cp_hrv2010 cp_hrv
+	rename			 cp_lnd2010 cp_lnd
+	rename			 cp_yld2010 cp_yld
+	rename			 cp_lab2010 cp_lab
+	rename			 cp_frt2010 cp_frt
+	rename			 cp_pst2010 cp_pst
+	rename			 cp_hrb2010 cp_hrb
+	rename			 cp_irr2010 cp_irr	
+	
+* save file
+	customsave 	, idvar(hhid) filename("ghsy1_merged.dta") ///
+		path("`export'") dofile(ghsy1_build) user($user)
+	
 * close the log
 	log	close
 

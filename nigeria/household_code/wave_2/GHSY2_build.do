@@ -5,15 +5,14 @@
 
 * does
 	* merges weather data into GHSY2 household data
-	* does this for north and south seperately
 
 * assumes
-	* cleaned GHSY2 data
+	* cleaned IHPS short panel data
 	* processed wave 2 weather data
 	* customsave.ado
 
 * TO DO:
-	* complete
+	* update Malawi template for Nigeria
 
 	
 * **********************************************************************
@@ -218,7 +217,18 @@
 	customsave 	, idvar(hhid) filename("ghsy2_merged_n.dta") ///
 		path("`export'") dofile(ghsy2_build) user($user)
 
-	
+* rename hhid
+	gen	y2_hhid = hhid 
+					
+* create wide data set 	
+	rename 			* *2012
+	rename 			zone2012 zone
+	rename 			state2012 state
+	rename 			lga2012 lga
+	rename 			ea2012 ea
+	rename 			sector2012 sector
+	rename 			*hhid2012 *hhid
+		
 * **********************************************************************
 * 3 - merge southern household data with rainfall data
 * **********************************************************************
@@ -406,6 +416,33 @@
 	customsave 	, idvar(hhid) filename("ghsy2_merged_s.dta") ///
 		path("`export'") dofile(ghsy2_build) user($user)
 
+	* rename hhid
+	gen	y2_hhid = hhid 
+	
+* create wide data set 	
+	rename 			* *2012
+	rename 			zone2012 zone
+	rename 			state2012 state
+	rename 			lga2012 lga
+	rename 			ea2012 ea
+	rename 			sector2012 sector
+	rename 			*hhid2012 *hhid
+	rename			 tf_hrv2012 tf_hrv
+	rename			 tf_lnd2012 tf_lnd
+	rename			 tf_yld2012 tf_yld
+	rename			 tf_lab2012 tf_lab
+	rename			 tf_frt2012 tf_frt
+	rename			 tf_pst2012 tf_pst
+	rename			 tf_hrb2012 tf_hrb
+	rename			 tf_irr2012 tf_irr
+	rename			 cp_hrv2012 cp_hrv
+	rename			 cp_lnd2012 cp_lnd
+	rename			 cp_yld2012 cp_yld
+	rename			 cp_lab2012 cp_lab
+	rename			 cp_frt2012 cp_frt
+	rename			 cp_pst2012 cp_pst
+	rename			 cp_hrb2012 cp_hrb
+	rename			 cp_irr2012 cp_irr	
 	
 * **********************************************************************
 * 5 - append northern and southern data sets
@@ -441,7 +478,36 @@
 * erase northern and southern files
 	erase		"`export'/ghsy2_merged_n.dta"
 	erase		"`export'/ghsy2_merged_s.dta"
-
+	
+* create wide data set 	
+	rename 			* *2012
+	rename 			zone2012 zone
+	rename 			state2012 state
+	rename 			lga2012 lga
+	rename 			ea2012 ea
+	rename 			sector2012 sector
+	rename 			*hhid2012 *hhid
+	rename			 tf_hrv2012 tf_hrv
+	rename			 tf_lnd2012 tf_lnd
+	rename			 tf_yld2012 tf_yld
+	rename			 tf_lab2012 tf_lab
+	rename			 tf_frt2012 tf_frt
+	rename			 tf_pst2012 tf_pst
+	rename			 tf_hrb2012 tf_hrb
+	rename			 tf_irr2012 tf_irr
+	rename			 cp_hrv2012 cp_hrv
+	rename			 cp_lnd2012 cp_lnd
+	rename			 cp_yld2012 cp_yld
+	rename			 cp_lab2012 cp_lab
+	rename			 cp_frt2012 cp_frt
+	rename			 cp_pst2012 cp_pst
+	rename			 cp_hrb2012 cp_hrb
+	rename			 cp_irr2012 cp_irr
+	
+* save file
+	customsave 	, idvar(hhid) filename("ghsy2_merged.dta") ///
+		path("`export'") dofile(ghsy2_build) user($user)
+		
 * close the log
 	log	close
 

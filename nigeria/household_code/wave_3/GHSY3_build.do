@@ -6,15 +6,14 @@
 
 * does
 	* merges weather data into GHSY3 household data
-	* does this for north and south seperately
 
 * assumes
-	* cleaned GHSY3 data
+	* cleaned IHPS short panel data
 	* processed wave 3 weather data
 	* customsave.ado
 
 * TO DO:
-	* complete
+	* update Malawi template for Nigeria
 
 	
 * **********************************************************************
@@ -155,7 +154,7 @@
 			drop 	if 	_merge != 3
 			drop 		_merge
 		
-		* drop variables for all years but 2015
+		* drop variables for all years but 2012
 			drop 		mean_season_1983- tempbin1002014 ///
 						mean_season_2016- tempbin1002017
 			drop 		mean_gdd- z_gdd_2014 dev_gdd_2016- z_gdd_2017
@@ -252,7 +251,7 @@
 			drop 	if 	_merge != 3
 			drop 		_merge
 		
-		*drop variables for all years but 2015
+		*drop variables for all years but 2012
 			drop 		mean_season_1983- dry_2014 mean_season_2016- dry_2017
 			drop 		mean_period_total_season- z_total_season_2014 ///
 						dev_total_season_2016- z_total_season_2017
@@ -343,7 +342,7 @@
 			drop 	if 	_merge != 3
 			drop 		_merge
 		
-		* drop variables for all years but 2015
+		* drop variables for all years but 2012
 			drop 		mean_season_1983- tempbin1002014 ///
 						mean_season_2016- tempbin1002017
 			drop 		mean_gdd- z_gdd_2014 dev_gdd_2016- z_gdd_2017
@@ -405,8 +404,32 @@
 	qui: compress
 	customsave 	, idvar(hhid) filename("ghsy3_merged_s.dta") ///
 		path("`export'") dofile(ghsy3_build) user($user)
-
-		
+	
+* create wide data set 	
+	rename 			* *2015
+	rename 			zone2015 zone
+	rename 			state2015 state
+	rename 			lga2015 lga
+	rename 			ea2015 ea
+	rename 			sector2015 sector
+	rename 			*hhid2015 *hhid
+	rename			 tf_hrv2015 tf_hrv
+	rename			 tf_lnd2015 tf_lnd
+	rename			 tf_yld2015 tf_yld
+	rename			 tf_lab2015 tf_lab
+	rename			 tf_frt2015 tf_frt
+	rename			 tf_pst2015 tf_pst
+	rename			 tf_hrb2015 tf_hrb
+	rename			 tf_irr2015 tf_irr
+	rename			 cp_hrv2015 cp_hrv
+	rename			 cp_lnd2015 cp_lnd
+	rename			 cp_yld2015 cp_yld
+	rename			 cp_lab2015 cp_lab
+	rename			 cp_frt2015 cp_frt
+	rename			 cp_pst2015 cp_pst
+	rename			 cp_hrb2015 cp_hrb
+	rename			 cp_irr2015 cp_irr
+	
 * **********************************************************************
 * 5 - append northern and southern data sets
 * **********************************************************************
@@ -417,17 +440,6 @@
 * append southern data
 	append		using "`export'/ghsy3_merged_s.dta", force
 
-	*** missing observations in z-gdd
-	*** this is because those osbervations always have the same number of gdd
-	*** thus, they have no standard deviation and thus a z-score of infinity
-	*** we recode these as zeros because a z-score equal to 0 represents an element equal to the mean
-	
-* replace missing z-gdd with missing
-	loc	zgdd			v21_*
-	foreach v of varlist `zgdd'{
-	    replace		`v' = 0 if `v' == .
-	}		
-	
 	qui: compress	
 	describe
 	summarize 
@@ -439,7 +451,39 @@
 * erase northern and southern files
 	erase		"`export'/ghsy3_merged_n.dta"
 	erase		"`export'/ghsy3_merged_s.dta"
+
+* rename hhid
+	gen	y3_hhid = hhid 
 	
+* create wide data set 	
+	rename 			* *2015
+	rename 			zone2015 zone
+	rename 			state2015 state
+	rename 			lga2015 lga
+	rename 			ea2015 ea
+	rename 			sector2015 sector
+	rename 			*hhid2015 *hhid
+	rename			 tf_hrv2015 tf_hrv
+	rename			 tf_lnd2015 tf_lnd
+	rename			 tf_yld2015 tf_yld
+	rename			 tf_lab2015 tf_lab
+	rename			 tf_frt2015 tf_frt
+	rename			 tf_pst2015 tf_pst
+	rename			 tf_hrb2015 tf_hrb
+	rename			 tf_irr2015 tf_irr
+	rename			 cp_hrv2015 cp_hrv
+	rename			 cp_lnd2015 cp_lnd
+	rename			 cp_yld2015 cp_yld
+	rename			 cp_lab2015 cp_lab
+	rename			 cp_frt2015 cp_frt
+	rename			 cp_pst2015 cp_pst
+	rename			 cp_hrb2015 cp_hrb
+	rename			 cp_irr2015 cp_irr
+	
+* save file
+	customsave 	, idvar(hhid) filename("ghsy3_merged.dta") ///
+		path("`export'") dofile(ghsy3_build) user($user)
+		
 * close the log
 	log	close
 

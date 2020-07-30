@@ -21,10 +21,13 @@
 * 0 - setup
 * **********************************************************************
 
-	clear mata
+clear
 
 *set max vars
 	set maxvar 120000, perm  // this amount is only allowed for MP editions 
+
+* set global user
+	global user "jdmichler"
 
 * define paths
 	loc root = "C:/Users/$user/git/weather_project/nigeria/weather_code"

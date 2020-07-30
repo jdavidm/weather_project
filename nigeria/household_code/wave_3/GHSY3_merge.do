@@ -18,7 +18,6 @@
 * TO DO:
 	* done 
 
-	
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
@@ -103,7 +102,6 @@
 
 	drop			_11a1 _11b1 _11c1 _11c2 _11d _a2
 	
-	
 * **********************************************************************
 * 1b - create total farm and maize variables
 * **********************************************************************
@@ -142,7 +140,6 @@
 	replace			mz_hrv = . if mz_damaged == . & mz_hrv == 0		
 	drop 			mz_damaged
 	*** 3,637 changes made
-	
 	
 * **********************************************************************
 * 2 - impute: total farm value, labor, fertilizer use 
@@ -196,7 +193,6 @@
 	lab var			vl_hrvimp "value of harvest (2010USD), imputed"
 	lab var			vl_hrv "value of harvest (2010USD)"
 	
-	
 * **********************************************************************
 * 2b - impute: labor
 * **********************************************************************
@@ -232,7 +228,6 @@
 * make labor days based on imputed labor days per hectare
 	gen				labordaysimp = labordays_haimp * plotsize, after(labordays)
 	lab var			labordaysimp "farm labor (days), imputed"
-	
 	
 * **********************************************************************
 * 2c - impute: fertilizer
@@ -276,7 +271,6 @@
 * 3 - impute: maize yield, labor, fertilizer use 
 * **********************************************************************
 
-
 * **********************************************************************
 * 3a - impute: maize yield
 * **********************************************************************
@@ -315,7 +309,6 @@
 	lab var 		mz_hrvimp "maize harvest quantity (kg), imputed"
 	lab var 		mz_hrv "maize harvest quantity (kg)"
 
-	
 * **********************************************************************
 * 3b - impute: maize labor
 * **********************************************************************
@@ -352,7 +345,6 @@
 	gen				mz_labimp = mz_lab_haimp * mz_lnd, after(mz_lab)
 	lab var			mz_labimp "maize labor (days), imputed"
 
-	
 * **********************************************************************
 * 3c - impute: maize fertilizer
 * **********************************************************************
@@ -390,14 +382,11 @@
 	lab var			mz_frtimp "fertilizer (kg), imputed"
 	lab var			mz_frt "fertilizer (kg)"
 
-	
 * **********************************************************************
-* 4 - collapse to household level
+* 3 - collapse to household level
 * **********************************************************************
-
-
 * **********************************************************************
-* 4a - generate total farm variables
+* 3a - generate total farm variables
 * **********************************************************************
 
 * generate plot area
@@ -446,7 +435,7 @@
 	tab				tf_irr
 
 * **********************************************************************
-* 4b - generate maize variables 
+* 3b - generate maize variables 
 * **********************************************************************	
 	
 * generate plot area
@@ -645,9 +634,8 @@
 
 	sum				tf_* cp_*
 
-	
 * **********************************************************************
-* 5 - end matter, clean up to save
+* 4 - end matter, clean up to save
 * **********************************************************************
 
 * verify unique household id

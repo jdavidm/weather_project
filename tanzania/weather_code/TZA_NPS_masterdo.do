@@ -21,7 +21,7 @@
 * 0 - setup
 * **********************************************************************
 
-	clear mata
+clear
 
 *set max vars
 	set maxvar 120000, perm  // this amount is only allowed for MP editions 
