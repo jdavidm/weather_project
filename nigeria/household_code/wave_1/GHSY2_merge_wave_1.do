@@ -28,8 +28,7 @@
 	loc 	logout	=	"$data/household_data/nigeria/logs"
 
 * open log
-	cap 	log 	close
-	log 	using 	"`logout'/ghsy2_merge", append
+	*log 	using 	"`logout'/ghsy2_merge", append
 
 	
 * **********************************************************************
@@ -523,7 +522,7 @@
 	isid			hhid
 
 * generate year identifier
-	gen				year = 2010
+	gen				year = 2013
 	lab var			year "Year"
 		
 	order 			zone state lga sector ea hhid /// 	
@@ -535,8 +534,8 @@
 	summarize 
 	
 * saving production dataset
-	customsave , idvar(hhid) filename(hhfinal_ghsy1.dta) path("`export'") ///
-			dofile(ghsy1_merge) user($user) 
+	customsave , idvar(hhid) filename(hhfinal_ghsy2.dta) path("`export'") ///
+			dofile(ghsy2_merge) user($user) 
 
 * close the log
 	log	close
