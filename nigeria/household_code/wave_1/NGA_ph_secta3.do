@@ -32,7 +32,6 @@
 	*log close
 	
 * open log	
-	cap log close
 	log using "`logout'/wave_1_ph_secta3", append
 		
 

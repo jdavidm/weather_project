@@ -21,24 +21,26 @@
 * **********************************************************************
 
 * define paths	
-	loc root 	= "$data/household_data/nigeria/wave_3/raw"
-	loc export 	= "$data/household_data/nigeria/wave_3/refined"
-	loc logout 	= "$data/household_data/nigeria/logs"
+	loc root = "$data/household_data/nigeria/wave_3/raw"
+	loc export = "$data/household_data/nigeria/wave_3/refined"
+	loc logout = "$data/household_data/nigeria/logs"
+
+* close log (in case still open)
+	*log close
 	
 * open log	
-	cap log 	close
-	log 		using "`logout'/pp_sect11c1", append
+	log using "`logout'/pp_sect11c1", append
 
 * **********************************************************************
 * 1 - determine labor
 * **********************************************************************
 		
 * import the first relevant data file
-	use "`root'/sect11c1_plantingw3", clear 
+		use "`root'/sect11c1_plantingw3", clear 
 
-	describe
-	sort hhid plotid
-	isid hhid plotid, missok
+describe
+sort hhid plotid
+isid hhid plotid, missok
 
 * per Palacios-Lopez et al. (2017) in Food Policy, we cap labor per activity
 * 7 days * 13 weeks = 91 days for land prep and planting
@@ -50,30 +52,30 @@
 *household labor (# of weeks * # of days/wk = days of labor) for up to 4 members of hh
 
 * create household member labor (weeks x days per week)
-	gen hh_1 = (s11c1q1a2 * s11c1q1a3)
-	replace hh_1 = 0 if hh_1 == .
+gen hh_1 = (s11c1q1a2 * s11c1q1a3)
+replace hh_1 = 0 if hh_1 == .
 
-	gen hh_2 = (s11c1q1b2 * s11c1q1b3)
-	replace hh_2 = 0 if hh_2 == .
+gen hh_2 = (s11c1q1b2 * s11c1q1b3)
+replace hh_2 = 0 if hh_2 == .
 
-	gen hh_3 = (s11c1q1c2 * s11c1q1c3)
-	replace hh_3 = 0 if hh_3 == .
+gen hh_3 = (s11c1q1c2 * s11c1q1c3)
+replace hh_3 = 0 if hh_3 == .
 
-	gen hh_4 = (s11c1q1d2 * s11c1q1d3)
-	replace hh_4 = 0 if hh_4 == .
+gen hh_4 = (s11c1q1d2 * s11c1q1d3)
+replace hh_4 = 0 if hh_4 == .
 	*** this calculation is for up to 4 members of the household that were laborers
 	*** per the survey, these are laborers for planting
 	*** does not include harvest labor (see NGA_ph_secta2)
 
 *hired labor (# of people days hired for planting)
-	gen men_days =  s11c1q3
-	replace men_days = 0 if men_days == .
+gen men_days =  s11c1q3
+replace men_days = 0 if men_days == .
 
-	gen women_days =  s11c1q6
-	replace women_days = 0 if women_days == .
+gen women_days =  s11c1q6
+replace women_days = 0 if women_days == .
 	*** we do not include child labor days
 	
-* **********************************************************************
+	* **********************************************************************
 * 2 - impute labor outliers
 * **********************************************************************
 	
@@ -83,17 +85,17 @@
 
 	
 * generate local for variables that contain outliers
-	loc				labor hh_1 hh_2 hh_3 hh_4 men_days women_days
+	loc				labor hh_1 hh_2 hh_3 hh_4 men_days
 
-* replace zero to missing, missing to zero, and outliers to missing
+* replace zero to missing, missing to zero, and outliers to mizzing
 	foreach var of loc labor {
 	    mvdecode 		`var', mv(0)
 		mvencode		`var', mv(0)
-	    replace			`var' = . if `var' > 142
+	    replace			`var' = . if `var' > 273
 	}
-	*** 212 changes missing
+	*** 1 outliers changed to missing
 
-* impute missing values 
+* impute missing values (only need to do four variables)
 	mi set 			wide 	// declare the data to be wide.
 	mi xtset		, clear 	// clear any xtset that may have had in place previously
 
@@ -108,10 +110,10 @@
 	mi 				unset	
 	
 * summarize imputed variables
-	sum				hh_1_1_  hh_2_2_ hh_3_3_ hh_4_4_ men_days_5_ 
-	
+	sum				hh_1_1_  
+
 * total labor days for harvest
-	egen			pp_labor = rowtotal(hh_1_1_  hh_2_2_ hh_3_3_ hh_4_4_ men_days_5_ women_days)
+	egen			pp_labor = rowtotal(hh_1_1_ hh_2 hh_3 hh_4 men_days women_days)
 	lab var			pp_labor "total labor for planting (days)"
 	*** unlike harvest labor, this did not ask for unpaid/exchange labor
 

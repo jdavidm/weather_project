@@ -31,7 +31,6 @@
 	*log close
 	
 * open log	
-	cap log close
 	log using "`logout'/pp_sect11a1", append
 
 * **********************************************************************

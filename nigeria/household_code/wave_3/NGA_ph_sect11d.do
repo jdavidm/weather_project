@@ -26,7 +26,6 @@
 	loc logout = "$data/household_data/nigeria/logs"
 
 * open log	
-	cap log close
 	log using "`logout'/ph_sect11d", append
 
 * **********************************************************************
