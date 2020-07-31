@@ -14,6 +14,9 @@
 
 * TO DO:
 	* done
+	* later:
+		*** decouple 2014_as2ap2_2 and 2014_as2ap2_1 so that files are file based not variable based
+		*** combined with as2ap1_1 and as2ap1_2 so that files are file based not variable based
 
 	
 * **********************************************************************
@@ -214,7 +217,7 @@
 	keep 			clusterid hh_num extension ord field parcel prep_labor prep_labor_all ///
 					hh_prep_labor hired_prep_labor mutual_prep_labor 
 	
-	* create unique household-plot identifier
+* create unique household-plot identifier
 	isid				clusterid hh_num extension ord field parcel
 	sort				clusterid hh_num extension ord field parcel, stable 
 	egen				plot_id = group(clusterid hh_num extension ord field parcel)

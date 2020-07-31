@@ -13,7 +13,8 @@
 	* customsave.ado
 
 * TO DO:
-	* everything
+	* done
+	* later: update with new files, when combined into file based rather than variable based do files 
 
 * **********************************************************************
 * 0 - setup
@@ -290,7 +291,6 @@
 	gen	 	cppest_any		=	pest_any 		if mz_hrvimp != .
 	gen 	cpherb_any 		= 	herb_any 		if mz_hrvimp != .
 
-	
 	collapse (sum) tf_lnd=plotsize  tf_hrv=vl_hrvimp  lab_tot=labordaysimp ///
 		fert_tot=fertimp cp_lnd=cpplotsize cp_hrv=cpvl_hrvimp cplab_tot=cplabordaysimp ///
 		fert_mz=cpfertimp (max) tf_pst=pest_any tf_hrb=herb_any cp_pst=cppest_any ///
@@ -305,6 +305,112 @@
 	gen		cp_frt 		= 	fert_mz / cp_lnd
 
 	sum tf_* cp_*
+=======
+* generate plot area
+	bysort			clusterid hh_num extension :	egen tf_lnd = sum(plotsize)
+	lab var			tf_lnd	"Total farmed area (ha)"
+	assert			tf_lnd > 0 
+	sum				tf_lnd, detail
+
+* value of harvest
+	bysort			clusterid hh_num extension :	egen tf_hrv = sum(vl_hrvimp)
+	lab var			tf_hrv	"Total value of harvest (2010 USD)"
+	sum				tf_hrv, detail
+	
+* value of yield
+	generate		tf_yld = tf_hrv / tf_lnd
+	lab var			tf_yld	"value of yield (2010 USD/ha)"
+	sum				tf_yld, detail
+	
+* labor
+	bysort 			clusterid hh_num extension : egen lab_tot = sum(labordaysimp)
+	generate		tf_lab = lab_tot / tf_lnd
+	lab var			tf_lab	"labor rate (days/ha)"
+	sum				tf_lab, detail
+
+* fertilizer
+	bysort 			clusterid hh_num extension : egen fert_tot = sum(fertimp)
+	generate		tf_frt = fert_tot / tf_lnd
+	lab var			tf_frt	"fertilizer rate (kg/ha)"
+	sum				tf_frt, detail
+
+* pesticide
+	replace			pest_any = 0 if pest_any == 2
+	tab				pest_any, missing
+	bysort 			clusterid hh_num extension : egen tf_pst = max(pest_any)
+	lab var			tf_pst	"Any plot has pesticide"
+	tab				tf_pst
+	
+* herbicide
+	replace			herb_any = 0 if herb_any == 2
+	tab				herb_any, missing
+	bysort 			clusterid hh_num extension : egen tf_hrb = max(herb_any)
+	lab var			tf_hrb	"Any plot has herbicide"
+	tab				tf_hrb
+	
+* **********************************************************************
+* 3b - generate maize variables 
+* **********************************************************************	
+	
+* generate plot area
+	bysort			clusterid hh_num extension :	egen cp_lnd = sum(plotsize) ///
+						if mz_hrvimp != .
+	lab var			cp_lnd	"Total millet area (ha)"
+	assert			cp_lnd > 0 
+	sum				cp_lnd, detail
+
+* value of harvest
+	bysort			clusterid hh_num extension :	egen cp_hrv = sum(vl_hrvimp) ///
+						if mz_hrvimp != .
+	lab var			cp_hrv	"Total quantity of millet harvest (kg)"
+	sum				cp_hrv, detail
+	
+* value of yield
+	generate		cp_yld = cp_hrv / cp_lnd if mz_hrvimp != .
+	lab var			cp_yld	"Millet yield (kg/ha)"
+	sum				cp_yld, detail
+	
+* labor
+	bysort 			clusterid hh_num extension : egen lab_mz = sum(labordaysimp) ///
+						if mz_hrvimp != .
+	generate		cp_lab = lab_mz / cp_lnd
+	lab var			cp_lab	"labor rate for millet (days/ha)"
+	sum				cp_lab, detail
+
+* fertilizer
+	bysort 			clusterid hh_num extension : egen fert_mz = sum(fertimp) ///
+						if mz_hrvimp != .
+	generate		cp_frt = fert_mz / cp_lnd
+	lab var			cp_frt	"fertilizer rate for millet (kg/ha)"
+	sum				cp_frt, detail
+
+* pesticide
+	tab				pest_any, missing
+	bysort 			clusterid hh_num extension : egen cp_pst = max(pest_any) /// 
+						if mz_hrvimp != .
+	lab var			cp_pst	"Any millet plot has pesticide"
+	tab				cp_pst
+	
+* herbicide
+	tab				herb_any, missing
+	bysort 			clusterid hh_num extension : egen cp_hrb = max(herb_any) ///
+						if mz_hrvimp != .
+	lab var			cp_hrb	"Any millet plot has herbicide"
+	tab				cp_hrb
+
+* verify values are accurate
+	sum				tf_* cp_*
+	*** not wild about these values
+	*** evaluate once W1 is also done 
+	
+* collapse to the household level
+	loc	cp			cp_*
+	foreach v of varlist `cp'{
+	    replace		`v' = 0 if `v' == .
+	}		
+	
+	collapse (max)	tf_* cp_*, by(clusterid hh_num extension)
+	*** we went from 8405 to 1725 observations 
 	
 * return non-maize production to missing
 	replace			cp_yld = . if cp_yld == 0
@@ -321,7 +427,94 @@
 	replace			tf_pst = 1 if tf_pst > 0
 	replace			tf_hrb = 1 if tf_hrb > 0
 	
-	sum tf_* cp_*
+* verify values are accurate
+	sum				tf_* cp_*
+	*** mostly looks good
+	*** labor seems a little high
+	
+* checks and balances
+	*** Production variables should corroborate each other. 
+	*** Use discrepencies between production variables to determine if an outlier is a mistake and replace that outlier with missing then impute them.
+	*** A high labor should be associated with a high land area and yield and a high yield should be associated with a high value. 
+
+* check correlation at high values of labor with value
+	sum 			tf_lab, detail
+	*** labor is very high
+	pwcorr 			tf_lab tf_hrv 	if tf_lab> 300
+	*** poor correlation and unexpectadly negative with labor and harvest: -0.1
+	
+	tab tf_hrv if tf_lab==0
+	*** 10 observations have no labor but a non-negative harvest
+	scatter 		tf_hrv tf_lab
+	*** the outliers show that at the highest applications of labor to land we see some of the lowest harvest values
+	
+	sum tf_lab, detail
+	*** mean 369, max 93200
+	
+	replace 	tf_lab = . if tf_lab > 6000
+	replace 	tf_lab = . if tf_lab == 0 & tf_yld != 0
+	*** 30 changes made
+	
+* impute missing labor values using predictive mean matching
+	mi set 			wide // declare the data to be wide.
+	mi xtset		, clear // this is a precautinary step to clear any existing xtset
+	mi register 	imputed tf_lab // identify tf_lab as the variable being imputed
+	sort			tf_hrv clusterid, stable // sort to ensure reproducability of results
+	mi impute 		pmm tf_lab i.clusterid tf_hrv, add(1) rseed(245780) noisily dots ///
+						force knn(5) bootstrap
+	mi unset
+	
+	sum 			tf_lab_1_, detail
+	*** mean 137.6, max 5633.8
+	*** looks good
+	
+	replace 		tf_lab = tf_lab_1_
+	drop 			tf_lab_1_
+	
+	pwcorr 			tf_lab tf_hrv
+	*** negative correlation between labor and harvest : -0.06
+
+* check correlation at high values of labor with crop value
+	sum 			cp_lab, detail
+	sum 			cp_hrv, detail
+	tab 			cp_hrv cp_lab 	if cp_lab > 6000
+	*** at the higher end high labor has mostly low harvests
+	pwcorr 			cp_lab tf_hrv 	if cp_lab> 300
+	*** poor correlation and unexpectadly negative with labor and harvest: -0.11
+	
+	tab 			cp_hrv if cp_lab==0
+	*** 7 observations have no labor but a non-negative harvest
+	scatter 		cp_hrv cp_lab
+	*** the outliers show that at the highest applications of labor to land we see some of the lowest harvest values
+	
+	sum 			cp_lab, detail
+	*** mean 302.1, max 52857
+	
+	replace 		cp_lab = . 	if cp_lab >6000
+	replace 		cp_lab = . 	if cp_lab == 0 & cp_yld != 0
+	*** 24 changes made
+	
+* impute missing labor values using predictive mean matching
+	mi set 			wide // declare the data to be wide.
+	mi xtset		, clear // this is a precautinary step to clear any existing xtset
+	mi register 	imputed cp_lab // identify cp_lab as the variable being imputed
+	sort			cp_hrv clusterid, stable // sort to ensure reproducability of results
+	mi impute 		pmm cp_lab i.clusterid tf_hrv, add(1) rseed(245780) noisily dots ///
+						force knn(5) bootstrap
+	mi unset
+	
+	sum 			cp_lab_1_, detail
+	*** mean 107, max 5633
+	*** looks good
+	
+	replace 		cp_lab = cp_lab_1_
+	drop 			cp_lab_1_
+	
+	pwcorr 			cp_lab cp_hrv
+	*** reduced the negative correlation between cp_lab and cp_hrv but closer to 0 after impute (-.08)
+	
+* verify values are accurate
+	sum				tf_* cp_*
 	
 * **********************************************************************
 * 4 - end matter, clean up to save

@@ -14,6 +14,8 @@
 	
 * TO DO:
 	* complete
+	* later:
+		*** combine with as2ap1_2 and as2ap1_3 so that files are file based not variable based
 	
 * **********************************************************************
 * 0 - setup

@@ -13,6 +13,8 @@
 
 * TO DO:
 	* done
+	* later: 
+		*** add in as2ap2_1 so that both files which use as2ap2 are calculated together
 	
 * **********************************************************************
 * 0 - setup

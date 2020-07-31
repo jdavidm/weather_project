@@ -6,17 +6,14 @@
 * does
 	* reads in Niger, WAVE 2 (2014), POST HARVEST, ECVMA2 AS2E1P2
 	* file will broadly follow ag_i from Malawi "kitchen sink"
-	* cleans harvest (quantity in kg)
-	* determines prices and thus values 
-	* outputs clean data file ready for combination with wave 2 plot data
+	* cleans harvest sold (quantity in kg)
+	* determines prices for merge (five files) into 2014_ase1p2_1
 
 * assumes
-	* customsave.ado
-	* mdesc.ado
+	* none
 
 * TO DO:
-	* all of it
-
+	* done 
 	
 * **********************************************************************
 * 0 - setup
@@ -29,6 +26,7 @@
 	loc 	logout	= 	"$data/household_data/niger/logs"
 
 * open log
+	cap log close 
 	log 	using 	"`logout'/2014_AS2E1P2_p", append
 
 * **********************************************************************
@@ -146,7 +144,7 @@
 * **********************************************************************
 
 * merge in regional information 
-	merge m:1		clusterid hh_num extension using "`cnvrt'/2014_ms00p1"
+	merge m:1		clusterid hh_num extension using "`export'/2014_ms00p1"
 	*** 5207 matched, 0 from master not matched, 1817 from using (which is fine)
 	keep if _merge == 3
 	drop _merge
@@ -187,69 +185,19 @@
 	preserve
 	collapse 		(p50) p_crop=cropprice (count) n_crop=cropprice, by(cropid)
 	save 			"`export'/'2014_ase1p2_p5.dta", replace 
-	restore
+	
 
-* merge price data back into dataset
-	merge m:1 cropid region dept canton zd	        using "`export'/'2014_ase1p2_p1.dta", assert(3) nogenerate
-	merge m:1 cropid region dept canton 	        using "`export'/'2014_ase1p2_p2.dta", assert(3) nogenerate
-	merge m:1 cropid region dept 			        using "`export'/'2014_ase1p2_p3.dta", assert(3) nogenerate
-	merge m:1 cropid region 						using "`export'/'2014_ase1p2_p4.dta", assert(3) nogenerate
-	merge m:1 cropid 						        using "`export'/'2014_ase1p2_p5.dta", assert(3) nogenerate
-
-* make total value of all household crop sales
-* holding general Malawi code here 
-* actually done in different file (with production)
-/*	
-* make imputed price, using median price where we have at least 10 observations
-	tabstat 		p_zd n_zd p_can n_can p_dept n_dept p_reg n_reg p_crop n_crop, ///
-						by(cropid) longstub statistics(n min p50 max) columns(statistics) format(%9.3g) 
-	generate croppricei = .
-	*** 5225 missing values generated
-	replace croppricei = p_zd if n_zd>=10 & missing(croppricei)
-	*** 259 replaced
-	replace croppricei = p_can if n_can>=10 & missing(croppricei)
-	*** 235 replaced
-	replace croppricei = p_dept if n_dept>=10 & missing(croppricei)
-	*** 1126 replaced 
-	replace croppricei = p_reg if n_reg>=10 & missing(croppricei)
-	*** 2592 replaced
-	replace croppricei = p_crop if missing(croppricei)
-	*** 998 replaced 
-	label variable croppricei	"implied unit value of crop"
-	*** label follows Malawi - but I wouldn't classify this as strictly being imputed 
-
-	replace cropprice = croppricei if missing(cropprice) & soldprod == 1
-	bysort hh_mum (cropid) : egen cropsales_value = sum(quant * cropprice) 
-	label variable cropsales_value	"Self-reported value of crop sales" 
-	bysort y3_hhid (cropid) : egen cropsales_valuei = sum(quant * croppricei) 
-	label variable cropsales_valuei	"Implied value of crop sales" 
- 
-* restrict to one observation per household
-	bysort y3_hhid (cropid) : keep if _n==1
-
-* restrict to variables of interest 
-	keep  y3_hhid cropsales_value cropsales_valuei
-	order y3_hhid cropsales_value cropsales_valuei
-*/
+* if directly following malawi, would be able to proceed with different process
+* however, did not work in niger
+* mismatched when attemping to match it into harvest file 
+* look at malawi code for reference, as needed 
+* but see 2014_ase1p2_1 for next steps
 
 * **********************************************************************
 * 4 - end matter, clean up to save
 * **********************************************************************
 
-
-* create unique identifier (value exists only for saving)
-	isid				clusterid hh_num extension ord cropid
-	sort				clusterid hh_num extension ord cropid 
-	egen				ident = group(clusterid hh_num extension ord) 
-	lab var				ident "unique identifier"
-
-	compress
-	describe
-	summarize
-
-* save file
-	customsave , idvar(ident) filename("2014_ase1p2_p.dta") ///
-		path("`export'") dofile(2014_ase1p2_p) user($user)
+	clear 
 
 * close the log
 	log		close
