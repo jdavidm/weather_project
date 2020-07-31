@@ -23,8 +23,10 @@
 	loc 	logout	= 	"$data/household_data/niger/logs"
 
 * open log
+	cap		log 	close
 	log 	using 	"`logout'/2014_MS00P1", append
 
+	
 * **********************************************************************
 * 1 - rename and identify regional variables
 * **********************************************************************
@@ -53,6 +55,7 @@
 	rename 		    MS00Q14 zd 
 	label 			var zd "zd number" 
 
+	
 * **********************************************************************
 * 2 - end matter, clean up to save
 * **********************************************************************

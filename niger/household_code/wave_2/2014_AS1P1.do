@@ -20,11 +20,12 @@
 * **********************************************************************
 
 * define paths
-	loc		root	=		"$data/household_data/niger/wave_2/raw"
-	loc		export	=		"$data/household_data/niger/wave_2/refined"
-	loc		logout	= 		"$data/household_data/niger/logs"
+	loc		root	=	"$data/household_data/niger/wave_2/raw"
+	loc		export	=	"$data/household_data/niger/wave_2/refined"
+	loc		logout	= 	"$data/household_data/niger/logs"
 
 * open log
+	cap		log 	close
 	log 	using	"`logout'/2014_as1p1", append
 
 * **********************************************************************
@@ -216,6 +217,7 @@
 	drop 			if missing(plot_size_hec_GPS_1_)
 	*** 0 observations deleted
 
+	
 * **********************************************************************
 * 3 - end matter, clean up to save
 * **********************************************************************
@@ -226,10 +228,10 @@
 	keep 			clusterid hh_num extension ord field parcel plotsize
 
 * create unique household-plot identifier
-	isid				clusterid hh_num extension ord field parcel
-	sort				clusterid hh_num extension ord field parcel
-	egen				plot_id = group(clusterid hh_num extension ord field parcel)
-	lab var				plot_id "unique field and parcel identifier"
+	isid			clusterid hh_num extension field parcel
+	sort			clusterid hh_num extension field parcel
+	egen			plot_id = group(clusterid hh_num extension field parcel)
+	lab var			plot_id "unique field and parcel identifier"
 
 	compress
 	describe

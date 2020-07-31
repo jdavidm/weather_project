@@ -4,42 +4,39 @@
 * Stata v.16
 
 * does
-	* reads in Nigera, WAVE 2 (2014), POST HARVEST (second visit), ECVMA2_AS2E2P2
-	* determines primary crop & cleans harvest
-	* converts to kilograms
-	* produces value of harvest (Naria) 
-	* including determining regional prices ... 
-	* outputs clean data file ready for combination with wave 2 hh data
+	* reads in Niger, WAVE 2 (2014), POST HARVEST, ECVMA2 AS2E1P2
+	* file will broadly follow ag_i from Malawi "kitchen sink"
+	* cleans harvest sold (quantity in kg)
+	* determines prices for merge (five files) into 2014_ase1p2_1
 
 * assumes
-	* customsave.ado
-	* probably a conversion file
-	
+	* cleaned version of 2014_ms00p1
+
 * TO DO:
-	* EVERYTHING
-	* clarify "does"
-	* DELETE THIS FILE
+	* done 
+	
 	
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
 
-* define paths	
-	loc root 		= 		"$data/household_data/niger/wave_2/raw"
-   *loc cnvrt 		=		"$data/household_data/niger/conversion_files"
-	loc export 		= 		"$data/household_data/niger/wave_2/refined"
-	loc logout 		= 		"$data/household_data/niger/logs"
+* define paths
+	loc 	root	= 	"$data/household_data/niger/wave_2/raw"
+	loc 	export	= 	"$data/household_data/niger/wave_2/refined"
+	loc 	cnvrt	= 	"$data/household_data/niger/wave_2/raw"
+	loc 	logout	= 	"$data/household_data/niger/logs"
 
-* open log	
-	log using "`logout'/2014_AS2E2P2", append
-		
+* open log
+	cap log close 
+	log 	using 	"`logout'/2014_AS2E1P2_p", append
 
+	
 * **********************************************************************
 * 1 - harvest information
 * **********************************************************************
 
 * import the first relevant data file
-		use 				"`root'/ECVMA2_AS2E2P2", clear 	
+	use				"`root'/ECVMA2_AS2E2P2", clear
 		
 * need to rename for English
 	rename 			PASSAGE visit
@@ -53,101 +50,163 @@
 	*** will need to do these in every file
 	rename 			AS02EQD ord 
 	label 			var ord "number of order"
-	rename 			AS01Q01 field 
-	label 			var field "field number"
-	rename 			AS01Q03 parcel 
-	label 			var parcel "parcel number"
+	*** field and parcel not recorded in this file
 	
 * need to include clusterid, hhnumber, extension, order, field, and parcel to uniquely identify
 	describe
-	sort 			clusterid hh_num extension ord field parcel
-	isid 			clusterid hh_num extension ord field parcel
+	sort 			clusterid hh_num extension ord 
+	isid 			clusterid hh_num extension ord 
 		
-		rename 				AS02EQ110B cropcode
-		tab 				cropcode
-	*** main crop is "cassava old" 
-	*** cassava is continuous cropping, so not using that as a main crop
-	*** going to use maize, which is second most cultivated crop
-		drop				if cropcode == . 
-
-		rename 				sa3q1 cropname
-
-		describe
-		sort 				hhid plotid cropid cropcode
-		isid 				hhid plotid cropid cropcode, missok
-
-		gen 				crop_area = sa3q5a
-		label 				variable crop_area "what was the land area of crop harvested since the last interview? not using standardized unit"
-		rename 				sa3q5b area_unit
-
-* **********************************************************************
-* 2 - conversion to kilograms
-* **********************************************************************
-
-* create harvested quantity variable 
-		gen 				harvestq = sa3q6a
-		label 				variable harvestq "quantity harvested, not in standardized unit"
-
-* determine units of harvest 
-		rename 				sa3q6b harv_unit
-		tab 				harv_unit
-		tab 				harv_unit, nolabel
-
-		merge m:1 cropcode harv_unit using "`cnvrt'/harvconv"
-	*** matched 9,917 but didn't match 5,212 (from master 3,101 and using 2,111)
-	*** drop these unmatched - either not producing, no unit collected, or coming from merge conversion file 
-	*** values not matched from master usually had issue which prevented harvest e.g. lost crop
+	rename 			AS02EQ110B cropid
+	tab 			cropid
+	*** 19 are "autre" 
+	*** include zucchini, morgina, cane sugar, spice, malohiya, etc. 
+	*** only 19 out of 5225 - drop them
+	drop			if cropid == 48
 	
-keep if _merge == 3
-drop _merge
+* examine market participation 
+	tab 			AS02EQ11
+	rename 			AS02EQ11 soldprod
+	replace			soldprod = . if soldprod == 9 
+	tab 			soldprod 
+	*** 1067 (22 percent) sold crops 
 
+* examine kg harvest value sold
+	tab 			AS02EQ12C, missing
+	*** 4134 missing
+	
+	replace			AS02EQ12C = . if AS02EQ12C > 8999 
+	*** 12 changed to missing (obs = 9999) - seems to be . in many cases for Niger
+	
+	rename 			AS02EQ12C harvkgsold 
 
-*converting harvest quantities to kgs
-gen harv_kg = harvestq*harv_conversion
+	describe
+	sort 			clusterid hh_num extension ord
+	isid 			clusterid hh_num extension ord 
 
-order harvestq harv_unit harv_conversion harv_kg
-tab harv_kg, missing
-	*5272 missing values generated in harv_kg - looks like either missing unit or missing harvest quantity
-
-rename sa3q3 cultivated
-
-gen cp_hrv = harv_kg if cropcode == 1080 
-
+	
 * **********************************************************************
-* 3 - value of harvest 
-* **********************************************************************
-*STILL NEEDS TO BE CONVERTED TO USD
-
-gen crop_value = sa3q18
-label variable crop_value "if you had sold all crop harvested since the last visit, what would be the total value in Naira?"
-rename crop_value tf_hrv 
-
-* **********************************************************************
-* 4 - end matter, collapse, clean up to save
+* 2 - generate sold harvested values
 * **********************************************************************
 
-keep hhid ///
-zone ///
-state ///
-lga ///
-sector ///
-hhid ///
-ea ///
-plotid ///
-cropid ///
-cropcode ///
-cp_hrv ///
-tf_hrv ///
+* examine quantity harvested variable sold
+	lab	var			harvkgsold "quantity harvested and sold, in kilograms"
+	sum				harvkgsold, detail
+	*** this is across all crops
+	*** average 426, max 8960, min 0 
+	*** how could you sell zero - replace to missing
+	
+	replace 		harvkgsold = . if harvkgsold == 0 
+	*** 24 changed to missing 
 
-compress
-describe
-summarize 
+* replace any +3 s.d. away from median as missing, by cropid
+	sort 			cropid
+	sum				harvkgsold, detail 
+	by 				cropid: replace	harvkgsold = . if harvkgsold > `r(p50)'+ (3*`r(sd)')
+	sum				harvkgsold, detail
+	*** replaced 38 values, max is now 1446, mean 191  
+	
+* impute missing values
+	mi set 			wide 	// declare the data to be wide.
+	mi xtset		, clear 	// clear any xtset that may have had in place previously
+	mi register		imputed harvkgsold // identify kilo_fert as the variable being imputed
+	sort			hh_num extension ord cropid, stable // sort to ensure reproducability of results
+	mi impute 		pmm harvkg i.clusterid i.cropid, add(1) rseed(245780) ///
+						noisily dots force knn(5) bootstrap
+	mi 				unset	
 
-* save file
-		customsave , idvar(hhid) filename("ph_secta3.dta") ///
-			path("`export'/`folder'") dofile(ph_secta3) user($user)
-						
+* how did the imputation go?
+	tab				mi_miss
+	tabstat			harvkgsold harvkgsold_1_, by(mi_miss) ///
+						statistics(n mean min max) columns(statistics) ///
+						longstub format(%9.3g) 
+	replace			harvkgsold = harvkgsold_1_ if soldprod == 1
+	lab var			harvkgsold "kg of harvest sold, imputed (only if produce was sold)"
+	drop			harvkgsold_1_
+	*** imputed observations changed 100 observations for people who sold 
+	*** mean 191 to 156, max stays at 1446 
+	
+* check out amount sold
+* currently reported in West African CFA franc
+	tab 			AS02EQ13 
+	rename			AS02EQ13 earnwaf
+	replace 		earnwaf = . if earnwaf == 9999999 
+	*** 6 changed to missing
+	
+	replace 		earnwaf = . if earnwaf == 0 
+	*** 6 changed to missing
+	
+* convert to usd
+	gen 			earn = earnwaf/549.4396989
+	lab var			earn 	"total earnings from sales in 2010 USD"
+	tab 			earn, missing
+	*** 4146 missing
+	sum				earn, detail
+	*** mean 190, max 5496, min 0.018 
+	*** total of 1061 observations 
+	
+	
+* **********************************************************************
+* 3 - price information - following ag_i in Malawi 
+* **********************************************************************
+
+* merge in regional information 
+	merge m:1		clusterid hh_num extension using "`export'/2014_ms00p1"
+	*** 5207 matched, 0 from master not matched, 1817 from using (which is fine)
+	keep if _merge == 3
+	drop _merge
+
+* condensed crop codes
+	inspect 		cropid
+	*** generally things look all right - only 30 unique values 
+
+* gen price per kg
+	sort 			cropid
+	by 				cropid: gen cropprice = earn / harvkgsold 
+	*** 4146 missing values
+	sum 			cropprice, detail
+	*** mean = 0.75, max = 92, min = 0.0003 
+	*** will do some imputations later
+	
+* make datasets with crop price information
+	preserve
+	collapse 		(p50) p_zd=cropprice (count) n_zd=cropprice, by(cropid region dept canton zd)
+	save 			"`export'/2014_ase1p2_p1.dta", replace 
+	restore
+	
+	preserve
+	collapse 		(p50) p_can=cropprice (count) n_can=cropprice, by(cropid region dept canton)
+	save 			"`export'/2014_ase1p2_p2.dta", replace 	
+	restore
+	
+	preserve
+	collapse 		(p50) p_dept=cropprice (count) n_dept=cropprice, by(cropid region dept)
+	save 			"`export'/2014_ase1p2_p3.dta", replace 	
+	restore
+	
+	preserve
+	collapse 		(p50) p_reg=cropprice (count) n_reg=cropprice, by(cropid region)
+	save 			"`export'/2014_ase1p2_p4.dta", replace 
+	restore
+	
+	preserve
+	collapse 		(p50) p_crop=cropprice (count) n_crop=cropprice, by(cropid)
+	save 			"`export'/2014_ase1p2_p5.dta", replace 
+	
+
+* **********************************************************************
+* 4 - end matter, clean up to save
+* **********************************************************************
+
+* if directly following malawi, would be able to proceed with different process
+* however, did not work in niger
+* mismatched when attemping to match it into harvest file 
+* look at malawi code for reference, as needed 
+* but see 2014_ase1p2 for next steps
+
+	clear 
+
 * close the log
-	log	close
+	log		close
 
 /* END */
