@@ -24,7 +24,15 @@
 
 
 * **********************************************************************
-* 1 - run individual hh_cleaning .do files
+* 1 - process the conversion files
+* **********************************************************************
+
+	do "`root'/harvconv_wave_1.do"
+	do "`root'/harvconv_wave_2_wave_3.do"
+	
+
+* **********************************************************************
+* 2 - run individual hh_cleaning .do files
 * **********************************************************************
 
 * loops through four waves of tza hh code

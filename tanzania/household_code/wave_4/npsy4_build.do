@@ -26,6 +26,7 @@
 	loc		logout 	= 	"$data/merged_data/tanzania/logs"
 
 * open log	
+	cap log close 
 	log 	using 		"`logout'/npsy4_build", append
 
 	
@@ -35,9 +36,6 @@
 
 * import the .dta houeshold file
 	use 		"`rooth'/hhfinal_npsy4.dta", clear
-
-* rename hhid to match household id in weather data
-	rename		hhid y4_hhid
 	
 * generate variable to record data source
 	gen 		data = "npsy4"
@@ -211,13 +209,14 @@
 	}						
 }
 
-
-* revert to old household id name
-	rename		y4_hhid hhid
+* prepare for export
+	qui: compress
+	summarize 
+	sort y4_hhid
 	
 * save file
 	qui: compress
-	customsave 	, idvar(hhid) filename("npsy4_merged.dta") ///
+	customsave 	, idvar(y4_hhid) filename("npsy4_merged.dta") ///
 		path("`export'") dofile(npsy4_build) user($user)
 		
 * close the log

@@ -1,37 +1,33 @@
 * Project: WB Weather
 * Created on: May 2020
 * Created by: alj
-* Edited by: erk
+* Edited by: ek
 * Stata v.16
 
 * does
 	* reads in Nigeria, WAVE 1 (2010-2011) POST PLANTING, NIGERIA SECT 11C
-	* determines herbicide and pesticide use 
-	* maybe more who knows
-	* outputs clean data file ready for combination with wave 1 hh data
+	* creates binaries for pesticide and herbicide use
+	* outputs clean data file ready for combination with wave 1 plot data
 
 * assumes
 	* customsave.ado
-	
-* other notes: 
-	* still includes some notes from Alison Conley's work in spring 2020
+	* mdesc.ado
 	
 * TO DO:
-	* unsure - incomplete, runs but maybe not right? 
-	* clarify "does" section
-
+	* complete
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
 
 * set global user
 	global user "emilk"
-	
-* define paths	
-	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_1/raw"
-	loc export = "G:/My Drive/weather_project/household_data/nigeria/wave_1/refined"
-	loc logout = "G:/My Drive/weather_project/household_data/nigeria/logs"
 
+* define paths
+	loc		root	=	"$data/household_data/nigeria/wave_1/raw"
+	loc		export	=	"$data/household_data/nigeria/wave_1/refined"
+	loc		logout	=	"$data/household_data/nigeria/logs"
+
+	
 * close log (in case still open)
 	*log close
 	
@@ -43,11 +39,11 @@
 * **********************************************************************
 		
 * import the first relevant data file
-		use "`root'/sect11c_plantingw1", clear 	
+	use "`root'/sect11c_plantingw1", clear 	
 
-describe
-sort hhid plotid
-isid hhid plotid, missok
+	describe
+	sort hhid plotid
+	isid hhid plotid, missok
 
 
 * binary for pesticide use
@@ -80,9 +76,9 @@ isid hhid plotid, missok
 	lab var			plot_id "unique plot identifier"
 
 	
-compress
-describe
-summarize 
+	compress
+	describe
+	summarize 
 
 * save file
 		customsave , idvar(hhid) filename("pp_sect11c.dta") ///

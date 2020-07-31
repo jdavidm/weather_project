@@ -6,33 +6,20 @@
 * does
 	* reads in Nigeria, WAVE 3 POST PLANTING, NIGERIA AG SECT11E
 	* determines seed
-	* maybe more who knows
 	* outputs clean data file ready for combination with wave 3 hh data
 
 * assumes
 	* customsave.ado
 	* land-conversion.dta conversion file
 	
-* other notes: 
-	* still includes some notes from Alison Conley's work in spring 2020
-	
-* TO DO:
-	* major issues with seed: from Alison: Needs conversion for weights of seeds to get application rate variable
-		*alj opinion (7 May): omit seed
-	* unsure - incomplete, runs but maybe not right? 
-	* clarify "does" section
-	
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
-
-* set global user
-	global user "aljosephson"
 	
 * define paths	
-	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_3/raw"
-	loc export = "G:/My Drive/weather_project/household_data/nigeria/wave_3/refined"
-	loc logout = "G:/My Drive/weather_project/household_data/nigeria/logs"
+	loc root = "$data/household_data/nigeria/wave_3/raw"
+	loc export = "$data/household_data/nigeria/wave_3/refined"
+	loc logout = "$data/household_data/nigeria/logs"
 
 * close log (in case still open)
 	*log close

@@ -1,44 +1,30 @@
 * Project: WB Weather
 * Created on: May 2020
 * Created by: alj
+* Edited by: ek
 * Stata v.16
 
 * does
-	* reads in Nigeria, WAVE 3, POST HARVEST, NIGERIA AG SECT11D - Fertilizer
-	* determines fertilizer (quantity)
-	* converts to kilograms, as appropriate
-	* maybe more who knows
-	* outputs clean data file ready for combination with wave 3 hh data
-	
+	* reads in Nigeria, WAVE 3 (2015-2016), POST HARVEST, NIGERIA AG SECT11D - Fertilizer
+	* determines fertilizer use / measurement
+	* outputs clean data file ready for combination with wave 2 plot data
+
 * assumes
 	* customsave.ado
-	
-* other notes: 
-	* still includes some notes from Alison Conley's work in spring 2020
+	* mdesc.ado
 	
 * TO DO:
-	* see notes below
-	* unsure - incomplete, runs but maybe not right? 
-	* clarify "does" section
-	
-* Alison Notes: 
-	* this portion of the survey was previously in post planting portion of wave 1 and wave 2
+	* done
 
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
 
-* set global user
-	global user "aljosephson"
-	
 * define paths	
-	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_3/raw"
-	loc export = "G:/My Drive/weather_project/household_data/nigeria/wave_3/refined"
-	loc logout = "G:/My Drive/weather_project/household_data/nigeria/logs"
+	loc root = "$data/household_data/nigeria/wave_3/raw"
+	loc export = "$data/household_data/nigeria/wave_3/refined"
+	loc logout = "$data/household_data/nigeria/logs"
 
-* close log (in case still open)
-	*log close
-	
 * open log	
 	log using "`logout'/ph_sect11d", append
 
@@ -51,109 +37,118 @@
 
 describe
 sort hhid plotid 
-isid hhid plotid, missok
+isid hhid plotid
 
-rename s11dq1 fertilizer_any
 *binary for fert use
+rename s11dq1 fert_any
+	lab var			fert_any "=1 if any fertilizer was used"
 
-*the survey divides the fertilizer into left over, received for free, and purchased so here I combine them
-*the quantity is giving in NOT GIVEN IN KGS in wave 3 so we need to convert these weights to kgs (label should be fert_used_kg for total)
-*here is inorganic leftover fertilizer
-generate leftover_iq = s11dq4a
-replace leftover_iq = 0 if leftover_iq ==.
-rename s11dq4b leftover_iunit
-tab leftover_iunit
+*drop manure/compost observations
+	tab sect11dq7
+	tab s11dq15 
+	tab s11dq27
+	tab s11dq3
+	drop if s11dq15==3
+	***1 observation deleted
+	drop if s11dq15_os=="COMPOST"
+	***1 observation deleted
+	
+* quantity of fertilizer from different sources
 
-generate leftover = .
-replace leftover = leftover_iq*100 if leftover_iunit == 2
-replace leftover = leftover_iq if leftover_iunit == 1
-replace leftover = leftover_iq if leftover_iunit == 3
-replace leftover = 0 if leftover == .
-*converting to kgs, assuming 1 liter = 1 kg
+* leftover fertilizer
+	gen				leftover_fert_kg = s11dq4a
+	replace 		leftover_fert_kg = leftover_fert_kg/1000 if s11dq4b==2
+	*** convert grams to kgs - 5 obs (divide to get kgs)
+	sum 			leftover_fert_kg
+	***maximum observation is 300, average 55.45 kg 
+	replace			leftover_fert_kg = 0 if leftover_fert_kg ==.
 
-*wave 3 provides a subset of fertilizer that is about govmt ewallet subsidized inorganic fertilizer, here i count it
-generate sub_iq = s11dq5c1
-replace sub_iq = 0 if sub_iq==.
-rename s11dq5c2 sub_unit
-tab sub_unit
-*all the sub units are kgs so they are ready to be added to total
+* free fertilizer
+	gen				free_fert_kg = sect11dq8a
+	replace 		free_fert_kg=free_fert_kg/1000 if sect11dq8b==2
+	sum				free_fert_kg
+	***maximum observation is 200, average is 49.21 kg 
+	*** OMITTED IN ROUND 2 - CAN ALSO PLAN TO OMIT HERE FOR CONSISTENCY 
+	replace			free_fert_kg = 0 if free_fert_kg ==. 
 
-*free inorganic fert
-gen free_iq = sect11dq8a
-replace free_iq = 0 if free_iq ==. 
-rename sect11dq8b free_iunit
-tab free_iunit
+*purchased fertilizer
+	gen				purchased_fert_kg1 = s11dq16a
+	replace purchased_fert_kg1 = purchased_fert_kg1/1000 if s11dq16b==2
+	sum				purchased_fert_kg1
+	*** observations are too high - max = 2000 kg, mean is 90.96 kgs
+	*** mean is okay, but max is a bit high 
+	***  max value is too high but will keep it and deal with by winsorizing
 
-generate free = .
-replace free = free_iq*100 if free_iunit == 2
-replace free = free_iq if free_iunit == 1
-replace free = 0 if free == .
-*converting free units to kgs
+	gen				purchased_fert_kg2 = s11dq28a
+	replace purchased_fert_kg2 = purchased_fert_kg2/1000 if s11dq28b==2
+	sum				purchased_fert_kg2
+	*** max observation is 250, mean is 55.37 
 
-*purchased inorganic fert, 1st source
-gen purch_iq1 = s11dq16a
-replace purch_iq1 = 0 if purch_iq1 ==. 
-rename s11dq16b purch_unit1
-tab purch_unit1
+	replace			purchased_fert_kg1 = 0 if purchased_fert_kg1 ==. 
+	replace			purchased_fert_kg2 = 0 if purchased_fert_kg2 ==. 
 
-*converted to kgs
-generate purch1 = .
-replace purch1 = purch_iq1 if purch_unit1 ==1
-replace purch1 = purch_iq1*100 if purch_unit1 ==2
-replace purch1 = purch_iq1 if purch_unit1 ==3
-replace purch1 = 0 if purch1 ==.
+* the survey divides the fertilizer into left over, received for free, and purchased so here I combine them
+* generate variable for total fertilizer use
+	egen			fert_use	= rsum (leftover_fert_kg purchased_fert_kg1 purchased_fert_kg2) 
+	lab var			fert_use "fertilizer use (kg)"
+	*** omit free fertilizer 
 
-*purchased inorganic, 2nd source
-gen purch_iq2 = s11dq28a
-replace purch_iq2 = 0 if purch_iq2 ==. 
-rename s11dq28b purch_unit2
-tab purch_unit2
+* summarize fertilizer
+	sum				fert_use, detail
+	*** median 0, mean 32.584, max 2000
+	*** only 5914 observations 
 
-*converted to kgs
-gen purch2 = . 
-replace purch2 = purch_iq2 if purch_unit2 == 1
-replace purch2 = purch_iq2*100 if purch_unit2 == 2
-replace purch2 = purch_iq2 if purch_unit2 == 3
-replace purch2 = 0 if purch2 ==.
-
-*total inorganic fertilizer used
-generate fert_used_kg = leftover + sub_iq + free + purch1 + purch2
-
-label variable fert_used_kg "total inorganic fertilizer used in kgs"
+* replace any +3 s.d. away from median as missing
+	replace			fert_use = . if fert_use > `r(p50)'+(3*`r(sd)')
+	*** 5 changes made
+	
+* impute missing values
+	mi set 			wide 	// declare the data to be wide.
+	mi xtset		, clear 	// clear any xtset that may have had in place previously
+	mi register		imputed fert_use // identify kilo_fert as the variable being imputed
+	sort			hhid plotid, stable // sort to ensure reproducability of results
+	mi impute 		pmm fert_use i.state, add(1) rseed(245780) ///
+						noisily dots force knn(5) bootstrap
+	mi 				unset
+	
+* how did the imputation go?
+	tab				mi_miss
+	tabstat			fert_use fert_use_1_, by(mi_miss) ///
+						statistics(n mean min max) columns(statistics) ///
+						longstub format(%9.3g) 
+	replace			fert_use = fert_use_1_
+	lab var			fert_use "fertilizer use (kg), imputed"
+	drop			fert_use_1_
+	*** imputed 114 values out of 5,914 total observations
+	*** impute went fine - mean - 24.3 and maximum 250 (min still = 0)
+	
+* check for missing values
+	mdesc			fert_any fert_use	
+	*** 9 fert_any missing 0 fert_use missing
+	
+* convert missing values to "no"
+	replace			fert_any	=	2	if	fert_any	==	.
+	*** 9 changes made
+	replace 		fert_use	=	2	if 	fert_use	==	.
+	*** 0 changes made 
 
 * **********************************************************************
-* 2 - end matter, clean up to save
+* 3 - end matter, clean up to save
 * **********************************************************************
 
-keep hhid ///
-zone ///
-state ///
-lga ///
-hhid ///
-ea ///
-plotid ///
-fertilizer_any ///
-leftover ///
-leftover_iq ///
-leftover_iunit ///
-sub_iq ///
-sub_unit ///
-free_iq ///
-free_iunit ///
-free ///
-purch_iq1 ///
-purch_unit1 ///
-purch1 ///
-purch_iq2 ///
-purch_unit2 ///
-purch2 ///
-fert_used_kg ///
+	keep 			hhid zone state lga sector hhid ea plotid ///
+					fert_any fert_use
 
-
-compress
-describe
-summarize 
-
+* create unique household-plot identifier
+	isid			hhid plotid
+	sort			hhid plotid
+	egen			plot_id = group(hhid plotid)
+	lab var			plot_id "unique plot identifier"
+	
+	compress
+	describe
+	summarize 
+	
 * save file
 		customsave , idvar(hhid) filename("ph_sect11d.dta") ///
 			path("`export'/`folder'") dofile(ph_sect11d) user($user)

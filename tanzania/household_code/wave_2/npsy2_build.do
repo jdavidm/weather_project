@@ -1,6 +1,7 @@
 * Project: WB Weather
 * Created on: May 2020
 * Created by: mcg
+* Edited by: alj 
 * Stata v.16
 
 * does
@@ -25,7 +26,8 @@
 	loc		export 	= 	"$data/merged_data/tanzania/wave_2"
 	loc		logout 	= 	"$data/merged_data/tanzania/logs"
 
-* open log	
+* open log
+	cap log close 
 	log 	using 		"`logout'/npsy2_build", append
 
 	
@@ -35,9 +37,6 @@
 
 * import the .dta houeshold file
 	use 		"`rooth'/hhfinal_npsy2.dta", clear
-
-* rename hhid to match household id in weather data
-	rename		hhid y2_hhid
 	
 * generate variable to record data source
 	gen 		data = "npsy2"
@@ -211,13 +210,25 @@
 	}						
 }
 
-
-* revert to old household id name
-	rename		y2_hhid hhid
+* create wide data set 	
+	rename 			* *2010
+	rename 			region2010 region
+	rename 			district2010 district
+	rename 			ward2010 ward
+	rename 			ea2010 ea
+	rename 			*hhid2010 *hhid
+	rename			mover_R1R22010 mover2010
+	
+* drop unneeded variables
+	drop			y2_rural2010 year2010 location_R1_to_R22010
+	
+* prepare for export
+	qui: compress
+	summarize 
+	sort y2_hhid
 	
 * save file
-	qui: compress
-	customsave 	, idvar(hhid) filename("npsy2_merged.dta") ///
+	customsave 	, idvar(y2_hhid) filename("npsy2_merged.dta") ///
 		path("`export'") dofile(npsy2_build) user($user)
 		
 * close the log
