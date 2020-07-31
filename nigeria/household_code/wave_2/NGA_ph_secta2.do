@@ -77,9 +77,8 @@
 * free labor days, from other households
 	replace			sa2q12a = 0 if sa2q12a == .
 	replace			sa2q12b = 0 if sa2q12b == .
-	replace			sa2q12c = 0 if sa2q12c == .
 
-	gen				free_days = (sa2q12a + sa2q12b + sa2q12c)
+	gen				free_days = (sa2q12a + sa2q12b)
 	replace			free_days = 0 if free_days == . 
 	
 	
@@ -89,7 +88,7 @@
 	
 * summarize household individual labor for land prep to look for outliers
 	sum				hh_1 hh_2 hh_3 hh_4 men_days women_days free_days
-	*** all but one (men_days) has more harvest days than possible
+	*** all all are under 365
 	
 * generate local for variables that contain outliers
 	loc				labor hh_1 hh_2 hh_3 hh_4 women_days free_days
@@ -100,7 +99,7 @@
 		mvencode		`var', mv(0)
 	    replace			`var' = . if `var' > 90
 	}
-	*** 1,458 outliers changed to missing
+	*** 1,457 outliers changed to missing
 
 * impute missing values (only need to do four variables)
 	mi set 			wide 	// declare the data to be wide.
@@ -117,11 +116,18 @@
 	mi 				unset	
 	
 * summarize imputed variables
-	sum				hh_1_1_ hh_2_2_ hh_3_3_ hh_4_4_ women_days_5_ free_days_6_
+	sum				hh_1_1_ hh_2_2_ hh_3_3_ hh_4_4_ women_days_5_ free_days_1_
+	
+* replace imputed variables
+	replace hh_1 = hh_1_1_
+	replace hh_2 = hh_2_2_ 
+	replace hh_3 = hh_3_3_ 
+	replace hh_4 = hh_4_4_ 
+	replace women_days = women_days_5_ 
+	replace free_days = free_days_1_
 
 * total labor days for harvest
-	egen			hrv_labor = rowtotal(hh_1_1_ hh_2_2_ hh_3_3_ hh_4_4_ ///
-							men_days women_days_5_ free_days_6_)
+	egen			hrv_labor = rowtotal(hh_1 hh_2 hh_3 hh_4 men_days women_days free_days)
 	lab var			hrv_labor "total labor at harvest (days)"
 
 * check for missing values

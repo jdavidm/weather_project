@@ -61,26 +61,14 @@ isid hhid plotid
 		gen	hh_4 	= 	(sa2q1d2 * sa2q1d3)
 		replace	hh_4 	= 	0 	if 	hh_4 	== 	. 
 	
-		gen	hh_5 	= 	(sa2q1e2*sa2q1e3) 
-		replace hh_5 	=	0 	if 	hh_5	==	.
-	
-		gen hh_6 	= 	(sa2q1f2*sa2q1f3) 
-		replace hh_6 	=	0 	if 	hh_6 	==	.
-	
-		gen hh_7 	= 	(sa2q1g2*sa2q1g3)
-		replace hh_7 	=	0 	if 	hh_7 	==	.
-	
-		gen	hh_8 	= 	(sa2q1h2*sa2q1h3)
-		replace hh_8	= 	0 	if 	hh_8 	==	.
-	
-	*** this calculation is for up to 8 members of the household that were laborers
+	*** this calculation is for up to 4 members of the household that were laborers although this wave has 8 household members we only use the first 4
 	*** per the survey, these are laborers from the last rainy/harvest season
 	*** NOT the dry season harvest
 	*** does not include planting or cultivation labor (see NGA_pp_sect11c1)
 
 
 * hired labor days, (# of people days hired to work) HARVEST & THRESH
-		gen men_days_ht = (sa2q3)
+		gen men_days = (sa2q3)
 		replace men_day = 0 if men_days == . 
 
 		gen women_days = (sa2q6)
@@ -90,9 +78,8 @@ isid hhid plotid
 * free labor days, from other households, HARVEST & THRESH
 		replace sa2q12a = 0 if sa2q12a == .
 		replace sa2q12b = 0 if sa2q12b == .
-		replace sa2q12c = 0 if sa2q12c == .
 
-		gen free_days = (sa2q12a + sa2q12b + sa2q12c)
+		gen free_days = (sa2q12a + sa2q12b)
 		replace free_days = 0 if free_days == . 
 
 * **********************************************************************
@@ -100,11 +87,11 @@ isid hhid plotid
 * **********************************************************************
 	
 * summarize household individual labor for land prep to look for outliers
-	sum				hh_1 hh_2 hh_3 hh_4 hh_5 hh_6 hh_7 hh_8 men_days women_days free_days
+	sum				hh_1 hh_2 hh_3 hh_4 men_days women_days free_days
 	*** all but one (men_days) has more harvest days than possible
 	
 * generate local for variables that contain outliers
-	loc				labor hh_1 hh_2 hh_3 hh_4 hh_5 hh_6 hh_7 hh_8
+	loc				labor hh_1 hh_2 hh_3 hh_4 men_days women_days free_days
 
 * replace zero to missing, missing to zero, and outliers to mizzing
 	foreach var of loc labor {
@@ -112,7 +99,7 @@ isid hhid plotid
 		mvencode		`var', mv(0)
 	    replace			`var' = . if `var' > 90
 	}
-	*** 284 outliers changed to missing
+	*** 270 outliers changed to missing
 
 * impute missing values (only need to do four variables)
 	mi set 			wide 	// declare the data to be wide.
@@ -128,9 +115,24 @@ isid hhid plotid
 	}						
 	mi 				unset	
 
+* sum the imputation
+	sum hh_1_1_  hh_1_2_ hh_1_3_ hh_1_4_ 
+	sum hh_2_2_ hh_2_1_ hh_2_3_ hh_2_4_ 
+	sum hh_3_1_ hh_3_2_  hh_3_3_ hh_3_4_ 
+	sum hh_4_1_ hh_4_2_ hh_4_3_  hh_4_4_ 
+	sum men_days_1_ men_days_2_ men_days_3_ men_days_4_ 
+	sum women_days_1_ women_days_2_ women_days_3_ women_days_4_ 
+	sum free_days_1_ free_days_2_ free_days_3_ free_days_4_	
+	
+* replace the imputated variables
+	replace hh_1 = hh_1_1_
+	replace hh_2 = hh_2_2_
+	replace hh_3 = hh_3_3_
+	replace hh_4 = hh_4_4_
+	
 * total labor days for harvest
-	egen			hrv_labor = rowtotal(hh_1_1_ hh_2_2_ hh_3_3_ hh_4_4_ ///
-							hh_5_5_ hh_6_6_ hh_7_7_ hh_8_8_ women_days men_day free_days)
+	egen			hrv_labor = rowtotal(hh_1 hh_2 hh_3 hh_4 ///
+							 women_days men_days free_days)
 	lab var			hrv_labor "total labor at harvest (days)"
 
 * check for missing values
