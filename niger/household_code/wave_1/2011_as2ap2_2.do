@@ -1,71 +1,73 @@
 * Project: WB Weather
 * Created on: June 2020
-* Created by: alj
+* Created by: ek
 * Stata v.16
 
 * does
-	* reads in Niger, WAVE 2 (2014), POST PLANTING (first passage), ECVMA2_AS2AP2
-	* cleans labor post harvest - harvesting labor 
-	* outputs clean data file ready for combination with wave 2 plot data
+	* reads in Niger, WAVE 1 (2011), POST PLANTING (first passage), ecvmaas1_p2_en
+	* cleans labor post planting - harvest labor 
+	* outputs clean data file ready for combination with wave 1 plot data
 
 * assumes
 	* customsave.ado
 
 * TO DO:
 	* done
-	* later: 
-		*** add in as2ap2_1 so that both files which use as2ap2 are calculated together
 	
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
 
 * define paths
-	loc		root	=		"$data/household_data/niger/wave_2/raw"
-	loc		export	=		"$data/household_data/niger/wave_2/refined"
+	loc		root	=		"$data/household_data/niger/wave_1/raw"
+	loc		export	=		"$data/household_data/niger/wave_1/refined"
 	loc		logout	= 		"$data/household_data/niger/logs"
 
 * open log
-	log 	using	"`logout'/2014_as2ap2_2", append
+	cap 	log 	close
+	log 	using	"`logout'/2011_as2ap2_2", append
 
 * **********************************************************************
 * 1 - set up and organization 
 * **********************************************************************
 
 * import the first relevant data file
-	use				"`root'/ECVMA2_AS2AP2", clear
+	use				"`root'/ecvmaas1_p2_en", clear
 
 * need to rename for English
-	rename 			PASSAGE visit
+	rename 			passage visit
 	label 			var visit "number of visit"
-	rename			GRAPPE clusterid
+	rename			grappe clusterid
 	label 			var clusterid "cluster number"
-	rename			MENAGE hh_num
+	rename			menage hh_num
 	label 			var hh_num "household number - not unique id"
-	rename 			EXTENSION extension 
-	label 			var extension "extension of household"
 	*** will need to do these in every file
-	rename 			AS02AQA ord 
+	rename 			as01qa ord 
 	label 			var ord "number of order"
-	rename 			AS02AQ01 field 
+	rename 			as01q03 field 
 	label 			var field "field number"
-	rename 			AS02AQ03 parcel 
+	rename 			as01q05 parcel 
 	label 			var parcel "parcel number"
-	
-* need to include clusterid, hhnumber, extension, order, field, and parcel to uniquely identify
-	describe
-	sort 			clusterid hh_num extension ord field parcel
-	isid 			clusterid hh_num extension ord field parcel
 
-* determine cultivated plot
-	rename 			AS02AQ04 cultivated
-	label 			var cultivated "plot cultivated"
-* drop if not cultivated
-	keep 			if cultivated == 1
-	*** 305 observations dropped
 	
+* drop households that did not use field during the rainy season
+	drop 	if 	as02aq04 == 2
+	*** 460 observations dropped
+	*** This variable most closely resembles the variable that asks if fields were cultivated
+	*** We dropped observations if fields were not cultivated in wave 2
+
+	
+* drop the households missing field, parcel, ord to create the id variable. 
+	drop	if field==.
+	*** dropped 1630 observations
+	
+* need to include clusterid, hhnumber, order, field, and parcel to uniquely identify
+	describe
+	sort 			clusterid hh_num ord field parcel
+	isid 			clusterid hh_num ord field parcel
+
 * **********************************************************************
-* 2 - determine labor allocation 
+* 2 - determine harvest labor allocation 
 * **********************************************************************
 
 * per Palacios-Lopez et al. (2017) in Food Policy, we cap labor per activity
@@ -77,25 +79,25 @@
 * in line with others, will deal with each activity seperately
 
 * create household member labor 
-* AS02AQ**A identified HH ID of laborer 
-* AS02AQ**B identifies number of days that person worked 
+* as02aq36**a identified HH ID of laborer 
+* as02aq36**b identifies number of days that person worked 
 
-	gen				hh_1 = AS02AQ36B
+	gen				hh_1 = as02aq36b
 	replace			hh_1 = 0 if hh_1 == .
 	
-	gen				hh_2 = AS02AQ37B
+	gen				hh_2 = as02aq37b
 	replace			hh_2 = 0 if hh_2 == .
 	
-	gen				hh_3 = AS02AQ38B
+	gen				hh_3 = as02aq38b
 	replace			hh_3 = 0 if hh_3 == .
 	
-	gen				hh_4 = AS02AQ39B
+	gen				hh_4 = as02aq39b
 	replace			hh_4 = 0 if hh_4 == .
 	
-	gen				hh_5 = AS02AQ40B
+	gen				hh_5 = as02aq40b
 	replace			hh_5 = 0 if hh_5 == .
 	
-	gen				hh_6 = AS02AQ41B
+	gen				hh_6 = as02aq41b
 	replace			hh_6 = 0 if hh_6 == .
 	
 	*** this calculation is for up to 6 members of the household that were laborers
@@ -108,42 +110,38 @@
 * i think that pooling all three together will be the most appropriate method 
 * that is, including hired, mutual, and family labor 
 
-	tab 			AS02AQ43A
-	*** 671 hired "other" labor, 4164  did not
+	tab 			as02aq43a, missing
+	*** 515 hired "other" labor, 5687  did not
 	
 	gen				hired_men = .
-	replace			hired_men = AS02AQ43B if AS02AQ43A == 1
-	replace			hired_men = 0 if AS02AQ43A == 2
-	replace			hired_men = 0 if AS02AQ43A == 9 
-	replace			hired_men = 0 if AS02AQ43B == 999
+	replace			hired_men = as02aq43b if as02aq43a == 1
+	replace			hired_men = 0 if as02aq43a == 2
+	replace			hired_men = 0 if as02aq43a == .
 	replace 		hired_men = 0 if hired_men == .  
 
 	gen				hired_women = .
-	replace			hired_women = AS02AQ43C if AS02AQ43A == 1
-	replace			hired_women = 0 if AS02AQ43A == 2
-	replace			hired_women = 0 if AS02AQ43A == 9 
-	replace			hired_women = 0 if AS02AQ43C == 999
+	replace			hired_women = as02aq43c if as02aq43a == 1
+	replace			hired_women = 0 if as02aq43c == 2
+	replace			hired_women = 0 if as02aq43c == .
 	replace 		hired_women = 0 if hired_women == .  
 	
 	*** we do not include child labor days
 	
 * mutual labor days from other households
 
-	tab 			AS02AQ42A
+	tab 			as02aq42a
 	*** 247 received mutual labor, 4587 did not
 	
 	gen 			mutual_men = .
-	replace			mutual_men = AS02AQ42B if AS02AQ42A == 1
-	replace			mutual_men = 0 if AS02AQ42A == 2
-	replace			mutual_men = 0 if AS02AQ42A == 9 
-	replace			mutual_men = 0 if AS02AQ42B == 999
+	replace			mutual_men = as02aq42b if as02aq42a == 1
+	replace			mutual_men = 0 if as02aq42a == 2
+	replace			mutual_men = 0 if as02aq42a == .
 	replace 		mutual_men = 0 if mutual_men == . 
 
 	gen 			mutual_women = .
-	replace			mutual_women = AS02AQ42C if AS02AQ42A == 1
-	replace			mutual_women = 0 if AS02AQ42A == 2
-	replace			mutual_women = 0 if AS02AQ42A == 9 
-	replace			mutual_women = 0 if AS02AQ42C == 999 
+	replace			mutual_women = as02aq42c if as02aq42a == 1
+	replace			mutual_women = 0 if as02aq42a == 2
+	replace			mutual_women = 0 if as02aq42a == . 
 	replace			mutual_women = 0 if mutual_women == . 
 
 	*** we do not include child labor days
@@ -154,10 +152,10 @@
 	
 * summarize household individual labor for land prep to look for outliers
 	sum				hh_1 hh_2 hh_3 hh_4 hh_5 hh_6 hired_men hired_women mutual_men mutual_women
-	*** hh_1, hired_men, mutual_men, mutual_women are all greater than the minimum (91 days)
+	*** hh_1 and hired_women are greater than the minimum (91 days)
 	
 * generate local for variables that contain outliers
-	loc				labor hh_1 hh_2 hh_3 hh_4 hh_5 hh_6 hired_men hired_women mutual_men mutual_women
+	loc				labor hh_1 hired_women
 
 * replace zero to missing, missing to zero, and outliers to missing
 	foreach var of loc labor {
@@ -165,10 +163,10 @@
 		mvencode		`var', mv(0)
 	    replace			`var' = . if `var' > 90
 	}
-	*** 6 outliers changed to missing
+	*** 7 outliers changed to missing
 
-* impute missing values (only need to do four variables - set new locals)
-	loc				laborimp hh_1 hired_men mutual_men mutual_women
+* impute missing values (only need to do 2 variables - set new locals)
+	loc				laborimp hh_1 hired_women
 	mi set 			wide 	// declare the data to be wide.
 	mi xtset		, clear 	// clear any xtset that may have had in place previously
 
@@ -176,7 +174,7 @@
 * impute each variable in local		
 	foreach var of loc laborimp {
 		mi register			imputed `var' // identify variable to be imputed
-		sort				clusterid hh_num extension ord field parcel, stable 
+		sort				clusterid hh_num ord field parcel, stable 
 		// sort to ensure reproducability of results
 		mi impute 			pmm `var' i.clusterid, add(1) rseed(245780) ///
 								noisily dots force knn(5) bootstrap
@@ -184,12 +182,10 @@
 	mi 				unset	
 	
 * summarize imputed variables
-	sum				hh_1_1_ hired_men_2_ mutual_men_3_ mutual_women_4_ 
+	sum				hh_1_1_ hired_women_2_
 	* all values seem fine
 	replace			hh_1 = hh_1_1_
-	replace 		hired_men = hired_men_2_ 
-	replace			mutual_men = mutual_men_3_
-	replace			mutual_women = mutual_women_4_ 
+	replace 		hired_women = hired_women_2_ 
 
 * total labor days for harvest
 	egen			hh_harvest_labor = rowtotal(hh_1 hh_2 hh_3 hh_4 hh_5 hh_6)
@@ -205,20 +201,21 @@
 	*** no missing values
 	sum 			harvest_labor harvest_labor_all
 	*** which is used will not make that much of a difference (different max)
-	*** with free labor: average = 23.7, max = 335
-	*** without free labor: average = 24.1, max = 300
+	*** with free labor: average = 8.7, max = 200
+	*** without free labor: average = 8.5, max = 200
+	*** seems a little low
 	
 * **********************************************************************
 * 3 - end matter, clean up to save
 * **********************************************************************
 
-	keep 			clusterid hh_num extension ord field parcel harvest_labor harvest_labor_all ///
+	keep 			clusterid hh_num ord field parcel harvest_labor harvest_labor_all ///
 					hh_harvest_labor hired_harvest_labor mutual_harvest_labor 
 
 * create unique household-plot identifier
-	isid				clusterid hh_num extension ord field parcel
-	sort				clusterid hh_num extension ord field parcel, stable 
-	egen				plot_id = group(clusterid hh_num extension ord field parcel)
+	isid				clusterid hh_num ord field parcel
+	sort				clusterid hh_num ord field parcel, stable 
+	egen				plot_id = group(clusterid hh_num ord field parcel)
 	lab var				plot_id "unique field and parcel identifier"
 
 	compress
@@ -226,8 +223,8 @@
 	summarize
 
 * save file
-		customsave , idvar(plot_id) filename("2014_as2ap1_3") ///
-			path("`export'") dofile(2014_as2ap2_2) user($user)
+		customsave , idvar(plot_id) filename("2011_as2ap2_2") ///
+			path("`export'") dofile(2011_as2ap2_2) user($user)
 
 * close the log
 	log	close

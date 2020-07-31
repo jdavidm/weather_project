@@ -1,71 +1,65 @@
 * Project: WB Weather
 * Created on: June 2020
-* Created by: alj
+* Created by: ek
 * Stata v.16
 
 * does
-	* reads in Niger, WAVE 2 (2014), POST PLANTING (first passage), ECVMA2_AS2AP1
+	* reads in Niger, WAVE 1 (2011),POST PLANTING (first passage), ecvmaas1_p1_en
 	* cleans labor post planting - prep labor 
-	* combines all labor files in Niger for combination with wave 2 plot data (harvest, planting)
-
+	* combines all labor files in Niger for combination with wave 1 plot data (harvest, planting)
+	
 * assumes
 	* customsave.ado
-	* access to 2014_as2ap2_2 and 2014_as2ap2_1
 
 * TO DO:
 	* done
-	* later:
-		*** decouple 2014_as2ap2_2 and 2014_as2ap2_1 so that files are file based not variable based
-		*** combined with as2ap1_1 and as2ap1_2 so that files are file based not variable based
-
 	
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
 
 * define paths
-	loc		root	=		"$data/household_data/niger/wave_2/raw"
-	loc		export	=		"$data/household_data/niger/wave_2/refined"
+	loc		root	=		"$data/household_data/niger/wave_1/raw"
+	loc		export	=		"$data/household_data/niger/wave_1/refined"
 	loc		logout	= 		"$data/household_data/niger/logs"
 
 * open log
-	log 	using	"`logout'/2014_as2ap1_3", append
+	cap 	log 	close
+	log 	using	"`logout'/2011_as2ap1_3", append
 
 * **********************************************************************
-* 1 - set up and organization 
+* 1 - describing plot size - self-reported and GPS
 * **********************************************************************
-
-* import the first relevant data file
-	use				"`root'/ECVMA2_AS2AP1", clear
-		
-* need to rename for English
-	rename 			PASSAGE visit
-	label 			var visit "number of visit"
-	rename			GRAPPE clusterid
-	label 			var clusterid "cluster number"
-	rename			MENAGE hh_num
-	label 			var hh_num "household number - not unique id"
-	rename 			EXTENSION extension 
-	label 			var extension "extension of household"
-	*** will need to do these in every file
-	rename 			AS02AQA ord 
-	label 			var ord "number of order"
-	rename 			AS01Q01 field 
-	label 			var field "field number"
-	rename 			AS01Q03 parcel 
-	label 			var parcel "parcel number"
 	
-* need to include clusterid, hhnumber, extension, order, field, and parcel to uniquely identify
+* import the first relevant data file
+	use				"`root'/ecvmaas1_p1_en", clear
+	
+	rename 			passage visit
+	label 			var visit "number of visit - wave number"
+	rename			grappe clusterid
+	label 			var clusterid "cluster number"
+	rename			menage hh_num
+	label 			var hh_num "household number - not unique id"
+	rename 			as01qa ord 
+	label 			var ord "number of order"
+	*** note that ord is the id number
+	rename 			as01q03 field 
+	label 			var field "field number"
+	rename 			as01q05 parcel 
+	label 			var parcel "parcel number"
+	*** cant find "extension" variable like they have in wave 2. This is a problem because in wave 2 we make a unique id based on clusterid, hhnumber, extension, order, field, and parcel to uniquely identify
+	
+* need to include clusterid, hhnumber, order, field, and parcel to uniquely identify
 	describe
-	sort 			clusterid hh_num extension ord field parcel
-	isid 			clusterid hh_num extension ord field parcel
-
+	sort 			clusterid hh_num ord field parcel
+	isid 			clusterid hh_num ord field parcel
+	
 * determine cultivated plot
-	rename 			AS02AQ04 cultivated
+	rename 			as01q40 cultivated
 	label 			var cultivated "plot cultivated"
+
 * drop if not cultivated
 	keep 			if cultivated == 1
-	*** 301 observations dropped
 	
 * **********************************************************************
 * 2 - determine labor allocation 
@@ -80,71 +74,85 @@
 * in line with others, will deal with each activity seperately
 
 * create household member labor 
-* AS02AQ1*A identified HH ID of laborer 
-* AS02AQ1*B identifies number of days that person worked 
+* as02aq(20-25)a identified HH ID of laborer 
+* as02aq(20-25)b identifies number of days that person worked 
 
-	gen				hh_1 = AS02AQ17B
+* Land prep labor
+
+	gen				hh_1 = as02aq20b
 	replace			hh_1 = 0 if hh_1 == .
+	replace			hh_1 = 0 if hh_1 == 99
 	
-	gen				hh_2 = AS02AQ18B
+	gen				hh_2 = as02aq21b
 	replace			hh_2 = 0 if hh_2 == .
+	replace			hh_2 = 0 if hh_2 == 99
 	
-	gen				hh_3 = AS02AQ19B
+	gen				hh_3 = as02aq22b
 	replace			hh_3 = 0 if hh_3 == .
+	replace			hh_3 = 0 if hh_3 == 99
 	
-	gen				hh_4 = AS02AQ20B
+	gen				hh_4 = as02aq23b
 	replace			hh_4 = 0 if hh_4 == .
+	replace			hh_4 = 0 if hh_4 == 99
 	
-	gen				hh_5 = AS02AQ21B
+	gen				hh_5 = as02aq24b
 	replace			hh_5 = 0 if hh_5 == .
+	replace			hh_5 = 0 if hh_5 == 99
 	
-	gen				hh_6 = AS02AQ22B
+	gen				hh_6 = as02aq25b
 	replace			hh_6 = 0 if hh_6 == .
+	replace			hh_6 = 0 if hh_6 == 99
 	
 	*** this calculation is for up to 6 members of the household that were laborers
 	*** per the survey, these are laborers from the main rainy season
 	*** includes labor for clearing, burning, fertilizing - would here include combination of land prep (91 day max)
 	*** does not include harvest labor or planting labor 
+	*** we are treating the entry 99/999 as a code for missing
 	
 * hired labor days   
 
-	tab 			AS02AQ24A
-	*** 647 hired labor, 4487 did not
+	tab 			as02aq27a
+	*** 679 hired labor, 5692 did not
 	
 	gen				hired_men = .
-	replace			hired_men = AS02AQ24B if AS02AQ24A == 1
-	replace			hired_men = 0 if AS02AQ24A == 2
-	replace			hired_men = 0 if AS02AQ24A == 9 
-	replace			hired_men = 0 if AS02AQ24B == 999
-	replace 		hired_men = 0 if hired_men == .  
+	replace			hired_men = as02aq27b if as02aq27a == 1
+	replace			hired_men = 0 if as02aq27a == 2
+	replace			hired_men = 0 if as02aq27a == 3 
+	replace			hired_men = 0 if as02aq27b == 99
+	replace			hired_men = 0 if as02aq27b == 999
+	replace 		hired_men = 0 if as02aq27a == .  
 
 	gen				hired_women = .
-	replace			hired_women = AS02AQ24C if AS02AQ24A == 1
-	replace			hired_women = 0 if AS02AQ24A == 2
-	replace			hired_women = 0 if AS02AQ24A == 9 
-	replace			hired_women = 0 if AS02AQ24C == 999
-	replace 		hired_women = 0 if hired_women == .  
+	replace			hired_women = as02aq27c if as02aq27a == 1
+	replace			hired_women = 0 if as02aq27a == 2
+	replace			hired_women = 0 if as02aq27a == 3 
+	replace 		hired_women = 0 if as02aq27c == 99
+	replace			hired_women = 0 if as02aq27c == 999
+	replace 		hired_women = 0 if as02aq27a == .  
 	
 	*** we do not include child labor days
 	
-* mutual labor days from other households
+* mutual labor days from other households. The label of the mutual labor variable has been translated as "Did you use any manual labor on the parcel" but a direct translation in google translate gives a translation of mutual labor.
 
-	tab 			AS02AQ23A
-	*** 417 received mutual labor, 4718 did not
+
+	tab 			as02aq26a
+	***  received mutual labor,  did not
 	
 	gen 			mutual_men = .
-	replace			mutual_men = AS02AQ23B if AS02AQ23A == 1
-	replace			mutual_men = 0 if AS02AQ23A == 2
-	replace			mutual_men = 0 if AS02AQ23A == 9 
-	replace			mutual_men = 0 if AS02AQ23B == 999
-	replace 		mutual_men = 0 if mutual_men == . 
+	replace			mutual_men = as02aq26b if as02aq26a == 1
+	replace			mutual_men = 0 if as02aq26a == 2
+	replace			mutual_men = 0 if as02aq26a == 3
+	replace			mutual_men = 0 if as02aq26b == 99
+	replace			mutual_men = 0 if as02aq26b == 999
+	replace 		mutual_men = 0 if as02aq26a == . 
 
 	gen 			mutual_women = .
-	replace			mutual_women = AS02AQ23C if AS02AQ23A == 1
-	replace			mutual_women = 0 if AS02AQ23A == 2
-	replace			mutual_women = 0 if AS02AQ23A == 9 
-	replace			mutual_women = 0 if AS02AQ23C == 999 
-	replace			mutual_women = 0 if mutual_women == . 
+	replace			mutual_women = as02aq26c if as02aq26a == 1
+	replace			mutual_women = 0 if as02aq26a == 2
+	replace			mutual_women = 0 if as02aq26a == 3
+	replace			mutual_women = 0 if as02aq26c == 99
+	replace			mutual_women = 0 if as02aq26c == 999
+	replace			mutual_women = 0 if as02aq26a == . 
 
 	*** we do not include child labor days
 	
@@ -154,10 +162,11 @@
 	
 * summarize household individual labor for land prep to look for outliers
 	sum				hh_1 hh_2 hh_3 hh_4 hh_5 hh_6 hired_men hired_women mutual_men mutual_women
-	*** hh_1, hh_2, hh_3, hired_men, mutual_men, mutual_women are all greater than the minimum (91 days)
+	*** hh_1, hh_2, hh_3, hh_4, hh_5, hh_6, mutual_men, mutual_women, hired_women are all less than the minimum (91 days)
+	*** only hired_men (124) is larger than the minimum
 	
 * generate local for variables that contain outliers
-	loc				labor hh_1 hh_2 hh_3 hh_4 hh_5 hh_6 hired_men hired_women mutual_men mutual_women
+	loc				labor hired_men
 
 * replace zero to missing, missing to zero, and outliers to missing
 	foreach var of loc labor {
@@ -165,10 +174,10 @@
 		mvencode		`var', mv(0)
 	    replace			`var' = . if `var' > 90
 	}
-	*** 18 outliers changed to missing
+	*** 3 outliers changed to missing
 
-* impute missing values (only need to do six variables - set new local)
-	loc 			laborimp hh_1 hh_2 hh_3 hired_men mutual_men mutual_women
+* impute missing values (only need to do one variable - set new local)
+	loc 			laborimp hired_men
 	mi set 			wide 	// declare the data to be wide.
 	mi xtset		, clear 	// clear any xtset that may have had in place previously
 
@@ -176,7 +185,7 @@
 * impute each variable in local		
 	foreach var of loc laborimp {
 		mi register			imputed `var' // identify variable to be imputed
-		sort				clusterid hh_num extension ord field parcel, stable 
+		sort				clusterid hh_num ord field parcel, stable 
 		// sort to ensure reproducability of results
 		mi impute 			pmm `var' i.clusterid, add(1) rseed(245780) ///
 								noisily dots force knn(5) bootstrap
@@ -184,16 +193,11 @@
 	mi 				unset	
 	
 * summarize imputed variables
-	sum				hh_1_1_ hh_2_2_ hh_3_3_ hired_men_4_ mutual_men_5_ mutual_women_6_ 
-	* all values seem fine
-	replace			hh_1 = hh_1_1_
-	replace			hh_2 = hh_2_2_	
-	replace 		hh_3 = hh_3_3_
-	replace 		hired_men = hired_men_4_ 
-	replace			mutual_men = mutual_men_5_
-	replace			mutual_women = mutual_women_6_ 
+	sum				hired_men_1_
+	
+	replace 		hired_men = hired_men_1_ 
 
-* total labor days for harvest
+* total labor days for prep
 	egen			hh_prep_labor = rowtotal(hh_1 hh_2 hh_3 hh_4 hh_5 hh_6)
 	egen			hired_prep_labor  = rowtotal(hired_men hired_women)
 	egen			mutual_prep_labor = rowtotal(mutual_men mutual_women)
@@ -206,36 +210,35 @@
 	mdesc			prep_labor prep_labor_all
 	*** no missing values
 	sum 			prep_labor prep_labor_all
-	*** which is used will not make that much of a difference, except for max
-	*** with free labor: average = 11.8, max = 270
-	*** without free labor: average = 11.4, max = 180
+	*** with free labor: average = 11.4, max = 540
+	*** without free labor: average = 11.1, max = 540
 	
 * **********************************************************************
 * 3 - combine planting and harvest labor 
 * **********************************************************************
 
-	keep 			clusterid hh_num extension ord field parcel prep_labor prep_labor_all ///
+	keep 			clusterid hh_num ord field parcel prep_labor prep_labor_all ///
 					hh_prep_labor hired_prep_labor mutual_prep_labor 
 	
-* create unique household-plot identifier
-	isid				clusterid hh_num extension ord field parcel
-	sort				clusterid hh_num extension ord field parcel, stable 
-	egen				plot_id = group(clusterid hh_num extension ord field parcel)
+	* create unique household-plot identifier
+	isid				clusterid hh_num ord field parcel
+	sort				clusterid hh_num ord field parcel, stable 
+	egen				plot_id = group(clusterid hh_num ord field parcel)
 	lab var				plot_id "unique field and parcel identifier"
 					
 * merging in plant labor data
-	merge		m:1 plot_id using "`export'/2014_as2ap1_2", generate(_as2ap12)
-	*** 305 missing in master, 0 not matched from using 
-	*** total of 4834 matched 
+	merge		m:1 plot_id using "`export'/2011_as2ap2_1", generate(_as2ap12)
+	*** 242 missing in master, 0 not matched from using 
+	*** total of 6202 matched 
 	*** we will impute the missing values later
 
 	drop _as2ap12
 	
 * merging in harvest labor data
-	merge		m:1 plot_id using "`export'/2014_as2ap1_3", generate(_as2ap13)
-	*** 305 missing in master, 0 not matched from using 
+	merge		m:1 plot_id using "`export'/2011_as2ap2_2", generate(_as2ap13)
+	*** 242 missing in master, 0 not matched from using 
 	*** presumably those which did not match will have issues matching will full file, also 
-	*** total of 4834 matched 
+	*** total of 6202 matched 
 	*** we will impute the missing values later
 
 	drop _as2ap13 
@@ -250,8 +253,8 @@
 	summarize
 
 * save file
-		customsave , idvar(plot_id) filename("2014_as2ap1_f") ///
-			path("`export'") dofile(2014_AS2AP1_3) user($user)
+		customsave , idvar(plot_id) filename("2011_as2ap1_f") ///
+			path("`export'") dofile(2011_AS2AP1_3) user($user)
 
 * close the log
 	log	close
