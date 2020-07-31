@@ -102,6 +102,7 @@
 
 	drop			_11a1 _11b1 _11c1 _11c2 _11d _a2
 
+	
 * **********************************************************************
 * 1b - create total farm and maize variables
 * **********************************************************************
@@ -140,6 +141,7 @@
 	replace			mz_hrv = . if mz_damaged == . & mz_hrv == 0		
 	drop 			mz_damaged
 	*** 3,631 changes made
+
 	
 * **********************************************************************
 * 2 - impute: total farm value, labor, fertilizer use 
@@ -387,11 +389,14 @@
 	lab var			mz_frtimp "fertilizer (kg), imputed"
 	lab var			mz_frt "fertilizer (kg)"
 
+	
 * **********************************************************************
-* 3 - collapse to household level
+* 4 - collapse to household level
 * **********************************************************************
+
+
 * **********************************************************************
-* 3a - generate total farm variables
+* 4a - generate total farm variables
 * **********************************************************************
 
 * generate plot area
@@ -431,7 +436,7 @@
 	
 	
 * **********************************************************************
-* 3b - generate maize variables 
+* 4b - generate maize variables 
 * **********************************************************************	
 	
 * generate plot area
