@@ -15,7 +15,7 @@
 	* xfill.ado
 
 * TO DO:
-	* adapt this file to Nigeria
+	* done
 	
 * **********************************************************************
 * 0 - setup
@@ -37,80 +37,27 @@
 * using merge rather than append
 * import wave 1 nigeria
 	
-	use "`root'/wave_1/ghsy1_merged"
+	use "`root'/wave_1/ghsy1_merged", clear
 	*** at the moment I believe that all three waves of nigeria identify hh's the same
-	*** need to merge households together and then reshape 
 	
-* merge in wave 2 
-
-	merge 			m:1 zone state lga sector ea hhid using "`root'/wave_2/ghsy2_merged"
-	*** 2370 matched
-	*** 463 not matched from master 
-	*** 398 not matched from using - only appear in w2 
-	rename 			_merge _mergewave2
-
-* merge in wave 3
-
-	merge 			m:1 zone state lga sector ea hhid using "`root'/wave_3/ghsy3_merged"
-	*** 2587 matched
-	*** 644 not matched from master
-	*** 196 not matched from using
+* append wave 2 file
+	append		using "`root'/wave_2/ghsy2_merged", force	
 	
-	rename 			_merge _mergewave3
+* append wave 3 file 
+	append		using "`root'/wave_3/ghsy3_merged", force	
 	
-	
-* **********************************************************************
-* 2 - reshape and format panel
-* **********************************************************************
-
-* per https://www.stata.com/support/faqs/data-management/problems-with-reshape/ 
-* create local which will contain all variable names that you want to reshape 
-	unab 			vars : *2010 
-	local			stubs: subinstr local vars "2010" "", all
-	
-	reshape 		long `stubs', ///
-						i(y1_hhid y2_hhid y3_hhid zone ///
-						state lga sector ea) j(time)
-						
-	*** takes about 90 seconds to run
-	
-
-* count how many observations we have
-	count 
-	*** starting with way too many observations - 10281
-
-	duplicates 		drop
-	*** 0 dropped 
-
-* drop empty obsevations (empty because of the reshape)
-	drop 			if tf_hrv == .
-	* 1897 dropped 
-
-* drop movers
-	*** no variable for mover in the files we have cleaned in nigeria
-	*drop 			if mover2010 == 1
-	*** 713 observations dropped
-	*drop 			if mover2012 == 1
-	*** 760 observations 
-
 * check the number of observations again
 	count
 	*** 8384 observations 
+	count if year2010!=.
 	*** wave 1 has 2833
-	*** wave 2 has 2783
+	count if year2012!=.
+	*** wave 2 has 2768
+	count if year2015!=.
 	*** wave 3 has 2783
-
-* create household, country, and data identifiers
-* need to first replace empty places - otherwise will create hhid = . 
-	replace 		y1_hhid = 0 if y1_hhid == .
-	*** 886 changes
-	replace 		y2_hhid = 0 if y2_hhid == .
-	*** 881 changes made
-	replace 		y3_hhid = 0 if y3_hhid == .
-	*** 941 changes made
 	
-	egen			pl_id = group(y1_hhid y2_hhid y3_hhid)
-	lab var			pl_id "panel household id"
+	gen			pl_id = hhid
+	lab var			pl_id "panel household id/hhid"
 
 	gen				country = "nigeria"
 	lab var			country "Country"
@@ -118,14 +65,22 @@
 	gen				dtype = "lp"
 	lab var			dtype "Data type"
 	
-	isid			pl_id year
-
-* drop unnecessary variables
-	drop			y1_hhid y2_hhid y3_hhid
-						
+	gen 			time = .
+	replace 		time = 2010 if year2010 == 2010
+	replace 		time = 2012 if year2012 == 2012
+	replace 		time = 2015 if year2015 == 2015
+	
+	isid			hhid time
+	
+* gen data source var
+	gen 			data = "ghsy1"
+	replace 		data = "ghsy1" if data2010 == "ghsy1"
+	replace			data = "ghsy2" if data2012 == "ghsy2"
+	replace			data = "ghsy3" if data2015 == "ghsy3"
+	
 * order variables
 	order			country dtype zone state lga sector ea ///
-						pl_id year
+						 time
 				
 * label household variables	
 	lab var			sector  "Sector"
@@ -322,3 +277,4 @@
 	log	close
 
 /* END */
+

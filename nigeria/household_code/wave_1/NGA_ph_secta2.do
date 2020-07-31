@@ -29,6 +29,7 @@
 	*log close
 	
 * open log	
+	cap log close
 	log using "`logout'/ph_secta2", append
 		
 * **********************************************************************
@@ -124,7 +125,7 @@
 
 * total labor days for harvest
 	egen			hrv_labor = rowtotal(hh_1_1_ hh_2_2_ hh_3_3_ hh_4_4_ ///
-							 )
+							men_days women_days free_days )
 	lab var			hrv_labor "total labor at harvest (days)"
 
 * check for missing values
