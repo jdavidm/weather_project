@@ -28,6 +28,7 @@
 	loc 	logout	=	"$data/household_data/nigeria/logs"
 
 * open log
+	cap 	log 	close
 	log 	using 	"`logout'/ghsy3_merge_wave_3", append
 
 	
@@ -548,7 +549,7 @@
 	isid			hhid
 
 * generate year identifier
-	gen				year = 2013
+	gen				year = 2015
 	lab var			year "Year"
 		
 	order 			zone state lga sector ea hhid /// 	

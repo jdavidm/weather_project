@@ -26,6 +26,7 @@
 	loc		logout 	= 	"$data/merged_data/nigeria/logs"
 
 * open log	
+	cap log close
 	log 	using 		"`logout'/ghsy2_build", append
 
 	
@@ -216,6 +217,17 @@
 	customsave 	, idvar(hhid) filename("ghsy2_merged_n.dta") ///
 		path("`export'") dofile(ghsy2_build) user($user)
 
+* rename hhid
+	gen	y2_hhid = hhid 
+					
+* create wide data set 	
+	rename 			* *2012
+	rename 			zone2012 zone
+	rename 			state2012 state
+	rename 			lga2012 lga
+	rename 			ea2012 ea
+	rename 			sector2012 sector
+	rename 			*hhid2012 *hhid
 		
 * **********************************************************************
 * 3 - merge southern household data with rainfall data
@@ -404,6 +416,18 @@
 	customsave 	, idvar(hhid) filename("ghsy2_merged_s.dta") ///
 		path("`export'") dofile(ghsy2_build) user($user)
 
+	* rename hhid
+	gen	y2_hhid = hhid 
+	
+* create wide data set 	
+	rename 			* *2012
+	rename 			zone2012 zone
+	rename 			state2012 state
+	rename 			lga2012 lga
+	rename 			ea2012 ea
+	rename 			sector2012 sector
+	rename 			*hhid2012 *hhid
+	
 	
 * **********************************************************************
 * 5 - append northern and southern data sets
@@ -440,6 +464,22 @@
 	erase		"`export'/ghsy2_merged_n.dta"
 	erase		"`export'/ghsy2_merged_s.dta"
 	
+* rename hhid
+	gen	y2_hhid = hhid 
+	
+* create wide data set 	
+	rename 			* *2012
+	rename 			zone2012 zone
+	rename 			state2012 state
+	rename 			lga2012 lga
+	rename 			ea2012 ea
+	rename 			sector2012 sector
+	rename 			*hhid2012 *hhid
+
+* save file
+	customsave 	, idvar(hhid) filename("ghsy2_merged.dta") ///
+		path("`export'") dofile(ghsy2_build) user($user)
+		
 * close the log
 	log	close
 

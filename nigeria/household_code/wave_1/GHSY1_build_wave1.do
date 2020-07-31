@@ -27,6 +27,7 @@
 	loc		logout 	= 	"$data/merged_data/nigeria/logs"
 
 * open log	
+	cap 	log			 close
 	log 	using 		"`logout'/ghsy1_build_wave1", append
 
 	
@@ -403,6 +404,18 @@
 	customsave 	, idvar(hhid) filename("ghsy1_merged_s.dta") ///
 		path("`export'") dofile(ghsy1_build) user($user)
 
+* rename hhid
+	gen	y1_hhid = hhid 
+	
+* create wide data set 	
+	rename 			* *2010
+	rename 			zone2010 zone
+	rename 			state2010 state
+	rename 			lga2010 lga
+	rename 			ea2010 ea
+	rename 			sector2010 sector
+	rename 			*hhid2010 *hhid
+	
 	
 * **********************************************************************
 * 5 - append northern and southern data sets
@@ -425,7 +438,23 @@
 * erase northern and southern files
 	erase		"`export'/ghsy1_merged_n.dta"
 	erase		"`export'/ghsy1_merged_s.dta"
+
+* rename hhid
+	gen	y1_hhid = hhid 
 	
+* create wide data set 	
+	rename 			* *2010
+	rename 			zone2010 zone
+	rename 			state2010 state
+	rename 			lga2010 lga
+	rename 			ea2010 ea
+	rename 			sector2010 sector
+	rename 			*hhid2010 *hhid
+
+* save file
+	customsave 	, idvar(hhid) filename("ghsy1_merged.dta") ///
+		path("`export'") dofile(ghsy1_build) user($user)
+		
 * close the log
 	log	close
 
