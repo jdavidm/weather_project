@@ -26,6 +26,7 @@
 	loc 	logout	=	"$data/household_data/niger/logs"
 
 * open log
+	cap		log close
 	log 	using 	"`logout'/2014_niger_merge", append
 
 	
@@ -278,14 +279,33 @@
 	*** mean reduces from 28 to 26
 	*** max still at 22500 
 
+	
 * **********************************************************************
 * 3 - collapse to household level
 * **********************************************************************
 
-* **********************************************************************
-* 3a - generate total farm variables
-* **********************************************************************
+	gen 	cpplotsize 		= 	plotsize 		if mz_hrvimp !=	.
+	gen 	cpvl_hrvimp 	= 	vl_hrvimp 		if mz_hrvimp !=	.
+	gen 	cplabordaysimp 	= 	labordaysimp 	if mz_hrvimp !=	.
+	gen 	cpfertimp		=	fertimp 		if mz_hrvimp !=	.
+	gen	 	cppest_any		=	pest_any 		if mz_hrvimp != .
+	gen 	cpherb_any 		= 	herb_any 		if mz_hrvimp != .
 
+	collapse (sum) tf_lnd=plotsize  tf_hrv=vl_hrvimp  lab_tot=labordaysimp ///
+		fert_tot=fertimp cp_lnd=cpplotsize cp_hrv=cpvl_hrvimp cplab_tot=cplabordaysimp ///
+		fert_mz=cpfertimp (max) tf_pst=pest_any tf_hrb=herb_any cp_pst=cppest_any ///
+		cp_hrb=cpherb_any, by(region dept canton zd clusterid hh_num)
+
+	gen 	tf_yld 		= 	tf_hrv/tf_lnd
+	gen 	tf_lab 		= 	lab_tot/tf_lnd
+	gen		tf_frt 		= 	fert_tot / tf_lnd
+
+	gen 	cp_yld 		= 	cp_hrv/cp_lnd
+	gen		cp_lab 		= 	cplab_tot/cp_lnd
+	gen		cp_frt 		= 	fert_mz / cp_lnd
+
+	sum tf_* cp_*
+=======
 * generate plot area
 	bysort			clusterid hh_num extension :	egen tf_lnd = sum(plotsize)
 	lab var			tf_lnd	"Total farmed area (ha)"

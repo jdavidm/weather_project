@@ -123,6 +123,7 @@
 	replace			hired_women = as02aq43c if as02aq43a == 1
 	replace			hired_women = 0 if as02aq43c == 2
 	replace			hired_women = 0 if as02aq43c == .
+	replace 		hired_women = 0 if as02aq43c == 999
 	replace 		hired_women = 0 if hired_women == .  
 	
 	*** we do not include child labor days
@@ -152,10 +153,10 @@
 	
 * summarize household individual labor for land prep to look for outliers
 	sum				hh_1 hh_2 hh_3 hh_4 hh_5 hh_6 hired_men hired_women mutual_men mutual_women
-	*** hh_1 and hired_women are greater than the minimum (91 days)
+	*** hh_1 is greater than the maximum (91 days)
 	
 * generate local for variables that contain outliers
-	loc				labor hh_1 hired_women
+	loc				labor hh_1
 
 * replace zero to missing, missing to zero, and outliers to missing
 	foreach var of loc labor {
@@ -163,7 +164,7 @@
 		mvencode		`var', mv(0)
 	    replace			`var' = . if `var' > 90
 	}
-	*** 7 outliers changed to missing
+	*** 6 outliers changed to missing
 
 * impute missing values (only need to do 2 variables - set new locals)
 	loc				laborimp hh_1 hired_women
@@ -182,10 +183,9 @@
 	mi 				unset	
 	
 * summarize imputed variables
-	sum				hh_1_1_ hired_women_2_
+	sum				hh_1_1_
 	* all values seem fine
 	replace			hh_1 = hh_1_1_
-	replace 		hired_women = hired_women_2_ 
 
 * total labor days for harvest
 	egen			hh_harvest_labor = rowtotal(hh_1 hh_2 hh_3 hh_4 hh_5 hh_6)
