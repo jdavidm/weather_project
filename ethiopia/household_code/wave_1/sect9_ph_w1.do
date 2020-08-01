@@ -294,3 +294,5 @@
 
 * close the log
 	log	close
+	
+/* END */
