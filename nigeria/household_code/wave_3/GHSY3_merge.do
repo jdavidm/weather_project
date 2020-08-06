@@ -559,13 +559,29 @@
 	scatter 		tf_lab tf_lnd
 	*** yield outliers appear unreasonable above 5000 yields
 	
+	* max is determined by comparing the right end tail distribution to wave 1 maxes using a kdensity peak.
 	sum 			tf_yld tf_lab tf_hrv, detail			
 	
-	replace 		tf_lab = . if tf_lab > 3000
-	*** 27 changes
-	replace 		tf_hrv = . if tf_yld > 5500
-	replace 		tf_yld = . if tf_yld > 5500
-	*** 63 changes made
+	kdensity 		tf_hrv if tf_hrv > 5000
+	*** peak is at 5,250
+	kdensity		tf_yld if tf_yld > 9000
+	*** peak is at 10,000
+	kdensity 		tf_lab if tf_lab > 1400
+	*** peak is around 1,900
+	kdensity		tf_lnd if tf_yld > 10000
+	
+	kdensity tf_yld if tf_lnd < 0.1 & tf_yld < 10000
+	*** max tf_yld when lnd is 0.1
+	
+	kdensity tf_lab if tf_lnd < 0.1 & tf_lab > 400
+	kdensity tf_lab if tf_lnd < 0.1 & tf_lab < 10000
+
+	replace 		tf_lab = . if tf_lab > 500 & tf_lnd < 0.1
+	*** 131 changes
+	replace 		tf_lab = . if tf_lab > 1900
+	*** 47 changes
+	replace 		tf_hrv = . if tf_yld > 1000 & tf_lnd < 0.1
+	*** 173 changes
 
 	scatter 		tf_yld tf_lnd 
 	
@@ -584,7 +600,7 @@
 	sum				tf_lab_1_
 	replace 		tf_lab = tf_lab_1_
 	sum 			tf_lab, detail
-	*** mean 214.89, max 2745.87
+	*** mean 173.5, max 1880.39
 	drop			mi_miss tf_lab_1_
 	mdesc			tf_lab
 	*** none missing
@@ -611,7 +627,7 @@
 	replace 		tf_hrv = tf_hrv_1_	if 	tf_hrv == .
 	replace 		tf_yld = tf_hrv / tf_lnd
 	sum 			tf_yld, detail
-	*** mean 825.47, max 30425.5
+	*** mean 714.92, max 13591.4
 	mdesc 			tf_yld
 	*** 0 missing
 	drop 			mi_miss tf_hrv_1_ tf_hrv_2_
@@ -619,7 +635,11 @@
 * impute cp_lab
 	sum 			cp_lab, detail
 	scatter			cp_lnd cp_lab
-	replace 		cp_lab = . if cp_lab >2000
+	kdensity 		cp_lab if cp_lnd < 1 & cp_lab < 500
+	*** max is 50
+	
+	replace 		cp_lab = . if cp_lab > 200 & cp_lnd < 0.1
+	*** 224 changes
 	
 	mi set 			wide 	// declare the data to be wide.
 	mi xtset		, clear 	// clear any xtset that may have had in place previously
@@ -646,11 +666,17 @@
 	*** mean 5221.55, std dev 31808.34, max is 720661
 	sum 			cp_hrv, detail
 	*** mean 894.53, std dev 1183.46, max 10466.78
+	sum 			cp_yld if cp_lnd < 0.5, detail
+	kdensity 		cp_yld if cp_lnd < 0.5 & cp_yld <10000
+	*** max cp_yld is 1000
 	
 	* change outliers to missing
 	replace 		cp_hrv = . if cp_yld > 12000
+	*** 77 changes made
 	replace 		cp_yld = . if cp_yld > 12000
 	*** 77 changes made
+	replace 		cp_hrv = . if cp_lnd < 0.5 & cp_yld > 1000
+	*** 537 changes made
 	
 	sum 			cp_lnd if cp_yld == ., detail
 	*** mean 0.0837, std dev 0.084, max 0.4
@@ -682,9 +708,12 @@
 
 	replace 		cp_yld = cp_hrv / cp_lnd
 	sum 			cp_yld, detail
-	*** mean 2324.1, std. dev 2820.96, max 52003.29
+	*** mean 1140.92, std. dev 1909.06, max 35323.22
 	*** still high but those outliers will be removed when we winsorize
 
+	mdesc			cp_yld cp_hrv if cp_lnd != .
+	*** none missing
+	
 	drop 			mi_miss cp_hrv_1_ cp_hrv_2_ cp_hrv_3_
 
 	sum				tf_* cp_*
