@@ -60,6 +60,16 @@ foreach folder of local folderList {
 		* import the daily data file
 		use "`root'/`folder'/`file'", clear
 		
+		* drop duplicates
+			duplicates 		drop
+			drop if 		household_id2 == 0
+		
+		* reformat household id
+			format			%18.0f household_id2
+			tostring 		household_id2, format(%018.0f)
+			
+			duplicates 		drop household_id2, force
+		
 		* define locals to govern file naming
 			loc dat = substr("`file'", 1, 5)
 			loc ext = substr("`file'", 7, 2)
@@ -96,6 +106,16 @@ foreach folder of local folderList {
 		
 		* import the daily data file		
 		use "`root'/`folder'/`file'", clear
+		
+		* drop duplicates
+			duplicates 		drop
+			drop if 		household_id2 == 0
+		
+		* reformat household id
+			format			%18.0f household_id2
+			tostring 		household_id2, format(%018.0f)
+			
+			duplicates 		drop household_id2, force
 		
 		* define locals to govern file naming		
 			loc dat = substr("`file'", 1, 5)
