@@ -20,18 +20,16 @@
 * 0 - setup
 * **********************************************************************
 
-* set global user
-	global user "emilk"
-	
 * define paths	
-	loc 	root 	= 	"G:/My Drive/weather_project/household_data/nigeria/wave_1/raw"
-	loc 	export 	= 	"G:/My Drive/weather_project/household_data/nigeria/wave_1/refined"
-	loc 	logout 	= 	"G:/My Drive/weather_project/household_data/nigeria/logs"
+	loc 	root 	= 	"$data/household_data/nigeria/wave_1/raw"
+	loc 	export 	= 	"$data/household_data/nigeria/wave_1/refined"
+	loc 	logout 	= 	"$data/household_data/nigeria/logs"
 
 * close log (in case still open)
 	*log close
 	
 * open log	
+	cap log close
 	log using "`logout'/ph_secta2", append
 		
 * **********************************************************************
@@ -81,13 +79,12 @@
 *free labor days, from other households
 	replace sa2q12a = 0 if sa2q12a == .
 	replace sa2q12b = 0 if sa2q12b == .
-	replace sa2q12c = 0 if sa2q12c == .
 	
-	gen free_days = (sa2q12a + sa2q12b + sa2q12c)
+	gen free_days = (sa2q12a + sa2q12b)
 	replace free_days = 0 if free_days == . 
 
 *total labor days, we will need the labor rate in days/hectare but will need the plotsize from other data sets to get it
-	gen labor_days = (men_days + women_days + free_days + hh_days)
+	gen labor_days = (men_days + women_days + free_days + hh_1 + hh_2 + hh_3 + hh_4)
 
 * **********************************************************************
 * 2 - impute labor outliers
@@ -98,7 +95,7 @@
 	***presence of outliers detected
 	
 * generate local for variables that contain outliers
-	loc				labor hh_1 hh_2 hh_3 hh_4 women_days free_days
+	loc				labor hh_1 hh_2 hh_3 hh_4 men_days women_days free_days
 
 * replace zero to missing, missing to zero, and outliers to mizzing
 	foreach var of loc labor {
@@ -127,7 +124,7 @@
 
 * total labor days for harvest
 	egen			hrv_labor = rowtotal(hh_1_1_ hh_2_2_ hh_3_3_ hh_4_4_ ///
-							 )
+							men_days women_days free_days )
 	lab var			hrv_labor "total labor at harvest (days)"
 
 * check for missing values

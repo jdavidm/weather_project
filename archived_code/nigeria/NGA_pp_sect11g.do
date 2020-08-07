@@ -7,33 +7,20 @@
 	* reads in Nigeria, WAVE 1 POST PLANTING, NIGERIA SECT11G
 	* converts harvest quantitites 
 	* converts to kilograms, as appropriate
-	* maybe more who knows
 	* outputs clean data file ready for combination with wave 1 hh data
 
 * assumes
 	* customsave.ado
 	* harvconv.dta conversion file 
-	
-* other notes: 
-	* still includes some notes from Alison Conley's work in spring 2020
-	
-* TO DO:
-	* problematic issues with conversions 
-	* not best practices for fixing observations - does the trick, typos fairly obvious, but not great...
-	* unsure - incomplete, runs but maybe not right? 
-	* clarify "does" section
 
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
-
-* set global user
-	global user "aljosephson"
 	
 * define paths	
-	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_1/raw"
-	loc export = "G:/My Drive/weather_project/household_data/nigeria/wave_1/refined"
-	loc logout = "G:/My Drive/weather_project/household_data/nigeria/logs"
+	loc root = "$data/household_data/nigeria/wave_1/raw"
+	loc export = "$data/household_data/nigeria/wave_1/refined"
+	loc logout = "$data/household_data/nigeria/logs"
 
 * close log (in case still open)
 	*log close
