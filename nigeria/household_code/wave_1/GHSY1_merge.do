@@ -8,7 +8,7 @@
 	* merges individual cleaned plot datasets together
 	* adjusts binary variables
 	* imputes values for continuous variables
-	* collapses to wave 3 plot level data to household level for combination with other waves
+	* collapses to wave 1 plot level data to household level for combination with other waves
 
 * assumes
 	* previously cleaned household datasets
@@ -23,12 +23,13 @@
 * **********************************************************************
 
 * define paths
-	loc		root	=	"$data/household_data/nigeria/wave_3/refined"
-	loc 	export	=	"$data/household_data/nigeria/wave_3/refined"
+	loc		root	=	"$data/household_data/nigeria/wave_1/refined"
+	loc 	export	=	"$data/household_data/nigeria/wave_1/refined"
 	loc 	logout	=	"$data/household_data/nigeria/logs"
 
 * open log
-	log 	using 	"`logout'/ghsy3_merge_wave_3", append
+	cap 	log 	close
+	log 	using 	"`logout'/ghsy2_merge", append
 
 	
 * **********************************************************************
@@ -36,56 +37,48 @@
 * **********************************************************************
 
 * start by loading harvest quantity and value, since this is our limiting factor
-	use 			"`root'/ph_secta3i.dta", clear
+	use 			"`root'/ph_secta3.dta", clear
 
 	isid			cropplot_id
 	
 * merge in plot size data
-	merge 			m:1 hhid plotid using "`root'/ph_sect11a1", generate(_11a1)
-	*** 80 are missing in master, 10,414 matched
-	*** most unmerged (457) are from using, meaning we lack production data
+	merge 			m:1 hhid plotid using "`root'/pp_sect11a1", generate(_11a1)
+	*** matched 9760, failed to match 80 from master and 972 from using
 	*** per Malawi (rs_plot) we drop all unmerged observations
 
 	drop			if _11a1 != 3
 	
 * merging in irrigation data
-	merge			m:1 hhid plotid using "`root'/pp_sect11b1", generate(_11b1)
-	*** none are missing in master, 10414 matched 
+	merge			m:1 hhid plotid using "`root'/pp_sect11b", generate(_11b)
+	*** matched 9704 and failed to match 56 from master and 917 from using
 	*** we assume these are plots without irrigation
 	
-	replace			irr_any = 2 if irr_any == . & _11b1 == 1
-	*** 0 changes made
+	replace			irr_any = 2 if irr_any == . & _11b == 1
+*** 56 changes made
 
-	drop			if _11b1 == 2
+	drop			if _11b == 2
 	
-* merging in planting labor data
-	merge		m:1 hhid plotid using "`root'/pp_sect11c1", generate(_11c1)
-	*** 0 are missing in master, 10414 matched
-	
-	drop			if _11c1 == 2
-	*** not going to actually use planting labor in analysis - will omit
-
 * merging in pesticide and herbicide use
-	merge		m:1 hhid plotid using "`root'/ph_sect11c2", generate(_11c2)
-	*** 1 missing in master, 10413 
+	merge		m:1 hhid plotid using "`root'/pp_sect11c", generate(_11c)
+	***matched 9688, failed to match 72 from master and 822 from using
 	*** we assume these are plots without pest or herb
 
-	replace			pest_any = 2 if pest_any == . & _11c2 == 1
-	replace			herb_any = 2 if herb_any == . & _11c2 == 1
-	*** 1 change made for each 
+	replace			pest_any = 2 if pest_any == . & _11c == 1
+	replace			herb_any = 2 if herb_any == . & _11c == 1
+	*** 72 changes made for each 
 	
-	drop			if _11c2 == 2
-
+	drop			if _11c == 2
+	
 * merging in fertilizer use
-	merge		m:1 hhid plotid using "`root'/ph_sect11d", generate(_11d)
-	*** 2 missing from master, 10412 matched 
+	merge		m:1 hhid plotid using "`root'/pp_sect11d", generate(_11d)
+	*** 567 missing from master, 9193 matched 
 	*** we will impute the missing values later
 	
 	drop			if _11d == 2
 
 * merging in harvest labor data
 	merge		m:1 hhid plotid using "`root'/ph_secta2", generate(_a2)
-	*** 1 missing from master, 10413 matched
+	*** 582 missing from master, 9178 matched
 	*** we will impute the missing values later
 	*** only going to include harvest labor in analysis - will include this and rename generally
 	*** can revisit this later
@@ -99,7 +92,8 @@
 	drop			if herb_any == .
 	*** no observations dropped
 
-	drop			_11a1 _11b1 _11c1 _11c2 _11d _a2
+	drop			_11a1 _11b _11c _11c _11d _a2
+
 	
 * **********************************************************************
 * 1b - create total farm and maize variables
@@ -138,7 +132,8 @@
 	}	
 	replace			mz_hrv = . if mz_damaged == . & mz_hrv == 0		
 	drop 			mz_damaged
-	*** 3,637 changes made
+	*** 3792 changes made
+
 	
 * **********************************************************************
 * 2 - impute: total farm value, labor, fertilizer use 
@@ -181,8 +176,8 @@
 						& !inlist(vl_yld,.,0) & !mi(maxrep)
 	tabstat			vl_yld vl_yldimp, ///
 						f(%9.0f) s(n me min p1 p50 p95 p99 max) c(s) longstub
-	*** reduces mean from 2163 to 1385
-	*** reduces max from 20157 to 11769
+	*** reduces mean from 800 to 628
+	*** reduces max from 22951 to 10168
 	
 	drop			stddev median replacement maxrep minrep
 	lab var			vl_yldimp	"value of yield (2010USD/ha), imputed"
@@ -191,6 +186,7 @@
 	generate		vl_hrvimp = vl_yldimp * plotsize 
 	lab var			vl_hrvimp "value of harvest (2010USD), imputed"
 	lab var			vl_hrv "value of harvest (2010USD)"
+
 	
 * **********************************************************************
 * 2b - impute: labor
@@ -218,8 +214,8 @@
 						& !inlist(labordays_ha,.,0) & !mi(maxrep)
 	tabstat 		labordays_ha labordays_haimp, ///
 						f(%9.0f) s(n me min p1 p50 p95 p99 max) c(s) longstub
-	*** reduces mean from 453 to 310
-	*** reduces max from 4555 to 3100
+	*** reduces mean from 154 to 124
+	*** reduces max from 4509 to 1603
 
 	drop			stddev median replacement maxrep minrep
 	lab var			labordays_haimp	"farm labor use (days/ha), imputed"
@@ -227,6 +223,7 @@
 * make labor days based on imputed labor days per hectare
 	gen				labordaysimp = labordays_haimp * plotsize, after(labordays)
 	lab var			labordaysimp "farm labor (days), imputed"
+	
 	
 * **********************************************************************
 * 2c - impute: fertilizer
@@ -254,8 +251,8 @@
 						& !inlist(fert_ha,.,0) & !mi(maxrep)
 	tabstat 		fert_ha fert_haimp, ///
 						f(%9.0f) s(n me min p1 p50 p95 p99 max) c(s) longstub
-	*** reduces mean from 140 to 116
-	*** reduces max from 2128 to 1656
+	*** reduces mean from 98 to 85
+	*** reduces max from 4380 to 2389
 	
 	drop			stddev median replacement maxrep minrep
 	lab var			fert_haimp	"fertilizer use (kg/ha), imputed"
@@ -265,10 +262,11 @@
 	lab var			fertimp "fertilizer (kg), imputed"
 	lab var			fert "fertilizer (kg)"
 
-
+	
 * **********************************************************************
 * 3 - impute: maize yield, labor, fertilizer use 
 * **********************************************************************
+
 
 * **********************************************************************
 * 3a - impute: maize yield
@@ -297,8 +295,8 @@
 					& !inlist(mz_yld,.,0) & !mi(maxrep)
 	tabstat 		mz_yld mz_yldimp, ///
 					f(%9.0f) s(n me min p1 p50 p95 p99 max) c(s) longstub
-	*** reduces mean from 7675 to 5141
-	*** reduces max from 49971 to 30753
+	*** reduces mean from 2649 to 2244
+	*** does not change max from 96135
 					
 	drop 			stddev median replacement maxrep minrep
 	lab var 		mz_yldimp "maize yield (kg/ha), imputed"
@@ -307,7 +305,8 @@
 	generate 		mz_hrvimp = mz_yldimp * mz_lnd, after(mz_hrv)
 	lab var 		mz_hrvimp "maize harvest quantity (kg), imputed"
 	lab var 		mz_hrv "maize harvest quantity (kg)"
-
+	
+	
 * **********************************************************************
 * 3b - impute: maize labor
 * **********************************************************************
@@ -334,8 +333,8 @@
 						& !inlist(mz_lab_ha,.,0) & !mi(maxrep)
 	tabstat 		mz_lab_ha mz_lab_haimp, ///
 						f(%9.0f) s(n me min p1 p50 p95 p99 max) c(s) longstub
-	*** reduces mean from 505 to 318
-	*** reduces max from 4382 to 2505
+	*** reduces mean from 154 to 127
+	*** reduces max from 2633 to 2398
 
 	drop			stddev median replacement maxrep minrep
 	lab var			mz_lab_haimp	"maize labor use (days/ha), imputed"
@@ -344,6 +343,7 @@
 	gen				mz_labimp = mz_lab_haimp * mz_lnd, after(mz_lab)
 	lab var			mz_labimp "maize labor (days), imputed"
 
+	
 * **********************************************************************
 * 3c - impute: maize fertilizer
 * **********************************************************************
@@ -370,8 +370,8 @@
 						& !inlist(mz_frt_ha,.,0) & !mi(maxrep)
 	tabstat 		mz_frt_ha mz_frt_haimp, ///
 						f(%9.0f) s(n me min p1 p50 p95 p99 max) c(s) longstub
-	*** reduces mean from 212 to 164
-	*** reduces max from 2656 to 2060
+	*** reduces mean from 144 to 127
+	*** reduces max from 2925 to 1801
 
 	drop			stddev median replacement maxrep minrep
 	lab var			mz_frt_haimp	"fertilizer use (kg/ha), imputed"
@@ -381,6 +381,7 @@
 	lab var			mz_frtimp "fertilizer (kg), imputed"
 	lab var			mz_frt "fertilizer (kg)"
 
+	
 * **********************************************************************
 * 3 - collapse to household level
 * **********************************************************************
@@ -393,6 +394,7 @@
 	lab var			tf_lnd	"Total farmed area (ha)"
 	assert			tf_lnd > 0 
 	sum				tf_lnd, detail
+	*** max farmed area is 108 which is large considering the mean is 3
 
 * value of harvest
 	bysort			hhid (plot_id) : egen tf_hrv = sum(vl_hrvimp)
@@ -403,15 +405,14 @@
 	generate		tf_yld = tf_hrv / tf_lnd
 	lab var			tf_yld	"value of yield (2010 USD/ha)"
 	sum				tf_yld, detail
-	*** the max 174965 USD/ha is a bit high
 	
 * labor
 	bysort 			hhid (plot_id) : egen lab_tot = sum(labordaysimp)
 	generate		tf_lab = lab_tot / tf_lnd
 	lab var			tf_lab	"labor rate (days/ha)"
 	sum				tf_lab, detail
-	*** the max 53291 days per hectare is a bit high
-
+	*** max labor is high, 1405, considering that mean labor is 107
+	
 * fertilizer
 	bysort 			hhid (plot_id) : egen fert_tot = sum(fertimp)
 	generate		tf_frt = fert_tot / tf_lnd
@@ -498,13 +499,13 @@
 	
 * count before collapse
 	count
-	*** 5367 obs
-	
+	*** 5114 observations
+
 	collapse (max)	tf_* cp_*, by(zone state lga sector ea hhid)
 
 * count after collapse 
 	count 
-	*** 5367 to 2783 observations 
+	*** 5114 to 2833
 	
 * return non-maize production to missing
 	replace			cp_yld = . if cp_yld == 0
@@ -521,7 +522,7 @@
 
 * verify values are accurate
 	sum				tf_* cp_*
-	
+
 * label variables
 	lab var			tf_lnd	"Total farmed area (ha)"
 	lab var			tf_hrv	"Total value of harvest (2010 USD)"
@@ -540,6 +541,7 @@
 	lab var			cp_hrb	"Any maize plot has herbicide"
 	lab var			cp_irr	"Any maize plot has irrigation"
 	
+	
 * **********************************************************************
 * 4 - end matter, clean up to save
 * **********************************************************************
@@ -548,7 +550,7 @@
 	isid			hhid
 
 * generate year identifier
-	gen				year = 2013
+	gen				year = 2010
 	lab var			year "Year"
 		
 	order 			zone state lga sector ea hhid /// 	
@@ -560,8 +562,8 @@
 	summarize 
 	
 * saving production dataset
-	customsave , idvar(hhid) filename(hhfinal_ghsy3.dta) path("`export'") ///
-			dofile(ghsy3_merge) user($user) 
+	customsave , idvar(hhid) filename(hhfinal_ghsy1.dta) path("`export'") ///
+			dofile(ghsy1_merge) user($user) 
 
 * close the log
 	log	close

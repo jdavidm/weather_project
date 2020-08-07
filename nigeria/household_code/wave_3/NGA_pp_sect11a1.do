@@ -14,6 +14,8 @@
 	* customsave.ado
 	* land-conversion.dta conversion file
 
+* TO DO:
+	* complete
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
@@ -25,6 +27,7 @@
 	loc 	logout  = 		"$data/household_data/nigeria/logs"
 
 * open log	
+	cap log close
 	log using "`logout'/ph_sect11a1", append
 
 * **********************************************************************
