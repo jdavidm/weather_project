@@ -35,6 +35,7 @@
 	loc logout = "G:/My Drive/weather_project/weather_data/ethiopia/logs"
 
 * open log	
+	cap log		close
 	log using "`logout'/eth_essy3_weather", replace
 
 
@@ -66,7 +67,7 @@ foreach folder of local folderList {
 		
 		* reformat household id
 			format			%18.0f household_id2
-			tostring 		household_id2, format(%018.0f)
+			tostring 		household_id2, format(%018.0f) replace
 			
 			duplicates 		drop household_id2, force
 		
@@ -113,7 +114,7 @@ foreach folder of local folderList {
 		
 		* reformat household id
 			format			%18.0f household_id2
-			tostring 		household_id2, format(%018.0f)
+			tostring 		household_id2, format(%018.0f) replace
 			
 			duplicates 		drop household_id2, force
 		
