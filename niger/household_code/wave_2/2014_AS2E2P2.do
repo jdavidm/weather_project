@@ -28,7 +28,7 @@
 
 * open log
 	cap log close 
-	log 	using 	"`logout'/2014_AS2E1P2_p", append
+	log 	using 	"`logout'/2014_AS2E2P2_p", append
 
 	
 * **********************************************************************
