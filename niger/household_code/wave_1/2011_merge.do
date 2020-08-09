@@ -36,41 +36,31 @@
 * **********************************************************************
 
 * start by loading harvest quantity and value, since this is our limiting factor
-	use 			"`root'/2011_ase1p2_1.dta", clear
+	use 			"`root'/2011_ase1p2.dta", clear
 
-	isid			plot_id
-	isid 			clusterid hh_num field parcel ord
-	
+	*isid 			clusterid hh_num ord field parcel
+
 * merge in plot size data
 	merge 			m:1 clusterid hh_num field parcel using "`root'/2011_as1p1", generate(_as1p1)
-	*** 33 not matched from master out of 1409 not matched 
-	*** most unmerged (1376) are from using, meaning we lack production data
+	*** 11860 matched, 591 not matched from using meaning we have no productin data
+	*** 56 not matched from master
 	*** per Malawi (rs_plot) we drop all unmerged observations
 	
 	drop			if _as1p1 != 3
 	
 * no irrigation, no seed use rate 
 
-* merging in labor data
-	merge		m:1 clusterid hh_num field parcel using "`root'/2011_as2ap1_f", generate(_as2ap1f)
-	*** 0 unmatched from master
-	*** 1407 not merged from using
+* merging in fertilizer, pesticide, herbicide use and labor
+	merge			m:1 plot_id using "`root'/2011_as2ap1", generate(_as2ap1)
+	*** 5684 not matched from master
+	*** in 2014 we assumed those unmatched are plots that did not have inputs 
 	
-	drop			if _as2ap1f == 2
-		
-* merging in pesticide and herbicide use
-	merge		m:1 clusterid hh_num field parcel using "`root'/2011_pp_as2ap1", generate(_ppas2ap1)
-	*** 0 not matched from master
+	replace			pest_any = 0 if pest_any == . & _as2ap1 == 1
+	replace			herb_any = 0 if herb_any == . & _as2ap1 == 1
+	*** 43 changes made
 	
-* 1407 did not match from using 	
-	drop			if _ppas2ap1 == 2
-
-* merging in fertilizer use
-	merge		m:1 clusterid hh_num field parcel using "`root'/2011_pp_as2ap1fert", generate(_ppas2ap1fert)
-	*** 0 unmatched from master
-	*** 1407 did not match from using
-	
-	drop			if _ppas2ap1fert == 2
+* 1121 did not match from using 	
+	drop			if _as2ap1 == 2
 
 * drop observations missing values (not in continuous)
 	drop			if plotsize == .
@@ -78,7 +68,7 @@
 	drop			if herb_any == .
 	*** no observations dropped
 
-	drop			_as1p1 _as2ap1f _ppas2ap1 _ppas2ap1fert 
+	drop			_as1p1 _as2ap1
 
 * **********************************************************************
 * 2 - impute: yield, value per hectare, labor (both), fertilizer use 

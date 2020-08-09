@@ -122,7 +122,7 @@
 	gen 			tiyaconv = 3
 	*** will not create conversion for black and white sachet - will impute theses values 
 	
-* create amoung of fertilizer value (kg)
+* create amount of fertilizer value (kg)
 ** UREA 
 	replace AS02AQ09C = . if AS02AQ09C == 9 
 	rename AS02AQ09C ureaunits
