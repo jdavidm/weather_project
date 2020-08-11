@@ -13,7 +13,7 @@
 
 * TO DO:
 	* no refined weather data for wave 3 (could just be because I'm offline rn)
-	* is holder ID right for wave 2?
+	* is holder ID right for wave 3?
 	* clean up varnames in section 3
 
 	
@@ -56,7 +56,7 @@
 	foreach 	file in `fileList' {	
 	
 	* merge weather data with household data
-		merge 	1:1 y3_hhid using "`rootw'/`folder'/`file'"	
+		merge 	1:1 household_id2 using "`rootw'/`folder'/`file'"	
 	
 		* drop files that did not merge
 			drop 	if 	_merge != 3
@@ -126,6 +126,8 @@
 		
 		* drop year variables
 			drop 		*2015						
+			
+			display		"`rootw'/`folder'/`file'"
 	}						
 }	
 
@@ -147,7 +149,7 @@
 	foreach 	file in `fileList' {	
 	
 	* merge weather data with household data
-		merge 	1:1 holder_id using "`rootw'/`folder'/`file'"	
+		merge 	1:1 household_id2 using "`rootw'/`folder'/`file'"	
 	
 		* drop files that did not merge
 			drop 	if 	_merge != 3
@@ -207,7 +209,9 @@
 			lab var		v27_tp`sat'_`ext' "Temperature Bin 80-100"
 		
 		* drop year variables
-			drop 		*2015								
+			drop 		*2015		
+			
+			display		"`rootw'/`folder'/`file'"
 	}						
 }
 
@@ -232,10 +236,10 @@
 * prepare for export
 	qui: compress
 	summarize 
-	sort holder_id
+	sort household_id2
 	
 * save file
-	customsave 	, idvar(holder_id) filename("essy3_merged.dta") ///
+	customsave 	, idvar(household_id2) filename("essy3_merged.dta") ///
 		path("`export'") dofile(ess3_build) user($user)
 		
 * close the log

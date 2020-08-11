@@ -256,7 +256,7 @@
 						mz_hrv mz_lnd mz_lab mz_frt ///
 			 (max)	pest_any herb_any irr_any  ///
 						mz_pst mz_hrb mz_irr, ///
-						by(holder_id parcel field pw hhid ///
+						by(parcel field pw hhid ///
 						region zone woreda ea rural field_id)
 						
 						
@@ -505,12 +505,12 @@
 * **********************************************************************
 
 * generate plot area
-	bysort			holder_id (field_id) : egen tf_lnd = sum(plotsize)
+	bysort			hhid (field_id) : egen tf_lnd = sum(plotsize)
 	assert			tf_lnd > 0 
 	sum				tf_lnd, detail
 
 * value of harvest
-	bysort			holder_id (field_id) : egen tf_hrv = sum(vl_hrvimp)
+	bysort			hhid (field_id) : egen tf_hrv = sum(vl_hrvimp)
 	sum				tf_hrv, detail
 	
 * value of yield
@@ -518,25 +518,25 @@
 	sum				tf_yld, detail
 	
 * labor
-	bysort 			holder_id (field_id) : egen lab_tot = sum(labordaysimp)
+	bysort 			hhid (field_id) : egen lab_tot = sum(labordaysimp)
 	generate		tf_lab = lab_tot / tf_lnd
 	sum				tf_lab, detail
 
 * fertilizer
-	bysort 			holder_id (field_id) : egen fert_tot = sum(fertimp)
+	bysort 			hhid (field_id) : egen fert_tot = sum(fertimp)
 	generate		tf_frt = fert_tot / tf_lnd
 	sum				tf_frt, detail
 
 * pesticide
-	bysort 			holder_id (field_id) : egen tf_pst = max(pest_any)
+	bysort 			hhid (field_id) : egen tf_pst = max(pest_any)
 	tab				tf_pst
 	
 * herbicide
-	bysort 			holder_id (field_id) : egen tf_hrb = max(herb_any)
+	bysort 			hhid (field_id) : egen tf_hrb = max(herb_any)
 	tab				tf_hrb
 	
 * irrigation
-	bysort 			holder_id (field_id) : egen tf_irr = max(irr_any)
+	bysort 			hhid (field_id) : egen tf_irr = max(irr_any)
 	tab				tf_irr
 	
 	
@@ -545,13 +545,13 @@
 * **********************************************************************	
 	
 * generate plot area
-	bysort			holder_id (field_id) :	egen cp_lnd = sum(mz_lnd) ///
+	bysort			hhid (field_id) :	egen cp_lnd = sum(mz_lnd) ///
 						if mz_hrvimp != .
 	assert			cp_lnd > 0 
 	sum				cp_lnd, detail
 
 * value of harvest
-	bysort			holder_id (field_id) :	egen cp_hrv = sum(mz_hrvimp) ///
+	bysort			hhid (field_id) :	egen cp_hrv = sum(mz_hrvimp) ///
 						if mz_hrvimp != .
 	sum				cp_hrv, detail
 	
@@ -560,29 +560,29 @@
 	sum				cp_yld, detail
 	
 * labor
-	bysort 			holder_id (field_id) : egen lab_mz = sum(mz_labimp) ///
+	bysort 			hhid (field_id) : egen lab_mz = sum(mz_labimp) ///
 						if mz_hrvimp != .
 	generate		cp_lab = lab_mz / cp_lnd
 	sum				cp_lab, detail
 
 * fertilizer
-	bysort 			holder_id (field_id) : egen fert_mz = sum(mz_frtimp) ///
+	bysort 			hhid (field_id) : egen fert_mz = sum(mz_frtimp) ///
 						if mz_hrvimp != .
 	generate		cp_frt = fert_mz / cp_lnd
 	sum				cp_frt, detail
 
 * pesticide
-	bysort 			holder_id (field_id) : egen cp_pst = max(mz_pst) /// 
+	bysort 			hhid (field_id) : egen cp_pst = max(mz_pst) /// 
 						if mz_hrvimp != .
 	tab				cp_pst
 	
 * herbicide
-	bysort 			holder_id (field_id) : egen cp_hrb = max(mz_hrb) ///
+	bysort 			hhid (field_id) : egen cp_hrb = max(mz_hrb) ///
 						if mz_hrvimp != .
 	tab				cp_hrb
 	
 * irrigation
-	bysort 			holder_id (field_id) : egen cp_irr = max(mz_irr) ///
+	bysort 			hhid (field_id) : egen cp_irr = max(mz_irr) ///
 						if mz_hrvimp != .
 	tab				cp_irr
 
@@ -595,7 +595,7 @@
 	    replace		`v' = 0 if `v' == .
 	}		
 	
-	collapse (max)	tf_* cp_*, by(holder_id pw region zone woreda ea rural ///
+	collapse (max)	tf_* cp_*, by(hhid pw region zone woreda ea rural ///
 						hhid)
 	*** we went from 5,026 to 1,715 observations 
 	
@@ -621,7 +621,7 @@
 * **********************************************************************
 
 * verify unique household id
-	isid			holder_id
+	isid			hhid
 
 * label variables
 	lab var			tf_lnd	"Total farmed area (ha)"
@@ -640,12 +640,15 @@
 	lab var			cp_pst	"Any maize plot has pesticide"
 	lab var			cp_hrb	"Any maize plot has herbicide"
 	lab var			cp_irr	"Any maize plot has irrigation"
+	
+* rename and hhid
+	rename			hhid household_id
 
 * generate year identifier
 	gen				year = 2011
 	lab var			year "Year"
 	
-	order 			holder_id hhid region zone woreda ea rural ///
+	order 			household_id region zone woreda ea rural ///
 						pw year tf_hrv tf_lnd tf_yld tf_lab tf_frt tf_pst ///
 						tf_hrb tf_irr cp_hrv cp_lnd cp_yld cp_lab cp_frt ///
 						cp_pst cp_hrb cp_irr
@@ -654,7 +657,7 @@
 	summarize 
 	
 * saving production dataset
-	customsave , idvar(holder_id) filename(hhfinal_ess1.dta) path("`export'") ///
+	customsave , idvar(household_id) filename(hhfinal_ess1.dta) path("`export'") ///
 			dofile(ess1_merge) user($user) 
 
 * close the log

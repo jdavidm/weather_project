@@ -43,7 +43,7 @@
 	lab var 	data "Data Source"	
 	
 * define local with all sub-folders in it
-	loc 		folderList : dir "`rootw'" dirs "essy1_rf*"
+	loc 		folderList : dir "`rootw'" dirs "erssy1_rf*"
 
 * define local with all files in each sub-folder	
 	foreach 	folder of local folderList {
@@ -55,7 +55,7 @@
 	foreach 	file in `fileList' {	
 	
 	* merge weather data with household data
-		merge 	1:1 y3_hhid using "`rootw'/`folder'/`file'"	
+		merge 	1:1 household_id using "`rootw'/`folder'/`file'"	
 	
 		* drop files that did not merge
 			drop 	if 	_merge != 3
@@ -73,8 +73,8 @@
 						dev_percent_raindays_2012- dev_percent_raindays_2016	
 		
 		* define file naming criteria
-			loc 		sat = substr("`file'", 10, 3)
-			loc 		ext = substr("`file'", 7, 2)
+			loc 		sat = substr("`file'", 11, 3)
+			loc 		ext = substr("`file'", 8, 2)
 			
 		* generate variable to record extraction method
 			gen 		`sat'_`ext' = "`sat'_`ext'"
@@ -124,7 +124,9 @@
 			lab var		v14_`sat'_`ext' "Longest Dry Spell"
 		
 		* drop year variables
-			drop 		*2011						
+			drop 		*2011
+			
+			display		"`rootw'/`folder'/`file'"
 	}						
 }	
 
@@ -134,7 +136,7 @@
 * **********************************************************************
 	
 * define local with all sub-folders in it
-	loc 		folderList : dir "`rootw'" dirs "essy1_t*"
+	loc 		folderList : dir "`rootw'" dirs "erssy1_t*"
 
 * define local with all files in each sub-folder	
 	foreach 	folder of local folderList {
@@ -146,7 +148,7 @@
 	foreach 	file in `fileList' {	
 	
 	* merge weather data with household data
-		merge 	1:1 holder_id using "`rootw'/`folder'/`file'"	
+		merge 	1:1 household_id using "`rootw'/`folder'/`file'"	
 	
 		* drop files that did not merge
 			drop 	if 	_merge != 3
@@ -158,8 +160,8 @@
 			drop 		mean_gdd- z_gdd_2010 dev_gdd_2012- z_gdd_2016
 		
 		* define file naming criteria
-			loc 		sat = substr("`file'", 11, 1)
-			loc 		ext = substr("`file'", 7, 2)
+			loc 		sat = substr("`file'", 12, 1)
+			loc 		ext = substr("`file'", 8, 2)
 			
 		* generate variable to record extraction method
 			gen 		tp`sat'_`ext' = "tp`sat'_`ext'"
@@ -206,7 +208,9 @@
 			lab var		v27_tp`sat'_`ext' "Temperature Bin 80-100"
 		
 		* drop year variables
-			drop 		*2011								
+			drop 		*2011	
+			
+			display		"`rootw'/`folder'/`file'"
 	}						
 }
 

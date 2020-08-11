@@ -53,9 +53,11 @@
 	
 * loop through each file in the above local
 	foreach 	file in `fileList' {	
+	    
+		display		"`rootw'/`folder'/`file'"
 	
 	* merge weather data with household data
-		merge 	1:1 holder_id using "`rootw'/`folder'/`file'"	
+		merge 	1:1 household_id2 using "`rootw'/`folder'/`file'"	
 	
 		* drop files that did not merge
 			drop 	if 	_merge != 3
@@ -124,7 +126,9 @@
 			lab var		v14_`sat'_`ext' "Longest Dry Spell"
 		
 		* drop year variables
-			drop 		*2013						
+			drop 		*2013		
+			
+			display		"`rootw'/`folder'/`file'"
 	}						
 }	
 
@@ -146,7 +150,7 @@
 	foreach 	file in `fileList' {	
 	
 	* merge weather data with household data
-		merge 	1:1 holder_id using "`rootw'/`folder'/`file'"	
+		merge 	1:1 household_id2 using "`rootw'/`folder'/`file'"	
 	
 		* drop files that did not merge
 			drop 	if 	_merge != 3
@@ -207,6 +211,8 @@
 		
 		* drop year variables
 			drop 		*2013								
+			
+			display		"`rootw'/`folder'/`file'"
 	}						
 }
 
@@ -216,25 +222,25 @@
 * **********************************************************************
 
 * create wide data set 	
-	rename 			* *2013
-	rename 			region2013 region
-	rename 			district2013 district
-	rename 			ward2013 ward
-	rename 			ea2013 ea
-	rename 			*hhid2013 *hhid
-	rename			mover_R1R2R32013 mover2013
+	rename 			* *_2013
+	rename 			region_2013 region
+	rename 			zone_2013 zone
+	rename 			woreda_2013 woreda
+	rename 			ea_2013 ea
+	rename 			hhid_2013 hhid
+	rename 			household_id2_2013 household_id2
 	
 * drop unneeded variables
-	drop			y3_rural2013 year2013 location_R2_to_R32013
+	drop			rural_2013 year_2013
 	
 
 * prepare for export
 	qui: compress
 	summarize 
-	sort holder_id
+	sort household_id2
 	
 * save file
-	customsave 	, idvar(holder_id) filename("essy2_merged.dta") ///
+	customsave 	, idvar(household_id2) filename("essy2_merged.dta") ///
 		path("`export'") dofile(ess2_build) user($user)
 		
 * close the log
