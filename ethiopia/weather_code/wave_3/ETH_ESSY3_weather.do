@@ -30,9 +30,9 @@
 *	global user "jdmichler"
 
 * define paths	
-	loc root = "G:/My Drive/weather_project/weather_data/ethiopia/wave_3/daily"
-	loc export = "G:/My Drive/weather_project/weather_data/ethiopia/wave_3/refined"
-	loc logout = "G:/My Drive/weather_project/weather_data/ethiopia/logs"
+	loc root = "$data/weather_data/ethiopia/wave_3/daily"
+	loc export = "$data/weather_data/ethiopia/wave_3/refined"
+	loc logout = "$data/weather_data/ethiopia/logs"
 
 * open log	
 	cap log		close
@@ -60,16 +60,6 @@ foreach folder of local folderList {
 		
 		* import the daily data file
 		use "`root'/`folder'/`file'", clear
-		
-		* drop duplicates
-			duplicates 		drop
-			drop if 		household_id2 == 0
-		
-		* reformat household id
-			format			%18.0f household_id2
-			tostring 		household_id2, format(%018.0f) replace
-			
-			duplicates 		drop household_id2, force
 		
 		* define locals to govern file naming
 			loc dat = substr("`file'", 1, 5)
@@ -107,16 +97,6 @@ foreach folder of local folderList {
 		
 		* import the daily data file		
 		use "`root'/`folder'/`file'", clear
-		
-		* drop duplicates
-			duplicates 		drop
-			drop if 		household_id2 == 0
-		
-		* reformat household id
-			format			%18.0f household_id2
-			tostring 		household_id2, format(%018.0f) replace
-			
-			duplicates 		drop household_id2, force
 		
 		* define locals to govern file naming		
 			loc dat = substr("`file'", 1, 5)
