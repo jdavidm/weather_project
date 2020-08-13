@@ -26,9 +26,6 @@
 * 0 - setup
 * **********************************************************************
 
-* set global user
-*	global user "jdmichler"
-
 * define paths	
 	loc root = "$data/weather_data/ethiopia/wave_3/daily"
 	loc export = "$data/weather_data/ethiopia/wave_3/refined"
