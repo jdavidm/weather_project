@@ -221,17 +221,16 @@
 * **********************************************************************
 
 * create wide data set 	
-	rename 			* *2015
-	rename 			region2015 region
-	rename 			district2015 district
-	rename 			ward2015 ward
-	rename 			ea2015 ea
-	rename 			*hhid2015 *hhid
-	rename			mover_R1R2R32015 mover2015
+	rename 			* *_2015
+	rename 			region_2015 region
+	rename 			zone_2015 zone
+	rename 			woreda_2015 woreda
+	rename 			ea_2015 ea
+	rename 			hhid_2015 hhid
+	rename 			household_id2_2015 household_id2
 	
 * drop unneeded variables
-	drop			y3_rural2015 year2015 location_R2_to_R32015
-	
+	drop			rural_2015 year_2015
 
 * prepare for export
 	qui: compress

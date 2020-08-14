@@ -219,26 +219,25 @@
 * 3 - end matter, clean up to save
 * **********************************************************************
 
-* create wide data set 	
-	rename 			* *2011
-	rename 			region2011 region
-	rename 			district2011 district
-	rename 			ward2011 ward
-	rename 			ea2011 ea
-	rename 			*hhid2011 *hhid
-	rename			mover_R1R2R32011 mover2011
+* create wide data set	
+	rename 			* *_2011
+	rename 			region_2011 region
+	rename 			zone_2011 zone
+	rename 			woreda_2011 woreda
+	rename 			ea_2011 ea
+	rename 			household_id_2011 household_id
 	
 * drop unneeded variables
-	drop			y3_rural2011 year2011 location_R2_to_R32011
+	drop			rural_2011 year_2011
 	
 
 * prepare for export
 	qui: compress
 	summarize 
-	sort holder_id
+	sort household_id
 	
 * save file
-	customsave 	, idvar(holder_id) filename("essy1_merged.dta") ///
+	customsave 	, idvar(household_id) filename("essy1_merged.dta") ///
 		path("`export'") dofile(ess1_build) user($user)
 		
 * close the log
