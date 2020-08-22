@@ -1,18 +1,38 @@
-clear all
+* Project: WB Weather
+* Created on: Aug 2020
+* Created by: themacfreezie
+* Edited by: ek
+* Stata v.16
 
-*attempting to clean Uganda household variables
-global user "themacfreezie"
+* does
+	* household Location data (2010_GSEC1) for the 1st season
 
-**********************************************************************************
-**	UNPS 2010 (Wave 2) - General(?) Section 1 
-**********************************************************************************
+* assumes
+	* customsave.ado
+	* mdesc.ado
 
-* For household data
-loc root = "C:\Users/$user\Dropbox\Weather_Project\Data\Uganda\analysis_datasets\Uganda_raw\UGA_2010"
-* To export results
-loc export = "C:\Users/$user\Dropbox\Weather_Project\Data\Uganda\analysis_datasets\Uganda_refined\UGA_2010"
+* TO DO:
+	* done
 
-use "`root'/GSEC1", clear
+* **********************************************************************
+* 0 - setup
+* **********************************************************************
+
+* define paths	
+	loc 	root 		= 		"$data/household_data/uganda/wave_2/raw"  
+	loc     export 		= 		"$data/household_data/uganda/wave_2/refined"
+	loc 	logout 		= 		"$data/household_data/uganda/logs"
+	
+* open log	
+	cap log close
+	log using "`logout'/2010_GSEC1", append
+
+* **********************************************************************
+* 1 - UNPS 2009 (Wave 2) - General(?) Section 1 
+* **********************************************************************
+
+* import wave 2 season 1
+	use "`root'/GSEC1", clear
 
 isid HHID
 rename HHID hhid

@@ -1,127 +1,167 @@
-clear all
+* Project: WB Weather
+* Created on: Aug 2020
+* Created by: ek
+* Stata v.16
 
-*attempting to clean Uganda household variables
-global user "themacfreezie"
+* does
+	* reads Uganda wave 3 owned plot info (2011_AGSEC2A) for the 1st season
+	* ready to append to rented plot info (2011_AGSEC2B)
+	* owned plots are in A and rented plots are in B
+	* ready to be appended to 2011_AGSEC2B to make 2011_AGSEC2
 
-**********************************************************************************
-**	UNPS 2011 (Wave 3) - Agriculture Section 2A 
-**********************************************************************************
+* assumes
+	* customsave.ado
+	* mdesc.ado
 
-* For household data
-loc root = "C:\Users/$user\Dropbox\Weather_Project\Data\Uganda\analysis_datasets\Uganda_raw\UGA_2011"
-* To export results
-loc export = "C:\Users/$user\Dropbox\Weather_Project\Data\Uganda\analysis_datasets\Uganda_refined\UGA_2011"
+* TO DO:
+	* done
 
-use "`root'/2011_AGSEC2A", clear
+* **********************************************************************
+* 0 - setup
+* **********************************************************************
 
-*	looks like a parcel roster. so is the next section. this is distinguished by land holdings
+* define paths	
+	loc 	root 		= 		"$data/household_data/uganda/wave_3/raw"  
+	loc     export 		= 		"$data/household_data/uganda/wave_3/refined"
+	loc 	logout 		= 		"$data/household_data/uganda/logs"
 
-*	Unique identifier can only be generated using parcel id
-describe
-sort HHID parcelID
-isid HHID parcelID, missok
+* close log 
+	*log close
+	
+* open log	
+	cap log close
+	log using "`logout'/2011_agsec2a", append
 
-*	Create unique parcel identifier
-generate parcel_id = string(HHID) + " " + string(parcelID)
-*	isid parcel_id
-*	for some reason the above is not uniquely identifying observations
-*	even though isid HHID parcelID worked...
-duplicates report parcel_id
-*	lots of duplicates, I think the stringed HHID is rounding off
-drop parcel_id
+* **********************************************************************
+* 1 - import data and rename variables
+* **********************************************************************
 
-*	attempting to string HHID seperately
-*	tostring HHID, replace force
-*	isid HHID parcelID, missok
-*	the above is still not unique
-*	duplicates report HHID parcelID
-*	still around 270 duplicates
+* irrigation should be in this file but there is an error that replaces irrigation question with a sand type response
 
-*	trying something different
-tostring HHID, generate(hhid) format(%012.0f) force
-duplicates report hhid parcelID
-*	now only 61 duplicates but still not 100%
+* import wave 2 season A
+	use "`root'/2011_AGSEC2A.dta", clear
+		
+	rename			a2aq15b fallow
+	rename			HHID hhid
+	
+	mdesc 			parcelID
+	*** none missing out of 3457 observations
+	
+	isid 			hhid parcelID
 
-tabulate HHID
-*	some HHIDs seem to be as long as 16 digits!
+* what was the primary use of the parcel
+	*** activity in the first season is recorded seperately from activity in the second season
+	tab 		 	a2aq11a 
+	*** activities include renting out, pasture, forest. cultivation, and other0
+	*** we will only include plots used for crops or fallow plots with cover crop
+	
+	keep			if a2aq11a == 1 | a2aq11a == 2 | a2aq11a == 5
+	*** 133 observations deleted
+	
+* drop observations for fallow fields without covercrop
+	tab				a2aq13b
+	*** three types of fallow: bare, with residue incorporated, and with cover crop
+	*** will leave cover crop fallow because cover crops can include beans etc
+	
+	drop 			if a2aq13b == 2 | a2aq13b == 3
+	*** dropped 712 observations
 
-drop hhid
-tostring HHID, generate(hhid) format(%016.0f) force
-duplicates report hhid parcelID
-* 	no duplicates!
+* drop if proportion cultivated a2aq15a is 0
+	*** note that the label incorrectly reports 2009 but the survey instrument reports 2010 season
+	drop if a2aq15a == 0
+	*** 0 observations deleted		
 
-*	Create unique parcel identifier
-generate parcel_id = hhid + " " + string(parcelID)
-isid parcel_id
-*	unique!!
+* **********************************************************************
+* 2 - merge location data
+* **********************************************************************	
+	
+* merge the location identification
+	merge m:1 hhid using "`export'/2011_GSEC1"
+	*** 72 unmatched from master
+	*** that means 72 observations did not have location data
+	*** no option at this stage except to drop all unmatched
+	
+	drop 		if _merge != 3	
+	
+* **********************************************************************
+* 3 - clean plotsize
+* **********************************************************************
 
-rename a2aq4 plotsize_gps
-rename a2aq5 plotsize_self
-rename a2aq11a primary_use1
-rename a2aq11b primary_use2
+	rename 			a2aq4	plotsizeGPS
+	rename			a2aq5	plotsizeSR
+	
+	sum 			plotsizeGPS
+	***	mean 2.01, max 75, min 0.01
+	sum				plotsizeSR
+	*** mean 2.12, max 100, min 0.01
+	
+	corr 			plotsizeSR plotsizeGPS
+	*** 0.79 correlation, high correlation between GPS and self reported
+	*** will only use SR to impute missing GPS
+	
+	mdesc 			plotsizeGPS
+	*** 2599 missing
+	*** a chance that the larger plots in waves 1 and 2 were unmeasured in this wave
+	
+* encode district to be used in imputation
+	encode district, gen (districtdstrng) 
+	
+* impute missing plot sizes using predictive mean matching
+	mi set 			wide // declare the data to be wide.
+	mi xtset		, clear // this is a precautinary step to clear any existing xtset
+	mi register 	imputed plotsizeGPS // identify plotsize_GPS as the variable being imputed
+	sort			region district hhid parcelID, stable // sort to ensure reproducability of results
+	mi impute 		pmm plotsizeGPS i.region i.districtdstrng plotsizeSR, add(1) rseed(245780) noisily dots ///
+						force knn(5) bootstrap
+	mi unset
+	
+* how did imputing go?
+	sum 			plotsizeGPS_1_
+	*** mean 2.05, max 75, min 0.01
+	
+	corr 			plotsizeGPS_1_ plotsizeSR if plotsizeGPS == .
+	*** 0.85, higher correlation than non missing observations
+	*** replace plotsizeGPS with imputation
+	
+	replace 		plotsizeGPS = plotsizeGPS_1_ if plotsizeGPS == .
+	*** 1370 changes, one unchanged, impute that one
 
-*	Relying on GPS plot size unless missing, then resorting to self report
-*	Check correlation
-pwcorr plotsize_gps plotsize_self
-*	Overall corelation is high! (0.83)
-*	Looking ~within +/- 3 sd
-summarize plotsize_gps plotsize_self
-pwcorr plotsize_gps plotsize_self if inrange(plotsize_gps,0,16.45) & inrange(plotsize_self,0,16.45)
-*	Correlation is slightly higher within this range (0.87)
-*	Seems almost negligible?
+	drop			plotsizeGPS_1_ mi_miss
 
-generate parc_size2 = plotsize_gps
-replace parc_size2 = plotsize_self if parc_size2 == .
-tabulate parc_size2, missing
-*	No missing observations!
-rename parc_size2 parc_size
-generate parc_size2 = parc_size * 0.404686
-drop parc_size
+*check for still missing plotsizeGPS
+	mdesc 			plotsizeGPS
+	
+	sort			plotsizeGPS
+	*** missing plotsizes lack location data but have plotsizeSR
+	*** replace missing plotsizeGPS with SR
 
-/* or!
-generate parc_size2 = plotsize_gps
-replace parc_size2 = plotsize_self if parc_size2 == . & inrange(plotsize_self, 0, 16.45)
-tabulate parc_size2, missing
-*	Missing 36 (~1%) observations 
+	replace 		plotsizeGPS = plotsizeSR if plotsizeGPS == . & plotsizeSR != .
+	*** 82 change made
+	
+* convert acres to square meters
+	gen				plotsize = plotsizeGPS*0.404686
+	label var       plotsize "Plot size (ha)"
 
-*	Should I attempt to impute missing plotsizes?
-*	Impute missing plot sizes using predictive mean matching 
-mi set wide 					//	declare the data to be wide. 
-mi xtset, clear					//	this is a precautinary step to clear any xtset that the analyst may have had in place previously
-mi register imputed parc_size2	//	identify parc_size2 as the variable being imputed 
-mi impute pmm parc_size2 , add(1) rseed(245780) noisily dots /* not sure what are the best variables to impute against?
-*/ force knn(5) bootstrap 
-mi unset
+* **********************************************************************
+* 4 - end matter, clean up to save
+* **********************************************************************
+	rename			parcelID prcid
+	rename 			a2aq15a propcultivate
+	label variable	propcultivate "Proportion of plot cultivated for owned plots"
+	
+	keep 			hhid prcid propcultivate region district ///
+					county subcounty parish plotsize
+	*** hhid should identify households accross panel waves
 
-*Alternatively, we can not include self reported values at all
-generate parc_size2 = plotsize_gps
-mi set wide 					//	declare the data to be wide. 
-mi xtset, clear					//	this is a precautinary step to clear any xtset that the analyst may have had in place previously
-mi register imputed parc_size2	//	identify plotsize_GPS as the variable being imputed 
-mi impute pmm parc_size2 , add(1) rseed(245780) noisily dots /* again, would love advice on imputing variables
-*/	force knn(5) bootstrap 
-mi unset
-*/
+	compress
+	describe
+	summarize
 
-*	Do we need to account for fallowed fields?
-generate fallow = 1 if primary_use1 == 5
-replace fallow = 1 if primary_use2 == 5
+* save file
+		customsave , idvar(hhid) filename("2011_AGSEC2A.dta") ///
+			path("`export'/`folder'") dofile(2011_AGSEC2A) user($user)
 
-generate irrigated = 1 if a2aq18 == 1
-*	it looks like two wires got crossed here
-*	labelled the same as a2aq16
-*	i think the underlying coding is correct (i.e. 1 = irrigated)
-* 	gonna proceed under this assumption
+* close the log
+	log	close
 
-keep hhid parcel_id parc_size2 fallow irrigated
-*	Important note! Plot sizes above are actually parcel sizes
-*	Parcels are larger than plots in this hierarchy
-*	Kept the term plotsize to maintain consistent naming conventions with other countries
-*	This could get confusing though?
-
-*	Prepare for export
-compress
-describe
-summarize 
-sort parcel_id
-save "`export'/2011_AGSEC2A", replace
+/* END */

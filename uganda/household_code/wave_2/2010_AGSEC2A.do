@@ -1,98 +1,174 @@
-clear all
+* Project: WB Weather
+* Created on: Aug 2020
+* Created by: themacfreezie
+* Edited by: ek
+* Stata v.16
 
-*attempting to clean Uganda household variables
-global user "themacfreezie"
+* does
+	* reads Uganda wave 2 owned plot info (2010_AGSEC2A) for the 1st season
+	* ready to append to rented plot info (2010_AGSEC2B)
+	* owned plots are in A and rented plots are in B
+	* ready to be appended to 2010_AGSEC2B
 
-**********************************************************************************
-**	UNPS 2010 (Wave 2) - Agriculture Section 2A 
-**********************************************************************************
+* assumes
+	* customsave.ado
+	* mdesc.ado
 
-* For household data
-loc root = "C:\Users/$user\Dropbox\Weather_Project\Data\Uganda\analysis_datasets\Uganda_raw\UGA_2010"
-* To export results
-loc export = "C:\Users/$user\Dropbox\Weather_Project\Data\Uganda\analysis_datasets\Uganda_refined\UGA_2010"
+* TO DO:
+	* done
 
-use "`root'/2010_AGSEC2A", clear
+* **********************************************************************
+* 0 - setup
+* **********************************************************************
 
-*	looks like a parcel roster. so is the next section. this is distinguished by land holdings
+* define paths	
+	loc 	root 		= 		"$data/household_data/uganda/wave_2/raw"  
+	loc     export 		= 		"$data/household_data/uganda/wave_2/refined"
+	loc 	logout 		= 		"$data/household_data/uganda/logs"
 
-*	Unique identifier can only be generated using parcel id
-describe
-sort HHID prcid
-isid HHID prcid, missok
+* close log 
+	*log close
+	
+* open log	
+	cap log close
+	log using "`logout'/2010_agsec2a", append
 
-*	Create unique parcel identifier
-generate parcel_id = HHID + " " + string(prcid)
-isid parcel_id
+* **********************************************************************
+* 1 - import data and rename variables
+* **********************************************************************
 
-*	Housekeeping
-rename HHID hhid
-rename a2aq4 plotsize_gps
-rename a2aq5 plotsize_self
-rename a2aq13a primary_use1
-rename a2aq13b primary_use2
+* import wave 2 season A
+	use "`root'/2010_AGSEC2A.dta", clear
+		
+	rename			a2aq15b fallow
+	rename			HHID hhid
+	
+	mdesc prcid
+	*** none missing out of 3457 observations
+	
+	isid 			hhid prcid
 
-*	Relying on GPS plot size unless missing, then resorting to self report
-*	Check correlation
-pwcorr plotsize_gps plotsize_self
-*	Overall corelation is low (0.24)
-*	Looking ~within +/- 3 sd
-summarize plotsize_gps plotsize_self
-pwcorr plotsize_gps plotsize_self if inrange(plotsize_gps,0,75) & inrange(plotsize_self,0,75)
-*	Correlation is higher within this range (0.57)
-*	What about +/- 2 sd? Or +/- 1 sd?
-pwcorr plotsize_gps plotsize_self if inrange(plotsize_gps,0,51) & inrange(plotsize_self,0,51)
-pwcorr plotsize_gps plotsize_self if inrange(plotsize_gps,0,27) & inrange(plotsize_self,0,27)
-*	Correlation is especially high within 1 sd (0.76)
+* what was the primary use of the parcel
+	*** activity in the first season is recorded seperately from activity in the second season
+	tab 		 	a2aq13a 
+	*** activities include renting out, pasture, forest. cultivation, and other0
+	*** we will only include plots used for crops or fallow plots with cover crop
+	
+	keep			if a2aq13a == 1 | a2aq13a == 2 | a2aq13a == 5
+	*** 95 observations deleted
+	
+* drop observations for fallow fields without covercrop
+	tab 			fallow
+	*** three types of fallow: bare, with residue incorporated, and with cover crop
+	*** will leave cover crop fallow because cover crops can include beans etc
+	
+	drop 			if fallow == 2 | fallow == 3
+	*** dropped 691 observations
 
-generate parc_size2 = plotsize_gps
-replace parc_size2 = plotsize_self if parc_size2 == . & inrange(plotsize_self, 0, 27)
-tabulate parc_size2, missing
-*	Missing 25 (~3%) observations 
-tabulate plotsize_self, missing
-*	Plotsize_self missing 14 observations
-*	Therefore low correlation b/w gps and self on remaining eleven
-*	Will drop 25 obs missing parc_size2
-drop if parc_size2 == .
-rename parc_size2 parc_size
-generate parc_size2 = parc_size * 0.404686
-drop parc_size
+* drop if proportion cultivated a2aq17a is 0
+	*** note that the label incorrectly reports 2009 but the survey instrument reports 2010 season
+	drop if a2aq17a == 0
+	*** 14 observations deleted
+	
+* make an irrigation variable
+	gen irr_any = 1 if a2aq20 == 1
+	
+* **********************************************************************
+* 2 - merge location data
+* **********************************************************************	
+	
+* merge the location identification
+	merge m:1 hhid using "`export'/2010_GSEC1"
+	*** 0 unmatched from master
+	drop 		if _merge != 3
+	
+* **********************************************************************
+* 3 - clean plotsize
+* **********************************************************************
 
-*	Should I attempt to impute missing plotsizes?
-/*
-*	Impute missing plot sizes using predictive mean matching 
-mi set wide 					//	declare the data to be wide. 
-mi xtset, clear					//	this is a precautinary step to clear any xtset that the analyst may have had in place previously
-mi register imputed parc_size2	//	identify parc_size2 as the variable being imputed 
-mi impute pmm parc_size2 , add(1) rseed(245780) noisily dots /* not sure what are the best variables to impute against?
-*/ force knn(5) bootstrap 
-mi unset
+	rename 			a2aq4	plotsizeGPS
+	rename			a2aq5	plotsizeSR
+	
+	sum 			plotsizeGPS
+	***	mean 3.56, max 676, min 0.01
+	*** quite a high max, should it be trusted?
+	sum				plotsizeSR
+	*** mean 2.07, max 100, min 0.01
+	
+	corr 			plotsizeSR plotsizeGPS
+	*** 0.158 correlation, low correlation between GPS and self reported
+	*** will only use GPS
+	
+	mdesc 			plotsizeGPS
+	*** 835 missing
+	
+* encode district to be used in imputation
+	encode district, gen (districtdstrng) 
+	
+* impute missing plot sizes using predictive mean matching
+	mi set 			wide // declare the data to be wide.
+	mi xtset		, clear // this is a precautinary step to clear any existing xtset
+	mi register 	imputed plotsizeGPS // identify plotsize_GPS as the variable being imputed
+	sort			region district hhid prcid, stable // sort to ensure reproducability of results
+	mi impute 		pmm plotsizeGPS i.region i.districtdstrng plotsizeSR, add(1) rseed(245780) noisily dots ///
+						force knn(5) bootstrap
+	mi unset
+	
+* how did imputing go?
+	sum 			plotsizeGPS_1_
+	*** mean 4.39, max 676, min 0.01
+	
+	corr 			plotsizeGPS_1_ plotsizeSR if plotsizeGPS == .
+	*** 0.41, higher correlation than non missing observations
+	*** better than a low negative correlation when we exclude plotsizeSR from impute
+	*** replace plotsizeGPS with imputation
+	
+	replace 		plotsizeGPS = plotsizeGPS_1_ if plotsizeGPS == .
+	*** 834 changes, one unchanged, impute that one
 
-*Alternatively, we can not include self reported values at all
-generate parc_size2 = plotsize_gps
-mi set wide 					//	declare the data to be wide. 
-mi xtset, clear					//	this is a precautinary step to clear any xtset that the analyst may have had in place previously
-mi register imputed parc_size2	//	identify plotsize_GPS as the variable being imputed 
-mi impute pmm parc_size2 , add(1) rseed(245780) noisily dots /* again, would love advice on imputing variables
-*/	force knn(5) bootstrap 
-mi unset
-*/
+	drop			plotsizeGPS_1_ mi_miss
+	
+* one observation with missing plotsizeGPS lacks regional data but has SR
+	replace 		plotsizeGPS = plotsizeSR if plotsizeGPS == . & plotsizeSR != .
+	*** one change made
+	
+* impute missing plot sizes that lacked plotsizeSR using predictive mean matching
+	mi set 			wide // declare the data to be wide.
+	mi xtset		, clear // this is a precautinary step to clear any existing xtset
+	mi register 	imputed plotsizeGPS // identify plotsize_GPS as the variable being imputed
+	sort			region district hhid prcid, stable // sort to ensure reproducability of results
+	mi impute 		pmm plotsizeGPS i.region i.districtdstrng, add(1) rseed(245780) noisily dots ///
+						force knn(5) bootstrap
+	mi unset
+	
+* replace that missing value
+	replace plotsizeGPS = plotsizeGPS_1_ if plotsizeGPS == .
+	*** 5 changes
+	
+* convert acres to square meters
+	gen				plotsize = plotsizeGPS*0.404686
+	label var       plotsize "Plot size (ha)"
+	
+* **********************************************************************
+* 4 - end matter, clean up to save
+* **********************************************************************
 
-*	Do we need to account for fallowed fields?
-generate fallow = 1 if primary_use1 == 5
-replace fallow = 1 if primary_use2 == 5
+	rename 			a2aq13a propcultivate
+	label variable	propcultivate "Proportion of plot cultivated for owned plots"
+	
+	keep 			hhid prcid propcultivate region district irr_any ///
+					county subcounty parish plotsize
+	*** hhid should identify households accross panel waves
 
-generate irrigated = 1 if a2aq20 == 1
+	compress
+	describe
+	summarize
 
-keep hhid parcel_id parc_size2 fallow irrigated
-*	Important note! Plot sizes above are actually parcel sizes
-*	Parcels are larger than plots in this hierarchy
-*	Kept the term plotsize to maintain consistent naming conventions with other countries
-*	This could get confusing though?
+* save file
+		customsave , idvar(hhid) filename("2010_AGSEC2A.dta") ///
+			path("`export'/`folder'") dofile(2010_AGSEC2A) user($user)
 
-*	Prepare for export
-compress
-describe
-summarize 
-sort parcel_id
-save "`export'/2010_AGSEC2A", replace
+* close the log
+	log	close
+
+/* END */
