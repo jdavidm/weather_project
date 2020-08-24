@@ -6,7 +6,8 @@
 
 * does
 	* reads in Nigeria, WAVE 3, (2015-2016) POST HARVEST, NIGERIA SECTA3i
-	* determines harvest information (area and quantity) and that maize is the second most widely cultivated crop///
+	* determines harvest information (area and quantity) 
+	* maize is the second most widely cultivated crop
 	* outputs clean data file ready for combination with wave 3 hh data
 
 * assumes
@@ -17,27 +18,28 @@
 * 0 - setup
 * **********************************************************************
 
-	* define paths
-		loc 	root		= 	"$data/household_data/nigeria/wave_3/raw"
-		loc		cnvrt		=	"$data/household_data/nigeria/conversion_files"
-		loc 	export 		= 	"$data/household_data/nigeria/wave_3/refined"
-		loc 	logout 		= 	"$data/household_data/nigeria/logs"
+* define paths
+	loc 	root		= 	"$data/household_data/nigeria/wave_3/raw"
+	loc		cnvrt		=	"$data/household_data/nigeria/conversion_files"
+	loc 	export 		= 	"$data/household_data/nigeria/wave_3/refined"
+	loc 	logout 		= 	"$data/household_data/nigeria/logs"
 
-	* open log
-		log 	using		"`logout'/ph_secta1", append
+* open log
+	cap 	log 		close
+	log 	using		"`logout'/ph_secta1", append
 
 * **********************************************************************
 * 1 - determine area harvested
 * **********************************************************************
 
 * import the first relevant data file
-		use 					"`root'/secta3i_harvestw3", clear
+	use 					"`root'/secta3i_harvestw3", clear
 
-		describe
-		sort 				hhid plotid cropid
-		isid 				hhid plotid cropid
+	describe
+	sort 				hhid plotid cropid
+	isid 				hhid plotid cropid
 		
-		tab 			cropcode	
+	tab 			cropcode	
 	*** cassava is most widely cropped 16.41% wont use cassava as main crop
 	*** maize is second most widely cropped 14.38% we use maize as main crop
 	
@@ -80,12 +82,10 @@
 	gen 			harvestq = sa3iq6i
 	lab	var			harvestq "quantity harvested, not in standardized unit"
 	
-	
 * units of harvest
 	rename 			sa3iq6ii harv_unit
 	tab				harv_unit, nolabel
 
-	
 * create value variable
 	gen 			crop_value = sa3iq6a
 	rename 			crop_value vl_hrv
@@ -230,6 +230,10 @@
 * rename cultivated variable
 	rename 			sa3iq3 cultivated
 		
+* replace non-maize harvest values as missing
+	replace			mz_hrv = . if mz_damaged == 0 & mz_hrv == 0
+
+	
 * **********************************************************************
 * 4 - end matter, clean up to save
 * **********************************************************************
@@ -258,6 +262,7 @@
 	compress
 	describe
 	summarize
+
 * save file
 		customsave , idvar(hhid) filename("ph_secta3i.dta") ///
 			path("`export'/`folder'") dofile(ph_secta3i) user($user)

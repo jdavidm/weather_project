@@ -23,11 +23,12 @@
 *	global user "jdmichler"
 
 * define paths
-	loc root = "G:/My Drive/weather_project/weather_data/ethiopia/wave_1/raw"
-	loc export = "G:/My Drive/weather_project/weather_data/ethiopia/wave_1/daily"
-	loc logout = "G:/My Drive/weather_project/weather_data/ethiopia/logs"
+	loc root = "$data/weather_data/ethiopia/wave_1/raw"
+	loc export = "$data/weather_data/ethiopia/wave_1/daily"
+	loc logout = "$data/weather_data/ethiopia/logs"
 
 * open log
+	cap log		close
 	log using "`logout'/eth_essy1_converter", replace
 
 
@@ -51,8 +52,13 @@ foreach folder of local folderList {
 	foreach file in `fileList' {
 		
 		* import the .csv files - this takes time	
-		import delimited "`root'/`folder'/`file'", varnames (1) clear
+		import delimited "`root'/`folder'/`file'", varnames (1)  ///
+			encoding(Big5) stringcols(1) clear
 
+		* drop duplicates
+			duplicates 		drop
+			drop if 		household_id == ""
+			
 		* define locals to govern file naming
 			loc dat = substr("`file'", 1, 6)
 			loc ext = substr("`file'", 8, 2)
@@ -84,7 +90,12 @@ foreach folder of local folderList {
 	foreach file in `fileList' {
 		
 		* import the .csv files - this takes time	
-		import delimited "`root'/`folder'/`file'", varnames (1) clear
+		import delimited "`root'/`folder'/`file'", varnames (1)  ///
+			encoding(Big5) stringcols(1) clear
+
+		* drop duplicates
+			duplicates 		drop
+			drop if 		household_id == ""
 
 		* define locals to govern file naming
 			loc dat = substr("`file'", 1, 6)
