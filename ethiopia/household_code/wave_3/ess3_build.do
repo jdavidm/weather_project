@@ -228,9 +228,10 @@
 	rename 			ea_2015 ea
 	rename 			hhid_2015 hhid
 	rename 			household_id2_2015 household_id2
+	rename			year_2015 year
 	
 * drop unneeded variables
-	drop			rural_2015 year_2015
+	drop			rural_2015
 
 * prepare for export
 	qui: compress

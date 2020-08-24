@@ -229,9 +229,10 @@
 	rename 			ea_2013 ea
 	rename 			hhid_2013 hhid
 	rename 			household_id2_2013 household_id2
+	rename			year_2013 year
 	
 * drop unneeded variables
-	drop			rural_2013 year_2013
+	drop			rural_2013
 	
 
 * prepare for export

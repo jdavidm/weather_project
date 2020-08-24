@@ -226,9 +226,10 @@
 	rename 			woreda_2011 woreda
 	rename 			ea_2011 ea
 	rename 			household_id_2011 household_id
+	rename			year_2011 year
 	
 * drop unneeded variables
-	drop			rural_2011 year_2011
+	drop			rural_2011
 	
 
 * prepare for export
