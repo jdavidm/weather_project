@@ -201,36 +201,10 @@
 
 * replace observations 3 std deviation from the mean and impute missing
 	sum 			harvqtykg, detail
-	replace			harvqtykg = . if harvqtykg > `r(p50)'+ (3*`r(sd)')
-	*** 57 changes made
+	replace			harvqtykg = . if harvqtykg > 4500
+	*** 112 changes made
 	
 * impute missing quantity
-	mi set 			wide 	// declare the data to be wide.
-	mi xtset		, clear 	// clear any xtset that may have had in place previously
-
-* impute harvqtykg	
-	mi register			imputed harvqtykg // identify harvqty variable to be imputed
-	sort				hhid prcid pltid, stable // sort to ensure reproducability of results
-	mi impute 			pmm harvqtykg i.region i.district i.countydstrng i.subcountydstrng cropid harvkgsold, add(1) rseed(245780) ///
-								noisily dots force knn(5) bootstrap					
-	mi 				unset	
-	
-* inspect imputation 
-	sum 				harvqtykg_1_, detail
-	*** 58 imputation
-	*** mean 240.78, min 0, max 7010
-	*** looks better
-
-* replace the imputated variable
-	replace 			harvqtykg = harvqtykg_1_
-	*** 58 changes made
-	
-	drop 				harvqtykg_1_ mi_miss
-	
-	mdesc 				harvqtykg
-	*** 6 missing because they have no other geographic data except region
-
-* impute the missing 6
 	mi set 			wide 	// declare the data to be wide.
 	mi xtset		, clear 	// clear any xtset that may have had in place previously
 
@@ -240,52 +214,62 @@
 	mi impute 			pmm harvqtykg i.region cropid harvkgsold, add(1) rseed(245780) ///
 								noisily dots force knn(5) bootstrap					
 	mi 				unset	
-
+	
 * inspect imputation 
 	sum 				harvqtykg_1_, detail
-	*** same distribution as before, thats good
-	
+	*** 112 imputation
+	*** mean 231.5, min 0, max 4440
+	*** looks better
+
+* replace the imputated variable
 	replace 			harvqtykg = harvqtykg_1_
-	*** 6 changes made
+	*** 112 changes made
 	
 	drop 				harvqtykg_1_ mi_miss
 	
+	mdesc 				harvqtykg
+	*** 0 missing
+	
 *********************************************************************************************	
-* 7 - impute harvvlush
+* 7 - reduce harvvlush by dividing by 1000
 *********************************************************************************************	
+
+	replace 		harvvlush = harvvlush/10
+	
 	sum 			harvvlush, detail
-	replace			harvvlush = . if harvvlush > `r(p50)'+ (3*`r(sd)')
+	
+	*replace			harvvlush = . if harvvlush > `r(p50)'+ (3*`r(sd)')
 	*** 110 changes made
 
 * replace cropvl with missing if over 3 std dev from the mean
-	sum 			harvvlush, detail
-	replace			harvvlush = . if harvvlush > `r(p50)'+ (3*`r(sd)')
+*	sum 			harvvlush, detail
+*	replace			harvvlush = . if harvvlush > `r(p50)'+ (3*`r(sd)')
 	*** 383 changes made
 	
-	sum 			harvvlush, detail
-	replace			harvvlush = . if harvvlush > `r(p50)'+ (3*`r(sd)')
+*	sum 			harvvlush, detail
+*	replace			harvvlush = . if harvvlush > `r(p50)'+ (3*`r(sd)')
 	
-	sum 			harvvlush, detail
-	replace			harvvlush = . if harvvlush > `r(p50)'+ (3*`r(sd)')
+*	sum 			harvvlush, detail
+	*replace			harvvlush = . if harvvlush > `r(p50)'+ (3*`r(sd)')
 	
 * impute harvvlush if missing and harvest was sold
-	mi set 			wide 	// declare the data to be wide.
-	mi xtset		, clear 	// clear any xtset that may have had in place previously
+	*mi set 			wide 	// declare the data to be wide.
+	*mi xtset		, clear 	// clear any xtset that may have had in place previously
 
 * impute each variable in local	
-	mi register			imputed harvvlush // identify harvqty variable to be imputed
-	sort				hhid prcid pltid, stable // sort to ensure reproducability of results
-	mi impute 			pmm harvvlush i.region i.district i.countydstrng i.subcountydstrng cropid harvkgsold, add(1) rseed(245780) ///
-								noisily dots force knn(5) bootstrap					
-	mi 				unset	
+	*mi register			imputed harvvlush // identify harvqty variable to be imputed
+	*sort				hhid prcid pltid, stable // sort to ensure reproducability of results
+	*mi impute 			pmm harvvlush i.region i.district i.countydstrng i.subcountydstrng cropid harvkgsold, add(1) rseed(245780) ///
+	*							noisily dots force knn(5) bootstrap					
+	*mi 				unset	
 	
 * how did impute go?
-	sum 			harvvlush_1_, detail
+	*sum 			harvvlush_1_, detail
 	*** min 0, mean 672.29, max 10626.85
 	*** much larger than wave 2
-	replace 		harvvlush = harvvlush_1_ if soldprod  > 0
+	*replace 		harvvlush = harvvlush_1_ if soldprod  > 0
 	
-	drop 			harvvlush_1_ mi_miss
+	*drop 			harvvlush_1_ mi_miss
 	
 *********************************************************************************************	
 * 8 - make cropvl and impute
@@ -295,7 +279,7 @@
 	lab var 	cropvl "total value of harvest sold in 2010 USD"
 	
 	sum 		cropvl, detail
-	*** mean 5936.79, min 0, max 78475.17
+	*** mean 235.95, min 0, max 70845.64
 
 * what can we say about distribution?
 	*kdensity 	cropvl
@@ -303,7 +287,7 @@
 
 	sum 			cropvl, detail
 	replace			cropvl = . if cropvl > `r(p50)'+ (3*`r(sd)')
-	*** 122 changes made
+	*** 108 changes made
 
 * replace cropvl with missing if over 3 std dev from the mean
 	sum 			cropvl, detail
@@ -323,36 +307,13 @@
 	
 * how did impute go?
 	sum 			cropvl_1_, detail
-	*** min 0, mean 672.29, max 10626.85
-	*** much larger than wave 2
+	*** min 0, mean 88.8, max 1275.22
+
 	replace 		cropvl = cropvl_1_ if soldprod  > 0
 	
 	drop 			cropvl_1_ mi_miss
 	
-* too high impute again
-* replace cropvl with missing if over 3 std dev from the mean
-	sum 			cropvl, detail
-	replace			cropvl = . if cropvl > `r(p50)'+ (3*`r(sd)')
-	*** 363 changes made
-	
-* impute cropvl if missing and harvest was sold
-	mi set 			wide 	// declare the data to be wide.
-	mi xtset		, clear 	// clear any xtset that may have had in place previously
 
-* impute each variable in local	
-	mi register			imputed cropvl // identify harvqty variable to be imputed
-	sort				hhid prcid pltid, stable // sort to ensure reproducability of results
-	mi impute 			pmm cropvl i.region i.district i.countydstrng i.subcountydstrng harvqtykg harvkgsold, add(1) rseed(245780) ///
-								noisily dots force knn(5) bootstrap					
-	mi 				unset	
-	
-* how did impute go?
-	sum 			cropvl_1_, detail
-	*** min 0, mean 837.76, max 13079.2
-	*** much larger than wave 2
-	replace 		cropvl = cropvl_1_
-	
-	drop 			cropvl_1_ mi_miss
 *********************************************************************************************	
 * 9 - impute harvkgsold
 *********************************************************************************************	
@@ -502,7 +463,7 @@
 	*** no missing
 	
 	sum 			cropprice croppricei
-	*** mean = 27.84, max = 1634.9
+	*** mean = 0.34, max = 45.3
 	
 * generate value of harvest 
 	gen				cropvalue = harvqtykg * croppricei
@@ -518,12 +479,11 @@
 
 * replace any +3 s.d. away from median as missing, by cropid
 	sum 			cropvalue, detail
-	*** mean 490.93, max 136241.6
+	*** mean 472.22, max 49782.69
 *	kdensity		cropvalue
-	replace			cropvalue = . if cropvalue > 1500
+	replace			cropvalue = . if cropvalue > 500
 	sum				cropvalue, detail
-	*** replaced 840 values
-	*** reduces mean to 100, max to 1498.66
+	*** replaced 2722 values
 	
 * impute missing values
 	mi set 			wide 	// declare the data to be wide.
@@ -543,8 +503,7 @@
 	lab var			cropvalue "value of harvest, imputed"
 	drop			cropvalue_1_
 	sum 			cropvalue
-	*** mean is 105.89, max is 1498.66 min is 0
-	*** imputed 840
+	*** mean is 123.94, max is 499.77 min is 0
 
 * **********************************************************************
 * 11 - end matter, clean up to save

@@ -149,6 +149,7 @@
 
 	mdesc 			hhid prcid plotsize
 	*** none missing
+	sum 			plotsize
 	
 	isid hhid prcid
 	
