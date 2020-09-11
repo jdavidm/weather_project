@@ -143,7 +143,7 @@
 * replace any +3 s.d. away from mean as missing, by cropid
 	sort 			vl_yld
 	sum				vl_yld, detail 
-	replace			vl_yld = . if vl_yld > `r(p50)'+ (3*`r(sd)')
+	replace			vl_yld = . if vl_yld > `r(p50)'+ (2*`r(sd)')
 	sum				vl_yld, detail
 	*** replaced 22 values, max is now 69202.35, mean 1128.871
 
@@ -165,7 +165,7 @@
 * inferring imputed harvest value from imputed harvest value per hectare
 	generate		vl_hrvimp = vl_yldimp * plotsize 
 	lab var			vl_hrvimp "value of harvest (2010USD), imputed"
-	lab var			vl_hrv "value of harvest (2010USD)"
+	lab var			cropvalue "value of harvest (2010USD)"
 	
 	drop mi_miss
 
@@ -265,7 +265,7 @@
 * replace any +3 s.d. away from median as missing, by cropid
 	sort 			mz_yld
 	sum				mz_yld, detail 
-	replace			mz_yld = . if mz_yld > `r(p50)'+ (3*`r(sd)')
+	replace			mz_yld = . if mz_yld > `r(p50)'+ (2*`r(sd)')
 	sum				mz_yld, detail
 	*** replaced 19 values, max is now 16538.43, mean 404.85
 	
@@ -278,7 +278,7 @@
 						noisily dots force knn(5) bootstrap
 	mi 				unset	
 	
-	replace 		mz_yld = mz_yld_1_ if mz_hrv != .
+	replace 		mz_yld = mz_yld_1_ if mz_lnd != .
 	sum 			mz_yld
 	*** max is still 16538.43, mean is 419.72
 
@@ -512,8 +512,139 @@
 	lab var			cp_hrb	"Any maize plot has herbicide"
 	lab var			cp_irr	"Any maize plot has irrigation"
 
+	
+	
 * **********************************************************************
-* 4 - end matter, clean up to save
+* 4 - impute tf_hrv
+* **********************************************************************	
+* replace any +3 s.d. away from median as missing, by cropid
+	sum 			tf_hrv, detail
+	*** mean 654.11, max 4040.02
+*	kdensity		tf_hrv
+	replace			tf_hrv = . if tf_hrv > `r(p50)'+ (3*`r(sd)')
+	sum				tf_hrv, detail
+	*** replaced 38 values
+	
+* impute missing values
+	mi set 			wide 	// declare the data to be wide.
+	mi xtset		, clear 	// clear any xtset that may have had in place previously
+	mi register		imputed tf_hrv // identify cropvalue as the variable being imputed
+	sort			hhid, stable // sort to ensure reproducability of results
+	mi impute 		pmm tf_hrv i.region tf_lnd, add(1) rseed(245780) ///
+						noisily dots force knn(5) bootstrap
+	mi 				unset	
+
+* how did the imputation go?
+	sum 			tf_hrv_1_
+	replace			tf_hrv = tf_hrv_1_
+	drop			tf_hrv_1_ mi_miss
+	sum 			tf_hrv
+	*** doesnt improve mean 622.63, max 2238.96
+	
+* **********************************************************************
+* 5 - impute tf_yld
+* **********************************************************************	
+* replace any +3 s.d. away from median as missing, by cropid
+	sum 			tf_yld, detail
+	*** mean 449.62, max 7651.37
+*	kdensity		tf_yld
+	replace			tf_yld = . if tf_yld > `r(p50)'+ (3*`r(sd)')
+	sum				tf_yld, detail
+	*** replaced 64 values
+		
+	sum 			tf_yld, detail
+	*** mean 356.99, max 2309.29
+*	kdensity		tf_yld
+	replace			tf_yld = . if tf_yld > `r(p50)'+ (3*`r(sd)')
+	sum				tf_yld, detail
+	*** replaced 75 values
+	
+* impute missing values
+	mi set 			wide 	// declare the data to be wide.
+	mi xtset		, clear 	// clear any xtset that may have had in place previously
+	mi register		imputed tf_yld // identify cropvalue as the variable being imputed
+	sort			hhid, stable // sort to ensure reproducability of results
+	mi impute 		pmm tf_yld i.region tf_lnd, add(1) rseed(245780) ///
+						noisily dots force knn(5) bootstrap
+	mi 				unset	
+
+* how did the imputation go?
+	sum 			tf_yld_1_
+	replace			tf_yld = tf_yld_1_
+	drop			tf_yld_1_ mi_miss
+	sum 			tf_yld
+	*** improves mean 327.54, max 1516.88
+	
+* **********************************************************************
+* 6 - impute cp_hrv
+* **********************************************************************	
+* replace any +3 s.d. away from median as missing, by cropid
+	sum 			cp_hrv, detail
+	*** mean 275.14, max 1525.42
+*	kdensity		cp_hrv
+	replace			cp_hrv = . if cp_hrv > `r(p50)'+ (3*`r(sd)')
+	sum				cp_hrv, detail
+	*** replaced 13 values
+		
+	sum 			cp_hrv, detail
+	*** mean 264.96, max 839.59
+*	kdensity		cp_hrv
+	replace			cp_hrv = . if cp_hrv > `r(p50)'+ (3*`r(sd)')
+	sum				cp_hrv, detail
+	*** replaced 9 values
+	
+* impute missing values
+	mi set 			wide 	// declare the data to be wide.
+	mi xtset		, clear 	// clear any xtset that may have had in place previously
+	mi register		imputed cp_hrv // identify cropvalue as the variable being imputed
+	sort			hhid, stable // sort to ensure reproducability of results
+	mi impute 		pmm cp_hrv i.region tf_lnd, add(1) rseed(245780) ///
+						noisily dots force knn(5) bootstrap
+	mi 				unset	
+
+* how did the imputation go?
+	sum 			cp_hrv_1_
+	replace			cp_hrv = cp_hrv_1_ if cp_lnd != .
+	drop			cp_hrv_1_ mi_miss
+	sum 			cp_hrv
+	*** improves mean 255.16, max 778.21
+	
+* **********************************************************************
+* 7 - impute cp_yld
+* **********************************************************************	
+* replace any +3 s.d. away from median as missing, by cropid
+	sum 			cp_yld, detail
+	*** mean 547.09, max 4961.3
+*	kdensity		cp_yld
+	replace			cp_yld = . if cp_yld > `r(p50)'+ (3*`r(sd)')
+	sum				cp_yld, detail
+	*** replaced 27 values
+		
+	sum 			cp_yld, detail
+	*** mean 464.33, max 2341.98
+*	kdensity		cp_yld
+	replace			cp_yld = . if cp_yld > `r(p50)'+ (3*`r(sd)')
+	sum				cp_yld, detail
+	*** replaced 32 values
+	
+* impute missing values
+	mi set 			wide 	// declare the data to be wide.
+	mi xtset		, clear 	// clear any xtset that may have had in place previously
+	mi register		imputed cp_yld // identify cropvalue as the variable being imputed
+	sort			hhid, stable // sort to ensure reproducability of results
+	mi impute 		pmm cp_yld i.region tf_lnd, add(1) rseed(245780) ///
+						noisily dots force knn(5) bootstrap
+	mi 				unset	
+
+* how did the imputation go?
+	sum 			cp_yld_1_
+	replace			cp_yld = cp_yld_1_ if cp_lnd != .
+	drop			cp_yld_1_ mi_miss
+	sum 			cp_yld
+	*** improves mean 418.88, max 1760.99
+	
+* **********************************************************************
+* 8 - end matter, clean up to save
 * **********************************************************************
 
 * destring hhid

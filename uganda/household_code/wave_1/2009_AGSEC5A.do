@@ -157,20 +157,72 @@
 	replace 		harvkgsold = 0 if harvvlush == 0
 	lab	var			harvkgsold "quantity harvested and sold, in kilograms"
 	sum				harvkgsold, detail
-	replace			harvkgsold = . if harvkgsold > `r(p50)'+ (3*`r(sd)')
-	sum 			harvkgsold, detail
+
 	*** 0 min, mean 85.78, max 11250
 	*** how could you sell zero - replace to missing
 	
 	mdesc 			harvkgsold
 	*** none missing
 	
+
+	
+* **********************************************************************
+* 6 - merge location data
+* **********************************************************************	
+	
+* merge the location identification
+	merge m:1 hhid using "`export'/2009_GSEC1"
+	*** 0 unmatched from master
+	drop 		if _merge != 3
+	
+* encode district for the imputation
+	encode		county, gen (countydstrng)
+	encode		subcounty, gen (subcountydstrng)
+	encode		parish, gen (parishdstrng)
+	
+* **********************************************************************
+* harvest value cleaning excercise
+* **********************************************************************
+
+	gen 		cropvl = harvvlush / 1834.975213
+	
+	gen 		hascropvl = 1 if cropvl != .
+	
+	replace 		cropvl = . if cropvl > 20000
+	*** 278 changes
+	*replace 		cropvl = cropvl/10 if cropvl > 1000
+	
+* impute cropvl
+
+* replace cropvl with missing if over 2 std dev from the mean
+	sum 			cropvl, detail
+	replace			cropvl = . if cropvl > `r(p50)'+ (2*`r(sd)')
+	*** 327 changes
+	
+* impute cropvl if missing and harvest was sold
+	mi set 			wide 	// declare the data to be wide.
+	mi xtset		, clear 	// clear any xtset that may have had in place previously
+
+* impute each variable in local	
+	mi register			imputed cropvl // identify harvqty variable to be imputed
+	sort				hhid prcid pltid, stable // sort to ensure reproducability of results
+	mi impute 			pmm cropvl i.region cropid, add(1) rseed(245780) ///
+								noisily dots force knn(5) bootstrap					
+	mi 				unset	
+	
+* how did impute go?
+	sum 			cropvl_1_, detail
+	*** min 0, mean 429.89, max 1569.5
+
+	replace 		cropvl = cropvl_1_ if hascropvl == 1
+	
+	drop 			cropvl_1_ mi_miss
 * **********************************************************************
 * 5 - collapse to the crop level
 * **********************************************************************
 	
 * collapse the data to the crop level so that our imputations are reproducable and consistent
-	collapse (sum) harvqtykg harvvlush harvkgsold (max) soldprod, by(hhid prcid pltid cropid)
+	collapse (sum) harvqtykg harvvlush cropvl harvkgsold (max) soldprod, by(hhid prcid pltid cropid)
 
 	duplicates report hhid prcid pltid cropid
 
@@ -230,88 +282,7 @@
 	mdesc 				harvqtykg
 	*** 0 missing
 	
-*********************************************************************************************	
-* 7 - reduce harvvlush by dividing by 1000
-*********************************************************************************************	
 
-	replace 		harvvlush = harvvlush/10
-	
-	sum 			harvvlush, detail
-	
-	*replace			harvvlush = . if harvvlush > `r(p50)'+ (3*`r(sd)')
-	*** 110 changes made
-
-* replace cropvl with missing if over 3 std dev from the mean
-*	sum 			harvvlush, detail
-*	replace			harvvlush = . if harvvlush > `r(p50)'+ (3*`r(sd)')
-	*** 383 changes made
-	
-*	sum 			harvvlush, detail
-*	replace			harvvlush = . if harvvlush > `r(p50)'+ (3*`r(sd)')
-	
-*	sum 			harvvlush, detail
-	*replace			harvvlush = . if harvvlush > `r(p50)'+ (3*`r(sd)')
-	
-* impute harvvlush if missing and harvest was sold
-	*mi set 			wide 	// declare the data to be wide.
-	*mi xtset		, clear 	// clear any xtset that may have had in place previously
-
-* impute each variable in local	
-	*mi register			imputed harvvlush // identify harvqty variable to be imputed
-	*sort				hhid prcid pltid, stable // sort to ensure reproducability of results
-	*mi impute 			pmm harvvlush i.region i.district i.countydstrng i.subcountydstrng cropid harvkgsold, add(1) rseed(245780) ///
-	*							noisily dots force knn(5) bootstrap					
-	*mi 				unset	
-	
-* how did impute go?
-	*sum 			harvvlush_1_, detail
-	*** min 0, mean 672.29, max 10626.85
-	*** much larger than wave 2
-	*replace 		harvvlush = harvvlush_1_ if soldprod  > 0
-	
-	*drop 			harvvlush_1_ mi_miss
-	
-*********************************************************************************************	
-* 8 - make cropvl and impute
-*********************************************************************************************	
-
-	gen 		cropvl = harvvlush / 1834.975213
-	lab var 	cropvl "total value of harvest sold in 2010 USD"
-	
-	sum 		cropvl, detail
-	*** mean 235.95, min 0, max 70845.64
-
-* what can we say about distribution?
-	*kdensity 	cropvl
-	*** left skewed with long tail
-
-	sum 			cropvl, detail
-	replace			cropvl = . if cropvl > `r(p50)'+ (3*`r(sd)')
-	*** 108 changes made
-
-* replace cropvl with missing if over 3 std dev from the mean
-	sum 			cropvl, detail
-	replace			cropvl = . if cropvl > `r(p50)'+ (3*`r(sd)')
-	*** 430 changes made
-	
-* impute cropvl if missing and harvest was sold
-	mi set 			wide 	// declare the data to be wide.
-	mi xtset		, clear 	// clear any xtset that may have had in place previously
-
-* impute each variable in local	
-	mi register			imputed cropvl // identify harvqty variable to be imputed
-	sort				hhid prcid pltid, stable // sort to ensure reproducability of results
-	mi impute 			pmm cropvl i.region i.district i.countydstrng i.subcountydstrng cropid harvkgsold, add(1) rseed(245780) ///
-								noisily dots force knn(5) bootstrap					
-	mi 				unset	
-	
-* how did impute go?
-	sum 			cropvl_1_, detail
-	*** min 0, mean 88.8, max 1275.22
-
-	replace 		cropvl = cropvl_1_ if soldprod  > 0
-	
-	drop 			cropvl_1_ mi_miss
 	
 
 *********************************************************************************************	
@@ -503,7 +474,8 @@
 	lab var			cropvalue "value of harvest, imputed"
 	drop			cropvalue_1_
 	sum 			cropvalue
-	*** mean is 123.94, max is 499.77 min is 0
+	*** mean is 131.8, max is 499.55 min is 0
+	
 
 * **********************************************************************
 * 11 - end matter, clean up to save
