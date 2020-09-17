@@ -110,6 +110,9 @@
 	
 	drop		if price == .
 	
+* hard coding weird outlier potato price (1000), replacing with 10
+	replace 	price = 10 if crop_code == 60 & price > 500
+	
 	lab var		price "Sales Price (BIRR/kg)"
 	
 

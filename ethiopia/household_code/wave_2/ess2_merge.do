@@ -188,6 +188,9 @@
 	*** 12 obs dropped
 	
 	drop		p_ea- n_crop
+	
+* investigate mean prices by crop	
+	tab crop_code, summarize(croppricei) mean freq
 		
 	
 * ***********************************************************************
