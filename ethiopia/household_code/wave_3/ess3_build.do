@@ -137,7 +137,7 @@
 * **********************************************************************
 	
 * define local with all sub-folders in it
-	loc 		folderList : dir "`rootw'" dirs "essy2_t*"
+	loc 		folderList : dir "`rootw'" dirs "essy3_t*"
 
 * define local with all files in each sub-folder	
 	foreach 	folder of local folderList {
@@ -219,19 +219,9 @@
 * **********************************************************************
 * 3 - end matter, clean up to save
 * **********************************************************************
-
-* create wide data set 	
-	rename 			* *_2015
-	rename 			region_2015 region
-	rename 			zone_2015 zone
-	rename 			woreda_2015 woreda
-	rename 			ea_2015 ea
-	rename 			hhid_2015 hhid
-	rename 			household_id2_2015 household_id2
-	rename			year_2015 year
 	
 * drop unneeded variables
-	drop			rural_2015
+	drop			rural
 
 * prepare for export
 	qui: compress

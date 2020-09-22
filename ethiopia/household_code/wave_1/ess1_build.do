@@ -218,18 +218,9 @@
 * **********************************************************************
 * 3 - end matter, clean up to save
 * **********************************************************************
-
-* create wide data set	
-	rename 			* *_2011
-	rename 			region_2011 region
-	rename 			zone_2011 zone
-	rename 			woreda_2011 woreda
-	rename 			ea_2011 ea
-	rename 			household_id_2011 household_id
-	rename			year_2011 year
 	
 * drop unneeded variables
-	drop			rural_2011
+	drop			rural
 	
 
 * prepare for export

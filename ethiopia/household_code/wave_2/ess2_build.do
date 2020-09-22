@@ -220,20 +220,9 @@
 * **********************************************************************
 * 3 - end matter, clean up to save
 * **********************************************************************
-
-* create wide data set 	
-	rename 			* *_2013
-	rename 			region_2013 region
-	rename 			zone_2013 zone
-	rename 			woreda_2013 woreda
-	rename 			ea_2013 ea
-	rename 			hhid_2013 hhid
-	rename 			household_id2_2013 household_id2
-	rename			year_2013 year
 	
 * drop unneeded variables
-	drop			rural_2013
-	
+	drop			rural
 
 * prepare for export
 	qui: compress
