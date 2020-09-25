@@ -91,6 +91,22 @@
 * order variables
 	order			uid pl_id
 	
+* dropping 2017 weather data
+	drop			*2017
+	
+* generate one variable for sampling weight
+	gen				weight = pw
+	tab				weight, missing
+	
+	replace			weight = pw2 if weight == .
+	replace			weight = pw_w3 if weight == .
+	tab 			weight, missing
+	
+	drop			pw pw2 pw_w3
+	
+	rename			weight pw
+	lab var			pw "Household Sample Weight"
+	
 * save file
 	qui: compress
 	customsave 	, idvarname(uid) filename("eth_complete.dta") ///
