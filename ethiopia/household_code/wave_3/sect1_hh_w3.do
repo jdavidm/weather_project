@@ -1,46 +1,87 @@
-clear all
+* Project: WB Weather
+* Created on: June 2020
+* Created by: McG
+* Stata v.16
 
-*attempting to clean Ethiopia household variables
-global user "themacfreezie"
+* does
+	* cleans Ethiopia household variables, wave 3 HH sec1
+	* gives location identifiers for participants
+	* hierarchy: holder > parcel > field > crop - not a concern in this dofile
+	* seems to very roughly correspond to Malawi ag-modI and ag-modO
+	
+* assumes
+	* customsave.ado
+	* distinct.ado
 
-**********************************************************************************
-**	ESS Wave 2 - Household Section 1 
-**********************************************************************************
-*	Seems to very roughly correspond to Malawi ag-modI and ag-modO
+* TO DO:
+	* the only isid variable i found is individual_id2
+	* where is the isid for wave 3?
+	* otherwise complete
 
-* For household data
-loc root = "C:\Users/$user\Dropbox\Weather_Project\Data\Ethiopia\analysis_datasets\Ethiopia_raw\Wave3_2015"
-* To export results
-loc export = "C:\Users/$user\Dropbox\Weather_Project\Data\Ethiopia\analysis_datasets\Ethiopia_refined\Wave3_2015"
+	
+* **********************************************************************
+* 0 - setup
+* **********************************************************************
 
-use "`root'/sect1_hh_w3.dta", clear
+* define paths
+	loc root = "$data/household_data/ethiopia/wave_3/raw"
+	loc export = "$data/household_data/ethiopia/wave_3/refined"
+	loc logout = "$data/household_data/ethiopia/logs"
 
-*	Dropping duplicates
-duplicates drop
+* open log
+	cap log close
+	log using "`logout'/wv3_HHSEC1", append
 
-*	Individual_id2 is unique identifier 
-describe
-sort household_id2 individual_id2
-isid individual_id2, missok
+	
+* **********************************************************************
+* 1 - preparing ESS 2015/16 (Wave 3) - Household Section 1 
+* **********************************************************************
 
-*creating unique region identifier
-egen region_id = group( saq01 saq02)
-label var region_id "Unique region identifier"
+* load data
+	use 		"`root'/sect1_hh_w3.dta", clear
 
-*	Restrict to variables of interest
-keep  household_id- saq08 region_id
-order household_id- saq08
+* dropping duplicates
+	duplicates 	drop
 
-*	I am uncertain about how to handle the above! Please advise! 
-rename household_id hhid
-rename household_id2 hhid2
-rename saq01 district
-rename saq02 region
-rename saq03 ward
+* individual_id2 is unique identifier 
+	describe
+	sort 		household_id2 individual_id2
+	isid 		individual_id2, missok
 
-*	Prepare for export
-compress
-describe
-summarize 
-sort hhid ea_id
-save "`export'/sect1_hh_w3", replace
+* creating district identifier
+	egen 		district_id = group( saq01 saq02)
+	label var 	district_id "Unique district identifier"
+	distinct	saq01 saq02, joint
+	*** 84 distinct districts
+
+
+* ***********************************************************************
+* 2 - cleaning and keeping
+* ***********************************************************************
+
+* renaming some variables of interest
+	rename 		household_id hhid
+	rename 		household_id2 hhid2
+	rename 		saq01 region
+	rename 		saq02 district
+	label var 	district "District Code"
+	rename 		saq03 woreda
+	rename		saq07 ea
+
+* restrict to variables of interest
+	keep  		hhid- hh_s1q00 district_id
+	order 		hhid- saq08
+	
+* prepare for export
+	isid		individual_id2
+	compress
+	describe
+	summarize 
+	sort hhid ea_id
+	customsave , idvar(individual_id2) filename(HH_SEC1.dta) path("`export'") ///
+		dofile(HH_SEC1) user($user)
+
+* close the log
+	log	close
+
+/* END */
