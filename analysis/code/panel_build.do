@@ -23,12 +23,12 @@
 * **********************************************************************
 
 * define paths
-	loc		source	= 	"$data/regression_data/malawi"
-	loc		results = 	"$data/results_data/malawi"
+	loc		source	= 	"$data/regression_data"
+	loc		results = 	"$data/regression_data"
 	loc		logout 	= 	"$data/regression_data/logs"
 
 * open log	
-	log 	using 		"`logout'/mwi_regressions", append
+	log 	using 		"`logout'/panel_build", append
 
 	
 * **********************************************************************
