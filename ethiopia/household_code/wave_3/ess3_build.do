@@ -12,9 +12,7 @@
 	* customsave.ado
 
 * TO DO:
-	* no refined weather data for wave 3 (could just be because I'm offline rn)
-	* is holder ID right for wave 3?
-	* clean up varnames in section 3
+	* done
 
 	
 * **********************************************************************
@@ -38,6 +36,9 @@
 
 * import the .dta houeshold file
 	use 		"`rooth'/hhfinal_ess3.dta", clear
+	
+* rename year 1 household id
+	rename		hhid household_id
 	
 * generate variable to record data source
 	gen 		data = "ess3"

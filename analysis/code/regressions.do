@@ -22,129 +22,21 @@
 * **********************************************************************
 
 * define paths
-	loc		source	= 	"$data/regression_data/malawi"
-	loc		results = 	"$data/results_data/malawi"
+	loc		source	= 	"$data/regression_data"
+	loc		results = 	"$data/results_data"
 	loc		logout 	= 	"$data/regression_data/logs"
 
 * open log	
-	log 	using 		"`logout'/mwi_regressions", append
+	cap log close
+	log 	using 		"`logout'/regressions", append
 
 	
 * **********************************************************************
-* 1 - final cleaning of rainfall data
+* 1 - read in cross country panel
 * **********************************************************************
 
 * read in data file
-	use			"`source'/mwi_complete.dta", clear
-
-* drop dry season values - we just focus on the rainy season (rs)
-	drop		ds*
-		
-	* put the data id variables up front
-		order 		sp_id- y3_hhid, after(case_id)
-
-	* create or rename variables for maize production (seed rate missing in data)
-		rename		rsmz_harvestimp cp_hrv
-		lab var 	cp_hrv "Harvest of maize (kg)"
-		
-		rename		rsmz_cultivatedarea cp_lnd
-		lab var 	cp_lnd "Land area planted to maize (ha)"
-		
-		gen 		cp_yld = cp_hrv/cp_lnd
-		lab var 	cp_yld "Yield of maize (kg/ha)"
-
-		gen 		cp_lab = rsmz_labordaysimp/cp_lnd
-		lab var 	cp_lab "Labor for maize (days/ha)"
-		
-		rename		rsmz_fert_inorgpct cp_frt
-		lab var		cp_frt "Fertilizer (inorganic) for maize (kg/ha)"
-		
-		rename		rsmz_pest cp_pst
-		lab var		cp_pst "Pesticide/Insecticide for maize (=1)"
-		
-		rename		rsmz_herb cp_hrb
-		lab var		cp_hrb "Herbicide/Fungicide for maize (=1)"
-		
-		rename		rsmz_irrigationany cp_irr
-		lab var		cp_irr "Irrigation for maize (=1)"
-
-	* conver kwacha into 2010 USD
-	* exchange rates come from world_bank_exchange_rates.xlsx
-		replace		rs_harvest_valueimp = rs_harvest_valueimp/124.3845647 ///
-											if year == 2008
-		replace		rs_harvest_valueimp = rs_harvest_valueimp/134.2107246 ///
-											if year == 2009
-		replace		rs_harvest_valueimp = rs_harvest_valueimp/201.9788745 ///
-											if year == 2012
-		replace		rs_harvest_valueimp = rs_harvest_valueimp/310.8160671 ///
-											if year == 2014
-		replace		rs_harvest_valueimp = rs_harvest_valueimp/374.6410851 ///
-											if year == 2015
-		
-	* create or rename variables for total farm production (seed rate mising)
-		rename		rs_harvest_valueimp tf_hrv
-		lab var 	tf_hrv "Harvest of all crops (2010 USD)"
-		
-		rename		rs_cultivatedarea tf_lnd
-		lab var 	tf_lnd "Land area planted to all crops (ha)"
-		
-		gen 		tf_yld = tf_hrv/tf_lnd
-		lab var 	tf_yld "Yield of all crops (USD/ha)"
-		
-		gen 		tf_lab = rs_labordaysimp/tf_lnd
-		lab var 	tf_lab "Labor for all crops (days/ha)"
-		
-		rename		rs_fert_inorgpct tf_frt
-		lab var		tf_frt "Fertilizer (inorganic) for all crops (kg/ha)"
-		
-		rename		rs_pest tf_pst
-		lab var		tf_pst "Pesticide/Insecticide for all crops (=1)"
-		
-		rename		rs_herb tf_hrb
-		lab var		tf_hrb "Herbicide/Fungicide for all crops (=1)"
-		
-		rename		rs_irrigationany tf_irr
-		lab var		tf_irr "Irrigation for all crops (=1)"
-	
-	* drop unnecessary variables and reorder remaining
-		drop		rs*
-		order		tf_hrv tf_lnd tf_yld tf_lab tf_frt tf_pst tf_hrb tf_irr ///
-					cp_hrv cp_lnd cp_yld cp_lab cp_frt cp_pst cp_hrb cp_irr, ///
-					after(qx_type)
-
-	* destring data type
-		gen			Dtype = 0 if dtype == "cx"
-		replace		Dtype = 1 if dtype == "lp"
-		replace		Dtype = 2 if dtype == "sp"
-		lab var		Dtype "Data type"
-		drop		dtype
-		rename		Dtype dtype
-		order		dtype, after(country)
-		lab define 	dtype 0 "cx" 1 "lp" 2 "sp"
-		label val 	dtype dtype
-
-	* drop temperature bins (for now)
-		drop		v23* v24* v25* v26* v27*
-		
-	* create locals for sets of variables
-		loc		output		tf_yld cp_yld
-		loc 	continputs 	tf_lab tf_frt cp_lab cp_frt
-
-	* winsorize data at 1% and 99% per pre-analysis plan
-		winsor2 	`output' `continputs', replace
-
-	* convert output variables to logs using invrse hyperbolic sine 
-		foreach 		v of varlist `output' {
-			qui: gen 		ln`v' = asinh(`v') 
-			qui: lab var 	ln`v' "ln of `v'" 
-		}
-
-	* convert continuous input variables to logs using invrse hyperbolic sine 
-		foreach 		v of varlist `continputs' {
-			qui: gen 		ln`v' = asinh(`v') 
-			qui: lab var 	ln`v' "ln of `v'" 
-		}
-		order		ln* , before(data)
+	use			"`source'/lsms_panel.dta", clear
 
 	
 * **********************************************************************
@@ -167,19 +59,8 @@ levelsof 	dtype		, local(levels)
 foreach l of local levels {
 	
 	* set panel id so it varies by dtype
-		if 		dtype == 0 {
-					xtset		case_id
-					loc			hhid case_id
-			else if		dtype == 1 {
-					xtset		lpid
-					loc			hhid lpid
-			}
-			else if		dtype == 2 {
-					xtset		spid
-					loc			hhid spid
-			}
-		}
-	
+		xtset		hhid
+		
 	* rainfall			
 		foreach 	v of varlist `weather' { 
 
@@ -191,37 +72,37 @@ foreach l of local levels {
 		* 2.1: Value of Harvest
 		
 		* weather
-			reg 		lntf_yld `v' if dtype == `l', vce(cluster `hhid')
+			reg 		lntf_yld `v' if dtype == `l', vce(cluster hhid)
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("tf") ("reg1") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 
 		* weather and fe	
-			xtreg 		lntf_yld `v' i.intyear if dtype == `l', fe vce(cluster `hhid')
+			xtreg 		lntf_yld `v' i.year if dtype == `l', fe vce(cluster hhid)
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("tf") ("reg2") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 
 		* weather and inputs and fe
-			xtreg 		lntf_yld `v' `inputsrs' i.year if dtype == `l', fe vce(cluster `hhid')
+			xtreg 		lntf_yld `v' `inputsrs' i.year if dtype == `l', fe vce(cluster hhid)
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("tf") ("reg3") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 			
 		* weather and squared weather
-			reg 		lntf_yld c.`v'##c.`v' if dtype == `l', vce(cluster case_id)
+			reg 		lntf_yld c.`v'##c.`v' if dtype == `l', vce(cluster hhid)
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("tf") ("reg4") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 		
 		* weather and squared weather and fe
-			xtreg 		lntf_yld c.`v'##c.`v' i.year if dtype == `l', fe vce(cluster `hhid')
+			xtreg 		lntf_yld c.`v'##c.`v' i.year if dtype == `l', fe vce(cluster hhid)
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("tf") ("reg5") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 		
 		* weather and squared weather and inputs and fe
-			xtreg 		lntf_yld c.`v'##c.`v' `inputsrs' i.year if dtype == `l', fe vce(cluster `hhid')
+			xtreg 		lntf_yld c.`v'##c.`v' `inputsrs' i.year if dtype == `l', fe vce(cluster hhid)
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("tf") ("reg6") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
@@ -229,37 +110,37 @@ foreach l of local levels {
 		* 2.2: Quantity of Maize
 		
 		* weather
-			reg 		lncp_yld `v' if dtype == `l', vce(cluster `hhid')
+			reg 		lncp_yld `v' if dtype == `l', vce(cluster hhid)
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("cp") ("reg1") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 
 		* weather and fe	
-			xtreg 		lncp_yld `v' i.intyear if dtype == `l', fe vce(cluster `hhid')
+			xtreg 		lncp_yld `v' i.year if dtype == `l', fe vce(cluster hhid)
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("cp") ("reg2") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 
 		* weather and inputs and fe
-			xtreg 		lncp_yld `v' `inputsrs' i.year if dtype == `l', fe vce(cluster `hhid')
+			xtreg 		lncp_yld `v' `inputsrs' i.year if dtype == `l', fe vce(cluster hhid)
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("cp") ("reg3") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 			
 		* weather and squared weather
-			reg 		lncp_yld c.`v'##c.`v' if dtype == `l', vce(cluster `hhid')
+			reg 		lncp_yld c.`v'##c.`v' if dtype == `l', vce(cluster hhid)
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("cp") ("reg4") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 		
 		* weather and squared weather and fe
-			xtreg 		lncp_yld c.`v'##c.`v' i.year if dtype == `l', fe vce(cluster `hhid')
+			xtreg 		lncp_yld c.`v'##c.`v' i.year if dtype == `l', fe vce(cluster hhid)
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("cp") ("reg5") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 		
 		* weather and squared weather and inputs and fe
-			xtreg 		lncp_yld c.`v'##c.`v' `inputsrs' i.year if dtype == `l', fe vce(cluster `hhid')
+			xtreg 		lncp_yld c.`v'##c.`v' `inputsrs' i.year if dtype == `l', fe vce(cluster hhid)
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("cp") ("reg6") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
