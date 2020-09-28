@@ -19,19 +19,16 @@
 * 0 - setup
 * **********************************************************************
 
-* set global user
-	global user "emilk"
-
 * define paths
 	loc		root	=	"$data/household_data/nigeria/wave_1/raw"
 	loc		export	=	"$data/household_data/nigeria/wave_1/refined"
 	loc		logout	=	"$data/household_data/nigeria/logs"
-
 	
 * close log (in case still open)
 	*log close
 	
 * open log	
+cap log close
 	log using "`logout'/pp_sect11c", append
 
 * **********************************************************************

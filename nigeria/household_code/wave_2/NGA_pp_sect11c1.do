@@ -26,6 +26,7 @@
 	loc		logout	=	"$data/household_data/nigeria/logs"
 
 * open log	
+	cap log close
 	log 	using 	"`logout'/wave_2_pp_sect11c1", append
 
 	
@@ -111,7 +112,7 @@
 
 * total labor days for harvest
 	egen			pp_labor = rowtotal(hh_1_1_ hh_2_2_ hh_3_3_ ///
-						hh_4_4_ men_days_5_)
+						hh_4_4_ men_days_5_ women_days)
 	lab var			pp_labor "total labor for planting (days)"
 	*** unlike harvest labor, this did not ask for unpaid/exchange labor
 
