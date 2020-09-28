@@ -30,11 +30,12 @@
 *	global user "jdmichler"
 
 * define paths	
-	loc root = "G:/My Drive/weather_project/weather_data/ethiopia/wave_1/daily"
-	loc export = "G:/My Drive/weather_project/weather_data/ethiopia/wave_1/refined"
-	loc logout = "G:/My Drive/weather_project/weather_data/ethiopia/logs"
+	loc root = "$data/weather_data/ethiopia/wave_1/daily"
+	loc export = "$data/weather_data/ethiopia/wave_1/refined"
+	loc logout = "$data/weather_data/ethiopia/logs"
 
 * open log	
+	cap log		close
 	log using "`logout'/eth_essy1_weather", replace
 
 

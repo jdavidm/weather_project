@@ -5,14 +5,15 @@
 
 * does
 	* merges weather data into GHSY2 household data
+	* does this for north and south seperately
 
 * assumes
-	* cleaned IHPS short panel data
+	* cleaned GHSY2 data
 	* processed wave 2 weather data
 	* customsave.ado
 
 * TO DO:
-	* update Malawi template for Nigeria
+	* complete
 
 	
 * **********************************************************************
@@ -26,6 +27,7 @@
 	loc		logout 	= 	"$data/merged_data/nigeria/logs"
 
 * open log	
+	cap log close
 	log 	using 		"`logout'/ghsy2_build", append
 
 	
@@ -216,7 +218,7 @@
 	customsave 	, idvar(hhid) filename("ghsy2_merged_n.dta") ///
 		path("`export'") dofile(ghsy2_build) user($user)
 
-		
+	
 * **********************************************************************
 * 3 - merge southern household data with rainfall data
 * **********************************************************************
@@ -415,6 +417,19 @@
 * append southern data
 	append		using "`export'/ghsy2_merged_s.dta", force
 
+* check to verify that there are observations for all variables
+	sum
+	*** missing observations in z-gdd
+	*** this is because those osbervations always have the same number of gdd
+	*** thus, they have no standard deviation and thus a z-score of infinity
+	*** we recode these as zeros because a z-score equal to 0 represents an element equal to the mean
+	
+* replace missing z-gdd with missing
+	loc	zgdd			v21_*
+	foreach v of varlist `zgdd'{
+	    replace		`v' = 0 if `v' == .
+	}		
+	
 	qui: compress	
 	describe
 	summarize 
@@ -426,7 +441,7 @@
 * erase northern and southern files
 	erase		"`export'/ghsy2_merged_n.dta"
 	erase		"`export'/ghsy2_merged_s.dta"
-	
+
 * close the log
 	log	close
 

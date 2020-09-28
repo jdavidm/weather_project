@@ -28,6 +28,7 @@
 	loc 	logout	=	"$data/household_data/nigeria/logs"
 
 * open log
+	cap 	log 	close
 	log 	using 	"`logout'/ghsy2_merge", append
 
 	
@@ -101,6 +102,7 @@
 
 	drop			_11a1 _11b1 _11c1 _11c2 _11d _a2
 
+	
 * **********************************************************************
 * 1b - create total farm and maize variables
 * **********************************************************************
@@ -139,6 +141,7 @@
 	replace			mz_hrv = . if mz_damaged == . & mz_hrv == 0		
 	drop 			mz_damaged
 	*** 3,631 changes made
+
 	
 * **********************************************************************
 * 2 - impute: total farm value, labor, fertilizer use 
@@ -386,11 +389,14 @@
 	lab var			mz_frtimp "fertilizer (kg), imputed"
 	lab var			mz_frt "fertilizer (kg)"
 
+	
 * **********************************************************************
-* 3 - collapse to household level
+* 4 - collapse to household level
 * **********************************************************************
+
+
 * **********************************************************************
-* 3a - generate total farm variables
+* 4a - generate total farm variables
 * **********************************************************************
 
 * generate plot area
@@ -430,7 +436,7 @@
 	
 	
 * **********************************************************************
-* 3b - generate maize variables 
+* 4b - generate maize variables 
 * **********************************************************************	
 	
 * generate plot area
@@ -528,6 +534,139 @@
 	lab var			cp_hrb	"Any maize plot has herbicide"
 	lab var			cp_irr	"Any maize plot has irrigation"
 	
+	
+* impute missing labor
+	*** max is determined by comparing the right end tail distribution to wave 1 maxes using a kdensity peak.
+	sum 			tf_lab , detail			
+	
+	kdensity 		tf_lab if tf_lab > 1400
+	*** peak is around 1900
+	kdensity tf_lab if tf_lnd < 0.1
+	
+	replace 		tf_lab = . if tf_lab > 1400 
+	*** 71 changes
+	*& tf_lnd < 0.1
+
+	sum 			tf_lab
+	
+	mi set 			wide 	// declare the data to be wide.
+	mi xtset		, clear 	// clear any xtset that may have had in place previously
+	mi register		imputed tf_lab // identify tf_lab as the variable being imputed
+	sort			hhid state zone, stable // sort to ensure reproducability of results
+	mi impute 		pmm tf_lab i.state tf_lnd, add(1) rseed(245780) ///
+						noisily dots force knn(5) bootstrap
+	mi 	unset	
+	
+	*** review imputation
+	sum				tf_lab_1_
+	replace 		tf_lab = tf_lab_1_
+	sum 			tf_lab, detail
+	*** mean 182.44, max 1351.86
+	drop			mi_miss tf_lab_1_
+	mdesc			tf_lab
+	*** none missing
+	
+* impute tf_hrv outliers
+
+	kdensity 		tf_yld if tf_yld > 9000
+	*** max is 11000
+	sum 			tf_yld, detail
+	*** mean 835, max 17300
+	
+	replace 		tf_hrv =. if tf_yld > 9000
+	
+	mi set 			wide 	// declare the data to be wide.
+	mi xtset		, clear 	// clear any xtset that may have had in place previously
+	mi register		imputed tf_hrv // identify tf_hrv as the variable being imputed
+	sort			hhid state zone, stable // sort to ensure reproducability of results
+	mi impute 		pmm tf_hrv i.state tf_lnd tf_lab, add(1) rseed(245780) ///
+						noisily dots force knn(5) bootstrap
+	mi unset
+	
+	sort 			tf_hrv
+	replace    		tf_hrv = tf_hrv_1_	if 	tf_hrv == .
+	replace 		tf_yld = tf_hrv / tf_lnd
+	sum 			tf_yld, detail
+	*** mean 707.25, max 13591.4
+	mdesc 			tf_yld
+	*** 0 missing
+	drop 			mi_miss tf_hrv_1_ 
+						
+* impute cp_lab
+	sum 			cp_lab, detail
+	scatter			cp_lnd cp_lab
+	kdensity cp_lab if cp_lab > 1800
+	kdensity cp_lab if cp_lab > 1800 & cp_lab < 4000
+	*** max is 2100. the 1800 is the max of cp_lab in wave 2
+
+	replace 		cp_lab = . if cp_lab > 1800
+	*** 17 changes
+	
+	mi set 			wide 	// declare the data to be wide.
+	mi xtset		, clear 	// clear any xtset that may have had in place previously
+	mi register		imputed cp_lab // identify cp_lab as the variable being imputed
+	sort			hhid state zone, stable // sort to ensure reproducability of results
+	mi impute 		pmm cp_lab i.state cp_lnd, add(1) rseed(245780) ///
+						noisily dots force knn(5) bootstrap
+	mi 	unset	
+	
+	*** review imputation
+	sum				cp_lab_1_
+	replace 		cp_lab = cp_lab_1_
+	sum 			cp_lab, detail
+	*** mean 195.75, max 1682.47
+	drop			mi_miss cp_lab_1_
+	mdesc			cp_lab if cp_lnd !=.
+	*** none missing
+	
+* cp yield outliers
+	sum 			cp_yld, detail
+	*** mean 2375.3, std dev 5878.58, max is 83841.6
+	sum 			cp_hrv, detail
+	*** mean 803.43, std dev 1000.29, max 9600
+	kdensity cp_yld if cp_yld > 20000
+	
+	sum cp_hrv if cp_lnd < 0.1 & cp_yld > 10000, detail
+	
+	* change outliers to missing
+	replace 		cp_hrv = . if cp_yld > 15000 & cp_lnd < 0.5
+	*** 15 changes made
+	replace 		cp_hrv = . if cp_yld > 15000
+	*** 4 changes
+
+* impute missing values (impute in stages to get imputation near similar land values)
+	sum 			cp_hrv
+	
+	mi set 			wide 	// declare the data to be wide.
+	mi xtset		, clear 	// clear any xtset that may have had in place previously
+	mi register		imputed cp_hrv // identify cp_hrv as the variable being imputed
+	sort			hhid state zone, stable // sort to ensure reproducability of results
+	mi impute 		pmm cp_hrv i.state cp_lnd cp_lab if cp_lnd < 0.03, add(1) rseed(245780) ///
+						noisily dots force knn(5) bootstrap
+						
+	sort			hhid state zone, stable // sort to ensure reproducability of results
+	mi impute 		pmm cp_hrv i.state cp_lnd cp_lab if cp_lnd < 0.1, add(1) rseed(245780) ///
+						noisily dots force knn(5) bootstrap
+					
+	sort			hhid state zone, stable // sort to ensure reproducability of results
+	mi impute 		pmm cp_hrv i.state cp_lnd cp_lab if cp_lnd < 0.6, add(1) rseed(245780) ///
+						noisily dots force knn(5) bootstrap					
+						
+	mi 				unset	
+
+	sort 			cp_hrv
+	replace 		cp_hrv = cp_hrv_3_ if cp_hrv == . & cp_hrv_2_ == . & cp_hrv_1_
+	replace 		cp_hrv = cp_hrv_2_ if cp_hrv == . & cp_hrv_1_ == .
+	replace 		cp_hrv = cp_hrv_1_ if cp_hrv == . 
+	replace 		cp_yld = cp_hrv / cp_lnd
+	sum 			cp_yld, detail
+	*** mean 1834.03, std. dev 2047.3, max 14682.85
+
+	mdesc			cp_yld cp_hrv if cp_lnd != .
+	*** none missing
+	
+	drop mi_miss cp_hrv_1_ cp_hrv_2_ cp_hrv_3_			
+
 * **********************************************************************
 * 4 - end matter, clean up to save
 * **********************************************************************
