@@ -59,6 +59,8 @@ foreach folder of local folderList {
 		* import the daily data file
 		use "`root'/`folder'/`file'", clear
 		
+		duplicates drop
+		
 		* define locals to govern file naming
 		loc dat = substr("`file'", 1, 5)
 		loc ext = substr("`file'", 7, 2)
@@ -95,6 +97,8 @@ foreach folder of local folderList {
 		
 		* import the daily data file		
 		use "`root'/`folder'/`file'", clear
+		
+		duplicates drop
 		
 		* define locals to govern file naming		
 		loc dat = substr("`file'", 1, 5)

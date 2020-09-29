@@ -4,36 +4,22 @@
 * Stata v.16
 
 * does
-	* reads in Nigeria, WAVE 2 POST PLANTING, NGA AG SECT11E - SEED
-	* determines seeds
-	* maybe more who knows
-	* outputs clean data file ready for combination with wave 2 hh data
+	* reads in Nigeria, WAVE 3 POST PLANTING, NIGERIA AG SECT11E
+	* determines seed
+	* outputs clean data file ready for combination with wave 3 hh data
 
 * assumes
 	* customsave.ado
-	* harvconv_wave2_ph_secta1.dta conversion file
-	* land_conversion.dta conversion file 
+	* land-conversion.dta conversion file
 	
-* other notes: 
-	* still includes some notes from Alison Conley's work in spring 2020
-	
-* TO DO:
-	* from Alison: "NEED HELP WITH CONVERSION"
-		* opinion of alj (7 May) drop seed, do not include in analysis
-	* unsure - incomplete, runs but maybe not right? 
-	* clarify "does" section
-
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
-
-* set global user
-	global user "aljosephson"
 	
 * define paths	
-	loc root = "G:/My Drive/weather_project/household_data/nigeria/wave_2/raw"
-	loc export = "G:/My Drive/weather_project/household_data/nigeria/wave_2/refined"
-	loc logout = "G:/My Drive/weather_project/household_data/nigeria/logs"
+	loc root = "$data/household_data/nigeria/wave_3/raw"
+	loc export = "$data/household_data/nigeria/wave_3/refined"
+	loc logout = "$data/household_data/nigeria/logs"
 
 * close log (in case still open)
 	*log close
@@ -42,11 +28,11 @@
 	log using "`logout'/pp_sect11e", append
 
 * **********************************************************************
-* 1 - determines seed  
+* 1 - determine seed 
 * **********************************************************************
 		
-* import the first relevant data file:
-		use "`root'/sect11e_plantingw2", clear 	
+* import the first relevant data file
+		use "`root'/sect11e_plantingw3", clear 
 
 describe
 sort hhid plotid cropid
@@ -63,7 +49,6 @@ label variable leftover_q "quantity of last year's seed used"
 rename s11eq6b leftover_unit
 label variable leftover_unit "unit of last year's seed used"
 tab leftover_unit
-*look at all these units! How do I account for these? 
 
 gen freeseed_q = s11eq10a
 label variable freeseed_q "quantity of free seed used"
@@ -71,6 +56,7 @@ rename s11eq10b freeseed_unit
 label variable freeseed_unit "unit of free seed used"
 tab freeseed_unit
 
+**looks like people are basically only using leftover seed
 gen purchased_qa = s11eq18a
 label variable purchased_qa "quantity of purchased seed used from first source"
 rename s11eq18b purchased_unit_a
@@ -83,12 +69,10 @@ rename s11eq30b purchased_unit_b
 label variable purchased_unit_b "unit of purchased seed used from second source"
 tab purchased_unit_b
 
-*look at all the different variables used - how do we count these?
-
-*omitting several oil pam obs - alj
+*major measurement issues with seed - probably omit
 
 * **********************************************************************
-* 3 - end matter, clean up to save
+* 2 - end matter, clean up to save
 * **********************************************************************
 
 keep hhid ///
@@ -108,7 +92,6 @@ purchased_unit_a ///
 purchased_qb ///
 purchased_unit_b ///
 seed_use ///
-tracked_obs ///
 
 compress
 describe

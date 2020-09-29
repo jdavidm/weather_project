@@ -28,7 +28,8 @@
 	loc		logout 	= 	"$data/regression_data/logs"
 
 * open log	
-	log 	using 		"`logout'/mwi_regressions", append
+	cap		log		close
+	log 	using 	"`logout'/mwi_regressions", append
 
 	
 * **********************************************************************
