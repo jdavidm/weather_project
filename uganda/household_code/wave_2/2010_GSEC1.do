@@ -41,10 +41,11 @@ rename h1aq1 district
 rename h1aq2b county
 rename h1aq3b subcounty
 rename h1aq4b parish
+rename hh_status hh_status2010
 
 tab region, missing
 
-keep hhid region district county subcounty parish
+keep hhid region district county subcounty parish hh_status2010 spitoff09_10 spitoff10_11 wgt10
 
 *	Prepare for export
 compress

@@ -44,10 +44,11 @@ rename h1aq1 district
 rename h1aq2 county
 rename h1aq3 subcounty
 rename h1aq4 parish
-
+rename HHS_hh_shftd_dsntgrtd HHS_hh_shftd_dsntgrtd_2011 
+rename mult panel_wgt_2011
 tab region, missing
 
-keep hhid region district county subcounty parish
+keep hhid region district county subcounty parish HHS_hh_shftd_dsntgrtd_2011 panel_wgt_2011
 
 *	Prepare for export
 compress

@@ -42,11 +42,12 @@ rename h1aq1 district
 rename h1aq2b county
 rename h1aq3b subcounty
 rename h1aq4b parish
+rename hh_status hh_status2009
 *	district variables not labeled in this wave, just coded
 
 tab region, missing
 
-keep hhid region district county subcounty parish
+keep hhid region district county subcounty parish hh_status2009 wgt09wosplits wgt09
 
 *creating unique region identifier
 egen region_id = group( district county)

@@ -14,7 +14,7 @@
 	* mdesc.ado
 
 * TO DO:
-	* 
+	*done.
 
 * **********************************************************************
 * 0 - setup
@@ -24,7 +24,8 @@
 	loc 	root 		= 		"$data/household_data/uganda/wave_3/raw"  
 	loc     export 		= 		"$data/household_data/uganda/wave_3/refined"
 	loc 	logout 		= 		"$data/household_data/uganda/logs"
-	
+	loc 	conv 		= 		"$data/household_data/uganda/conversion_files"  
+
 * open log	
 	cap log close
 	log using "`logout'/2011_AGSEC5A", append
@@ -40,6 +41,8 @@
 	rename 		cropID cropid
 	rename		plotID pltid
 	rename		parcelID prcid
+	rename 		a5aq6c unit
+	rename		a5aq6b condition
 	
 	describe
 	sort hhid prcid pltid cropid
@@ -50,8 +53,58 @@
 	*** one change made
 	
 	*isid 		hhid prcid pltid cropid
+
+* drop observations from plots that did not harvest because crop was immature
+	drop if a5aq5_2 == 1
+	*** 1484 observations deleted
+
 	
 * **********************************************************************
+* 2 - merge kg conversion file
+* **********************************************************************
+	
+	merge m:1 cropid unit condition using "`conv'/ValidCropUnitConditionCombinations.dta" 
+	*** unmatched 506 from master 
+	
+* drop from using
+	drop if _merge == 2
+
+* how many unmatched had a harvest of 0
+	tab a5aq6a if _merge == 1
+	*** 80% have a harvest of 0
+	
+* how many unmatched because they used "other" to categorize the state of harvest?
+	tab condition if _merge == 1
+	*** 92% say the condition was "other(99)"
+	
+	tab cropid condition if condition != 99 & _merge == 1 & condition !=.
+	
+	tab unit if _merge == 1
+	
+
+* replace ucaconversion to 1 if the harvest is 0
+	replace ucaconversion = 1 if a5aq6a == 0 & _merge == 1
+	*** 392 changes
+
+* manually replace conversion for the kilograms and sacks if the condition is other condition and the observation is unmatched
+	*kgs
+	replace ucaconversion = 1 if unit == 1 & _merge == 1
+	*sack 120 kgs
+	replace ucaconversion = 120 if unit == 9 & _merge == 1
+	*sack 100 kgs
+	replace ucaconversion = 100 if unit == 10 & _merge == 1
+	* sack 80 kgs
+	replace ucaconversion = 80 if unit == 11 & _merge == 1
+	* sack 50 kgs
+	replace ucaconversion = 50 if unit == 12 & _merge == 1
+	
+
+* drop the unmatched remaining observations
+	drop if _merge == 1 & ucaconversion == .
+	*** 69 observatinos deleted
+	drop _merge
+	
+**********************************************************************
 * 2 - Quantity harvested
 * **********************************************************************
 	
@@ -65,45 +118,45 @@
 	*** included in the file are the conversions from other measurements to kg
 	
 	rename 			a5aq6a harvqty
-	rename			a5aq6d harvkgconv
-	rename			a5aq8 harvvlush
+	label var 		harvqty "Harvest quantity, not converted to kg's"
 	
+	gen 			harvqtykg = harvqty*ucaconversion
+	label var		harvqtykg "weight of harvest in kg's"
+	*** 1300 missing 
+	
+	mdesc 			ucaconversion
+	*** 1300 missing ucaconversion 
+	*** will use farmer reported median conversion instead
+	
+	replace 		harvqtykg = harvqty*medconversion if ucaconversion == .
+	*** 1300 hundred changes made
+	
+	mdesc 			harvqtykg
+	*** none missing
+	
+	sum harvqtykg, detail
+	*** min 0, max 416625, mean 535.4, will impute later
+	
+
+	
+* what can we say about the distribution?
+	*kdensity 		harvqtykg
+	*** left skewed with a long tail
+	
+
+	
+* **********************************************************************
+* 3 - value of harvest
+* **********************************************************************
+
+* value of crop sold in shillings
+	rename			a5aq8 harvvlush
 	label var 		harvvlush "Value of crop sold in ugandan shilling"
-	label var  		harvkgconv "Conversion factor from other to kg"
-	label var 		harvqty "Harvest quantity, not converted to kg's'"
 	
 * summarize the value of sales in shillings
 	sum 			harvvlush, detail
 	*** mean 238676.1, min 10, max 4.56e+07
 	
-	gen 			harvqtykg = harvqty*harvkgconv
-	label var		harvqtykg "weight of harvest in kg's"
-	tab 			a5aq6c  if harvkgconv == .
-	replace 		harvqtykg = harvqty if a5aq6c == 1
-	replace 		harvqtykg = harvqty*10 if a5aq6c == 38 & harvkgconv == .
-	replace 		harvqtykg = harvqty*2 if a5aq6c == 40 & harvkgconv == .
-	replace 		harvqtykg = 0 if harvqty == 0
-	*** 392 changes made
-	replace 		harvqtykg = 0 if harvqty == . 
-	*** 1503 changes made
-	
-	sum 			harvqtykg, detail
-	mdesc			harvqtykg
-	*** 1 missing
-	***	min 0, max 333300, mean 376.89
-	*** will impute later
-
-* what can we say about the distribution?
-	*kdensity 		harvqtykg
-	*** left skewed with a long tail
-	
-* do missing harvest quantities have values	
-	tab		harvvlush if harvqtykg == .
-	*** yes, we should be able impute harvqty with value of harvest
-	
-* **********************************************************************
-* 3 - value of harvest
-* **********************************************************************
 	sum 		harvvlush, detail
 	lab var   	harvvlush "crop value (ugandan shilling)"
 		
@@ -117,10 +170,6 @@
 	*kdensity 	cropvl
 	*** left skewed with long tail
 	
-* do missing values have harvest quantities
-	tab		harvqty if harvvlush ==.
-	*** yes, we should be able impute harvqty with value of harvest
-
 * **********************************************************************
 * 4 - generate sold harvested values
 * **********************************************************************
@@ -128,7 +177,7 @@
 * rename the conversion factor for sold harvest
 	rename 			A5AQ7D soldkgconv 
 	label var 		soldkgconv "conversion factor for amount sold"
-
+	
 * how many sold observations have a conversion factor
 	count if soldkgconv != . & a5aq7a != .
 	*** 2590 have the same unit code
@@ -138,20 +187,27 @@
 * convert quantity sold into kg
 	gen 			harvkgsold = a5aq7a*soldkgconv 
 	lab	var			harvkgsold "quantity sold, in kilograms"
-	replace			harvkgsold = a5aq7a if a5aq7c == 1
-	replace			harvkgsold = 0 if a5aq7a == 0
-	replace			harvkgsold = 99999 if harvkgsold ==. & a5aq7a != . 
-	replace			harvkgsold = 0 if a5aq7a == .
 	
-	mdesc		 	harvkgsold
-	replace 		harvkgsold = . if harvkgsold == 99999
-	*** there are 4 obs missing harvkgsold but with positive amount sold
-	*** those missing have no conversion factor or units so we will leave missing and impute
+* kgs were not converted since they done require a conversion we'll just replace the harvkgsold with the amount sold
+	replace			harvkgsold = a5aq7a if a5aq7c == 1
 	
 	mdesc 			harvkgsold
 	
 	sum				harvkgsold, detail
-	*** 0.00 min, mean 136.34, max 102400
+	*** 0.00 min, mean 136.34, max 10240
+
+* drop obs if missing parcel or plot id
+	drop if prcid == .
+	*** 0 dropped
+	drop if pltid == .
+	*** 0 dropped
+	
+* drop duplicates
+	duplicates drop
+
+* replace missing values to 0
+	replace harvvlush = 0 if harvvlush == .
+	replace harvkgsold = 0 if harvkgsold == .
 
 * **********************************************************************
 * 5 - collapse to the crop level
@@ -186,7 +242,7 @@
 	*** 3 std dev from mean is 
 	sum 			harvqtykg, detail
 	replace			harvqtykg = . if harvqtykg > `r(p50)'+ (3*`r(sd)')
-	*** 25 changed to missing
+	*** 21 changed to missing
 
 * impute missing harvqtykg
 	mi set 			wide 	// declare the data to be wide.
@@ -201,13 +257,13 @@
 	
 * inspect imputation 
 	sum 				harvqtykg_1_, detail
-	*** 25 imputation
-	*** mean 313.2, min 0, max 11580
+	*** 21 imputation
+	*** mean 485.21, min 0, max 15990
 	*** looks better
 
 * replace the imputated variable
 	replace 			harvqtykg = harvqtykg_1_ 
-	*** 25 changes
+	*** 21 changes
 	
 	drop 				harvqtykg_1_ mi_miss
 	
@@ -218,7 +274,7 @@
 * replace cropvl with missing if over 3 std dev from the mean
 	sum 			cropvl, detail
 	replace			cropvl = . if cropvl > `r(p50)'+ (3*`r(sd)')
-	*** 44 changes
+	*** 42 changes
 	
 * impute cropvl if missing and harvest was sold
 	mi set 			wide 	// declare the data to be wide.
@@ -236,34 +292,34 @@
 	*** min 0, mean 25.5, max 942.13, not a lot of variation
 	*** compare step 9 on other waves
 	replace 		cropvl = cropvl_1_
-	*** 43 changes
+	*** 41 changes
 	
 	drop 			cropvl_1_ mi_miss
 * do harvest value and harvest quantity contradict?
 	tab				harvvlush if harvqty == 0
 	replace 		harvvlush = 0 if harvqty == 0
-	*** 5 changes made
+	*** 0 changes made
 	replace 		cropvl = 0 if harvqty == 0
-	*** 3 changes made
+	*** 0 changes made
 	
 * ************************************************************************
 * 9 - impute harvkgsold
 * ************************************************************************	
 	
-* replace any +3 s.d. away from median as missing, by cropid
+* replace any +3 s.d. away from median as missing, by crop
 	sort 			cropid
 	sum				harvkgsold, detail 
-	*** mean 157.11, max 102400
+	*** mean 181.89, max 102400
 	by 				cropid: replace	harvkgsold = . if harvkgsold > `r(p50)'+ (3*`r(sd)')
 	sum				harvkgsold, detail
-	*** replaced 35 values, max is now 4900, mean 99.38
+	*** replaced 28 values, max is now 5280, mean 118.7
 	
 * impute missing values
 	mi set 			wide 	// declare the data to be wide.
 	mi xtset		, clear 	// clear any xtset that may have had in place previously
 	mi register		imputed harvkgsold // identify harvkgsold as the variable being imputed
 	sort			hhid prcid pltid cropid, stable // sort to ensure reproducability of results
-	mi impute 		pmm harvkgsold i.districtdstrng i.subcountydstrng i.cropid, add(1) rseed(245780) ///
+	mi impute 		pmm harvkgsold i.districtdstrng i.cropid cropvl, add(1) rseed(245780) ///
 						noisily dots force knn(5) bootstrap
 	mi 				unset	
 
@@ -272,12 +328,12 @@
 	tabstat			harvkgsold harvkgsold_1_, by(mi_miss) ///
 						statistics(n mean min max) columns(statistics) ///
 						longstub format(%9.3g) 
-	replace			harvkgsold = harvkgsold_1_
+	replace			harvkgsold = harvkgsold_1_ if cropvl != . 
 	lab var			harvkgsold "kg of harvest sold, imputed (only if produce was sold)"
 	sum 			harvkgsold
 	drop			harvkgsold_1_ mi_miss
-	*** imputed observations changed 45 observations for people who sold 
-	*** mean 99.38 to 100.71 , max stays at 4900 
+	*** imputed observations changed 28 observations for people who sold 
+	*** mean 121.24 , max stays at 5280 
 	
 * ********************************************************************
 * 10 - make cropvalue variable and impute it
@@ -398,7 +454,7 @@
 	*** no missing
 	
 	sum 			cropprice croppricei
-	*** mean = 0.323, max = 32.97
+	*** mean = 0.337, max = 32.97
 	
 * generate value of harvest 
 	gen				cropvalue = harvqtykg * croppricei
@@ -412,20 +468,20 @@
 	mdesc 			cropvalue
 	*** 0 missing
 	
-* replace any +3 s.d. away from median as missing, by cropid
+* replace any +3 s.d. away from median as missing, by crop
 	sum 			cropvalue, detail
-	*** mean 69.12, max 10363.41
+	*** mean 98.06, max 12365.43
 	replace			cropvalue = . if cropvalue > `r(p50)'+ (3*`r(sd)')
 	sum				cropvalue, detail
-	*** replaced 118 values
-	*** reduces mean to 55.495, max to 631.226
+	*** replaced 122 values
+	*** reduces mean to 79.26, max to 768.211
 	
 * impute missing values
 	mi set 			wide 	// declare the data to be wide.
 	mi xtset		, clear 	// clear any xtset that may have had in place previously
 	mi register		imputed cropvalue // identify cropvalue as the variable being imputed
 	sort			hhid prcid pltid cropid, stable // sort to ensure reproducability of results
-	mi impute 		pmm cropvalue i.region i.districtdstrng i.countydstrng i.cropid, add(1) rseed(245780) ///
+	mi impute 		pmm cropvalue i.region i.cropid, add(1) rseed(245780) ///
 						noisily dots force knn(5) bootstrap
 	mi 				unset	
 
@@ -438,14 +494,14 @@
 	lab var			cropvalue "value of harvest, imputed"
 	drop			cropvalue_1_
 	sum 			cropvalue
-	*** mean is 56.14, max is 631.226 min is 0
-	*** imputed 115
+	*** mean is 80.06, max is 768.21 min is 0
+	*** imputed 122
 	
 * **********************************************************************
 * 11 - end matter, clean up to save
 * **********************************************************************
 
-	keep hhid prcid pltid cropvalue harvqtykg region district county subcounty parish cropid
+	keep hhid prcid pltid cropvalue harvqtykg region district county subcounty parish cropid HHS_hh_shftd_dsntgrtd_2011 panel_wgt_2011
 
 	compress
 	describe

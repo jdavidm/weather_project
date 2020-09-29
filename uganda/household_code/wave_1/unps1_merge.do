@@ -96,7 +96,7 @@
 * collapse to plot level
 	collapse (sum)	cropvalue plotsize labordays fert ///
 						mz_hrv mz_lnd mz_lab mz_frt ///
-			 (max)	pest_any herb_any irr_any fert_any  ///
+			 (max)	wgt09wosplits wgt09 hh_status2009 pest_any herb_any irr_any fert_any  ///
 						mz_pst mz_hrb mz_irr mz_damaged, ///
 						by(hhid prcid pltid region district county subcounty parish)
 
@@ -267,7 +267,7 @@
 	sum				mz_yld, detail 
 	replace			mz_yld = . if mz_yld > `r(p50)'+ (2*`r(sd)')
 	sum				mz_yld, detail
-	*** replaced 19 values, max is now 16538.43, mean 404.85
+	*** replaced 15 values, max is now 4255.95, mean 67.14
 	
 * impute missing values
 	mi set 			wide 	// declare the data to be wide.
@@ -280,7 +280,6 @@
 	
 	replace 		mz_yld = mz_yld_1_ if mz_lnd != .
 	sum 			mz_yld
-	*** max is still 16538.43, mean is 419.72
 
 	rename			mz_yld_1_ mz_yldimp
 	lab var 		mz_yldimp "maize yield (kg/ha), imputed"
@@ -305,7 +304,7 @@
 	sum				mz_lab_ha, detail 
 	replace			mz_lab_ha = . if mz_lab_ha > `r(p50)'+ (3*`r(sd)')
 	sum				mz_lab_ha, detail
-	*** replaced 7 values, max is now 1961.4, mean 42.89
+	*** replaced 8 values, max is now 1961.4, mean 43.15
 	
 * impute missing values
 	mi set 			wide 	// declare the data to be wide.
@@ -318,8 +317,6 @@
 	
 	replace 		mz_lab_ha = mz_lab_ha_1_ if mz_hrv != .
 	sum 			mz_lab_ha
-	*** reduces mean to 42.73
-	*** max stays at 1961.4
 
 	rename 			mz_lab_ha_1_ mz_lab_haimp
 	lab var			mz_lab_haimp	"maize labor use (days/ha), imputed"
@@ -472,11 +469,11 @@
 	count
 	***7476 obs
 	
-	collapse (max)	tf_* cp_*, by(region district countydstrng subcountydstrng parishdstrng hhid)
+	collapse (max)	tf_* cp_* wgt09wosplits wgt09 hh_status2009, by(region district countydstrng subcountydstrng parishdstrng hhid)
 
 * count after collapse 
 	count 
-	*** 7476 to 2211 observations 
+	*** 7476 to 2201 observations 
 	
 * return non-maize production to missing
 	replace			cp_yld = . if cp_yld == 0
@@ -513,17 +510,19 @@
 	lab var			cp_irr	"Any maize plot has irrigation"
 
 	
-	
 * **********************************************************************
 * 4 - impute tf_hrv
 * **********************************************************************	
-* replace any +3 s.d. away from median as missing, by cropid
+* replace any +2 s.d. away from median as missing, by cropid
 	sum 			tf_hrv, detail
-	*** mean 654.11, max 4040.02
+	*** mean 1257.77, max 7270.08
 *	kdensity		tf_hrv
-	replace			tf_hrv = . if tf_hrv > `r(p50)'+ (3*`r(sd)')
+	replace			tf_hrv = . if tf_hrv > `r(p50)'+ (2*`r(sd)')
 	sum				tf_hrv, detail
-	*** replaced 38 values
+	*** replaced 135 values
+	replace			tf_hrv = . if tf_hrv > `r(p50)'+ (2*`r(sd)')
+	sum				tf_hrv, detail
+	*** replaced 104 values
 	
 * impute missing values
 	mi set 			wide 	// declare the data to be wide.
@@ -538,26 +537,21 @@
 	sum 			tf_hrv_1_
 	replace			tf_hrv = tf_hrv_1_
 	drop			tf_hrv_1_ mi_miss
-	sum 			tf_hrv
-	*** doesnt improve mean 622.63, max 2238.96
+	***mean 1011.54, max 2638.91
 	
 * **********************************************************************
 * 5 - impute tf_yld
 * **********************************************************************	
-* replace any +3 s.d. away from median as missing, by cropid
+* replace any +2 s.d. away from median as missing, by cropid
 	sum 			tf_yld, detail
-	*** mean 449.62, max 7651.37
+	*** mean 840.48, max 11017.97
 *	kdensity		tf_yld
-	replace			tf_yld = . if tf_yld > `r(p50)'+ (3*`r(sd)')
+	replace			tf_yld = . if tf_yld > `r(p50)'+ (2*`r(sd)')
 	sum				tf_yld, detail
-	*** replaced 64 values
-		
-	sum 			tf_yld, detail
-	*** mean 356.99, max 2309.29
-*	kdensity		tf_yld
-	replace			tf_yld = . if tf_yld > `r(p50)'+ (3*`r(sd)')
+	*** replaced 147 values
+	replace			tf_yld = . if tf_yld > `r(p50)'+ (2*`r(sd)')
 	sum				tf_yld, detail
-	*** replaced 75 values
+	*** replaced 172 values
 	
 * impute missing values
 	mi set 			wide 	// declare the data to be wide.
@@ -573,25 +567,21 @@
 	replace			tf_yld = tf_yld_1_
 	drop			tf_yld_1_ mi_miss
 	sum 			tf_yld
-	*** improves mean 327.54, max 1516.88
+	*** improves mean 465.64, max 1611.53
 	
 * **********************************************************************
 * 6 - impute cp_hrv
 * **********************************************************************	
-* replace any +3 s.d. away from median as missing, by cropid
+* replace any +2 s.d. away from median as missing, by cropid
 	sum 			cp_hrv, detail
-	*** mean 275.14, max 1525.42
+	*** mean 455.05, max 2497.89
 *	kdensity		cp_hrv
-	replace			cp_hrv = . if cp_hrv > `r(p50)'+ (3*`r(sd)')
+	replace			cp_hrv = . if cp_hrv > `r(p50)'+ (2*`r(sd)')
 	sum				cp_hrv, detail
-	*** replaced 13 values
-		
-	sum 			cp_hrv, detail
-	*** mean 264.96, max 839.59
-*	kdensity		cp_hrv
-	replace			cp_hrv = . if cp_hrv > `r(p50)'+ (3*`r(sd)')
+	*** replaced 60 values
+	replace			cp_hrv = . if cp_hrv > `r(p50)'+ (2*`r(sd)')
 	sum				cp_hrv, detail
-	*** replaced 9 values
+	*** replaced 58 values
 	
 * impute missing values
 	mi set 			wide 	// declare the data to be wide.
@@ -607,30 +597,26 @@
 	replace			cp_hrv = cp_hrv_1_ if cp_lnd != .
 	drop			cp_hrv_1_ mi_miss
 	sum 			cp_hrv
-	*** improves mean 255.16, max 778.21
+	*** improves mean 345.31, max 917.36
 	
 * **********************************************************************
 * 7 - impute cp_yld
 * **********************************************************************	
-* replace any +3 s.d. away from median as missing, by cropid
+* replace any +2 s.d. away from median as missing, by cropid
 	sum 			cp_yld, detail
-	*** mean 547.09, max 4961.3
+	*** mean 921.06, max 8656.97
 *	kdensity		cp_yld
-	replace			cp_yld = . if cp_yld > `r(p50)'+ (3*`r(sd)')
+	replace			cp_yld = . if cp_yld > `r(p50)'+ (2*`r(sd)')
 	sum				cp_yld, detail
-	*** replaced 27 values
-		
-	sum 			cp_yld, detail
-	*** mean 464.33, max 2341.98
-*	kdensity		cp_yld
-	replace			cp_yld = . if cp_yld > `r(p50)'+ (3*`r(sd)')
+	*** replaced 64 values
+	replace			cp_yld = . if cp_yld > `r(p50)'+ (2*`r(sd)')
 	sum				cp_yld, detail
-	*** replaced 32 values
+	*** 80 changes
 	
 * impute missing values
 	mi set 			wide 	// declare the data to be wide.
 	mi xtset		, clear 	// clear any xtset that may have had in place previously
-	mi register		imputed cp_yld // identify cropvalue as the variable being imputed
+	mi register		imputed cp_yld // identify cp_yld as the variable being imputed
 	sort			hhid, stable // sort to ensure reproducability of results
 	mi impute 		pmm cp_yld i.region tf_lnd, add(1) rseed(245780) ///
 						noisily dots force knn(5) bootstrap
@@ -641,8 +627,8 @@
 	replace			cp_yld = cp_yld_1_ if cp_lnd != .
 	drop			cp_yld_1_ mi_miss
 	sum 			cp_yld
-	*** improves mean 418.88, max 1760.99
-	
+	*** improves mean 503.08, max 1702.89
+
 * **********************************************************************
 * 8 - end matter, clean up to save
 * **********************************************************************

@@ -91,8 +91,8 @@
 	
 * collapse to plot level
 	collapse (sum)	cropvalue plotsize labordays fert ///
-						mz_hrv mz_lnd mz_lab mz_frt ///
-			 (max)	pest_any herb_any fert_any  ///
+						mz_hrv mz_lnd mz_lab mz_frt  ///
+			 (max)	HHS_hh_shftd_dsntgrtd_2011 panel_wgt_2011 pest_any herb_any fert_any  ///
 						mz_pst mz_hrb mz_damaged, ///
 						by(hhid prcid pltid region district county subcounty parish)
 
@@ -460,7 +460,7 @@
 	count
 	***6068 obs
 	
-	collapse (max)	tf_* cp_*, by(region districtdstrng countydstrng subcountydstrng parishdstrng hhid)
+	collapse (max)	tf_* cp_* HHS_hh_shftd_dsntgrtd_2011 panel_wgt_2011, by(region districtdstrng countydstrng subcountydstrng parishdstrng hhid)
 
 * count after collapse 
 	count 
