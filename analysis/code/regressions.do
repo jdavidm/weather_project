@@ -4,6 +4,7 @@
 * Stata v.16.1
 
 * does
+	* NOTE IT TAKES 90 MIN TO RUN ALL REGRESSIONS
 	* loads all multi country data set
 	* runs rainfall and temperature regressions
 	* outputs results file for analysis
@@ -50,12 +51,12 @@
 
 * create file to post results to
 	tempname 	myresults
-	postfile 	`myresults' data str3 sat str2 ext str2 depvar str4 regname str3 varname ///
+	postfile 	`myresults' country str3 sat str2 ext str2 depvar str4 regname str3 varname ///
 					betarain serain adjustedr loglike dfr ///
 					using myresults.dta, replace
 					
 * define loop through levels of the data type variable	
-levelsof 	dtype		, local(levels)
+levelsof 	country		, local(levels)
 foreach l of local levels {
 	
 	* set panel id so it varies by dtype
@@ -72,37 +73,37 @@ foreach l of local levels {
 		* 2.1: Value of Harvest
 		
 		* weather
-			reg 		lntf_yld `v' if dtype == `l', vce(cluster hhid)
+			reg 		lntf_yld `v' if country == `l', vce(cluster hhid)
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("tf") ("reg1") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 
 		* weather and fe	
-			xtreg 		lntf_yld `v' i.year if dtype == `l', fe vce(cluster hhid)
+			xtreg 		lntf_yld `v' i.year if country == `l', fe vce(cluster hhid)
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("tf") ("reg2") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 
 		* weather and inputs and fe
-			xtreg 		lntf_yld `v' `inputsrs' i.year if dtype == `l', fe vce(cluster hhid)
+			xtreg 		lntf_yld `v' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("tf") ("reg3") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 			
 		* weather and squared weather
-			reg 		lntf_yld c.`v'##c.`v' if dtype == `l', vce(cluster hhid)
+			reg 		lntf_yld c.`v'##c.`v' if country == `l', vce(cluster hhid)
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("tf") ("reg4") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 		
 		* weather and squared weather and fe
-			xtreg 		lntf_yld c.`v'##c.`v' i.year if dtype == `l', fe vce(cluster hhid)
+			xtreg 		lntf_yld c.`v'##c.`v' i.year if country == `l', fe vce(cluster hhid)
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("tf") ("reg5") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 		
 		* weather and squared weather and inputs and fe
-			xtreg 		lntf_yld c.`v'##c.`v' `inputsrs' i.year if dtype == `l', fe vce(cluster hhid)
+			xtreg 		lntf_yld c.`v'##c.`v' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("tf") ("reg6") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
@@ -110,37 +111,37 @@ foreach l of local levels {
 		* 2.2: Quantity of Maize
 		
 		* weather
-			reg 		lncp_yld `v' if dtype == `l', vce(cluster hhid)
+			reg 		lncp_yld `v' if country == `l', vce(cluster hhid)
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("cp") ("reg1") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 
 		* weather and fe	
-			xtreg 		lncp_yld `v' i.year if dtype == `l', fe vce(cluster hhid)
+			xtreg 		lncp_yld `v' i.year if country == `l', fe vce(cluster hhid)
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("cp") ("reg2") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 
 		* weather and inputs and fe
-			xtreg 		lncp_yld `v' `inputsrs' i.year if dtype == `l', fe vce(cluster hhid)
+			xtreg 		lncp_yld `v' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("cp") ("reg3") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 			
 		* weather and squared weather
-			reg 		lncp_yld c.`v'##c.`v' if dtype == `l', vce(cluster hhid)
+			reg 		lncp_yld c.`v'##c.`v' if country == `l', vce(cluster hhid)
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("cp") ("reg4") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 		
 		* weather and squared weather and fe
-			xtreg 		lncp_yld c.`v'##c.`v' i.year if dtype == `l', fe vce(cluster hhid)
+			xtreg 		lncp_yld c.`v'##c.`v' i.year if country == `l', fe vce(cluster hhid)
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("cp") ("reg5") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 		
 		* weather and squared weather and inputs and fe
-			xtreg 		lncp_yld c.`v'##c.`v' `inputsrs' i.year if dtype == `l', fe vce(cluster hhid)
+			xtreg 		lncp_yld c.`v'##c.`v' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("cp") ("reg6") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
@@ -154,19 +155,39 @@ foreach l of local levels {
 
 * drop the cross section FE results
 	drop if		loglike == .
-
+	
+* create country type variable
+	lab def		country 1 "Ethiopia" 2 "Malawi" 3 "Mali" ///
+					4 "Niger" 5 "Nigeria" 6 "Tanzania" ///
+					7 "Uganda"
+	lab val		country country
+	lab var		country "Country"
+	
 * create data type variables
-	lab define 	dtype 0 "cx" 1 "lp" 2 "sp"
-	label val 	data dtype
+*	lab define 	dtype 0 "cx" 1 "lp" 2 "sp"
+*	label val 	data dtype
 
 * create variables for statistical testing
 	gen 		tstat = betarain/serain
+	lab var		tstat "t-statistic"
 	gen 		pval = 2*ttail(dfr,abs(tstat))
+	lab var		pval "p-value"
 	gen 		ci_lo =  betarain - invttail(dfr,0.025)*serain
+	lab var		ci_lo "Lower confidence interval"
 	gen 		ci_up =  betarain + invttail(dfr,0.025)*serain
+	lab var		ci_up "Upper confidence interval"
+
+* label variables
+	rename		betarain beta
+	lab var		beta "Coefficient"
+	rename		serain stdrd_err
+	lab var		stdrd_err "Standard error"
+	lab var		adjustedr "Adjusted R^2"
+	lab var		loglike "Log likelihood"
+	lab var		dfr "Degrees of freedom"
 
 * create unique id variable
-	egen 		reg_id = group(data sat ext depvar regname varname)
+	egen 		reg_id = group(country sat ext depvar regname varname)
 	lab var 	reg_id "unique regression id"
 	
 * create variable to record the name of the rainfall variable
@@ -196,29 +217,30 @@ foreach l of local levels {
 
 * order and label the varaiable
 	order 		aux_var, after(varname)
-	lab 		define varname 	1 "Mean Daily Rainfall" ///
-								2 "Median Daily Rainfall" ///
-								3 "Variance of Daily Rainfall" ///
-								4 "Skew of Daily Rainfall" ///
-								5 "Total Rainfall" ///
-								6 "Deviation in Total Rainfall" ///
-								7 "Z-Score of Total Rainfall" ///
-								8 "Rainy Days" ///
-								9 "Deviation in Rainy Days" ///
-								10 "No Rain Days" ///
-								11 "Deviation in No Rain Days" ///
-								12 "% Rainy Days" ///
-								13 "Deviation in % Rainy Days" ///
-								14 "Longest Dry Spell" ///
-								15 "Mean Daily Temperature" ///
-								16 "Median Daily Temperature" ///
-								17 "Variance of Daily Temperature" ///
-								18 "Skew of Daily Temperature" ///
-								19 "Growing Degree Days (GDD)" ///
-								20 "Deviation in GDD" ///
-								21 "Z-Score of GDD" ///
-								22 "Maximum Daily Temperature" 
-	lab 		values aux_var varname
+	lab def		varname 	1 "Mean Daily Rainfall" ///
+							2 "Median Daily Rainfall" ///
+							3 "Variance of Daily Rainfall" ///
+							4 "Skew of Daily Rainfall" ///
+							5 "Total Rainfall" ///
+							6 "Deviation in Total Rainfall" ///
+							7 "Z-Score of Total Rainfall" ///
+							8 "Rainy Days" ///
+							9 "Deviation in Rainy Days" ///
+							10 "No Rain Days" ///
+							11 "Deviation in No Rain Days" ///
+							12 "% Rainy Days" ///
+							13 "Deviation in % Rainy Days" ///
+							14 "Longest Dry Spell" ///
+							15 "Mean Daily Temperature" ///
+							16 "Median Daily Temperature" ///
+							17 "Variance of Daily Temperature" ///
+							18 "Skew of Daily Temperature" ///
+							19 "Growing Degree Days (GDD)" ///
+							20 "Deviation in GDD" ///
+							21 "Z-Score of GDD" ///
+							22 "Maximum Daily Temperature" 
+	lab val		aux_var varname
+	lab var		aux_var "Variable name"
 	drop 		varname
 	rename 		aux_var varname
 	drop		if varname == .
@@ -229,16 +251,17 @@ foreach l of local levels {
 
 * order and label the varaiable
 	order 		aux_sat, after(sat)
-	lab 		define sat 	1 "Rainfall 1" ///
-							2 "Rainfall 2" ///
-							3 "Rainfall 3" ///
-							4 "Rainfall 4" ///
-							5 "Rainfall 5" ///
-							6 "Rainfall 6" ///
-							7 "Temperature 1" ///
-							8 "Temperature 2" ///
-							9 "Temperature 3" 
-	lab 		values aux_sat sat
+	lab def		sat 	1 "Rainfall 1" ///
+						2 "Rainfall 2" ///
+						3 "Rainfall 3" ///
+						4 "Rainfall 4" ///
+						5 "Rainfall 5" ///
+						6 "Rainfall 6" ///
+						7 "Temperature 1" ///
+						8 "Temperature 2" ///
+						9 "Temperature 3" 
+	lab val		aux_sat sat	
+	lab var		aux_sat "Satellite source"
 	drop 		sat
 	rename 		aux_sat sat
 
@@ -250,17 +273,18 @@ foreach l of local levels {
 	
 * order and label the varaiable
 	order 		aux_ext, after(ext)
-	lab 		define ext 	1 "Extraction 1" ///
-							2 "Extraction 2" ///
-							3 "Extraction 3" ///
-							4 "Extraction 4" ///
-							5 "Extraction 5" ///
-							6 "Extraction 6" ///
-							7 "Extraction 7" ///
-							8 "Extraction 8" ///
-							9 "Extraction 9" ///
-							10 "Extraction 10"
-	lab 		values aux_ext ext
+	lab def		ext 	1 "Extraction 1" ///
+						2 "Extraction 2" ///
+						3 "Extraction 3" ///
+						4 "Extraction 4" ///
+						5 "Extraction 5" ///
+						6 "Extraction 6" ///
+						7 "Extraction 7" ///
+						8 "Extraction 8" ///
+						9 "Extraction 9" ///
+						10 "Extraction 10"
+	lab val		aux_ext ext
+	lab var		aux_ext "Extraction method"
 	drop 		ext
 	rename 		aux_ext ext
 
@@ -270,9 +294,10 @@ foreach l of local levels {
 
 * order and label the varaiable
 	order 		aux_dep, after(depvar)
-	lab 		define depvar 	1 "Quantity" ///
-								2 "Value"
-	lab 		values aux_dep depvar
+	lab def		depvar 	1 "Quantity" ///
+						2 "Value"
+	lab val		aux_dep depvar
+	lab var		aux_dep "Dependent variable"
 	drop 		depvar
 	rename 		aux_dep depvar
 	
@@ -287,23 +312,30 @@ foreach l of local levels {
 
 * order and label the varaiable
 	order 		aux_reg, after(regname)
-	lab 		define regname 	1 "Weather Only" ///
-								2 "Weather + FE" ///
-								3 "Weather + FE + Inputs" ///
-								4 "Weather + Weather^2" ////
-								5 "Weather + Weather^2 + FE" ///
-								6 "Weather + Weather^2 + FE + Inputs" ///
-								7 "Weather + Year FE" ///
-								8 "Weather + Year FE + Inputs" ///
-								9 "Weather + Weather^2 + Year FE" ///
-								10 "Weather + Weather^2 + Year FE + Inputs"
-	lab 		values aux_reg regname
+	lab def		regname 	1 "Weather Only" ///
+							2 "Weather + FE" ///
+							3 "Weather + FE + Inputs" ///
+							4 "Weather + Weather^2" ////
+							5 "Weather + Weather^2 + FE" ///
+							6 "Weather + Weather^2 + FE + Inputs" ///
+							7 "Weather + Year FE" ///
+							8 "Weather + Year FE + Inputs" ///
+							9 "Weather + Weather^2 + Year FE" ///
+							10 "Weather + Weather^2 + Year FE + Inputs"
+	lab val		aux_reg regname
+	lab var		aux_reg "Regression Name"
 	drop 		regname
 	rename 		aux_reg regname
 
+order	reg_id
+	
 * save complete results
-	customsave 	, idvarname(reg_id) filename("mwi_complete_results.dta") ///
-		path("`results'") dofile(mwi_regression) user($user)
+	loc		results = 	"$data/results_data"
+	
+	compress
+	
+	customsave 	, idvarname(reg_id) filename("lsms_complete_results.dta") ///
+		path("`results'") dofile(regression) user($user)
 
 * close the log
 	log	close
