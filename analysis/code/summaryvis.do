@@ -17,6 +17,7 @@
 * TO DO:
 	* all of it
 
+	
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
@@ -33,30 +34,208 @@
 
 		
 * **********************************************************************
-* 1 - load data
+* 1 - load and process data
 * **********************************************************************
 
 * load data 
 	use 			"`root'/lsms_panel", clear
 
+* replace missing values as zeros for rainfall variables 1-9
+	forval j = 1/9 {
+	    forval i = 1/6 {
+		    forval k = 0/9 {
+				replace		v0`j'_rf`i'_x`k' = 0 if v0`j'_rf`i'_x`k' == .    
+			}
+		}
+	}
+
+* replace missing values as zeros for rainfall variables 10-14
+	forval j = 10/14 {
+	    forval i = 1/6 {
+		    forval k = 0/9 {
+				replace		v`j'_rf`i'_x`k' = 0 if v`j'_rf`i'_x`k' == .    
+			}
+		}
+	}
+
+* replace missing values as zeros for temperature variables 15-22
+	forval j = 15/22 {
+	    forval i = 1/3 {
+		    forval k = 0/9 {
+				replace		v`j'_tp`i'_x`k' = 0 if v`j'_tp`i'_x`k' == .    
+			}
+		}
+	}
+
+
 * **********************************************************************
-* 2 
+* 2 - generate summary variables
 * **********************************************************************
-replace mean_season = . if mean_season == 0
 
-sort country sat year
-egen avg_mean = mean(mean_season), by(country sat year)
-egen avg_median = mean(median_season), by(country sat year)
-egen avg_sd = mean(sd_season), by(country sat year)
-egen avg_total = mean(total_season), by(country sat year)
-egen avg_skew = mean(skew_season), by(country sat year)
-egen avg_norain = mean(norain), by(country sat year)
-egen avg_raindays = mean(raindays), by(country sat year)
-egen avg_raindays_p = mean(raindays_percent), by(country sat year)
-egen avg_dry = mean(dry), by(country sat year)
+* generate averages across extractions for rainfall variables 1-9
+	forval j = 1/9 {
+	    forval i = 1/6 {
+				egen 		v0`j'_rf`i' = rowmean(v0`j'_rf`i'_x0 ///
+								v0`j'_rf`i'_x1 v0`j'_rf`i'_x2 v0`j'_rf`i'_x3 ///
+								v0`j'_rf`i'_x4 v0`j'_rf`i'_x5 v0`j'_rf`i'_x6 ///
+								v0`j'_rf`i'_x7 v0`j'_rf`i'_x8 v0`j'_rf`i'_x9)  
+		}
+	}
+	
+* generate averages across extractions for rainfall variables 10-14
+	forval j = 10/14 {
+	    forval i = 1/6 {
+				egen 		v`j'_rf`i' = rowmean(v`j'_rf`i'_x0 ///
+								v`j'_rf`i'_x1 v`j'_rf`i'_x2 v`j'_rf`i'_x3 ///
+								v`j'_rf`i'_x4 v`j'_rf`i'_x5 v`j'_rf`i'_x6 ///
+								v`j'_rf`i'_x7 v`j'_rf`i'_x8 v`j'_rf`i'_x9)  
+		}
+	}
 
-by country sat, sort: sum total_season
+* generate averages across extractions for temperature variables 15-22
+	forval j = 15/22 {
+	    forval i = 1/3 {
+				egen 		v`j'_tp`i' = rowmean(v`j'_tp`i'_x0 ///
+								v`j'_tp`i'_x1 v`j'_tp`i'_x2 v`j'_tp`i'_x3 ///
+								v`j'_tp`i'_x4 v`j'_tp`i'_x5 v`j'_tp`i'_x6 ///
+								v`j'_tp`i'_x7 v`j'_tp`i'_x8 v`j'_tp`i'_x9)  
+		}
+	}		
+/*		
+* generate averages across country and year for rainfall variables 1-9
+	forval j = 1/9 {
+	    forval i = 1/6 {
+				egen 		avg_v0`j'_rf`i' = mean(v0`j'_rf`i'), by(country year)
+		}
+	}	
 
+* generate averages across extractions for rainfall variables 10-14
+	forval j = 10/14 {
+	    forval i = 1/6 {
+				egen 		avg_v`j'_rf`i' = mean(v`j'_rf`i'), by(country year) 
+		}
+	}
+
+* generate averages across extractions for temperature variables 15-22
+	forval j = 15/22 {
+	    forval i = 1/3 {
+				egen 		avg_v`j'_tp`i' = mean(v`j'_tp`i'), by(country year)
+		}
+	}		
+*/
+
+* **********************************************************************
+* 3 - generate total season distribution graphs
+* **********************************************************************
+
+* total season rainfall - Ethiopia		
+	twoway  (kdensity v05_rf1 if country == 1, color(gray%30) recast(area)) ///
+			(kdensity v05_rf2 if country == 1, color(vermillion%30) recast(area)) ///
+			(kdensity v05_rf3 if country == 1, color(sea%30) recast(area)) ///
+			(kdensity v05_rf4 if country == 1, color(turquoise%30) recast(area)) ///
+			(kdensity v05_rf5 if country == 1, color(reddish%30) recast(area)) ///
+			(kdensity v05_rf6 if country == 1, color(ananas%30) recast(area) ///
+			xtitle("Total Season Rainfall (mm)") xscale(r(0(1000)5000)) ///
+			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			legend(pos(6) col(3) label(1 "Rainfall 1") label(2 "Rainfall 2") ///
+			label(3 "Rainfall 3") label(4 "Rainfall 4") label(5 "Rainfall 5") label(6 "Rainfall 6"))
+
+	graph export "`xfig'\eth_density_rf.pdf", as(pdf) replace	
+
+* total season rainfall - Malawi		
+	twoway  (kdensity v05_rf1 if country == 2, color(gray%30) recast(area)) ///
+			(kdensity v05_rf2 if country == 2, color(vermillion%30) recast(area)) ///
+			(kdensity v05_rf3 if country == 2, color(sea%30) recast(area)) ///
+			(kdensity v05_rf4 if country == 2, color(turquoise%30) recast(area)) ///
+			(kdensity v05_rf5 if country == 2, color(reddish%30) recast(area)) ///
+			(kdensity v05_rf6 if country == 2, color(ananas%30) recast(area) ///
+			xtitle("Total Season Rainfall (mm)") xscale(r(0(500)2500)) ///
+			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			legend(pos(6) col(3) label(1 "Rainfall 1") label(2 "Rainfall 2") ///
+			label(3 "Rainfall 3") label(4 "Rainfall 4") label(5 "Rainfall 5") label(6 "Rainfall 6"))
+
+	graph export "`xfig'\mwi_density_rf.pdf", as(pdf) replace	
+
+* total season rainfall - Nigeria		
+	twoway  (kdensity v05_rf1 if country == 5, color(gray%30) recast(area)) ///
+			(kdensity v05_rf2 if country == 5, color(vermillion%30) recast(area)) ///
+			(kdensity v05_rf3 if country == 5, color(sea%30) recast(area)) ///
+			(kdensity v05_rf4 if country == 5, color(turquoise%30) recast(area)) ///
+			(kdensity v05_rf5 if country == 5, color(reddish%30) recast(area)) ///
+			(kdensity v05_rf6 if country == 5, color(ananas%30) recast(area) ///
+			xtitle("Total Season Rainfall (mm)") xscale(r(0(500)2500)) ///
+			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			legend(pos(6) col(3) label(1 "Rainfall 1") label(2 "Rainfall 2") ///
+			label(3 "Rainfall 3") label(4 "Rainfall 4") label(5 "Rainfall 5") label(6 "Rainfall 6"))
+
+	graph export "`xfig'\nga_density_rf.pdf", as(pdf) replace	
+
+* total season rainfall - Tanzania		
+	twoway  (kdensity v05_rf1 if country == 6, color(gray%30) recast(area)) ///
+			(kdensity v05_rf2 if country == 6, color(vermillion%30) recast(area)) ///
+			(kdensity v05_rf3 if country == 6, color(sea%30) recast(area)) ///
+			(kdensity v05_rf4 if country == 6, color(turquoise%30) recast(area)) ///
+			(kdensity v05_rf5 if country == 6, color(reddish%30) recast(area)) ///
+			(kdensity v05_rf6 if country == 6, color(ananas%30) recast(area) ///
+			xtitle("Total Season Rainfall (mm)") xscale(r(0(1000)8000)) ///
+			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			legend(pos(6) col(3) label(1 "Rainfall 1") label(2 "Rainfall 2") ///
+			label(3 "Rainfall 3") label(4 "Rainfall 4") label(5 "Rainfall 5") label(6 "Rainfall 6"))
+
+	graph export "`xfig'\tza_density_rf.pdf", as(pdf) replace	
+
+
+* **********************************************************************
+* 4 - generate mean temperature distribution graphs
+* **********************************************************************
+
+* mean temp - Ethiopia
+	twoway	(kdensity v15_tp1 if country == 1, color(gray%30) recast(area)) ///
+			(kdensity v15_tp2 if country == 1, color(vermillion%30) recast(area)) ///
+			(kdensity v15_tp3 if country == 1, color(sea%30) recast(area) ///
+			xtitle("Mean Seasonal Temperature (C)") xscale(r(10(5)35)) ///
+			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			legend(pos(6) col(3) label(1 "Temperature 1") label(2 "Temperature 2") ///
+			label(3 "Temperature 3"))
+		
+	graph export "`xfig'\eth_density_tp.pdf", as(pdf) replace
+
+*Mean Temp - Malawi	
+	twoway 	(kdensity v15_tp1 if country == 2, color(gray%30) recast(area)) ///
+			(kdensity v15_tp2 if country == 2, color(vermillion%30) recast(area)) ///
+			(kdensity v15_tp3 if country == 2, color(sea%30) recast(area) ///
+			xtitle("Mean Seasonal Temperature (C)") xscale(r(10(5)35)) ///
+			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			legend(pos(6) col(3) label(1 "Temperature 1") label(2 "Temperature 2") ///
+			label(3 "Temperature 3"))
+		
+		graph export "`xfig'\mwi_density_tp.pdf", as(pdf) replace
+
+*Mean Temp - Nigeria
+	twoway 	(kdensity v15_tp1 if country == 5, color(gray%30) recast(area)) ///
+			(kdensity v15_tp2 if country == 5, color(vermillion%30) recast(area)) ///
+			(kdensity v15_tp3 if country == 5, color(sea%30) recast(area) ///
+			xtitle("Mean Seasonal Temperature (C)") xscale(r(10(5)35)) ///
+			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			legend(pos(6) col(3) label(1 "Temperature 1") label(2 "Temperature 2") ///
+			label(3 "Temperature 3"))
+		
+	graph export "`xfig'\nga_density_tp.pdf", as(pdf) replace
+
+*Mean Temp - Tanzania
+	twoway 	(kdensity v15_tp1 if country == 6, color(gray%30) recast(area)) ///
+			(kdensity v15_tp2 if country == 6, color(vermillion%30) recast(area)) ///
+			(kdensity v15_tp3 if country == 6, color(sea%30) recast(area) ///
+			xtitle("Mean Seasonal Temperature (C)") xscale(r(10(5)35)) ///
+			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			legend(pos(6) col(3) label(1 "Temperature 1") label(2 "Temperature 2") ///
+			label(3 "Temperature 3"))
+		
+	graph export "`xfig'\tza_density_tp.pdf", as(pdf) replace	
+	
+	
+		
+/*	
 *No Rain - Ethiopia
 twoway 	(line avg_norain year if sat == 1 & country == 1, color(gray) lpattern(solid)) ///
 		(line avg_norain year if sat == 2 & country == 1, color(vermillion) lpattern(solid)) ///
@@ -116,63 +295,7 @@ twoway 	(line avg_norain year if sat == 1 & country == 6, color(gray) lpattern(s
 		label(4 "Rainfall 4") label(5 "Rainfall 5") label(6 "Rainfall 6"))
 
 		graph export "`all'/tza_norain.eps", as(eps) replace
-/*
-*Total Season Rainfall - Ethiopia	
-twoway (kdensity total_season if sat == 1 & country == 1, color(gray%30) recast(area)) ///
-		(kdensity total_season if sat == 2 & country == 1, color(vermillion%30) recast(area)) ///
-		(kdensity total_season if sat == 3 & country == 1, color(sea%30) recast(area)) ///
-		(kdensity total_season if sat == 4 & country == 1, color(turquoise%30) recast(area)) ///
-		(kdensity total_season if sat == 5 & country == 1, color(reddish%30) recast(area)) ///
-		(kdensity total_season if sat == 6 & country == 1, color(ananas%30) recast(area) ///
-		xtitle("Total Season Rainfall (mm)") xscale(r(0(1000)6000)) ytitle("") ylabel(, nogrid labsize(small)) ///
-		xlabel(, nogrid labsize(small))), title("Distribution of Rainfall in Ethiopia by Satellite") ///
-		legend(pos(6) col(3) label(1 "Rainfall 1") label(2 "Rainfall 2") label(3 "Rainfall 3") ///
-		label(4 "Rainfall 4") label(5 "Rainfall 5") label(6 "Rainfall 6"))
-
-		graph export "`all'\eth_density_rf.pdf", as(pdf) replace
-
-*Total Season Rainfall - Malawi
-twoway (kdensity total_season if sat == 1 & country == 2, color(gray%30) recast(area)) ///
-		(kdensity total_season if sat == 2 & country == 2, color(vermillion%30) recast(area)) ///
-		(kdensity total_season if sat == 3 & country == 2, color(sea%30) recast(area)) ///
-		(kdensity total_season if sat == 4 & country == 2, color(turquoise%30) recast(area)) ///
-		(kdensity total_season if sat == 5 & country == 2, color(reddish%30) recast(area)) ///
-		(kdensity total_season if sat == 6 & country == 2, color(ananas%30) recast(area) ///
-		xtitle("Total Season Rainfall (mm)") xscale(r(0(1000)6000)) ytitle("") ylabel(, nogrid labsize(small)) ///
-		xlabel(, nogrid labsize(small))), title("Distribution of Rainfall in Malawi by Satellite") ///
-		legend(pos(6) col(3) label(1 "Rainfall 1") label(2 "Rainfall 2") label(3 "Rainfall 3") ///
-		label(4 "Rainfall 4") label(5 "Rainfall 5") label(6 "Rainfall 6"))
-
-		graph export "`all'\mwi_density_rf.pdf", as(pdf) replace
-
-*Total Season Rainfall - Nigeria
-twoway (kdensity total_season if sat == 1 & country == 5, color(gray%30) recast(area)) ///
-		(kdensity total_season if sat == 2 & country == 5, color(vermillion%30) recast(area)) ///
-		(kdensity total_season if sat == 3 & country == 5, color(sea%30) recast(area)) ///
-		(kdensity total_season if sat == 4 & country == 5, color(turquoise%30) recast(area)) ///
-		(kdensity total_season if sat == 5 & country == 5, color(reddish%30) recast(area)) ///
-		(kdensity total_season if sat == 6 & country == 5, color(ananas%30) recast(area) ///
-		xtitle("Total Season Rainfall (mm)") xscale(r(0(1000)6000)) ytitle("") ylabel(, nogrid labsize(small)) ///
-		xlabel(, nogrid labsize(small))), title("Distribution of Rainfall in Nigeria by Satellite") ///
-		legend(pos(6) col(3) label(1 "Rainfall 1") label(2 "Rainfall 2") label(3 "Rainfall 3") ///
-		label(4 "Rainfall 4") label(5 "Rainfall 5") label(6 "Rainfall 6"))
-
-		graph export "`all'\nga_density_rf.pdf", as(pdf) replace
-*/
-*Total Season Rainfall - Tanzania
-twoway (kdensity total_season if sat == 1 & country == 6, color(gray%30) recast(area)) ///
-		(kdensity total_season if sat == 2 & country == 6, color(vermillion%30) recast(area)) ///
-		(kdensity total_season if sat == 3 & country == 6, color(sea%30) recast(area)) ///
-		(kdensity total_season if sat == 4 & country == 6, color(turquoise%30) recast(area)) ///
-		(kdensity total_season if sat == 5 & country == 6, color(reddish%30) recast(area)) ///
-		(kdensity total_season if sat == 6 & country == 6, color(ananas%30) recast(area) ///
-		xtitle("Total Season Rainfall (mm)") xscale(r(0(1000)6000)) ytitle("") ylabel(, nogrid labsize(small)) ///
-		xlabel(, nogrid labsize(small))), title("Distribution of Rainfall in Tanzania by Satellite") ///
-		legend(pos(6) col(3) label(1 "Rainfall 1") label(2 "Rainfall 2") label(3 "Rainfall 3") ///
-		label(4 "Rainfall 4") label(5 "Rainfall 5") label(6 "Rainfall 6"))
-
-		graph export "`all'\tza_density_rf.pdf", as(pdf) replace
-		
+	
 * **********************************************************************
 * 3 - end matter
 * **********************************************************************
