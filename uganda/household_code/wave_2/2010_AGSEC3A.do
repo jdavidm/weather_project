@@ -15,69 +15,72 @@
 	* mdesc.ado
 
 * TO DO:
-	* adapt brian's code
+	* complete
 
+	
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
 
 * define paths	
-	loc 	root 		= 		"$data/household_data/uganda/wave_2/raw"  
-	loc     export 		= 		"$data/household_data/uganda/wave_2/refined"
-	loc 	logout 		= 		"$data/household_data/uganda/logs"
+	loc root 		= "$data/household_data/uganda/wave_2/raw"  
+	loc export 		= "$data/household_data/uganda/wave_2/refined"
+	loc logout 		= "$data/household_data/uganda/logs"
 	
 * open log	
-	cap log close
-	log using "`logout'/2010_agsec3a", append
+	cap log 		close
+	log using 		"`logout'/2010_agsec3a", append
 
+	
 * **********************************************************************
 * 1 - import data and rename variables
 * **********************************************************************
 
 * import wave 2 season A
-	use "`root'/2010_AGSEC3A.dta", clear
+	use 			"`root'/2010_AGSEC3A.dta", clear
 		
-	rename 		HHID hhid
+	rename 			HHID hhid
 	
-	describe
-	sort hhid prcid pltid
-	isid hhid prcid pltid
+	sort 			hhid prcid pltid
+	isid 			hhid prcid pltid
 
-*Create unique parcel/plot identifier
-*	generate parcel_id = HHID + " " + string(prcid)
-*	generate plot_id = HHID + " " + string(prcid) + " " + string(pltid)
-*	isid plot_id
 
 * **********************************************************************
 * 2 - merge location data
 * **********************************************************************	
 	
 * merge the location identification
-	merge m:1 hhid using "`export'/2010_GSEC1"
-	*** 0 unmatched from master
-	drop 		if _merge != 3
+	merge m:1 		hhid using "`export'/2010_GSEC1"
+	*** 639 unmatched from master
 	
-* encode district for the imputation
-	encode 		district, gen (districtdstrng)
-	encode		county, gen (countydstrng)
-	encode		subcounty, gen (subcountydstrng)
+	drop if			_merge != 3
 	
+
 * **********************************************************************
 * 3 - fertilizer, pesticide and herbicide
 * **********************************************************************
+
 * fertilizer use
-	rename 		a3aq14 fert_any
-	rename 		a3aq16 kilo_fert
+	rename 			a3aq14 fert_any
+	rename 			a3aq16 kilo_fert
 		
-	sum 		kilo_fert if fert_any == 1, detail
+* replace the missing fert_any with 0
+	tab 			kilo_fert if fert_any == .
+	*** no observations
+	
+	replace			fert_any = 2 if fert_any == . 
+	*** 29 changes
+	
+	sum 			kilo_fert if fert_any == 1, detail
 	*** 39.37, min 0.2, max 300
-	*** standard deviation 64.49, 3 std devs from the median is 192
-	*** impute kilo_fert which seems a bit high
 
 * replace zero to missing, missing to zero, and outliers to mizzing
 	replace			kilo_fert = . if kilo_fert > 192
 	*** 6 outliers changed to missing
 
+* encode district to be used in imputation
+	encode 			district, gen (districtdstrng) 	
+	
 * impute missing values (only need to do four variables)
 	mi set 			wide 	// declare the data to be wide.
 	mi xtset		, clear 	// clear any xtset that may have had in place previously
@@ -86,34 +89,36 @@
 	*** the finer geographical variables will proxy for soil quality which is a determinant of fertilizer use
 	mi register			imputed kilo_fert // identify variable to be imputed
 	sort				hhid prcid pltid, stable // sort to ensure reproducability of results
-	mi impute 			pmm kilo_fert i.region i.districtdstrng i.countydstrng i.subcountydstrng fert_any, add(1) rseed(245780) ///
+	mi impute 			pmm kilo_fert i.districtdstrng fert_any, add(1) rseed(245780) ///
 								noisily dots force knn(5) bootstrap					
 	mi 				unset		
 	
 * how did impute go?	
-	sum 		kilo_fert_1_ if fert_any == 1, detail
-	*** max 150, mean 29.89, min 0.2
-	replace		kilo_fert = kilo_fert_1_ if fert_any == 1
+	sum 			kilo_fert_1_ if fert_any == 1, detail
+	*** max 150, mean 30.78, min 0.2
+	
+	replace			kilo_fert = kilo_fert_1_ if fert_any == 1
 	*** 8 changed
 	
-* replace the missing fert_any with 0
-	replace		fert_any = 2 if fert_any == . 
-	*** 29 changes
+	drop 			kilo_fert_1_ mi_miss
 	
-	drop 		kilo_fert_1_ mi_miss
+* record fert_any
+	replace			fert_any = 0 if fert_any == 2
+	
+	
 * **********************************************************************
 * 4 - pesticide & herbicide
 * **********************************************************************
 
 * pesticide & herbicide
-	tab 		a3aq26
-	*** 4 percent of the sample used pesticide or herbicide
+	tab 			a3aq26
+	*** 4.18 percent of the sample used pesticide or herbicide
 	
-	gen 		pest_any = 1 if a3aq27 != . & a3aq27 != 4
-	replace		pest_any = 0 if pest_any == .
+	gen 			pest_any = 1 if a3aq27 != . & a3aq27 != 4
+	replace			pest_any = 0 if pest_any == .
 	
-	gen 		herb_any = 1 if a3aq27 == 4 | a3aq27 == 96
-	replace		herb_any = 0 if herb_any == .
+	gen 			herb_any = 1 if a3aq27 == 4 | a3aq27 == 96
+	replace			herb_any = 0 if herb_any == .
 	
 	
 * **********************************************************************
@@ -129,41 +134,39 @@
 	* includes all labor tasks performed on a plot during the first cropp season
 
 * family labor
-	
 * make a binary if they had family work
 	gen				fam = 1 if a3aq38 > 0
 	
 * how many household members worked on this plot?
 	tab 			a3aq38
 	*** family labor is from 0 - 10 people
+	
 	replace			a3aq39 = . if a3aq39 > 365
 	*** 2 changes made
 
-* impute missing values (only need to do four variables)	
+* impute missing values
 	mi set 			wide 	// declare the data to be wide.
 	mi xtset		, clear 	// clear any xtset that may have had in place previously
 
 * impute each variable in local		
 	mi register			imputed a3aq39 // identify variable to be imputed
-	sort				hhid prcid, stable // sort to ensure reproducability of results
-	mi impute 			pmm a3aq39 i.region i.districtdstrng i.countydstrng i.fam, add(1) rseed(245780) ///
+	sort				hhid prcid pltid, stable // sort to ensure reproducability of results
+	mi impute 			pmm a3aq39 i.districtdstrng i.fam, add(1) rseed(245780) ///
 								noisily dots force knn(5) bootstrap						
 	mi 				unset
 		
 * how did impute go?
 	sum 			a3aq39_1_
 	*** mean 38.5, min 1, max 360
-	*** looks good, replace
+	
 	replace			a3aq39 = a3aq39_1_ if fam == 1
 	*** 161 changes made
 	
-* fam lab = number of family members who worked on the farm*days they worked	
+* fam lab = number of family members who worked on the farm*days they worked
 	gen 			fam_lab = a3aq38*a3aq39
-	sum				fam_lab	
-	
-* how many days did they work?
-	sum 			a3aq39, detail
-	*** mean 38.5, max 360, min 1
+	replace			fam_lab = 0 if fam_lab == .
+	sum				fam_lab
+	*** max 2300, min 0, mean 114.8
 	
 * hired labor 
 * hired men days
@@ -171,59 +174,34 @@
 		
 * make a binary if they had hired_men
 	gen 			men = 1 if hired_men != . & hired_men != 0
+	
 * hired women days
 	rename			a3aq42b hired_women 
 		
 * make a binary if they had hired_men
 	gen 			women = 1 if hired_women != . & hired_women != 0
 	
-* impute labor all at once
-	sum 			fam_lab, detail
+* impute hired labor all at once
 	sum				hired_men, detail
 	sum 			hired_women, detail
-
-* generate local for variables that contain outliers
-	*loc				fam_lab hired_men hired_women
-
-* replace zero to missing, missing to zero, and outliers to mizzing
-	*foreach var of loc labor {
-	 *   mvdecode 		`var', mv(0)
-	*	mvencode		`var', mv(0)
-	*    replace			`var' = . if `var' > 90
-	*}
-	*** 1,813 outliers changed to missing
-
-* impute missing values (only need to do four variables)
-	*mi set 			wide 	// declare the data to be wide.
-	*mi xtset		, clear 	// clear any xtset that may have had in place previously
-
-
-* impute each variable in local		
-*	foreach var of loc labor {
-	*	mi register			imputed `var' // identify variable to be imputed
-	*	sort				hhid plotid, stable // sort to ensure reproducability of results
-	*	mi impute 			pmm `var' i.state, add(1) rseed(245780) ///
-	*							noisily dots force knn(5) bootstrap
-	*}						
-	*mi 				unset
-		
-		
 	
-* how did impute go?
-	*sum 			fam_lab_1_
+* replace values greater than 365 and turn missing to zeros
+	replace			hired_men = 0 if hired_men == .
+	replace			hired_women = 0 if hired_women == .
 	
-	*replace 		fam_lab		= fam_lab_1_ 		if fam == 1
-	*replace			hired_men 	= hired_men_2_ 		if men == 1
-	*replace			hired_women = hired_women_3_ 	if women == 1
-
+	replace			hired_men = 365 if hired_men > 365
+	replace			hired_women = 365 if hired_women > 365
+	*** no changes made
+	
 * generate labor days as the total amount of labor used on plot in person days
 	gen				labor_days = fam_lab + hired_men + hired_women
 	
 	sum 			labor_days
-	*** mean 153.17, max 2042, min 3
+	*** mean 119.28, max 2300, min 0
+	
 	
 * **********************************************************************
-* 4 - end matter, clean up to save
+* 6 - end matter, clean up to save
 * **********************************************************************
 
 	keep hhid prcid pltid fert_any kilo_fert labor_days region ///
