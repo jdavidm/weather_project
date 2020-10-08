@@ -32,44 +32,34 @@
 	cap log close
 	log using "`logout'/2011_agsec2a", append
 
+	
 * **********************************************************************
-* 1 - import data and rename variables
+* 1 - clean up the key variables
 * **********************************************************************
-
-* irrigation should be in this file but there is an error that replaces irrigation question with a sand type response
 
 * import wave 2 season A
 	use "`root'/2011_AGSEC2A.dta", clear
 		
-	rename			a2aq15b fallow
-	rename			HHID hhid
+* unlike other waves, HHID is a numeric here
+	format 			%18.0g HHID
+	tostring		HHID, gen(hhid) format(%18.0g)
 	
-	mdesc 			parcelID
-	*** none missing out of 3457 observations
+	rename			parcelID prcid
+	rename 			a2aq4 plotsizeGPS
+	rename 			a2aq5 plotsizeSR
+	rename			a2aq7 tenure
 	
-	isid 			hhid parcelID
+	describe
+	sort hhid prcid
+	isid hhid prcid
 
-* what was the primary use of the parcel
-	*** activity in the first season is recorded seperately from activity in the second season
-	tab 		 	a2aq11a 
-	*** activities include renting out, pasture, forest. cultivation, and other0
-	*** we will only include plots used for crops or fallow plots with cover crop
-	
-	keep			if a2aq11a == 1 | a2aq11a == 2 | a2aq11a == 5
-	*** 133 observations deleted
-	
-* drop observations for fallow fields without covercrop
-	tab				a2aq13b
-	*** three types of fallow: bare, with residue incorporated, and with cover crop
-	*** will leave cover crop fallow because cover crops can include beans etc
-	
-	drop 			if a2aq13b == 2 | a2aq13b == 3
-	*** dropped 712 observations
+* make a variable that shows the irrigation
+	gen				irr_any = 1 if a2aq18 == 1
+	replace			irr_any = 0 if irr_any == .
+	lab var			irr_any "Irrigation (=1)"
+	*** irrigation is q18 not q20 like in other rounds
+	*** there is an error that labels the question with soil type
 
-* drop if proportion cultivated a2aq15a is 0
-	*** note that the label incorrectly reports 2009 but the survey instrument reports 2010 season
-	drop if a2aq15a == 0
-	*** 0 observations deleted		
 
 * **********************************************************************
 * 2 - merge location data
@@ -77,81 +67,117 @@
 	
 * merge the location identification
 	merge m:1 hhid using "`export'/2011_GSEC1"
-	*** 72 unmatched from master
-	*** that means 72 observations did not have location data
+	*** 995 unmatched from master
+	*** that means 995 observations did not have location data
 	*** no option at this stage except to drop all unmatched
 	
 	drop 		if _merge != 3	
+
+	
+************************************************************************
+* 3 - keeping cultivated land
+************************************************************************
+
+* what was the primary use of the parcel
+	*** activity in the first season is recorded seperately from activity in the second season
+	tab 		 	a2aq11a 
+	*** activities include renting out, pasture, forest. cultivation, and other
+	*** we will only include plots used for annual or perennial crops
+	
+	keep			if a2aq11a == 1 | a2aq11a == 2
+	*** 431 observations deleted	
+
 	
 * **********************************************************************
-* 3 - clean plotsize
+* 4 - clean plotsize
 * **********************************************************************
 
-	rename 			a2aq4	plotsizeGPS
-	rename			a2aq5	plotsizeSR
-	
+* summarize plot size
 	sum 			plotsizeGPS
-	***	mean 2.01, max 75, min 0.01
+	***	mean 2.18, max 75, min .01
+	*** no plotsizes that are zero
+	
 	sum				plotsizeSR
-	*** mean 2.12, max 100, min 0.01
-	
-	corr 			plotsizeSR plotsizeGPS
-	*** 0.79 correlation, high correlation between GPS and self reported
-	*** will only use SR to impute missing GPS
-	
+	*** mean 2.36, max 100, min .01
+
+* how many missing values are there?
 	mdesc 			plotsizeGPS
-	*** 2599 missing
-	*** a chance that the larger plots in waves 1 and 2 were unmeasured in this wave
-	
-* encode district to be used in imputation
-	encode district, gen (districtdstrng) 
-	
-* impute missing plot sizes using predictive mean matching
-	mi set 			wide // declare the data to be wide.
-	mi xtset		, clear // this is a precautinary step to clear any existing xtset
-	mi register 	imputed plotsizeGPS // identify plotsize_GPS as the variable being imputed
-	sort			region district hhid parcelID, stable // sort to ensure reproducability of results
-	mi impute 		pmm plotsizeGPS i.region i.districtdstrng plotsizeSR, add(1) rseed(245780) noisily dots ///
-						force knn(5) bootstrap
-	mi unset
-	
-* how did imputing go?
-	sum 			plotsizeGPS_1_
-	*** mean 2.05, max 75, min 0.01
-	
-	corr 			plotsizeGPS_1_ plotsizeSR if plotsizeGPS == .
-	*** 0.85, higher correlation than non missing observations
-	*** replace plotsizeGPS with imputation
-	
-	replace 		plotsizeGPS = plotsizeGPS_1_ if plotsizeGPS == .
-	*** 1370 changes, one unchanged, impute that one
+	*** 1,585 missing, 51% of observations
 
-	drop			plotsizeGPS_1_ mi_miss
-
-*check for still missing plotsizeGPS
-	mdesc 			plotsizeGPS
-	
-	sort			plotsizeGPS
-	*** missing plotsizes lack location data but have plotsizeSR
-	*** replace missing plotsizeGPS with SR
-
-	replace 		plotsizeGPS = plotsizeSR if plotsizeGPS == . & plotsizeSR != .
-	*** 82 change made
-	
 * convert acres to square meters
 	gen				plotsize = plotsizeGPS*0.404686
 	label var       plotsize "Plot size (ha)"
+	
+	gen				selfreport = plotsizeSR*0.404686
+	label var       selfreport "Plot size (ha)"
 
+* check correlation between the two
+	corr 			plotsize selfreport
+	*** 0.79 correlation, high correlation between GPS and self reported
+	
+* compare GPS and self-report, and look for outliers in GPS 
+	sum				plotsize, detail
+	*** save command as above to easily access r-class stored results 
+
+* look at GPS and self-reported observations that are > ±3 Std. Dev's from the median 
+	list			plotsize selfreport if !inrange(plotsize,`r(p50)'-(3*`r(sd)'),`r(p50)'+(3*`r(sd)')) ///
+						& !missing(plotsize)
+	*** these all look good, largest size is 30 ha
+	
+* gps on the larger side vs self-report
+	tab				plotsize if plotsize > 3, plot
+	*** distribution has a few high values, but mostly looks reasonable
+
+* correlation for larger plots	
+	corr			plotsize selfreport if plotsize > 3 & !missing(plotsize)
+	*** this is very high, 0.842, so these look good
+
+* correlation for smaller plots	
+	corr			plotsize selfreport if plotsize < .1 & !missing(plotsize)
+	*** this is very low 0.127
+		
+* correlation for extremely small plots	
+	corr			plotsize selfreport if plotsize < .01 & !missing(plotsize)
+	*** this is terrible, 0.036, basically no relation, not unexpected
+	
+* summarize before imputation
+	sum				plotsize
+	*** mean 0.883, max 30.35, min 0.004
+	
+* encode district to be used in imputation
+	encode district, gen (districtdstrng) 	
+
+* impute missing plot sizes using predictive mean matching
+	mi set 			wide // declare the data to be wide.
+	mi xtset		, clear // this is a precautinary step to clear any existing xtset
+	mi register 	imputed plotsize // identify plotsize_GPS as the variable being imputed
+	sort			region district hhid prcid, stable // sort to ensure reproducability of results
+	mi impute 		pmm plotsize i.districtdstrng selfreport, add(1) rseed(245780) noisily dots ///
+						force knn(5) bootstrap
+	mi unset
+		
+* how did imputing go?
+	sum 			plotsize_1_
+	*** mean 0.884, max 30.35, min 0.004
+	
+	corr 			plotsize_1_ selfreport if plotsize == .
+	*** strong correlation 0.824
+	
+	replace 		plotsize = plotsize_1_ if plotsize == .
+	
+	drop			mi_miss plotsize_1_
+	
+	mdesc 			plotsize
+	*** none missing
+
+	
 * **********************************************************************
 * 4 - end matter, clean up to save
 * **********************************************************************
-	rename			parcelID prcid
-	rename 			a2aq15a propcultivate
-	label variable	propcultivate "Proportion of plot cultivated for owned plots"
 	
-	keep 			hhid prcid propcultivate region district ///
-					county subcounty parish plotsize
-	*** hhid should identify households accross panel waves
+	keep 			hhid HHID prcid region district county subcounty ///
+					parish hh_status2011 wgt11 ///
+					plotsize irr_any
 
 	compress
 	describe

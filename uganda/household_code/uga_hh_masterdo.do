@@ -14,6 +14,7 @@
 
 * TO DO:
 	* everything
+	* NEED TO RUN GSEC1 DO FILES BEFORE OTHER DO FILES
 
 	
 * **********************************************************************
