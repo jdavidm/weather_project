@@ -189,7 +189,6 @@
 	keep 			hhid prcid region district county subcounty ///
 					parish wgt09wosplits wgt09 hh_status2009 ///
 					plotsize irr_any
-	*** hhid should identify households accross panel waves
 
 	compress
 	describe
