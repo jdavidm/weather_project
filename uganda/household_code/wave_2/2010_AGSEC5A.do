@@ -21,156 +21,172 @@
 * **********************************************************************
 
 * define paths	
-	loc 	root 		= 		"$data/household_data/uganda/wave_2/raw"  
-	loc     export 		= 		"$data/household_data/uganda/wave_2/refined"
-	loc 	logout 		= 		"$data/household_data/uganda/logs"
-	loc 	conv 		= 		"$data/household_data/uganda/conversion_files"  
+	loc root 		= "$data/household_data/uganda/wave_2/raw"  
+	loc export 		= "$data/household_data/uganda/wave_2/refined"
+	loc logout 		= "$data/household_data/uganda/logs"
+	loc conv 		= "$data/household_data/uganda/conversion_files"  
 
 * open log	
-	cap log close
-	log using "`logout'/2010_AGSEC5A", append
+	cap log 		close
+	log using 		"`logout'/2010_AGSEC5A", append
 
+	
 * **********************************************************************
 * 1 - import data and rename variables
 * **********************************************************************
 
 * import wave 2 season 1
-	use "`root'/2010_AGSEC5A.dta", clear
+	use 			"`root'/2010_AGSEC5A.dta", clear
 	
-	rename 		HHID hhid
-	rename 		cropID cropid
-	rename 		a5aq6c unit
-	rename		a5aq6b condition
+	rename 			HHID hhid
+	rename 			cropID cropid
+	rename 			a5aq6c unit
+	rename			a5aq6b condition
 	
-	describe
-	sort hhid prcid pltid cropid
-	*** cannot uniquely identify observations by hhid, prcid, or pltid because there multiple crops on the same plot
-	*** will collapse to crop level after using variables that cannot be collapsed easily
+	
+	sort 			hhid prcid pltid cropid
+	*** cannot uniquely identify observations by hhid, prcid, or pltid 
+	*** there multiple crops on the same plot
+	
+* missing cropid's also lack crop names, drop those observations
+	mdesc 			cropid
+	*** 0 obs
+	
+* drop cropid is other, fallow, pasture, and trees
+	drop 			if cropid > 880
+	*** 728 observations dropped
+	
+* replace harvests with 99999 with a 0, 99999 is code for missing
+	replace 		a5aq6a = 0 if a5aq6a == 99999
+	*** 0 changed to zero
+	
+* replace missing cropharvests with 0
+	replace 		a5aq6a = 0 if a5aq6a == .
+	*** 1651 changed to zero
+
+* missing prcid and pltid don't allow for unique id, drop missing
+	drop			if prcid == .
+	drop			if pltid == .
+	duplicates 		drop
+	*** zero dropped, still not unique ID
+	
 
 * **********************************************************************
-* 2 - merge kg conversion file
+* 2 - merge kg conversion file and create harvested quantity
 * **********************************************************************
 	
-	merge m:1 cropid unit condition using "`conv'/ValidCropUnitConditionCombinations.dta" 
-	*** unmatched 3674 from master 
+	merge m:1 		cropid unit condition using ///
+						"`conv'/ValidCropUnitConditionCombinations.dta" 
+	*** unmatched 2946 from master 
 	
 * drop from using
-
-	drop if _merge == 2
+	drop 			if _merge == 2
 
 * how many unmatched had a harvest of 0
-
-	tab a5aq6a if _merge == 1
-	*** 50% have a harvest of 0
+	tab 			a5aq6a if _merge == 1
+	*** 78% have a harvest of 0
 	
 * how many unmatched because they used "other" to categorize the state of harvest?
-
-	tab condition if _merge == 1
+	tab 			condition if _merge == 1
 	*** any condition is mostly missing from unmerged observations
 		
-	tab unit if _merge == 1
+	tab 			unit if _merge == 1
 	
 * replace ucaconversion to 1 if the harvest is 0
+	replace 		ucaconversion = 1 if a5aq6a == 0 & _merge == 1
+	*** 2317 changes
+	
+* manually replace conversion for the kilograms and sacks
+* if the condition is other condition and the observation is unmatched
 
-	replace ucaconversion = 1 if a5aq6a == 0 & _merge == 1
-	*** 699 changes
+	*kgs, 49 changes
+		replace 		ucaconversion = 1 if unit == 1 & _merge == 1
 	
-* manually replace conversion for the kilograms and sacks if the condition is other condition and the observation is unmatched
-
-	*kgs,  83 changes
-	replace ucaconversion = 1 if unit == 1 & _merge == 1
+	*sack 120 kgs, 12 changes
+		replace 		ucaconversion = 120 if unit == 9 & _merge == 1
 	
-	*sack 120 kgs, 13 changes
-	replace ucaconversion = 120 if unit == 9 & _merge == 1
-	
-	*sack 100 kgs, 178 changes
-	replace ucaconversion = 100 if unit == 10 & _merge == 1
+	*sack 100 kgs, 164 changes
+		replace 		ucaconversion = 100 if unit == 10 & _merge == 1
 	
 	* sack 80 kgs, 6 changes
-	replace ucaconversion = 80 if unit == 11 & _merge == 1
+		replace 		ucaconversion = 80 if unit == 11 & _merge == 1
 	
-	* sack 50 kgs, 21 changes
-	replace ucaconversion = 50 if unit == 12 & _merge == 1
+	* sack 50 kgs, 17 changes
+		replace 		ucaconversion = 50 if unit == 12 & _merge == 1
 	
-	tab ucaconversion if _merge == 3 & ucaconversion != a5aq6d 
-	*** 7745 different
+		tab 			ucaconversion if _merge == 3 & ucaconversion != a5aq6d 
+		*** 7745 different
 	
-	tab medconversion if _merge == 3 & medconversion != a5aq6d 
-	*** 5321 different
+		tab 			medconversion if _merge == 3 & medconversion != a5aq6d 
+		*** 5321 different
 	
-	replace ucaconversion = medconversion if _merge == 3 & ucaconversion == .
+		replace 		ucaconversion = medconversion if _merge == 3 & ucaconversion == .
 	
-	mdesc ucaconversion
-	*** 19.27% missing
+		mdesc 			ucaconversion
+		*** 2.9% missing
 	
-* 98.78% of observations missing conversion also had a missing harvest amount
-	* replace those missing with 0
-	
-	mdesc ucaconversion if a5aq6a == .
-	*** 98.78% missing
-	
-	replace a5aq6a = 0 if a5aq6a == .
-	*** 2286 changes
-	
+* replace conversion to 1 (kg) if harvest is 0
 	replace ucaconversion = 1 if a5aq6a == 0
-	*** 2268 changes
+	*** 7 changes
 	
 * some missing harvests still have a value for amount sold. Will replace amount sold with 0 if harv qty is missing
 
 	tab a5aq8 if a5aq6a == .
-	*** 29 observations
+	*** 0 observations
 	
-	replace a5aq8 = . if a5aq6a == 0 & a5aq7a>0
-	*** 29 observations
+	replace a5aq8 = . if a5aq6a == 0 & a5aq7a > 0
+	*** 6 observations
 	
 * drop any observations that remain and still dont have a conversion factor
 	drop if ucaconversion == .
-	*** 416 observations dropped
+	*** 381 observations dropped
 	
 	drop _merge
-* **********************************************************************
-* 2 - Quantity harvested
-* **********************************************************************
 	
 	tab			cropid
-	*** beans are the most numerous crop being 16.23% of crops planted
-	***	maize is the second highest being 15.23%
+	*** beans are the most numerous crop being 16.69% of crops planted
+	***	maize is the second highest being 15.72%
 	*** maize will be main crop following most other countries in the study
 	
 * Convert harv quantity to kg
 	*** harvest quantity is in a variety of measurements
 	*** included in the file are the conversions from other measurements to kg
 	
-	rename 			a5aq6a harvqty
-	label var 		harvqty "Harvest quantity not converted"
-
-	gen 			harvqtykg = harvqty*ucaconversion
-	label var		harvqtykg "weight of harvest in kg's"
+* replace missing harvest quantity to 0
+	replace 		a5aq6a = 0 if a5aq6a == .
+	*** no changes
 	
-	sum 			harvqtykg, detail
-	***	min 0, max 70215, mean 347.18
-	*** will impute later
-
-* what can we say about the distribution?
-	*kdensity 		harvqtykg
-	*** left skewed with a long tail
+* Convert harv quantity to kg
+	gen 			harvqtykg = a5aq6a*ucaconversion
+	label var		harvqtykg "quantity of crop harvested (kg)"
+	mdesc 			harvqtykg
+	*** all converted
 	
+* summarize maize quantity harvest
+	sum				harvqtykg if cropid == 130
+	*** 275 mean, 62500 max
+	
+
 * **********************************************************************
 * 3 - value of harvest
 * **********************************************************************
-	
+
+* value of crop sold in shillings
 	rename			a5aq8 harvvlush
 	label var 		harvvlush "Value of crop sold in ugandan shilling"
 	
-* sum value of sales in shillings
+* summarize the value of sales in shillings
 	sum 			harvvlush, detail
-	*** mean 129872.7, max 1.01e+07, min 0
-		
+	*** mean 126886 min 0, max 1.01e+07
+
+* generate crop is USD
 	gen 		cropvl = harvvlush / 2028.8813
 	lab var 	cropvl "total value of harvest in 2010 USD"
+	*** value comes from World Bank: world_bank_exchange_rates.xlxs
 	
 	sum 		cropvl, detail
-	*** mean 64.5, min 0, max 4968.25, std dev 202.69
+	*** mean 62.54, min 0, max 4968
+	
 
 * **********************************************************************
 * 4 - generate sold harvested values
