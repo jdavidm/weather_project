@@ -55,19 +55,22 @@
 	count if 		year == 2015
 	*** wave 3 has 2718
 	
-	gen				pl_id = household_id if year == 2011
-	replace			pl_id = household_id2 if year == 2013 | year == 2015
-	lab var			pl_id "panel household id/hhid"
-	*** important to note: pl_id is therefore not unique without the year
-	*** is this the right approach?
+* drop observations missing year 1 household id
+	drop if			household_id == ""
+
+* generate ethiopia panel id
+	egen			eth_id = group(household_id)
+	lab var			eth_id "Ethiopia panel household id"	
 	
+
+* generate country and data types
 	gen				country = "ethiopia"
 	lab var			country "Country"
 
 	gen				dtype = "lp"
 	lab var			dtype "Data type"
 	
-	isid			pl_id year
+	isid			eth_id year
 	
 * order variables
 	order			country dtype region zone woreda ea ///
@@ -81,15 +84,16 @@
 	
 	
 * **********************************************************************
-* 4 - End matter
+* 4 - end matter
 * **********************************************************************
 
 * create household, country, and data identifiers
+	sort			eth_id year
 	egen			uid = seq()
 	lab var			uid "unique id"
 	
 * order variables
-	order			uid pl_id
+	order			uid eth_id
 	
 * dropping 2017 weather data
 	drop			*2017

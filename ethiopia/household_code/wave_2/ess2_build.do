@@ -12,8 +12,7 @@
 	* customsave.ado
 
 * TO DO:
-	* Is holder ID right for wave 2?
-	* clean up varnames in section 3
+	* done
 
 	
 * **********************************************************************
@@ -38,6 +37,9 @@
 * import the .dta houeshold file
 	use 		"`rooth'/hhfinal_ess2.dta", clear
 	
+* rename year 1 household id
+	rename		hhid household_id
+
 * generate variable to record data source
 	gen 		data = "ess2"
 	lab var 	data "Data Source"	

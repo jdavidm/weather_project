@@ -56,8 +56,10 @@
 	count if 		year == 2015
 	*** wave 3 has 2783
 	
-	gen				pl_id = hhid
-	lab var			pl_id "panel household id/hhid"
+* generate panel id
+	sort			hhid year
+	egen			nga_id = group(hhid)
+	lab var			nga_id "Nigeria panel household id"
 
 	gen				country = "nigeria"
 	lab var			country "Country"
@@ -84,11 +86,12 @@
 * **********************************************************************
 
 * create household, country, and data identifiers
+	sort			nga_id year
 	egen			uid = seq()
 	lab var			uid "unique id"
 	
 * order variables
-	order			uid pl_id
+	order			uid nga_id
 	
 * save file
 	qui: compress
