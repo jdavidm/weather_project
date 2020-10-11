@@ -14,21 +14,21 @@
 	* customsave.ado
 
 * TO DO:
-	* structure is done
-	* need to address the high crop_vl
+	* done
+	
 
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
 
 * define paths
-	loc 	root 		= 		"$data/household_data/uganda/wave_1/refined"  
-	loc     export 		= 		"$data/household_data/uganda/wave_1/refined"
-	loc 	logout 		= 		"$data/household_data/uganda/logs"
+	loc root 		= "$data/household_data/uganda/wave_1/refined"  
+	loc export 		= "$data/household_data/uganda/wave_1/refined"
+	loc logout 		= "$data/household_data/uganda/logs"
 	
 * open log
-	cap 	log 	close
-	log 	using 	"`logout'/unps1_merge", append
+	cap log 		close
+	log using 		"`logout'/unps1_merge", append
 
 	
 * **********************************************************************
@@ -36,13 +36,13 @@
 * **********************************************************************
 
 * start by loading harvest quantity and value, since this is our limiting factor
-	use "`root'/2009_AGSEC5A.dta", clear
+	use 			"`root'/2009_AGSEC5A.dta", clear
 
-	isid hhid prcid pltid cropid
+	isid 			hhid prcid pltid cropid
 	
 * merge in plot size data and irrigation data
-	merge			m:1 hhid prcid using "`root'/2009_AGSEC2", generate(_sec2)
-	*** matched 11195, unmatched 697 from master
+	merge			m:1 hhid prcid using "`root'/2009_AGSEC2A", generate(_sec2)
+	*** matched 10857, unmatched 647 from master
 	*** a lot unmatched, means plots do not area data
 	*** for now as per Malawi (rs_plot) we drop all unmerged observations
 
@@ -50,15 +50,15 @@
 		
 * merging in labor, fertilizer and pest data
 	merge			m:1 hhid prcid pltid  using "`root'/2009_AGSEC3A", generate(_sec3a)
-	*** all matched from master
+	*** on 20 not matched from master
 
-	drop			if _sec3a == 2
+	drop			if _sec3a != 3
 	
 * replace missing binary values
-	replace			irr_any = 2 if irr_any == .
-	replace			pest_any = 2 if pest_any == .
-	replace 		herb_any = 2 if herb_any == .
-	replace			fert_any = 2 if fert_any == .
+	replace			irr_any = 0 if irr_any == .
+	replace			pest_any = 0 if pest_any == .
+	replace 		herb_any = 0 if herb_any == .
+	replace			fert_any = 0 if fert_any == .
 
 * drop observations missing values (not in continuous)
 	drop			if plotsize == .
@@ -69,6 +69,7 @@
 
 	drop			_sec2 _sec3a
 
+	
 * **********************************************************************
 * 1b - create total farm and maize variables
 * **********************************************************************
@@ -77,12 +78,6 @@
 	rename			kilo_fert fert
 	rename			labor_days labordays
 
-* recode binary variables
-	replace			fert_any = 0 if fert_any == 2
-	replace			pest_any = 0 if pest_any == 2
-	replace			herb_any = 0 if herb_any == 2
-	replace			irr_any  = 0 if irr_any  == 2
-	
 * generate mz_variables
 	gen				mz_lnd = plotsize	if cropid == 130
 	gen				mz_lab = labordays	if cropid == 130
@@ -96,9 +91,10 @@
 * collapse to plot level
 	collapse (sum)	cropvalue plotsize labordays fert ///
 						mz_hrv mz_lnd mz_lab mz_frt ///
-			 (max)	wgt09wosplits wgt09 hh_status2009 pest_any herb_any irr_any fert_any  ///
+			 (max)	pest_any herb_any irr_any fert_any  ///
 						mz_pst mz_hrb mz_irr mz_damaged, ///
-						by(hhid prcid pltid region district county subcounty parish)
+						by(hhid prcid pltid region district county subcounty ///
+						parish wgt09wosplits wgt09 hh_status2009)
 
 * replace non-maize harvest values as missing
 	tab				mz_damaged, missing
@@ -108,13 +104,14 @@
 	}	
 	replace			mz_hrv = . if mz_damaged == . & mz_hrv == 0		
 	drop 			mz_damaged
-	*** 5601 changes made
+	*** 5454 changes made
 	
 * encode the string location data
 	encode			county, gen(countydstrng)
 	encode			subcounty, gen(subcountydstrng)
 	encode			parish, gen(parishdstrng)
 
+	
 * **********************************************************************
 * 2 - impute: total farm value, labor, fertilizer use 
 * **********************************************************************

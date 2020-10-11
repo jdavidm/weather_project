@@ -14,20 +14,21 @@
 	* customsave.ado
 
 * TO DO:
-	* everything 
+	* done
+	
 
 * **********************************************************************
 * 0 - setup
 * **********************************************************************
 
 * define paths
-	loc 	root 		= 		"$data/household_data/uganda/wave_3/refined"  
-	loc     export 		= 		"$data/household_data/uganda/wave_3/refined"
-	loc 	logout 		= 		"$data/household_data/uganda/logs"
+	loc root 		= "$data/household_data/uganda/wave_3/refined"  
+	loc export 		= "$data/household_data/uganda/wave_3/refined"
+	loc logout 		= "$data/household_data/uganda/logs"
 	
 * open log
-	cap 	log 	close
-	log 	using 	"`logout'/unps3_merge", append
+	cap log 		close
+	log using 		"`logout'/unps3_merge", append
 
 	
 * **********************************************************************
@@ -35,12 +36,11 @@
 * **********************************************************************
 
 * start by loading harvest quantity and value, since this is our limiting factor
-	use "`root'/2011_AGSEC5A.dta", clear
-
-	isid hhid prcid pltid cropid
+	use 			"`root'/2011_AGSEC5A.dta", clear
+	isid 			hhid prcid pltid cropid
 	
 * merge in plot size data and irrigation data
-	merge			m:1 hhid prcid using "`root'/2011_AGSEC2", generate(_sec2)
+	merge			m:1 hhid prcid using "`root'/2011_AGSEC2A", generate(_sec2)
 	*** matched 9288, unmatched 1279 from master
 	*** a lot unmatched, means plots do not area data
 	*** for now as per Malawi (rs_plot) we drop all unmerged observations
@@ -92,9 +92,10 @@
 * collapse to plot level
 	collapse (sum)	cropvalue plotsize labordays fert ///
 						mz_hrv mz_lnd mz_lab mz_frt  ///
-			 (max)	HHS_hh_shftd_dsntgrtd_2011 panel_wgt_2011 pest_any herb_any fert_any  ///
+			 (max)	pest_any herb_any fert_any  ///
 						mz_pst mz_hrb mz_damaged, ///
-						by(hhid prcid pltid region district county subcounty parish)
+						by(hhid prcid pltid region district county subcounty ///
+						parish hh_status2011 wgt11)
 
 * replace non-maize harvest values as missing
 	tab				mz_damaged, missing
@@ -112,6 +113,7 @@
 	encode			subcounty, gen(subcountydstrng)
 	encode			parish, gen(parishdstrng)
 
+	
 * **********************************************************************
 * 2 - impute: total farm value, labor, fertilizer use 
 * **********************************************************************
