@@ -189,8 +189,11 @@
 	lab var 		cropvl "total value of harvest in 2010 USD"
 	*** value comes from World Bank: world_bank_exchange_rates.xlxs
 	
+* there are three large outliers in data, replace for imputation later
+	replace			cropvl = . if cropvl > 10000
+	
 	sum 			cropvl, detail
-	*** mean 112.43, min 0, max 21480
+	*** mean 100.5, min 0, max 8304
 	
 	
 * **********************************************************************
@@ -207,7 +210,6 @@
 * replace unit with 1 if unit is missing
 	replace			unit = 1 if unit == .
 	
-
 * merge conversion file in for sold
 	merge m:1 		cropid unit condition using ///
 						"`conv'/ValidCropUnitConditionCombinations.dta" 
@@ -225,7 +227,6 @@
 						unit == 1
 	*** replaces 686
 	
-
 * replace missing ucaconversion with median
 	replace			ucaconversion = medconversion if ucaconversion == .
 	*** 476 changes made, only 5 missing left
@@ -278,7 +279,7 @@
 
 * look at crop value in USD
 	sum 			cropvl, detail
-	*** max 21480, mean 115, min 0.004
+	*** max 8304, mean 103, min 0.004
 	
 * condensed crop codes
 	inspect 		cropid
@@ -364,20 +365,32 @@
 * this code generlaly files parts of malawi ag_i
 * but this differs from Malawi - seems like their code ignores prices 
 	gene	 		croppricei = .
-	*** 13316 missing values generated
+	*** 9291 missing values generated
 	
-	bys cropid (region districtdstrng countydstrng subcountydstrng parishdstrng hhid prcid pltid): replace croppricei = p_parish if n_parish>=10 & missing(croppricei)
-	*** 568 replaced
-	bys cropid (region districtdstrng countydstrng subcountydstrng parishdstrng hhid prcid pltid): replace croppricei = p_subcounty if p_subcounty>=10 & missing(croppricei)
-	*** 4 replaced
-	bys cropid (region districtdstrng countydstrng subcountydstrng parishdstrng hhid prcid pltid): replace croppricei = p_county if n_county>=10 & missing(croppricei)
-	*** 1812 replaced 
-	bys cropid (region districtdstrng countydstrng subcountydstrng parishdstrng hhid prcid pltid): replace croppricei = p_dist if n_district>=10 & missing(croppricei)
-	*** 926 replaced
-	bys cropid (region districtdstrng countydstrng subcountydstrng parishdstrng hhid prcid pltid): replace croppricei = p_reg if n_reg>=10 & missing(croppricei)
-	*** 9003 replaced 
-	bys cropid (region districtdstrng countydstrng subcountydstrng parishdstrng hhid prcid pltid): replace croppricei = p_crop if missing(croppricei)
-	*** 1003 changes
+	bys 			cropid (region districtdstrng countydstrng subcountydstrng parishdstrng hhid prcid pltid): ///
+						replace croppricei = p_parish if n_parish>=10 & missing(croppricei)
+	*** 647 replaced
+	
+	bys 			cropid (region districtdstrng countydstrng subcountydstrng parishdstrng hhid prcid pltid): ///
+						replace croppricei = p_subcounty if p_subcounty>=10 & missing(croppricei)
+	*** 10 replaced
+	
+	bys 			cropid (region districtdstrng countydstrng subcountydstrng parishdstrng hhid prcid pltid): ///
+						replace croppricei = p_county if n_county>=10 & missing(croppricei)
+	*** 1282 replaced 
+	
+	bys 			cropid (region districtdstrng countydstrng subcountydstrng parishdstrng hhid prcid pltid): ///
+						replace croppricei = p_dist if n_district>=10 & missing(croppricei)
+	*** 748 replaced
+	
+	bys 			cropid (region districtdstrng countydstrng subcountydstrng parishdstrng hhid prcid pltid): ///
+						replace croppricei = p_reg if n_reg>=10 & missing(croppricei)
+	*** 5701 replaced 
+	
+	bys 			cropid (region districtdstrng countydstrng subcountydstrng parishdstrng hhid prcid pltid): ///
+						replace croppricei = p_crop if missing(croppricei)
+	*** 903 changes
+	
 	lab	var			croppricei	"implied unit value of crop"
 
 * verify that prices exist for all crops
@@ -385,41 +398,22 @@
 	*** no missing
 	
 	sum 			cropprice croppricei
-	*** mean = 0.337, max = 32.97
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	*** mean = 0.316, max = 32.97
+
 	
 * **********************************************************************
-* 5 - impute harvqtykg
+* 6 - impute harvqtykg
 * **********************************************************************
-	
-* merge the location identification
-	merge m:1 hhid using "`export'/2011_GSEC1"
-	*** 280 unmatched from master
-	*** 10571 matched
-	drop 		if _merge != 3
-	
-* encode district for the imputation
-	encode 		district, gen (districtdstrng)
-	encode		county, gen (countydstrng)
-	encode		subcounty, gen (subcountydstrng)
-	encode		parish, gen (parishdstrng)
-	
+
+* summarize harvest quantity prior to imputations
+	sum				harvqtykg
+	*** mean 542, max 80,000
 
 * replace observations 3 std deviation from the mean and impute missing
 	*** 3 std dev from mean is 
 	sum 			harvqtykg, detail
 	replace			harvqtykg = . if harvqtykg > `r(p50)'+ (3*`r(sd)')
-	*** 21 changed to missing
+	*** 111 changed to missing
 
 * impute missing harvqtykg
 	mi set 			wide 	// declare the data to be wide.
@@ -428,30 +422,33 @@
 * impute harvqtykg	
 	mi register			imputed harvqtykg // identify harvqty variable to be imputed
 	sort				hhid prcid pltid cropid, stable // sort to ensure reproducability of results
-	mi impute 			pmm harvqtykg i.region i.districtdstrng i.countydstrng, add(1) rseed(245780) ///
+	mi impute 			pmm harvqtykg i.districtdstrng i.cropid, add(1) rseed(245780) ///
 								noisily dots force knn(5) bootstrap					
 	mi 				unset	
 	
 * inspect imputation 
 	sum 				harvqtykg_1_, detail
-	*** 21 imputation
-	*** mean 485.21, min 0, max 15990
-	*** looks better
+	*** mean 412, min 0, max 5600
 
 * replace the imputated variable
 	replace 			harvqtykg = harvqtykg_1_ 
-	*** 21 changes
+	*** 104 changes
 	
 	drop 				harvqtykg_1_ mi_miss
 	
+	
 * ***********************************************************************
-* 8 - impute cropvl
+* 7 - impute cropvl
 * ***********************************************************************	
 
+* summarize value of sales prior to imputations
+	sum				cropvl
+	*** mean 103, max 8304
+	
 * replace cropvl with missing if over 3 std dev from the mean
 	sum 			cropvl, detail
 	replace			cropvl = . if cropvl > `r(p50)'+ (3*`r(sd)')
-	*** 42 changes
+	*** 40 changes
 	
 * impute cropvl if missing and harvest was sold
 	mi set 			wide 	// declare the data to be wide.
@@ -460,178 +457,27 @@
 * impute each variable in local	
 	mi register			imputed cropvl // identify harvqty variable to be imputed
 	sort				hhid prcid pltid cropid, stable // sort to ensure reproducability of results
-	mi impute 			pmm cropvl i.region i.districtdstrng i.countydstrng i.subcountydstrng harvqtykg, add(1) rseed(245780) ///
+	mi impute 			pmm cropvl i.districtdstrng i.cropid harvqtykg, add(1) rseed(245780) ///
 								noisily dots force knn(5) bootstrap					
 	mi 				unset	
 	
 * how did impute go?
 	sum 			cropvl_1_, detail
-	*** min 0, mean 25.5, max 942.13, not a lot of variation
-	*** compare step 9 on other waves
+	*** mean 58.86, max 989
+
 	replace 		cropvl = cropvl_1_
-	*** 41 changes
+	*** 5539 changes
 	
 	drop 			cropvl_1_ mi_miss
+	
 * do harvest value and harvest quantity contradict?
-	tab				harvvlush if harvqty == 0
-	replace 		harvvlush = 0 if harvqty == 0
-	*** 0 changes made
 	replace 		cropvl = 0 if harvqty == 0
-	*** 0 changes made
+	*** 397 changes made
 	
-* ************************************************************************
-* 9 - impute harvkgsold
-* ************************************************************************	
-	
-* replace any +3 s.d. away from median as missing, by crop
-	sort 			cropid
-	sum				harvkgsold, detail 
-	*** mean 181.89, max 102400
-	by 				cropid: replace	harvkgsold = . if harvkgsold > `r(p50)'+ (3*`r(sd)')
-	sum				harvkgsold, detail
-	*** replaced 28 values, max is now 5280, mean 118.7
-	
-* impute missing values
-	mi set 			wide 	// declare the data to be wide.
-	mi xtset		, clear 	// clear any xtset that may have had in place previously
-	mi register		imputed harvkgsold // identify harvkgsold as the variable being imputed
-	sort			hhid prcid pltid cropid, stable // sort to ensure reproducability of results
-	mi impute 		pmm harvkgsold i.districtdstrng i.cropid cropvl, add(1) rseed(245780) ///
-						noisily dots force knn(5) bootstrap
-	mi 				unset	
-
-* how did the imputation go?
-	tab				mi_miss
-	tabstat			harvkgsold harvkgsold_1_, by(mi_miss) ///
-						statistics(n mean min max) columns(statistics) ///
-						longstub format(%9.3g) 
-	replace			harvkgsold = harvkgsold_1_ if cropvl != . 
-	lab var			harvkgsold "kg of harvest sold, imputed (only if produce was sold)"
-	sum 			harvkgsold
-	drop			harvkgsold_1_ mi_miss
-	*** imputed observations changed 28 observations for people who sold 
-	*** mean 121.24 , max stays at 5280 
-	
+		
 * ********************************************************************
-* 10 - make cropvalue variable and impute it
+* 8 - impute cropvalue from sales
 * ********************************************************************	
-	
-* check out amount sold
-* currently reported in Ugandan shilling
-	tab 			harvvlush 
-	replace 		harvvlush = . if harvvlush == 9999999 
-	*** 0 changed to missing
-
-* in usd
-	sum 		cropvl, detail
-	*** max 942.12, mean 25.48, min 0
-	
-* condensed crop codes
-	inspect 		cropid
-	*** generally things look all right - only 51 unique values 
-
-* gen price per kg
-	sort 			cropid
-	by 				cropid: gen cropprice = cropvl / harvkgsold 
-	sum 			cropprice, detail
-	*** mean = 0.494, max = 61.24, min = 0
-	*** will do some imputations later
-	
-* make datasets with crop price information
-	preserve
-	collapse 		(p50) p_parish=cropprice (count) n_parish=cropprice, by(cropid region districtdstrng countydstrng subcountydstrng parishdstrng)
-	save 			"`export'/2011_agsec5a_p1.dta", replace 
-	restore
-	
-	preserve
-	collapse 		(p50) p_subcounty=cropprice (count) n_subcounty=cropprice, by(cropid region districtdstrng countydstrng subcountydstrng)
-	save 			"`export'/2011_agsec5a_p2.dta", replace 	
-	restore
-	
-	preserve
-	collapse 		(p50) p_county=cropprice (count) n_county=cropprice, by(cropid region districtdstrng countydstrng)
-	save 			"`export'/2011_agsec5a_p3.dta", replace 	
-	restore
-	
-	preserve
-	collapse 		(p50) p_dist=cropprice (count) n_district=cropprice, by(cropid region districtdstrng)
-	save 			"`export'/2011_agsec5a_p4.dta", replace 
-	restore
-	
-	preserve
-	collapse 		(p50) p_reg=cropprice (count) n_reg=cropprice, by(cropid region)
-	save 			"`export'/2011_agsec5a_p5.dta", replace 
-	restore
-	
-	preserve
-	collapse 		(p50) p_crop=cropprice (count) n_crop=cropprice, by(cropid)
-	save 			"`export'/2011_agsec5a_p6.dta", replace 	
-	restore
-	
-* merge the price datasets back in
-	merge m:1 cropid region districtdstrng countydstrng subcountydstrng parishdstrng	        using "`export'/2011_agsec5a_p1.dta", gen(p1)
-	*** all observations matched
-	
-	merge m:1 cropid region districtdstrng countydstrng subcountydstrng 	        using "`export'/2011_agsec5a_p2.dta", gen(p2)
-	*** all observations matched
-
-	merge m:1 cropid region districtdstrng countydstrng 			        using "`export'/2011_agsec5a_p3.dta", gen(p3)
-	*** all observations matched
-	
-	merge m:1 cropid region districtdstrng 						using "`export'/2011_agsec5a_p4.dta", gen(p4)
-	*** all observations matched
-	
-	merge m:1 cropid region						        using "`export'/2011_agsec5a_p5.dta", gen(p5)
-	*** all observations matched
-	
-	merge m:1 cropid 						        using "`export'/2011_agsec5a_p6.dta", gen(p6)
-	*** all observatinos matched
-
-* erase price files
-	erase			"`export'/2011_agsec5a_p1.dta"
-	erase			"`export'/2011_agsec5a_p2.dta"
-	erase			"`export'/2011_agsec5a_p3.dta"
-	erase			"`export'/2011_agsec5a_p4.dta"
-	erase			"`export'/2011_agsec5a_p5.dta"
-	erase			"`export'/2011_agsec5a_p6.dta"
-
-	drop p1 p2 p3 p4 p5 p6
-
-* check to see if we have prices for all crops
-	tabstat 		p_parish n_parish p_subcounty n_subcounty p_county n_county p_dist n_district p_reg n_reg p_crop n_crop, ///
-						by(cropid) longstub statistics(n min p50 max) columns(statistics) format(%9.3g) 
-	*** no prices for wheat, fallow fields, bush and trees were also included but have no prices
-	
-* drop if we are missing prices
-	drop			if p_crop == .
-	*** dropped 4 observations
-	
-* make imputed price, using median price where we have at least 10 observations
-* this code generlaly files parts of malawi ag_i
-* but this differs from Malawi - seems like their code ignores prices 
-	gene	 		croppricei = .
-	*** 13316 missing values generated
-	
-	bys cropid (region districtdstrng countydstrng subcountydstrng parishdstrng hhid prcid pltid): replace croppricei = p_parish if n_parish>=10 & missing(croppricei)
-	*** 568 replaced
-	bys cropid (region districtdstrng countydstrng subcountydstrng parishdstrng hhid prcid pltid): replace croppricei = p_subcounty if p_subcounty>=10 & missing(croppricei)
-	*** 4 replaced
-	bys cropid (region districtdstrng countydstrng subcountydstrng parishdstrng hhid prcid pltid): replace croppricei = p_county if n_county>=10 & missing(croppricei)
-	*** 1812 replaced 
-	bys cropid (region districtdstrng countydstrng subcountydstrng parishdstrng hhid prcid pltid): replace croppricei = p_dist if n_district>=10 & missing(croppricei)
-	*** 926 replaced
-	bys cropid (region districtdstrng countydstrng subcountydstrng parishdstrng hhid prcid pltid): replace croppricei = p_reg if n_reg>=10 & missing(croppricei)
-	*** 9003 replaced 
-	bys cropid (region districtdstrng countydstrng subcountydstrng parishdstrng hhid prcid pltid): replace croppricei = p_crop if missing(croppricei)
-	*** 1003 changes
-	lab	var			croppricei	"implied unit value of crop"
-
-* verify that prices exist for all crops
-	mdesc 			croppricei
-	*** no missing
-	
-	sum 			cropprice croppricei
-	*** mean = 0.337, max = 32.97
 	
 * generate value of harvest 
 	gen				cropvalue = harvqtykg * croppricei
@@ -639,46 +485,62 @@
 	
 * replace cropvalue with cropvl if cropvl is not missing and crop value is missing
 	replace 		cropvalue = cropvl if cropvalue == . & cropvl != .
-	*** 0 change
+	*** 4 change
 	
 * verify that we have crop value for all observations
 	mdesc 			cropvalue
-	*** 0 missing
-	
-* replace any +3 s.d. away from median as missing, by crop
-	sum 			cropvalue, detail
-	*** mean 98.06, max 12365.43
-	replace			cropvalue = . if cropvalue > `r(p50)'+ (3*`r(sd)')
+	*** 3 missing
+
+* summarize value of harvest prior to imputations	
+	sum 			cropvalue
+	*** mean 71.5, max 12,365
+
+* replace any +3 s.d. away from median as missing, by crop	
 	sum				cropvalue, detail
-	*** replaced 122 values
-	*** reduces mean to 79.26, max to 768.211
+	replace			cropvalue = . if cropvalue > `r(p50)'+ (3*`r(sd)')
+	*** replaced 74 values
 	
 * impute missing values
 	mi set 			wide 	// declare the data to be wide.
 	mi xtset		, clear 	// clear any xtset that may have had in place previously
 	mi register		imputed cropvalue // identify cropvalue as the variable being imputed
 	sort			hhid prcid pltid cropid, stable // sort to ensure reproducability of results
-	mi impute 		pmm cropvalue i.region i.cropid, add(1) rseed(245780) ///
+	mi impute 		pmm cropvalue i.districtdstrng i.cropid, add(1) rseed(245780) ///
 						noisily dots force knn(5) bootstrap
 	mi 				unset	
 
-* how did the imputation go?
-	tab				mi_miss
-	tabstat			cropvalue cropvalue_1_, by(mi_miss) ///
-						statistics(n mean min max) columns(statistics) ///
-						longstub format(%9.3g) 
+* how did impute go?
+	sum 			cropvalue_1_, detail
+	*** mean 63.38, max 573
+	
 	replace			cropvalue = cropvalue_1_
 	lab var			cropvalue "value of harvest, imputed"
-	drop			cropvalue_1_
-	sum 			cropvalue
-	*** mean is 80.06, max is 768.21 min is 0
-	*** imputed 122
+	*** 71 changes
+	
+	drop 			cropvalue_1_ mi_miss
+
 	
 * **********************************************************************
-* 11 - end matter, clean up to save
+* 9 - end matter, clean up to save
 * **********************************************************************
 
-	keep hhid prcid pltid cropvalue harvqtykg region district county subcounty parish cropid HHS_hh_shftd_dsntgrtd_2011 panel_wgt_2011
+* summarize crop value, imputed crop value, and maize harvest
+	sum				cropvl
+	*** mean 56.21 max 989
+	sum				cropvalue
+	*** mean 63.38 max 573
+	sum				harvqtykg if cropid == 130
+	*** mean 271.27 max 5533
+	
+* despite all the work to get prices and impute values
+* this process does not seem to work as well in Uganda as in other countries
+* so we will got with crop value based on the imputation in sec 7
+	replace			cropvalue = cropvl
+	replace			cropvalue = 0 if cropvalue == .
+	
+	keep 			hhid prcid pltid cropvalue harvqtykg region district ///
+						county subcounty parish cropid hh_status2011 ///
+						wgt11
 
 	compress
 	describe
