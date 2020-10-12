@@ -51,7 +51,8 @@ foreach folder of local folderList {
 	foreach file in `fileList' {
 		
 		* import the .csv files - this takes time	
-		import delimited "`root'/`folder'/`file'", varnames (1) clear
+		import delimited "`root'/`folder'/`file'", varnames (1)   ///
+			encoding(Big5) stringcols(1) clear
 
 		* define locals to govern file naming
 			loc dat = substr("`file'", 1, 6)
@@ -85,7 +86,8 @@ foreach folder of local folderList {
 	foreach file in `fileList' {
 		
 		* import the .csv files - this takes time	
-		import delimited "`root'/`folder'/`file'", varnames (1) clear
+		import delimited "`root'/`folder'/`file'", varnames (1)   ///
+			encoding(Big5) stringcols(1) clear
 
 		* define locals to govern file naming
 			loc dat = substr("`file'", 1, 6)
