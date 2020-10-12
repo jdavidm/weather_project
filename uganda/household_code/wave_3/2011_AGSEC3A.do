@@ -77,7 +77,7 @@
 	replace			fert_any = 2 if fert_any == . 
 	*** 5 changes
 			
-	sum 		kilo_fert if fert_any == 1, detail
+	sum 			kilo_fert if fert_any == 1, detail
 	*** 34.41, min 0.25, max 800
 
 * replace zero to missing, missing to zero, and outliers to mizzing
@@ -121,10 +121,10 @@
 	*** 5.08 percent of the sample used pesticide or herbicide
 	tab 		a3aq23
 	
-	gen 		pest_any = 1 if a3aq27 != . & a3aq27 != 4
+	gen 		pest_any = 1 if a3aq23 != . & a3aq23 != 4 & a3aq23 != 96
 	replace		pest_any = 0 if pest_any == .
 	
-	gen 		herb_any = 1 if a3aq27 == 4 | a3aq27 == 96
+	gen 		herb_any = 1 if a3aq23 == 4 | a3aq23 == 96
 	replace		herb_any = 0 if herb_any == .
 
 	

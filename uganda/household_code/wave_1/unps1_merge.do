@@ -42,7 +42,7 @@
 	
 * merge in plot size data and irrigation data
 	merge			m:1 hhid prcid using "`root'/2009_AGSEC2A", generate(_sec2)
-	*** matched 10857, unmatched 647 from master
+	*** matched 8903, unmatched 2601 from master
 	*** a lot unmatched, means plots do not area data
 	*** for now as per Malawi (rs_plot) we drop all unmerged observations
 
@@ -50,7 +50,7 @@
 		
 * merging in labor, fertilizer and pest data
 	merge			m:1 hhid prcid pltid  using "`root'/2009_AGSEC3A", generate(_sec3a)
-	*** on 20 not matched from master
+	*** no unmatched from master
 
 	drop			if _sec3a != 3
 	
@@ -75,6 +75,7 @@
 * **********************************************************************
 
 * rename some variables
+	rename 			cropvalue vl_hrv
 	rename			kilo_fert fert
 	rename			labor_days labordays
 
@@ -85,11 +86,11 @@
 	gen				mz_pst = pest_any	if cropid == 130
 	gen				mz_hrb = herb_any	if cropid == 130
 	gen				mz_irr = irr_any	if cropid == 130
-	gen 			mz_hrv = cropvalue	if cropid == 130
-	gen 			mz_damaged = 1 		if cropid == 130 & cropvalue == 0
+	gen 			mz_hrv = vl_hrv		if cropid == 130
+	gen 			mz_damaged = 1 		if cropid == 130 & vl_hrv == 0
 	
 * collapse to plot level
-	collapse (sum)	cropvalue plotsize labordays fert ///
+	collapse (sum)	vl_hrv plotsize labordays fert ///
 						mz_hrv mz_lnd mz_lab mz_frt ///
 			 (max)	pest_any herb_any irr_any fert_any  ///
 						mz_pst mz_hrb mz_irr mz_damaged, ///
@@ -111,6 +112,12 @@
 	encode			subcounty, gen(subcountydstrng)
 	encode			parish, gen(parishdstrng)
 
+	order			hhid prcid pltid region district county countydstrng ///
+						subcounty subcountydstrng parish parishdstrng ///
+						wgt09wosplits wgt09 hh_status2009 vl_hrv plotsize ///
+						labordays fert_any fert irr_any pest_any herb_any ///
+						mz_hrv mz_lnd mz_lab mz_frt mz_irr mz_pst mz_hrb
+	
 	
 * **********************************************************************
 * 2 - impute: total farm value, labor, fertilizer use 
@@ -132,39 +139,37 @@
 * **********************************************************************
 	
 * construct production value per hectare
-	gen				vl_yld = cropvalue / plotsize
+	gen				vl_yld = vl_hrv / plotsize
 	assert 			!missing(vl_yld)
 	lab var			vl_yld "value of yield (2010USD/ha)"
 
-* impute labor outliers, right side only 
-* replace any +3 s.d. away from mean as missing, by cropid
-	sort 			vl_yld
-	sum				vl_yld, detail 
-	replace			vl_yld = . if vl_yld > `r(p50)'+ (2*`r(sd)')
-	sum				vl_yld, detail
-	*** replaced 22 values, max is now 69202.35, mean 1128.871
-
-	mi set 			wide 	// declare the data to be wide.
-	mi xtset		, clear 	// clear any xtset that may have had in place previously
-	mi register		imputed vl_yld // identify harvkgsold as the variable being imputed
-	sort			hhid prcid pltid vl_yld, stable // sort to ensure reproducability of results
-	mi impute 		pmm vl_yld i.district plotsize, add(1) rseed(245780) ///
-						noisily dots force knn(5) bootstrap
-	mi 				unset	
-	
-	replace 		vl_yld = vl_yld_1_ 
-	sum 			vl_yld
-	*** max is still 69202.35, mean is 1147.33
-	
-	rename 			vl_yld_1_ vl_yldimp
+* impute value per hectare outliers 
+	sum				vl_yld
+	bysort region :	egen stddev = sd(vl_yld) if !inlist(vl_yld,.,0)
+	recode stddev	(.=0)
+	bysort region :	egen median = median(vl_yld) if !inlist(vl_yld,.,0)
+	bysort region :	egen replacement = median(vl_yld) if  ///
+						(vl_yld <= median + (3 * stddev)) & ///
+						(vl_yld >= median - (3 * stddev)) & !inlist(vl_yld,.,0)
+	bysort region :	egen maxrep = max(replacement)
+	bysort region :	egen minrep = min(replacement)
+	assert 			minrep==maxrep
+	generate 		vl_yldimp = vl_yld
+	replace  		vl_yldimp = maxrep if !((vl_yld < median + (3 * stddev)) ///
+						& (vl_yld > median - (3 * stddev))) ///
+						& !inlist(vl_yld,.,0) & !mi(maxrep)
+	tabstat			vl_yld vl_yldimp, ///
+						f(%9.0f) s(n me min p1 p50 p95 p99 max) c(s) longstub
+	*** reduces mean from 134 to 88
+						
+	drop			stddev median replacement maxrep minrep
 	lab var			vl_yldimp	"value of yield (2010USD/ha), imputed"
-	
+
 * inferring imputed harvest value from imputed harvest value per hectare
 	generate		vl_hrvimp = vl_yldimp * plotsize 
 	lab var			vl_hrvimp "value of harvest (2010USD), imputed"
-	lab var			cropvalue "value of harvest (2010USD)"
+	lab var			vl_hrv "value of harvest (2010USD)"
 	
-	drop mi_miss
 
 * **********************************************************************
 * 2b - impute: labor
@@ -176,34 +181,32 @@
 	sum				labordays labordays_ha
 
 * impute labor outliers, right side only 
-* replace any +3 s.d. away from mean as missing, by cropid
-	sort 			labordays_ha
-	sum				labordays_ha, detail 
-	replace			labordays_ha = . if labordays_ha > `r(p50)'+ (3*`r(sd)')
 	sum				labordays_ha, detail
-	*** replaced 19 values, max is now 2322.79, mean 31.44
-
-	mi set 			wide 	// declare the data to be wide.
-	mi xtset		, clear 	// clear any xtset that may have had in place previously
-	mi register		imputed labordays_ha // identify harvkgsold as the variable being imputed
-	sort			hhid prcid pltid labordays_ha, stable // sort to ensure reproducability of results
-	mi impute 		pmm labordays_ha i.district plotsize, add(1) rseed(245780) ///
-						noisily dots force knn(5) bootstrap
-	mi 				unset	
+	bysort region :	egen stddev = sd(labordays_ha) if !inlist(labordays_ha,.,0)
+	recode 			stddev (.=0)
+	bysort region :	egen median = median(labordays_ha) if !inlist(labordays_ha,.,0)
+	bysort region :	egen replacement = median(labordays_ha) if ///
+						(labordays_ha <= median + (3 * stddev)) & ///
+						(labordays_ha >= median - (3 * stddev)) & !inlist(labordays_ha,.,0)
+	bysort region :	egen maxrep = max(replacement)
+	bysort region :	egen minrep = min(replacement)
+	assert			minrep==maxrep
+	gen				labordays_haimp = labordays_ha, after(labordays_ha)
+	replace 		labordays_haimp = maxrep if !((labordays_ha < median + (3 * stddev)) ///
+						& (labordays_ha > median - (3 * stddev))) ///
+						& !inlist(labordays_ha,.,0) & !mi(maxrep)
+	tabstat 		labordays_ha labordays_haimp, ///
+						f(%9.0f) s(n me min p1 p50 p95 p99 max) c(s) longstub
+	*** reduces mean from 370 to 270
 	
-	replace 		labordays_ha = labordays_ha_1_ 
-	sum 			labordays_ha
-	*** max is still 2322.79, mean is 31.5
-	
-	rename			labordays_ha_1_ labordays_haimp
-	lab var			labordays_haimp	"farm labor (days), imputed"
+	drop			stddev median replacement maxrep minrep
+	lab var			labordays_haimp	"farm labor use (days/ha), imputed"
 
 * make labor days based on imputed labor days per hectare
 	gen				labordaysimp = labordays_haimp * plotsize, after(labordays)
 	lab var			labordaysimp "farm labor (days), imputed"
 
-	drop 			mi_miss
-	
+
 * **********************************************************************
 * 2c - impute: fertilizer
 * **********************************************************************
@@ -213,29 +216,26 @@
 	lab var			fert_ha "fertilizer use (kg/ha)"
 	sum				fert fert_ha
 
-* impute yield outliers
-
-* replace any +3 s.d. away from median as missing, by cropid
-	sort 			fert_ha
-	sum				fert_ha, detail 
-	replace			fert_ha = . if fert_ha > `r(p50)'+ (3*`r(sd)')
+* impute labor outliers, right side only 
 	sum				fert_ha, detail
-	*** replaced 43 values, max is now 61.78, mean 0.146
+	bysort region :	egen stddev = sd(fert_ha) if !inlist(fert_ha,.,0)
+	recode 			stddev (.=0)
+	bysort region :	egen median = median(fert_ha) if !inlist(fert_ha,.,0)
+	bysort region :	egen replacement = median(fert_ha) if ///
+						(fert_ha <= median + (3 * stddev)) & ///
+						(fert_ha >= median - (3 * stddev)) & !inlist(fert_ha,.,0)
+	bysort region :	egen maxrep = max(replacement)
+	bysort region :	egen minrep = min(replacement)
+	assert			minrep==maxrep
+	gen				fert_haimp = fert_ha, after(fert_ha)
+	replace 		fert_haimp = maxrep if !((fert_ha < median + (3 * stddev)) ///
+						& (fert_ha > median - (3 * stddev))) ///
+						& !inlist(fert_ha,.,0) & !mi(maxrep)
+	tabstat 		fert_ha fert_haimp, ///
+						f(%9.0f) s(n me min p1 p50 p95 p99 max) c(s) longstub
+	*** reduces mean from 3 to 2
 	
-* impute missing values
-	mi set 			wide 	// declare the data to be wide.
-	mi xtset		, clear 	// clear any xtset that may have had in place previously
-	mi register		imputed fert_ha // identify harvkgsold as the variable being imputed
-	sort			hhid prcid pltid fert_ha, stable // sort to ensure reproducability of results
-	mi impute 		pmm fert_ha i.district plotsize, add(1) rseed(245780) ///
-						noisily dots force knn(5) bootstrap
-	mi 				unset	
-	
-	replace 		fert_ha = fert_ha_1_ if fert_any > 0
-	sum 			fert_ha
-	*** max is still 61.78, mean is 0.145
-
-	rename			fert_ha_1_ fert_haimp
+	drop			stddev median replacement maxrep minrep
 	lab var			fert_haimp	"fertilizer use (kg/ha), imputed"
 
 * make labor days based on imputed labor days per hectare
@@ -243,7 +243,7 @@
 	lab var			fertimp "fertilizer (kg), imputed"
 	lab var			fert "fertilizer (kg)"
 
-	drop 			mi_miss
+
 * **********************************************************************
 * 3 - impute: maize yield, labor, fertilizer use 
 * **********************************************************************
@@ -256,29 +256,29 @@
 * construct maize yield
 	gen				mz_yld = mz_hrv / mz_lnd, after(mz_hrv)
 	lab var			mz_yld	"maize yield (kg/ha)"
+
+* maybe imputing zero values	
 	
 * impute yield outliers
-
-* replace any +3 s.d. away from median as missing, by cropid
-	sort 			mz_yld
-	sum				mz_yld, detail 
-	replace			mz_yld = . if mz_yld > `r(p50)'+ (2*`r(sd)')
-	sum				mz_yld, detail
-	*** replaced 15 values, max is now 4255.95, mean 67.14
-	
-* impute missing values
-	mi set 			wide 	// declare the data to be wide.
-	mi xtset		, clear 	// clear any xtset that may have had in place previously
-	mi register		imputed mz_yld // identify harvkgsold as the variable being imputed
-	sort			hhid prcid pltid mz_yld, stable // sort to ensure reproducability of results
-	mi impute 		pmm mz_yld i.district plotsize, add(1) rseed(245780) ///
-						noisily dots force knn(5) bootstrap
-	mi 				unset	
-	
-	replace 		mz_yld = mz_yld_1_ if mz_lnd != .
-	sum 			mz_yld
-
-	rename			mz_yld_1_ mz_yldimp
+	sum				mz_yld
+	bysort region : egen stddev = sd(mz_yld) if !inlist(mz_yld,.,0)
+	recode 			stddev (.=0)
+	bysort region : egen median = median(mz_yld) if !inlist(mz_yld,.,0)
+	bysort region : egen replacement = median(mz_yld) if /// 
+						(mz_yld <= median + (3 * stddev)) & ///
+						(mz_yld >= median - (3 * stddev)) & !inlist(mz_yld,.,0)
+	bysort region : egen maxrep = max(replacement)
+	bysort region : egen minrep = min(replacement)
+	assert 			minrep==maxrep
+	generate 		mz_yldimp = mz_yld, after(mz_yld)
+	replace  		mz_yldimp = maxrep if !((mz_yld < median + (3 * stddev)) ///
+						& (mz_yld > median - (3 * stddev))) ///
+						& !inlist(mz_yld,.,0) & !mi(maxrep)
+	tabstat 		mz_yld mz_yldimp, ///
+						f(%9.0f) s(n me min p1 p50 p95 p99 max) c(s) longstub
+	*** reduces mean from 136 to 85
+					
+	drop 			stddev median replacement maxrep minrep
 	lab var 		mz_yldimp "maize yield (kg/ha), imputed"
 
 * inferring imputed harvest quantity from imputed yield value 
@@ -286,7 +286,7 @@
 	lab var 		mz_hrvimp "maize harvest quantity (kg), imputed"
 	lab var 		mz_hrv "maize harvest quantity (kg)"
 
-	drop 			mi_miss
+
 * **********************************************************************
 * 3b - impute: maize labor
 * **********************************************************************
@@ -296,33 +296,33 @@
 	lab var			mz_lab_ha "maize labor use (days/ha)"
 	sum				mz_lab mz_lab_ha
 
-* replace any +3 s.d. away from median as missing, by cropid
-	sort 			mz_lab_ha
-	sum				mz_lab_ha, detail 
-	replace			mz_lab_ha = . if mz_lab_ha > `r(p50)'+ (3*`r(sd)')
+* impute labor outliers, right side only 
 	sum				mz_lab_ha, detail
-	*** replaced 8 values, max is now 1961.4, mean 43.15
+	bysort region :	egen stddev = sd(mz_lab_ha) if !inlist(mz_lab_ha,.,0)
+	recode 			stddev (.=0)
+	bysort region :	egen median = median(mz_lab_ha) if !inlist(mz_lab_ha,.,0)
+	bysort region :	egen replacement = median(mz_lab_ha) if ///
+						(mz_lab_ha <= median + (3 * stddev)) & ///
+						(mz_lab_ha >= median - (3 * stddev)) & !inlist(mz_lab_ha,.,0)
+	bysort region :	egen maxrep = max(replacement)
+	bysort region :	egen minrep = min(replacement)
+	assert			minrep==maxrep
+	gen				mz_lab_haimp = mz_lab_ha, after(mz_lab_ha)
+	replace 		mz_lab_haimp = maxrep if !((mz_lab_ha < median + (3 * stddev)) ///
+						& (mz_lab_ha > median - (3 * stddev))) ///
+						& !inlist(mz_lab_ha,.,0) & !mi(maxrep)
+	tabstat 		mz_lab_ha mz_lab_haimp, ///
+						f(%9.0f) s(n me min p1 p50 p95 p99 max) c(s) longstub
+	*** reduces mean from 419 to 330
 	
-* impute missing values
-	mi set 			wide 	// declare the data to be wide.
-	mi xtset		, clear 	// clear any xtset that may have had in place previously
-	mi register		imputed mz_lab_ha // identify harvkgsold as the variable being imputed
-	sort			hhid prcid pltid mz_lab_ha, stable // sort to ensure reproducability of results
-	mi impute 		pmm mz_lab_ha i.district plotsize, add(1) rseed(245780) ///
-						noisily dots force knn(5) bootstrap
-	mi 				unset	
-	
-	replace 		mz_lab_ha = mz_lab_ha_1_ if mz_hrv != .
-	sum 			mz_lab_ha
-
-	rename 			mz_lab_ha_1_ mz_lab_haimp
+	drop			stddev median replacement maxrep minrep
 	lab var			mz_lab_haimp	"maize labor use (days/ha), imputed"
 
 * make labor days based on imputed labor days per hectare
 	gen				mz_labimp = mz_lab_haimp * mz_lnd, after(mz_lab)
 	lab var			mz_labimp "maize labor (days), imputed"
 
-	drop			mi_miss
+
 * **********************************************************************
 * 3c - impute: maize fertilizer
 * **********************************************************************
@@ -332,35 +332,33 @@
 	lab var			mz_frt_ha "fertilizer use (kg/ha)"
 	sum				mz_frt mz_frt_ha
 
-* replace any +3 s.d. away from median as missing, by cropid
-	sort 			mz_frt_ha
-	sum				mz_frt_ha, detail 
-	replace			mz_frt_ha = . if mz_frt_ha > `r(p50)'+ (3*`r(sd)')
-	sum				mz_frt_ha, detail
-	*** replaced 19 values
-	*** max is 74.56, mean is 0.352
-	
 * impute labor outliers, right side only 
 	sum				mz_frt_ha, detail
-	mi set 			wide 	// declare the data to be wide.
-	mi xtset		, clear 	// clear any xtset that may have had in place previously
-	mi register		imputed mz_frt_ha // identify harvkgsold as the variable being imputed
-	sort			hhid prcid pltid mz_frt_ha, stable // sort to ensure reproducability of results
-	mi impute 		pmm mz_frt_ha i.district plotsize, add(1) rseed(245780) ///
-						noisily dots force knn(5) bootstrap
-	mi 				unset	
+	bysort region :	egen stddev = sd(mz_frt_ha) if !inlist(mz_frt_ha,.,0)
+	recode 			stddev (.=0)
+	bysort region :	egen median = median(mz_frt_ha) if !inlist(mz_frt_ha,.,0)
+	bysort region :	egen replacement = median(mz_frt_ha) if ///
+						(mz_frt_ha <= median + (3 * stddev)) & ///
+						(mz_frt_ha >= median - (3 * stddev)) & !inlist(mz_frt_ha,.,0)
+	bysort region :	egen maxrep = max(replacement)
+	bysort region :	egen minrep = min(replacement)
+	assert			minrep==maxrep
+	gen				mz_frt_haimp = mz_frt_ha, after(mz_frt_ha)
+	replace 		mz_frt_haimp = maxrep if !((mz_frt_ha < median + (3 * stddev)) ///
+						& (mz_frt_ha > median - (3 * stddev))) ///
+						& !inlist(mz_frt_ha,.,0) & !mi(maxrep)
+	tabstat 		mz_frt_ha mz_frt_haimp, ///
+						f(%9.0f) s(n me min p1 p50 p95 p99 max) c(s) longstub
+	*** reduces mean from 9 to 5
 	
-	replace 		mz_frt_ha = mz_frt_ha_1_ if mz_hrv != .
-	sum 			mz_frt_ha
-	*** max is the same and mean is 0.408
-
-	rename 			mz_frt_ha_1_ mz_frt_haimp
+	drop			stddev median replacement maxrep minrep
 	lab var			mz_frt_haimp	"fertilizer use (kg/ha), imputed"
 
 * make labor days based on imputed labor days per hectare
 	gen				mz_frtimp = mz_frt_haimp * mz_lnd, after(mz_frt)
 	lab var			mz_frtimp "fertilizer (kg), imputed"
 	lab var			mz_frt "fertilizer (kg)"
+
 
 * **********************************************************************
 * 4 - collapse to household level
@@ -464,13 +462,15 @@
 	
 * count before collapse
 	count
-	***7476 obs
+	*** 5886 obs
 	
-	collapse (max)	tf_* cp_* wgt09wosplits wgt09 hh_status2009, by(region district countydstrng subcountydstrng parishdstrng hhid)
+	collapse 		(max) tf_* cp_*, by(region district countydstrng ///
+						subcountydstrng parishdstrng hhid wgt09wosplits ///
+						wgt09 hh_status2009)
 
 * count after collapse 
 	count 
-	*** 7476 to 2201 observations 
+	*** 5886 to 1946 observations 
 	
 * return non-maize production to missing
 	replace			cp_yld = . if cp_yld == 0
@@ -487,6 +487,14 @@
 
 * verify values are accurate
 	sum				tf_* cp_*
+
+	
+* **********************************************************************
+* 8 - end matter, clean up to save
+* **********************************************************************
+
+* verify unique household id
+	isid			hhid
 
 * label variables
 	lab var			tf_lnd	"Total farmed area (ha)"
@@ -505,136 +513,6 @@
 	lab var			cp_pst	"Any maize plot has pesticide"
 	lab var			cp_hrb	"Any maize plot has herbicide"
 	lab var			cp_irr	"Any maize plot has irrigation"
-
-	
-* **********************************************************************
-* 4 - impute tf_hrv
-* **********************************************************************	
-* replace any +2 s.d. away from median as missing, by cropid
-	sum 			tf_hrv, detail
-	*** mean 1257.77, max 7270.08
-*	kdensity		tf_hrv
-	replace			tf_hrv = . if tf_hrv > `r(p50)'+ (2*`r(sd)')
-	sum				tf_hrv, detail
-	*** replaced 135 values
-	replace			tf_hrv = . if tf_hrv > `r(p50)'+ (2*`r(sd)')
-	sum				tf_hrv, detail
-	*** replaced 104 values
-	
-* impute missing values
-	mi set 			wide 	// declare the data to be wide.
-	mi xtset		, clear 	// clear any xtset that may have had in place previously
-	mi register		imputed tf_hrv // identify cropvalue as the variable being imputed
-	sort			hhid, stable // sort to ensure reproducability of results
-	mi impute 		pmm tf_hrv i.region tf_lnd, add(1) rseed(245780) ///
-						noisily dots force knn(5) bootstrap
-	mi 				unset	
-
-* how did the imputation go?
-	sum 			tf_hrv_1_
-	replace			tf_hrv = tf_hrv_1_
-	drop			tf_hrv_1_ mi_miss
-	***mean 1011.54, max 2638.91
-	
-* **********************************************************************
-* 5 - impute tf_yld
-* **********************************************************************	
-* replace any +2 s.d. away from median as missing, by cropid
-	sum 			tf_yld, detail
-	*** mean 840.48, max 11017.97
-*	kdensity		tf_yld
-	replace			tf_yld = . if tf_yld > `r(p50)'+ (2*`r(sd)')
-	sum				tf_yld, detail
-	*** replaced 147 values
-	replace			tf_yld = . if tf_yld > `r(p50)'+ (2*`r(sd)')
-	sum				tf_yld, detail
-	*** replaced 172 values
-	
-* impute missing values
-	mi set 			wide 	// declare the data to be wide.
-	mi xtset		, clear 	// clear any xtset that may have had in place previously
-	mi register		imputed tf_yld // identify cropvalue as the variable being imputed
-	sort			hhid, stable // sort to ensure reproducability of results
-	mi impute 		pmm tf_yld i.region tf_lnd, add(1) rseed(245780) ///
-						noisily dots force knn(5) bootstrap
-	mi 				unset	
-
-* how did the imputation go?
-	sum 			tf_yld_1_
-	replace			tf_yld = tf_yld_1_
-	drop			tf_yld_1_ mi_miss
-	sum 			tf_yld
-	*** improves mean 465.64, max 1611.53
-	
-* **********************************************************************
-* 6 - impute cp_hrv
-* **********************************************************************	
-* replace any +2 s.d. away from median as missing, by cropid
-	sum 			cp_hrv, detail
-	*** mean 455.05, max 2497.89
-*	kdensity		cp_hrv
-	replace			cp_hrv = . if cp_hrv > `r(p50)'+ (2*`r(sd)')
-	sum				cp_hrv, detail
-	*** replaced 60 values
-	replace			cp_hrv = . if cp_hrv > `r(p50)'+ (2*`r(sd)')
-	sum				cp_hrv, detail
-	*** replaced 58 values
-	
-* impute missing values
-	mi set 			wide 	// declare the data to be wide.
-	mi xtset		, clear 	// clear any xtset that may have had in place previously
-	mi register		imputed cp_hrv // identify cropvalue as the variable being imputed
-	sort			hhid, stable // sort to ensure reproducability of results
-	mi impute 		pmm cp_hrv i.region tf_lnd, add(1) rseed(245780) ///
-						noisily dots force knn(5) bootstrap
-	mi 				unset	
-
-* how did the imputation go?
-	sum 			cp_hrv_1_
-	replace			cp_hrv = cp_hrv_1_ if cp_lnd != .
-	drop			cp_hrv_1_ mi_miss
-	sum 			cp_hrv
-	*** improves mean 345.31, max 917.36
-	
-* **********************************************************************
-* 7 - impute cp_yld
-* **********************************************************************	
-* replace any +2 s.d. away from median as missing, by cropid
-	sum 			cp_yld, detail
-	*** mean 921.06, max 8656.97
-*	kdensity		cp_yld
-	replace			cp_yld = . if cp_yld > `r(p50)'+ (2*`r(sd)')
-	sum				cp_yld, detail
-	*** replaced 64 values
-	replace			cp_yld = . if cp_yld > `r(p50)'+ (2*`r(sd)')
-	sum				cp_yld, detail
-	*** 80 changes
-	
-* impute missing values
-	mi set 			wide 	// declare the data to be wide.
-	mi xtset		, clear 	// clear any xtset that may have had in place previously
-	mi register		imputed cp_yld // identify cp_yld as the variable being imputed
-	sort			hhid, stable // sort to ensure reproducability of results
-	mi impute 		pmm cp_yld i.region tf_lnd, add(1) rseed(245780) ///
-						noisily dots force knn(5) bootstrap
-	mi 				unset	
-
-* how did the imputation go?
-	sum 			cp_yld_1_
-	replace			cp_yld = cp_yld_1_ if cp_lnd != .
-	drop			cp_yld_1_ mi_miss
-	sum 			cp_yld
-	*** improves mean 503.08, max 1702.89
-
-* **********************************************************************
-* 8 - end matter, clean up to save
-* **********************************************************************
-
-* destring hhid
-	destring hhid, replace
-
-* verify unique household id
-	isid			hhid
 
 * generate year identifier
 	gen				year = 2009
@@ -656,7 +534,3 @@
 	log	close
 
 /* END */
-
-
-
-
