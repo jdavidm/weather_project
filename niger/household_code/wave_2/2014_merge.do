@@ -607,10 +607,10 @@
 	
 * create unique household identifier
 
-	egen				y2_hhid = group(clusterid hh_num extension)
-	lab var				y2_hhid "Unique wave 2 household identifier"
+	egen				hhid_y2 = group(clusterid hh_num extension)
+	lab var				hhid_y2 "Unique wave 2 household identifier"
 		
-	order 			region dept canton zd clusterid hh_num extension y2_hhid year tf_hrv tf_lnd tf_yld ///
+	order 			region dept canton zd clusterid hh_num extension hhid_y2 year tf_hrv tf_lnd tf_yld ///
 						tf_lab tf_frt tf_pst tf_hrb cp_hrv cp_lnd ///
 						cp_yld cp_lab cp_frt cp_pst cp_hrb
 	compress
@@ -618,7 +618,7 @@
 	summarize 
 	
 * saving production dataset
-	customsave , idvar(y2_hhid) filename(hhfinal_ecvma2.dta) path("`export'") ///
+	customsave , idvar(hhid_y2) filename(hhfinal_ecvma2.dta) path("`export'") ///
 			dofile(2014_merge) user($user) 
 
 * close the log

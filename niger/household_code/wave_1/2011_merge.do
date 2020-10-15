@@ -321,10 +321,10 @@
 	*** all observations are missing region, canton and dept, will create id without region, canton and dept for now
 	isid				clusterid hh_num
 	sort				clusterid hh_num, stable 
-	egen				hh_id = group( clusterid hh_num)
-	lab var				hh_id "unique household identifier"
+	egen				hid = group( clusterid hh_num)
+	lab var				hid "unique household identifier"
 		
-	order 			clusterid hh_num hh_id year tf_hrv tf_lnd tf_yld ///
+	order 			clusterid hh_num hid year tf_hrv tf_lnd tf_yld ///
 						tf_lab tf_frt tf_pst tf_hrb cp_hrv cp_lnd ///
 						cp_yld cp_lab cp_frt cp_pst cp_hrb
 	compress
@@ -332,7 +332,7 @@
 	summarize 
 	
 * saving production dataset
-	customsave , idvar(hh_id) filename(hhfinal_niger2011.dta) path("`export'") ///
+	customsave , idvar(hid) filename(hhfinal_niger2011.dta) path("`export'") ///
 			dofile(2011_merge) user($user) 
 
 * close the log
