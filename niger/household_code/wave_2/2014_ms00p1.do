@@ -33,15 +33,28 @@
 
 * import the first relevant data file
 	use				"`root'/ECVMA2_MS00P1", clear
+
+* build household identifier
+	tostring		GRAPPE, gen(grappe)
+
+	gen str2 		menage = string(MENAGE,"%02.0f")
+	
+	tostring		EXTENSION, gen(extension)
+	
+	
+	egen			hhid_y2 = concat( grappe menage extension )
+	destring		hhid_y2, replace
+	
+	order			hhid_y2 GRAPPE grappe MENAGE menage EXTENSION extension ///
+						PASSAGE
 	
 * need to rename for English
 	rename 			PASSAGE visit
 	label 			var visit "number of visit"
-	rename			GRAPPE clusterid
+	rename			grappe clusterid
 	label 			var clusterid "cluster number"
-	rename			MENAGE hh_num
+	rename			menage hh_num
 	label 			var hh_num "household number - not unique id"
-	rename 			EXTENSION extension 
 	label 			var extension "extension of household"
 	*** will need to do these in every file
 	
@@ -60,19 +73,18 @@
 * 2 - end matter, clean up to save
 * **********************************************************************
 
-	keep 			clusterid hh_num extension region dept canton zd 
-	isid 			clusterid hh_num extension 
+	keep 			hhid_y2 clusterid hh_num extension region dept canton zd 
+	isid 			hhid_y2
 	
-	sort			clusterid hh_num extension
-	egen			idvar = group(clusterid hh_num extension)
-	lab var			idvar "unique identifier"
+	sort			hhid_y2 clusterid hh_num extension
+	lab var			hhid_y2 "unique identifier"
 	
 	compress
 	describe
 	summarize
 
 * save file
-	customsave , idvar(idvar) filename("2014_ms00p1.dta") ///
+	customsave , idvar(hhid_y2) filename("2014_ms00p1.dta") ///
 		path("`export'") dofile(2014_ms00p1) user($user)
 
 * close the log
