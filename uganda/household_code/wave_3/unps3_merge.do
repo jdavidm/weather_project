@@ -542,8 +542,8 @@
 	summarize 
 	
 * saving production dataset
-	customsave , idvar(hhid) filename(hhfinal_unps3.dta) path("`export'") ///
-			dofile(unps3_merge) user($user) 
+	customsave , idvar(hhid) filename(hhfinal_unps3.dta) ///
+		path("`export'") dofile(unps3_merge) user($user) 
 
 * close the log
 	log	close

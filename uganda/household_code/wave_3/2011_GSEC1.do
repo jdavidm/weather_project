@@ -68,7 +68,7 @@
 
 * save file
 		customsave , idvar(hhid) filename("2011_GSEC1.dta") ///
-			path("`export'/`folder'") dofile(2011_GSEC1) user($user)
+			path("`export'") dofile(2011_GSEC1) user($user)
 
 * close the log
 	log	close
