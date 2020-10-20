@@ -464,9 +464,10 @@
 	count
 	*** 5925 obs
 	
-	collapse 		(max) tf_* cp_*, by(region districtdstrng countydstrng ///
-						subcountydstrng parishdstrng hh_status2010 ///
-						spitoff09_10 spitoff10_11 wgt10 hhid)
+	collapse 		(max) tf_* cp_*, by(region district districtdstrng county ///
+						countydstrng subcounty subcountydstrng parish ///
+						parishdstrng hh_status2010 spitoff09_10 spitoff10_11 ///
+						wgt10 hhid)
 
 * count after collapse 
 	count 
@@ -493,6 +494,10 @@
 * 8 - end matter, clean up to save
 * **********************************************************************
 
+* drop splot-off and mover households
+	keep			if spitoff09_10 == 0
+	keep			if spitoff10_11 == 0
+	
 * verify unique household id
 	isid			hhid
 
@@ -514,21 +519,26 @@
 	lab var			cp_hrb	"Any maize plot has herbicide"
 	lab var			cp_irr	"Any maize plot has irrigation"
 
-* rename location variables
-	rename			districtdstrng district
-	rename			countydstrng county
-	rename			subcountydstrng subcounty
-	rename			parishdstrng parish
+* merge in harvest season
+	merge			m:1 region district using "`root'/harv_month", force
+	drop			if _merge == 2
+
+* replace missing values
+	replace			season = 1 if region == 3
+	replace			season = 0 if season == .
 	
+	drop			districtdstrng countydstrng subcountydstrng parishdstrng ///
+						hh_status2010 spitoff09_10 spitoff10_11 harv _merge
+		
 * generate year identifier
 	gen				year = 2010
 	lab var			year "Year"
 		
-	order 			region district county subcounty parish hhid /// 	
-					hh_status2010 spitoff09_10 spitoff10_11 wgt10 year ///
-					tf_hrv tf_lnd tf_yld tf_lab tf_frt ///
+	order 			region district county subcounty parish hhid wgt10 /// 	
+					year season tf_hrv tf_lnd tf_yld tf_lab tf_frt ///
 					tf_pst tf_hrb tf_irr cp_hrv cp_lnd cp_yld cp_lab ///
-					cp_frt cp_pst cp_hrb cp_irr
+					cp_frt cp_pst cp_hrb cp_irr 
+					
 	compress
 	describe
 	summarize 

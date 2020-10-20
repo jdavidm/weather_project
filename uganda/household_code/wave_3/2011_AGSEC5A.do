@@ -44,6 +44,7 @@
 	rename			parcelID prcid
 	rename 			a5aq6c unit
 	rename			a5aq6b condition
+	rename 			a5aq6e harvmonth
 		
 * one observation is missing pltid
 	*** the hhid is 4183002308
@@ -250,7 +251,7 @@
 	replace 		harvkgsold = 0 if harvkgsold == .
 
 * collapse the data to the crop level so that our imputations are reproducable and consistent
-	collapse 		(sum) harvqtykg cropvl harvkgsold, ///
+	collapse 		(sum) harvqtykg cropvl harvkgsold (mean) harvmonth, ///
 						by(hhid prcid pltid cropid)
 
 	isid 			hhid prcid pltid cropid	
@@ -540,7 +541,7 @@
 	
 	keep 			hhid prcid pltid cropvalue harvqtykg region district ///
 						county subcounty parish cropid hh_status2011 ///
-						wgt11
+						wgt11 harvmonth
 
 	compress
 	describe

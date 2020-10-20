@@ -1,26 +1,54 @@
+* Project: WB Weather
+* Created on: Oct 2020
+* Created by: jdm
+* Stata v.16
 
-	loc root 		= "$data/household_data/uganda/wave_2/raw"
-	loc export 		= "$data/household_data/uganda/wave_2/refined"
+* does
+	* determines if regions are in "north" or "south"
+
+* assumes
+	* customsave.ado
+	* cleaned 2010_AGSEC5A.dta, 2011_AGSEC5A.dta, and 2010_GSEC1
+
+* TO DO:
+	* done
+
+
+* **********************************************************************
+* 0 - setup
+* **********************************************************************
+
+* define paths
+	loc root 		= "$data/household_data/uganda"
 	loc logout 		= "$data/variable_related_files/Uganda planting month"
 	
 	cap log 		close
 	log using 		"`logout'/harvmonth", append
 	
-		use 			"`root'/2010_AGSEC5A.dta", clear
+	
+* **********************************************************************
+* 1 - import data and rename variables
+* **********************************************************************
+	
+	use 			"`root'/wave_2/refined/2010_AGSEC5A.dta", clear
 		
-			keep if cropID == 130
+	gen				year = 2010
 
-			sum cropID
-			
-			rename a5aq6e harvmonth
-			
-			rename HHID hhid
+	append			using "`root'/wave_3/refined/2011_AGSEC5A.dta"
+	
+	replace			year = 2011 if year == .
+		
+	keep if 		cropid == 130
+
+	sum 			cropid
 			
 * merge the location identification
-	merge m:1 		hhid using "`export'/2010_GSEC1"
+	merge m:1 		hhid using "`root'/wave_2/refined/2010_GSEC1"
 	
-	drop 			if _merge == 2
-	drop			_merge
+	keep if 		_merge == 3
+	drop			_merge hhid prcid pltid cropid harvqtykg ///
+						hh_status2010 spitoff09_10 spitoff10_11 wgt10 ///
+						cropvalue hh_status2011 wgt11
 	
 * encode district for the imputation
 	encode 			district, gen (districtdstrng)
@@ -28,27 +56,45 @@
 	encode			subcounty, gen (subcountydstrng)
 	encode			parish, gen (parishdstrng)
 	
-			* by region
-			histogram harvmonth, by(region)
-			graph export "G:\My Drive\weather_project\variable_related_files\Uganda planting month\harvmonth by region.png", as(png) name("Graph") replace
-			
-			* by district
-			histogram harvmonth, by(districtdstrng)
-graph export "G:\My Drive\weather_project\variable_related_files\Uganda planting month\harvmonth by district.png", as(png) name("Graph") replace
+* generate average harvest month for district
+	egen			harv = mean(harvmonth), by(districtdstrng)
+	
+* round to nearest integer
+	replace			harv = round(harv,1)
+	lab var			harv "Start of harvest month"
 
-			* by county
-			histogram harvmonth, by(countydstrng)
-graph export "G:\My Drive\weather_project\variable_related_files\Uganda planting month\harvmonth by county.png", as(png) name("Graph") replace
+* drop duplicates
+	duplicates 		drop region district harv, force
+	
+	drop if			districtdstrng == .
+	keep			region district county harv
+	
+* create "north"/"south" dummy
+	gen				season = 0 if harv < 8
+	replace			season = 1 if harv > 7
+	lab def			season 0 "South" 1 "North"
+	lab val			season season
+	lab var			season "South/North season"
+	
+* **********************************************************************
+* 2 - end matter, clean up to save
+* **********************************************************************
 
+	compress
+	describe
+	summarize
 
-bys districtdstrng: sum harvmonth if region == 0
+* save file
+		customsave , idvar(county) filename("harv_month.dta") ///
+			path("`root'/wave_1/refined") dofile(harvmonth) user($user)
 
-bys districtdstrng: sum harvmonth if region == 1
+		customsave , idvar(county) filename("harv_month.dta") ///
+			path("`root'/wave_2/refined") dofile(harvmonth) user($user)
 
-bys districtdstrng: sum harvmonth if region == 2
+		customsave , idvar(county) filename("harv_month.dta") ///
+			path("`root'/wave_3/refined") dofile(harvmonth) user($user)
 
-bys districtdstrng: sum harvmonth if region == 3
+* close the log
+	log	close
 
-bys districtdstrng: sum harvmonth if region == 4
-
-log close
+/* END */

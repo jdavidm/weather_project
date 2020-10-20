@@ -40,7 +40,7 @@
 	use 		"`rooth'/hhfinal_unps2.dta", clear
 
 *keep northern	
-	keep if		region == 3
+	keep if		season == 0
 	
 * generate variable to record data source
 	gen 		data = "unps2"
@@ -228,7 +228,7 @@
 	use 		"`rooth'/hhfinal_unps2.dta", clear
 
 * drop northern regions
-	drop if		region == 3
+	drop if		season == 1
 	
 * generate variable to record data source
 	gen 		data = "unps2"

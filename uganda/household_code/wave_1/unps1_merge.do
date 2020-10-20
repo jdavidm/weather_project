@@ -464,8 +464,8 @@
 	count
 	*** 5886 obs
 	
-	collapse 		(max) tf_* cp_*, by(region district countydstrng ///
-						subcountydstrng parishdstrng hhid wgt09wosplits ///
+	collapse 		(max) tf_* cp_*, by(region district county countydstrng ///
+						subcounty subcountydstrng parish parishdstrng hhid wgt09wosplits ///
 						wgt09 hh_status2009)
 
 * count after collapse 
@@ -490,9 +490,12 @@
 
 	
 * **********************************************************************
-* 8 - end matter, clean up to save
+* 5 - end matter, clean up to save
 * **********************************************************************
 
+* drop splot-off and mover households
+	keep			if hh_status2009 == 1
+	
 * verify unique household id
 	isid			hhid
 
@@ -517,11 +520,27 @@
 * generate year identifier
 	gen				year = 2009
 	lab var			year "Year"
-		
-	order 			region district countydstrng subcountydstrng parishdstrng hhid /// 	
-					tf_hrv tf_lnd tf_yld tf_lab tf_frt ///
+
+* merge in harvest season
+	merge			m:1 county using "`root'/harv_month", force
+	drop			if _merge == 2
+	
+	replace			season = 0 if season == 1 & district == 211
+	
+* replace missing values
+	xtset			district
+	xfill 			season, i(district)
+	
+	replace			season = 1 if region == 3
+	replace			season = 0 if season == .
+	
+	drop			harv _merge countydstrng subcountydstrng parishdstrng wgt09 hh_status2009
+	
+	order 			region district county subcounty parish hhid wgt09wosplits /// 	
+					year season tf_hrv tf_lnd tf_yld tf_lab tf_frt ///
 					tf_pst tf_hrb tf_irr cp_hrv cp_lnd cp_yld cp_lab ///
-					cp_frt cp_pst cp_hrb cp_irr
+					cp_frt cp_pst cp_hrb cp_irr 
+					
 	compress
 	describe
 	summarize 

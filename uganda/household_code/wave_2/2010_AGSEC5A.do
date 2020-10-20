@@ -42,7 +42,7 @@
 	rename 			cropID cropid
 	rename 			a5aq6c unit
 	rename			a5aq6b condition
-	
+	rename 			a5aq6e harvmonth	
 	
 	sort 			hhid prcid pltid cropid
 	*** cannot uniquely identify observations by hhid, prcid, or pltid 
@@ -244,7 +244,7 @@
 	replace 		harvkgsold = 0 if harvkgsold == .
 
 * collapse the data to the crop level so that our imputations are reproducable and consistent
-	collapse 		(sum) harvqtykg cropvl harvkgsold, ///
+	collapse 		(sum) harvqtykg cropvl harvkgsold (mean) harvmonth, ///
 						by(hhid prcid pltid cropid)
 
 	isid 			hhid prcid pltid cropid	
@@ -541,7 +541,7 @@
 	
 	keep 			hhid prcid pltid cropvalue harvqtykg region district ///
 						county subcounty parish cropid hh_status2010 ///
-						spitoff09_10 spitoff10_11 wgt10
+						spitoff09_10 spitoff10_11 wgt10 harvmonth
 
 	compress
 	describe
