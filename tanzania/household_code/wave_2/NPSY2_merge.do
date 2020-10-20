@@ -514,6 +514,11 @@
 	lab var			cp_pst	"Any maize plot has pesticide"
 	lab var			cp_hrb	"Any maize plot has herbicide"
 	lab var			cp_irr	"Any maize plot has irrigation"
+
+* merge in geovars
+	merge			m:1 y2_hhid using "`root'/2010_geovars", force
+	keep			if _merge == 3
+	drop			_merge
 	
 * generate year identifier
 	gen				year = 2010
@@ -521,7 +526,7 @@
 		
 	order 			y2_hhid region district ward ea y2_rural ///
 						clusterid strataid hhweight ///
-						mover_R1R2 location_R1_to_R2 year tf_hrv ///
+						mover_R1R2 location_R1_to_R2 aez year tf_hrv ///
 						tf_lnd tf_yld tf_lab tf_frt tf_pst ///
 						tf_hrb tf_irr cp_hrv cp_lnd cp_yld cp_lab ///
 						cp_frt cp_pst cp_hrb cp_irr

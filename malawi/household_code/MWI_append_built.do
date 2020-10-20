@@ -102,11 +102,11 @@
 	drop		dup
 
 * create household, country, and data identifiers
-	egen		spid = group(case_id)
-	lab var		spid "Short panel household id"
+	egen		sp_id = group(case_id)
+	lab var		sp_id "Short panel household id"
 	
-	egen		sp_id = seq()
-	lab var		sp_id "Short panel unique id"
+	egen		spid = seq()
+	lab var		spid "Short panel unique id"
 
 	gen			country = "malawi"
 	lab var		country "Country"
@@ -126,7 +126,7 @@
 	
 * save file
 	qui: compress
-	customsave 	, idvarname(sp_id) filename("mwi_sp.dta") ///
+	customsave 	, idvarname(spid) filename("mwi_sp.dta") ///
 		path("`export'") dofile(mwi_append_built) user($user)
 
 
@@ -144,8 +144,8 @@
 	format %15.0g case_id
 	
 * create household panel id for lp1 and lp2 using case_id
-	egen		lpid = group(case_id)
-	lab var		lpid "Long panel household id"	
+	egen		lp_id = group(case_id)
+	lab var		lp_id "Long panel household id"	
 	
 * append the third long panel file	
 	append		using "`root'/wave_4/lp3_merged.dta", force	
@@ -153,11 +153,11 @@
 * fill in missing lpid for third long panel using y2_hhid
 	egen		aux_id = group(y2_hhid)
 	xtset 		aux_id
-	xfill 		lpid if aux_id != ., i(aux_id)
+	xfill 		lp_id if aux_id != ., i(aux_id)
 	drop		aux_id
 	
 * drop split-off households, keep only original households
-	duplicates 	tag lpid year, generate(dup)
+	duplicates 	tag lp_id year, generate(dup)
 	drop if		dup > 0 & mover_R1R2R3 == 1
 	drop		dup
 	duplicates 	tag case_id year, generate(dup)
@@ -169,9 +169,9 @@
 	drop		dup
 
 * create household, country, and data identifiers
-	sort		lpid year
-	egen		lp_id = seq()
-	lab var		lp_id "Long panel unique id"
+	sort		lp_id year
+	egen		lpid = seq()
+	lab var		lpid "Long panel unique id"
 
 	gen			country = "malawi"
 	lab var		country "Country"

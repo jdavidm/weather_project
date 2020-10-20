@@ -516,13 +516,18 @@
 * verify unique household id
 	isid			y3_hhid	
 
+* merge in geovars
+	merge			m:1 y3_hhid using "`root'/2012_geovars", force
+	keep			if _merge == 3
+	drop			_merge
+	
 * generate year identifier
 	gen				year = 2012
 	lab var			year "Year"
 		
 	order 			y3_hhid y2_hhid y1_hhid region district ward ea y3_rural ///
 						clusterid strataid hhweight mover_R1R2R3 ///
-						location_R2_to_R3 year tf_hrv tf_lnd ///
+						location_R2_to_R3 aez year tf_hrv tf_lnd ///
 						tf_yld tf_lab tf_frt tf_pst tf_hrb tf_irr cp_hrv ///
 						cp_lnd cp_yld cp_lab cp_frt cp_pst cp_hrb cp_irr
 	compress

@@ -40,89 +40,15 @@
 * read in data file
 	use			"`source'/malawi/mwi_complete.dta", clear
 
-* drop dry season values - we just focus on the rainy season (rs)
-	drop		ds*
-
-* drop unnecessary variables
-	drop		region district urban strata cluster ea_id spid sp_id ///
-					y2_hhid y3_hhid cx_id hhid hh_x02 hh_x04 intmonth ///
-					intyear qx_type ta lp_id
-
 * drop short panel and cross sectional
 	keep if		dtype == "lp"
 
 * rename panel id
-	rename		lpid mwi_id
+	rename		lp_id mwi_id
 	
-* create or rename variables for maize production (seed rate missing in data)
-	rename		rsmz_harvestimp cp_hrv
-	lab var 	cp_hrv "Harvest of maize (kg)"
-		
-	rename		rsmz_cultivatedarea cp_lnd
-	lab var 	cp_lnd "Land area planted to maize (ha)"
-		
-	gen 		cp_yld = cp_hrv/cp_lnd
-	lab var 	cp_yld "Yield of maize (kg/ha)"
-
-	gen 		cp_lab = rsmz_labordaysimp/cp_lnd
-	lab var 	cp_lab "Labor for maize (days/ha)"
-		
-	rename		rsmz_fert_inorgpct cp_frt
-	lab var		cp_frt "Fertilizer (inorganic) for maize (kg/ha)"
-		
-	rename		rsmz_pest cp_pst
-	lab var		cp_pst "Pesticide/Insecticide for maize (=1)"
-		
-	rename		rsmz_herb cp_hrb
-	lab var		cp_hrb "Herbicide/Fungicide for maize (=1)"
-		
-	rename		rsmz_irrigationany cp_irr
-	lab var		cp_irr "Irrigation for maize (=1)"
-
-* convert kwacha into 2010 USD
-* exchange rates come from world_bank_exchange_rates.xlsx
-	replace		rs_harvest_valueimp = rs_harvest_valueimp/124.3845647 ///
-					if year == 2008
-	replace		rs_harvest_valueimp = rs_harvest_valueimp/134.2107246 ///
-					if year == 2009
-	replace		rs_harvest_valueimp = rs_harvest_valueimp/201.9788745 ///
-					if year == 2012
-	replace		rs_harvest_valueimp = rs_harvest_valueimp/310.8160671 ///
-					if year == 2014
-	replace		rs_harvest_valueimp = rs_harvest_valueimp/374.6410851 ///
-					if year == 2015
-		
-* create or rename variables for total farm production (seed rate mising)
-	rename		rs_harvest_valueimp tf_hrv
-	lab var 	tf_hrv "Harvest of all crops (2010 USD)"
-		
-	rename		rs_cultivatedarea tf_lnd
-	lab var 	tf_lnd "Land area planted to all crops (ha)"
-		
-	gen 		tf_yld = tf_hrv/tf_lnd
-	lab var 	tf_yld "Yield of all crops (USD/ha)"
-		
-	gen 		tf_lab = rs_labordaysimp/tf_lnd
-	lab var 	tf_lab "Labor for all crops (days/ha)"
-		
-	rename		rs_fert_inorgpct tf_frt
-	lab var		tf_frt "Fertilizer (inorganic) for all crops (kg/ha)"
-		
-	rename		rs_pest tf_pst
-	lab var		tf_pst "Pesticide/Insecticide for all crops (=1)"
-		
-	rename		rs_herb tf_hrb
-	lab var		tf_hrb "Herbicide/Fungicide for all crops (=1)"
-		
-	rename		rs_irrigationany tf_irr
-	lab var		tf_irr "Irrigation for all crops (=1)"
+* drop unnecessary variables
+	drop		uid cx_id sp_id
 	
-* drop unnecessary variables and reorder remaining
-	drop		rs* case_id
-	order		tf_hrv tf_lnd tf_yld tf_lab tf_frt tf_pst tf_hrb tf_irr ///
-					cp_hrv cp_lnd cp_yld cp_lab cp_frt cp_pst cp_hrb cp_irr, ///
-					after(year)
-
 
 * **********************************************************************
 * 2 - load in ethiopia data
@@ -130,17 +56,12 @@
 
 * append ethiopia
 	append		using "`source'/ethiopia/eth_complete"
-		
-* drop unnecessary variables
-	drop		uid region zone woreda ea
-		
-* generate household weights		
-	replace		hhweight = pw if hhweight == .
-	drop		pw household_id household_id2
-	
+				
 * organize variables
 	order		eth_id, before(mwi_id)
 
+* drop unnecessary variables
+	drop		uid
 
 * **********************************************************************
 * 3 - load in nigeria data
@@ -148,16 +69,12 @@
 
 * append nigeria
 	append		using "`source'/nigeria/nga_complete"
-		
-* drop unnecessary variables
-	drop		uid zone state lga sector ea hhid
-		
-* generate household weights		
-*	replace		hhweight = pw if hhweight == .
-*	drop		pw household_id household_id2
-	
+			
 * organize variables
 	order		nga_id, after(mwi_id)		
+		
+* drop unnecessary variables
+	drop		uid
 		
 
 * **********************************************************************
@@ -170,12 +87,15 @@
 * drop short panel and cross sectional
 	keep if		dtype == "lp"
 
-* drop unnecessary variables
-	drop		region district ward ea strataid clusterid uid cx_id
-
+* rename panel id
+	rename		lp_id tza_id
+	
 * organize variables
 	order		tza_id, after(nga_id)					
 
+* drop unnecessary variables
+	drop		uid cx_id
+	
 	
 * **********************************************************************
 * 5 - load in uganda data
@@ -187,11 +107,11 @@
 * drop short panel and cross sectional
 	keep if		dtype == "lp"
 
-* drop unnecessary variables
-	drop		region district ward ea strataid clusterid uid cx_id
-
 * organize variables
-	order		tza_id, after(nga_id)			
+	order		uga_id, after(tza_id)			
+	
+* drop unnecessary variables
+	drop		uid
 	
 	
 * **********************************************************************
@@ -247,17 +167,23 @@
 	tostring		tza_id, replace
 	replace 		tza_id = "tza" + tza_id if tza_id != "."
 	replace			tza_id = "" if tza_id == "."
+	
+	sort 			country uga_id year
+	tostring		uga_id, replace
+	replace 		uga_id = "uga" + uga_id if uga_id != "."
+	replace			uga_id = "" if uga_id == "."
 
 * define cross country household id
 	gen				HHID = eth_id if eth_id != ""
 	replace			HHID = mwi_id if mwi_id != ""
 	replace			HHID = nga_id if nga_id != ""
 	replace			HHID = tza_id if tza_id != ""
+	replace			HHID = uga_id if uga_id != ""
 	
 	sort			country HHID year
 	egen			hhid = group(HHID)
 	
-	drop			HHID eth_id mwi_id nga_id tza_id
+	drop			HHID eth_id mwi_id nga_id tza_id uga_id
 	order			hhid, after(country)
 	lab var			hhid "Unique household ID"
 	
@@ -282,6 +208,9 @@
 		qui: gen 		ln`v' = asinh(`v') 
 		qui: lab var 	ln`v' "ln of `v'" 
 	}
+	
+* replace missing values with zero
+
 	
 	order		lntf_yld, before(tf_yld)
 	order		lncp_yld, before(cp_yld)

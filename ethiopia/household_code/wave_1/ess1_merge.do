@@ -13,7 +13,7 @@
 	* customsave.ado
 
 * TO DO:
-	* review section 1a, things aren't matching from master data in larger numbers than other waves
+	* done
 
 
 * **********************************************************************
@@ -644,11 +644,16 @@
 * rename and hhid
 	rename			hhid household_id
 
+* merge in geovars
+	merge			m:1 household_id using "`root'/ess1_geovars", force
+	keep			if _merge == 3
+	drop			_merge		
+
 * generate year identifier
 	gen				year = 2011
 	lab var			year "Year"
 	
-	order 			household_id region zone woreda ea rural ///
+	order 			household_id region zone woreda ea rural aez ///
 						pw year tf_hrv tf_lnd tf_yld tf_lab tf_frt tf_pst ///
 						tf_hrb tf_irr cp_hrv cp_lnd cp_yld cp_lab cp_frt ///
 						cp_pst cp_hrb cp_irr

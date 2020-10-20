@@ -549,11 +549,16 @@
 * verify unique household id
 	isid			hhid
 
+* merge in geovars
+	merge			m:1 hhid using "`root'/NGA_geovars", force
+	keep			if _merge == 3
+	drop			_merge
+	
 * generate year identifier
 	gen				year = 2010
 	lab var			year "Year"
 		
-	order 			zone state lga sector ea hhid /// 	
+	order 			zone state lga sector ea hhid aez year /// 	
 					tf_hrv tf_lnd tf_yld tf_lab tf_frt ///
 					tf_pst tf_hrb tf_irr cp_hrv cp_lnd cp_yld cp_lab ///
 					cp_frt cp_pst cp_hrb cp_irr

@@ -25,6 +25,7 @@
 	loc		logout 	= 	"$data/household_data/malawi/logs"
 
 * open log
+	cap 	log			close
 	log 	using 		"`logout'/ihs3spnl_hh_clean", append
 
 
@@ -85,9 +86,26 @@
 				ds_insecticideany rsmz_pesticideany rsmz_insecticideany ///
 				dsmz_pesticideany dsmz_insecticideany
 
+* merge in geovariables
+	merge 		1:1 case_id using "`root'/ihs3spnl_geo.dta", generate(_geo)				
+	keep		if _geo == 3
+	
+	rename		ssa_aez09 aez
+	
+	drop		lat_modified - fsrad3_lcmaj afmnslp_pct - _geo
+				
 * destring unique household indicator
-	destring 	case_id, replace
+	destring 	case_id, replace	
 
+	
+* **********************************************************************
+* 2 - end matter, clean up to save
+* **********************************************************************
+	
+	compress
+	describe
+	summarize 
+	
 * save data
 	customsave	, idvar(case_id) filename(hhfinal_ihs3spnl.dta) ///
 				path("`export'") dofile(ihs3spnl_hh_clean) user($user)

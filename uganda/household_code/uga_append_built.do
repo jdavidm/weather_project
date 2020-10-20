@@ -81,7 +81,7 @@
 	drop			region district county subcounty parish hhid ///
 						wgt09wosplits season wgt10 wgt11
 	
-	order			country dtype uga_id year pw
+	order			country dtype uga_id aez year pw
 				
 	
 * **********************************************************************

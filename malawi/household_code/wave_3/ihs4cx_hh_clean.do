@@ -26,6 +26,7 @@
 	loc		logout 	= 	"$data/household_data/malawi/logs"
 
 * open log
+	cap 	log			close
 	log 	using 		"`logout'/ihs4cx_hh_clean", append
 
 
@@ -92,6 +93,14 @@
 				ds_insecticideany rsmz_pesticideany rsmz_insecticideany ///
 				dsmz_pesticideany dsmz_insecticideany
 
+* merge in geovariables
+	merge 		1:1 case_id using "`root'/ihs4cx_geo.dta", generate(_geo)				
+	keep		if _geo == 3
+	
+	rename		ssa_aez09 aez
+	
+	drop		lat_modified - fsrad3_lcmaj srtm_1k - _geo
+
 * reanme unique household indicator
 	rename 		HHID 	hhid
 
@@ -103,6 +112,15 @@
 
 * destring unique household indicator
 	destring 	case_id, replace
+
+	
+* **********************************************************************
+* 2 - end matter, clean up to save
+* **********************************************************************
+	
+	compress
+	describe
+	summarize 	
 	
 * save data
 	customsave	, idvar(hhid) filename(hhfinal_ihs4cx.dta) ///
