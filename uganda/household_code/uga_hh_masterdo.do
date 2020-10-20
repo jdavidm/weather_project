@@ -27,6 +27,12 @@
 * 1 - run individual HH cleaning .do files
 * **********************************************************************
 
+* do each GSEC1 household cleaning files
+	do 			"`dofile'/wave_1/2009_GSEC1.do"			//	clean location information wv1 
+	do 			"`dofile'/wave_2/2010_GSEC1.do"			//	clean location information wv2 
+	do 			"`dofile'/wave_3/2011_GSEC1.do"			//	clean location information wv3 
+
+
 * loops through three waves of uga hh code
 
 * starting with running all individual hh data files
@@ -37,7 +43,7 @@
 	foreach folder of loc folderList {
 
 	* loop through each NGA file in the folder local
-		loc uga : dir "`dofile'/`folder'" files "20*.do"
+		loc uga : dir "`dofile'/`folder'" files "20*_A*.do"
 	
 	* loop through each file in the above local
 		foreach file in `uga' {
