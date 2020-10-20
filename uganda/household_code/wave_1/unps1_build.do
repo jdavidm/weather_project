@@ -162,7 +162,7 @@
 			drop 		mean_gdd- z_gdd_2008 dev_gdd_2010- z_gdd_2017
 		
 		* define file naming criteria
-			loc 		sat = substr("`file'", 11, 3)
+			loc 		sat = substr("`file'", 12, 1)
 			loc 		ext = substr("`file'", 8, 2)
 			
 		* generate variable to record extraction method
@@ -325,11 +325,11 @@
 
 	
 * **********************************************************************
-* 4 - merge northern temperature data with household data
+* 4 - merge southern temperature data with household data
 * **********************************************************************
 
 * define local with all sub-folders in it
-	loc 		folderList : dir "`rootw'" dirs "unpsy_t*"
+	loc 		folderList : dir "`rootw'" dirs "unpsy1_t*"
 
 * define local with all files in each sub-folder	
 	foreach 	folder of local folderList {
@@ -353,7 +353,7 @@
 			drop 		mean_gdd- z_gdd_2008 dev_gdd_2010- z_gdd_2017
 		
 		* define file naming criteria
-			loc 		sat = substr("`file'", 11, 3)
+			loc 		sat = substr("`file'", 12, 1)
 			loc 		ext = substr("`file'", 8, 2)
 			
 		* generate variable to record extraction method
@@ -426,8 +426,7 @@
 
 	isid		hhid
 	
-	qui: compress	
-	describe
+	qui: compress
 	summarize 
 	
 * save file
