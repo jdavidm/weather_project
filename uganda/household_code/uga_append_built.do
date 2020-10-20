@@ -47,13 +47,13 @@
 	
 * check the number of observations again
 	count
-	*** 6035 observations 
+	*** 5252 observations 
 	count if 		year == 2009
-	*** wave 1 has 2204
+	*** wave 1 has 1704
 	count if 		year == 2010
-	*** wave 2 has 1868
+	*** wave 2 has 1741
 	count if 		year == 2011
-	*** wave 3 has 1963
+	*** wave 3 has 1807
 	
 	gen				pl_id = hhid
 	lab var			pl_id "panel household id/hhid"
@@ -65,14 +65,21 @@
 	lab var			dtype "Data type"
 	
 	isid			hhid year
+
+* generate one variable for sampling weight
+	gen				pw = wgt09wosplits  
 	
-	rename 			countydstrng county
-	rename			subcountydstrng subcounty
-	rename 			parishdstrng parish
+	replace			pw = wgt10 if pw == .
+	replace			pw = wgt11 if pw == .
+	tab 			pw, missing
+	drop			if pw == .
+	lab var			pw "Household Sample Weight"
+	
+	drop			wgt09wosplits wgt10 wgt11
 	
 * order variables
 	order			country dtype region district county subcounty parish ///
-						 year
+						 hhid pl_id pw year 
 				
 	
 * **********************************************************************

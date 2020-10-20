@@ -40,7 +40,7 @@
 	use 		"`rooth'/hhfinal_unps1.dta", clear
 
 *keep northern	
-	keep if		season == 0
+	keep if		season == 1
 	
 * generate variable to record data source
 	gen 		data = "unps1"
@@ -215,7 +215,10 @@
 }
 
 * save file
+	isid				hhid
+
 	qui: compress
+	
 	customsave 	, idvar(hhid) filename("unps1_merged_n.dta") ///
 		path("`export'") dofile(unps1_build) user($user)
 
@@ -228,7 +231,7 @@
 	use 		"`rooth'/hhfinal_unps1.dta", clear
 
 * drop northern regions
-	drop if		season == 1
+	keep if		season == 0
 	
 * generate variable to record data source
 	gen 		data = "unps1"
@@ -403,7 +406,10 @@
 }
 
 * save file
+	isid				hhid
+	
 	qui: compress
+	
 	customsave 	, idvar(hhid) filename("unps1_merged_s.dta") ///
 		path("`export'") dofile(ghsy1_build) user($user)
 
@@ -418,9 +424,7 @@
 * append southern data
 	append		using "`export'/unps1_merged_s.dta", force
 
-* check to verify that there are observations for all variables
-	sum
-	*** all variables generated
+	isid		hhid
 	
 	qui: compress	
 	describe

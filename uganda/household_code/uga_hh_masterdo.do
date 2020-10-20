@@ -13,8 +13,7 @@
 	* subsidiary, wave-specific .do files
 
 * TO DO:
-	* everything
-	* NEED TO RUN GSEC1 DO FILES BEFORE OTHER DO FILES
+	* complete
 
 	
 * **********************************************************************
@@ -48,6 +47,10 @@
 	}		
 }
 
+* run harvest month file
+	do			"`dofile'/wave_2/harvmonth.do"				//	generates harvest season
+
+	
 * **********************************************************************
 * 2 - run wave specific .do files to merge hh data together
 * **********************************************************************
@@ -57,6 +60,7 @@
 	do 			"`dofile'/wave_2/unps2_merge.do"			//	merges wv 2 hh datasets
 	do 			"`dofile'/wave_3/unps3_merge.do"			//	merges wv 3 hh datasets
 
+	
 * **********************************************************************
 * 3 - run wave specific .do files to merge with weather
 * **********************************************************************
@@ -66,6 +70,7 @@
 	do 			"`dofile'/wave_2/unps2_build.do"			//	merges unps2 to weather
 	do 			"`dofile'/wave_3/unps3_build.do"			//	merges unps3 to weather
 
+	
 * **********************************************************************
 * 5 - run .do file to append each wave
 * **********************************************************************
