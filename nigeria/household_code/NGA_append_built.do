@@ -67,19 +67,13 @@
 	gen				dtype = "lp"
 	lab var			dtype "Data type"
 	
-	isid			hhid year
+	isid			nga_id year
+
+* drop variables
+	drop			zone state lga sector ea hhid
 	
-* order variables
-	order			country dtype zone state lga sector ea ///
-						 year
-				
-* label household variables	
-	lab var			sector  "Sector"
-	lab var			zone "Zone"	
-	lab var			state "State"
-	lab var 		lga "Local government area"
-	lab var			ea "Enumeration area"
-	
+	order			country dtype nga_id year
+
 	
 * **********************************************************************
 * 4 - End matter

@@ -57,11 +57,13 @@
 	
 * drop observations missing year 1 household id
 	drop if			household_id == ""
+	
+* dropping 2017 weather data
+	drop			*2017
 
 * generate ethiopia panel id
 	egen			eth_id = group(household_id)
 	lab var			eth_id "Ethiopia panel household id"	
-	
 
 * generate country and data types
 	gen				country = "ethiopia"
@@ -71,32 +73,6 @@
 	lab var			dtype "Data type"
 	
 	isid			eth_id year
-	
-* order variables
-	order			country dtype region zone woreda ea ///
-						 year
-						 
-* label household variables	
-	lab var			region "Region"
-	lab var			zone "Zone"	
-	lab var			woreda "Woreda"
-	lab var			ea "Enumeration area"
-	
-	
-* **********************************************************************
-* 4 - end matter
-* **********************************************************************
-
-* create household, country, and data identifiers
-	sort			eth_id year
-	egen			uid = seq()
-	lab var			uid "unique id"
-	
-* order variables
-	order			uid eth_id
-	
-* dropping 2017 weather data
-	drop			*2017
 	
 * generate one variable for sampling weight
 	gen				weight = pw
@@ -110,6 +86,25 @@
 	
 	rename			weight pw
 	lab var			pw "Household Sample Weight"
+	
+* drop variables
+	drop			region zone woreda ea household_id2 household_id
+	
+	order			country dtype eth_id year pw
+	
+	
+* **********************************************************************
+* 4 - end matter
+* **********************************************************************
+
+* create household, country, and data identifiers
+	sort			eth_id year
+	egen			uid = seq()
+	lab var			uid "Unique id"
+	
+* order variables
+	order			uid
+
 	
 * save file
 	qui: compress

@@ -54,17 +54,19 @@
 	*** wave 2 has 1741
 	count if 		year == 2011
 	*** wave 3 has 1807
-	
-	gen				pl_id = hhid
-	lab var			pl_id "panel household id/hhid"
 
+* generate uganda panel id	
+	egen			uga_id = group(hhid)
+	lab var			uga_id "Uganda panel household id"	
+
+* generate country and data types	
 	gen				country = "uganda"
 	lab var			country "Country"
 
 	gen				dtype = "lp"
 	lab var			dtype "Data type"
-	
-	isid			hhid year
+
+	isid			uga_id year
 
 * generate one variable for sampling weight
 	gen				pw = wgt09wosplits  
@@ -74,12 +76,12 @@
 	tab 			pw, missing
 	drop			if pw == .
 	lab var			pw "Household Sample Weight"
+
+* drop variables
+	drop			region district county subcounty parish hhid ///
+						wgt09wosplits season wgt10 wgt11
 	
-	drop			wgt09wosplits wgt10 wgt11
-	
-* order variables
-	order			country dtype region district county subcounty parish ///
-						 hhid pl_id pw year 
+	order			country dtype uga_id year pw
 				
 	
 * **********************************************************************
@@ -91,7 +93,7 @@
 	lab var			uid "unique id"
 	
 * order variables
-	order			uid pl_id
+	order			uid
 	
 * save file
 	qui: compress

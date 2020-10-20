@@ -16,6 +16,7 @@
 
 * TO DO:
 	* missing Nigeria household weights
+	* missing Niger data
 
 	
 * **********************************************************************
@@ -174,6 +175,23 @@
 
 * organize variables
 	order		tza_id, after(nga_id)					
+
+	
+* **********************************************************************
+* 5 - load in uganda data
+* **********************************************************************
+
+* append tanzania
+	append		using "`source'/uganda/uga_complete"		
+
+* drop short panel and cross sectional
+	keep if		dtype == "lp"
+
+* drop unnecessary variables
+	drop		region district ward ea strataid clusterid uid cx_id
+
+* organize variables
+	order		tza_id, after(nga_id)			
 	
 	
 * **********************************************************************
