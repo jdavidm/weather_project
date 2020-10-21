@@ -362,7 +362,7 @@
 	
 	rename			tza_id lp_id
 	
-	order			country dtype cx_id lp_id year pw	
+	order			country dtype cx_id lp_id year aez pw	
 		
 * create household, country, and data identifiers
 	sort			lp_id cx_id year

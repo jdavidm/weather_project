@@ -23,7 +23,7 @@
 * **********************************************************************
 
 * define paths
-	loc	source 		= 	"$data/household_data/malawi/wb_raw_data/tmp"
+	loc	source 		= 	"$data/household_data/malawi/wb_raw_data"
 	loc	export 		= 	"$data/household_data/malawi"
 	loc	dofile		= 	"$code/malawi/household_code"
 
@@ -33,36 +33,67 @@
 * **********************************************************************
 
 * move IHS3 data to wave 1 folder
-	use			"`source'/ihs3cx/hh/hh_final.dta", clear
+	use			"`source'/tmp/ihs3cx/hh/hh_final.dta", clear
 	customsave	, idvar(case_id) filename(ihs3cx_hh.dta) ///
 				path("`export'/wave_1/raw") dofile(mwi_hh_masterdo) user($user)
 
-	use			"`source'/ihs3lpnl/hh/hh_final.dta", clear
+	use			"`source'/data/ihs3cx/geo/HouseholdGeovariables_IHS3CX.dta", clear
+	customsave	, idvar(case_id) filename(ihs3cx_geo.dta) ///
+				path("`export'/wave_1/raw") dofile(mwi_hh_masterdo) user($user)
+
+	use			"`source'/tmp/ihs3lpnl/hh/hh_final.dta", clear
 	customsave	, idvar(case_id) filename(ihs3lpnl_hh.dta) ///
 				path("`export'/wave_1/raw") dofile(mwi_hh_masterdo) user($user)
 
-	use			"`source'/ihs3spnl/hh/hh_final.dta", clear
+	use			"`source'/data/ihs3lpnl/geo/householdgeovariables_ihs3_rerelease.dta", clear
+	customsave	, idvar(case_id) filename(ihs3lpnl_geo.dta) ///
+				path("`export'/wave_1/raw") dofile(mwi_hh_masterdo) user($user)
+
+	use			"`source'/tmp/ihs3spnl/hh/hh_final.dta", clear
 	customsave	, idvar(case_id) filename(ihs3spnl_hh.dta) ///
 				path("`export'/wave_1/raw") dofile(mwi_hh_masterdo) user($user)
 
+	use			"`source'/data/ihs3spnl/geo/householdgeovariables_ihs3_rerelease.dta", clear
+	customsave	, idvar(case_id) filename(ihs3spnl_geo.dta) ///
+				path("`export'/wave_1/raw") dofile(mwi_hh_masterdo) user($user)
+
+
 * move IHPS*pnl data to wave 2 folder
 
-	use			"`source'/ihpsspnl/hh/hh_final.dta", clear
+	use			"`source'/tmp/ihpsspnl/hh/hh_final.dta", clear
 	customsave	, idvar(y2_hhid) filename(ihpsspnl_hh.dta) ///
 				path("`export'/wave_2/raw") dofile(mwi_hh_masterdo) user($user)
 
-	use			"`source'/ihpslpnl/hh/hh_final.dta", clear
+	use			"`source'/data/ihpsspnl/geo/householdgeovariables_ihps.dta", clear
+	customsave	, idvar(y2_hhid) filename(ihpsspnl_geo.dta) ///
+				path("`export'/wave_2/raw") dofile(mwi_hh_masterdo) user($user)
+
+	use			"`source'/tmp/ihpslpnl/hh/hh_final.dta", clear
 	customsave	, idvar(y2_hhid) filename(ihpslpnl_hh.dta) ///
 				path("`export'/wave_2/raw") dofile(mwi_hh_masterdo) user($user)
 
+	use			"`source'/data/ihpslpnl/geo/householdgeovariables_ihps.dta", clear
+	customsave	, idvar(y2_hhid) filename(ihpslpnl_geo.dta) ///
+				path("`export'/wave_2/raw") dofile(mwi_hh_masterdo) user($user)
+
+				
 * move IHS4 data to wave 3 folder
-	use			"`source'/ihs4cx/hh/hh_final.dta", clear
+	use			"`source'/tmp/ihs4cx/hh/hh_final.dta", clear
 	customsave	, idvar(case_id) filename(ihs4cx_hh.dta) ///
 				path("`export'/wave_3/raw") dofile(mwi_hh_masterdo) user($user)
+				
+	use			"`source'/data/ihs4cx/geo/HouseholdGeovariables_IHS4CX.dta", clear
+	customsave	, idvar(case_id) filename(ihs4cx_geo.dta) ///
+				path("`export'/wave_3/raw") dofile(mwi_hh_masterdo) user($user)
 
+				
 * move IHS4*pnl data to wave 4folder
-	use			"`source'/ihs4lpnl/hh/hh_final.dta", clear
+	use			"`source'/tmp/ihs4lpnl/hh/hh_final.dta", clear
 	customsave	, idvar(y3_hhid) filename(ihs4lpnl_hh.dta) ///
+				path("`export'/wave_4/raw") dofile(mwi_hh_masterdo) user($user)
+				
+	use			"`source'/data/ihs4lpnl/geo/householdgeovariables_ihpsy3.dta", clear
+	customsave	, idvar(y3_hhid) filename(ihs4lpnl_geo.dta) ///
 				path("`export'/wave_4/raw") dofile(mwi_hh_masterdo) user($user)
 
 

@@ -107,20 +107,27 @@ if $pack == 1 {
 * **********************************************************************
 * 1 - run weather data cleaning .do file
 * **********************************************************************
-
+/*
+	do 			"$code/ethiopia/weather_code/ETH_ESS_masterdo.do"
+	do 			"$code/malawi/weather_code/MWI_IHS_masterdo.do"
+	do 			"$code/nigeria/weather_code/NGA_GHSY_masterdo.do"
+	do 			"$code/tanzania/weather_code/TZA_NPS_masterdo.do"
+	do 			"$code/uganda/weather_code/UGA_UNPS_masterdo.do"
+*/
 
 * **********************************************************************
 * 2 - run household data cleaning .do file
 * **********************************************************************
-
+/*
+	do 			"$code/ethiopia/household_code/ETH_hh_masterdo.do"
+	do 			"$code/malawi/household_code/ETH_hh_masterdo.do"
+	do 			"$code/nigeria/household_code/ETH_hh_masterdo.do"
+	do 			"$code/tanzania/household_code/ETH_hh_masterdo.do"
+	do 			"$code/uganda/household_code/ETH_hh_masterdo.do"
+*/
 
 * **********************************************************************
-* 3 - run .do files that merge weather and household data
-* **********************************************************************
-
-
-* **********************************************************************
-* 4 - run regression .do files
+* 5 - run regression .do files
 * **********************************************************************
 
 

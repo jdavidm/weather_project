@@ -53,13 +53,23 @@
 * **********************************************************************
 
 * do each individual dataset merge file
+	do 			"`dofile'/wave_1/ess1_geovars.do"		//	cleans wv 1 geovars
+	do 			"`dofile'/wave_2/ess2_geovars.do"		//	cleans wv 2 geovars
+	do 			"`dofile'/wave_3/ess3_geovars.do"		//	cleans wv 3 geovars
+
+	
+* **********************************************************************
+* 3 - run wave specific .do files to merge hh data together
+* **********************************************************************
+
+* do each individual dataset merge file
 	do 			"`dofile'/wave_1/ess1_merge.do"			//	merges wv 1 hh datasets
 	do 			"`dofile'/wave_2/ess2_merge.do"			//	merges wv 2 hh datasets
 	do 			"`dofile'/wave_3/ess3_merge.do"			//	merges wv 3 hh datasets
 
 
 * **********************************************************************
-* 3 - run wave specific .do files to merge with weather
+* 4 - run wave specific .do files to merge with weather
 * **********************************************************************
 
 * do each build file (merges hh data to weatehr data)
@@ -69,7 +79,7 @@
 	
 
 * **********************************************************************
-* 4 - run .do file to append each wave
+* 5 - run .do file to append each wave
 * **********************************************************************
 
 	do			"`dofile'/ETH_append_built.do"				// append waves

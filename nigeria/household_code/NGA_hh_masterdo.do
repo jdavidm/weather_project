@@ -12,7 +12,7 @@
 	* subsidiary, wave-specific .do files
 
 * TO DO:
-	* everything
+	* done
 
 	
 * **********************************************************************

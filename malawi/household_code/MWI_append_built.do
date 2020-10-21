@@ -282,7 +282,7 @@
 					y2_hhid y3_hhid hhid hh_x02 hh_x04 intmonth ///
 					intyear qx_type ta lpid
 	
-	order		country dtype cx_id sp_id lp_id year pw tf_hrv tf_lnd tf_yld tf_lab ///
+	order		country dtype cx_id sp_id lp_id year aez pw tf_hrv tf_lnd tf_yld tf_lab ///
 					tf_frt tf_pst tf_hrb tf_irr cp_hrv cp_lnd cp_yld cp_lab ///
 					cp_frt cp_pst cp_hrb cp_irr
 

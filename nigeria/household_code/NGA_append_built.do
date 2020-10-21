@@ -72,7 +72,7 @@
 * drop variables
 	drop			zone state lga sector ea hhid
 	
-	order			country dtype nga_id year
+	order			country dtype nga_id year aez
 
 	
 * **********************************************************************

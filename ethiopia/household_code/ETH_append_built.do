@@ -90,7 +90,7 @@
 * drop variables
 	drop			region zone woreda ea household_id2 household_id
 	
-	order			country dtype eth_id year pw
+	order			country dtype eth_id year aez pw
 	
 	
 * **********************************************************************
