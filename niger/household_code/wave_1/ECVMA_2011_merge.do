@@ -317,12 +317,15 @@
 	gen				year = 2011
 	lab var			year "Year"
 	
+	tostring		clusterid, gen(clustid)
+	gen str2 		hhnum = string(hh_num,"%02.0f")
+	egen			hid = concat( clustid hhnum )
+	destring		hid, replace
+	order			hid clusterid clustid hh_num hhnum ///
+	
 * create unique household identifier
 	*** all observations are missing region, canton and dept, will create id without region, canton and dept for now
-	isid				clusterid hh_num
-	sort				clusterid hh_num, stable 
-	egen				hid = group( clusterid hh_num)
-	lab var				hid "unique household identifier"
+	isid				hid
 		
 	order 			clusterid hh_num hid year tf_hrv tf_lnd tf_yld ///
 						tf_lab tf_frt tf_pst tf_hrb cp_hrv cp_lnd ///

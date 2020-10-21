@@ -209,13 +209,14 @@
 }
 
 * save file
-	qui: compress
+	
+	qui: compress	
+	describe
+	summarize 
+
 	customsave 	, idvar(hid) filename("ecvmay1_merged.dta") ///
 		path("`export'") dofile(ecvmay1_build) user($user)
 
-* check to verify that there are observations for all variables
-	sum
-	*** only have 340 observations
 	
 * close the log
 	log	close

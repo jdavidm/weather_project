@@ -67,3 +67,76 @@
 	}
 	
 /* END */
+
+
+* Project: WB Weather
+* Created on: Oct 2020
+* Created by: erk
+* Stata v.16
+
+* does
+	* Executes all wave specific Nigeria hh .do files
+	* outputs finished houshold data set ready to merge with weather
+
+* assumes
+	* customsave.ado 
+	* subsidiary, wave-specific .do files
+
+* TO DO:
+	* everything
+
+	
+* **********************************************************************
+* 0 - setup
+* **********************************************************************
+
+* define paths
+	loc dofile = "$code/niger/household_code"
+
+* **********************************************************************
+* 1 - run individual HH cleaning .do files
+* **********************************************************************
+
+* loops through three waves of nga hh code
+
+* starting with running all individual hh data files
+* define local with all sub-folders in it
+	loc folderList : dir "`dofile'" dirs "wave_*"
+
+* define local with all files in each sub-folder
+	foreach folder of loc folderList {
+
+	* loop through each NGA file in the folder local
+		loc NGR : dir "`dofile'/`folder'" files "ECVMA*.do"
+	
+	* loop through each file in the above local
+		foreach file in `NGR' {
+	    
+		* run each individual file
+			do "`dofile'/`folder'/`file'"		
+	}		
+}
+
+* **********************************************************************
+* 2 - run wave specific .do files to merge hh data together
+* **********************************************************************
+
+* do each GHSY2 household cleaning files
+	do 			"`dofile'/wave_1/ECVMA_2011_merge.do"			//	merges wv 1 hh datasets
+	do 			"`dofile'/wave_2/ECVMA_2014_merge.do"			//	merges wv 2 hh datasets
+
+* **********************************************************************
+* 3 - run wave specific .do files to merge with weather
+* **********************************************************************
+
+* do each IHS3 household cleaning files
+	do 			"`dofile'/wave_1/ECVMA_2011_build.do"			//	merges ECVAMAY1 to weather
+	do 			"`dofile'/wave_2/ECVMA_2014_build.do"			//	merges ECVAMAY2 to weather
+
+* **********************************************************************
+* 5 - run .do file to append each wave
+* **********************************************************************
+
+	do			"$code/niger/household_code/ngr_complete.do"				// append waves
+	
+/* END */

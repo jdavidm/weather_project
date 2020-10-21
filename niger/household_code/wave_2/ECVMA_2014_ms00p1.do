@@ -48,14 +48,13 @@
 	order			hhid_y2 GRAPPE grappe MENAGE menage EXTENSION extension ///
 						PASSAGE
 	
+	rename 			extension ext
+	label 			var ext "extension of household" 
+	
 * need to rename for English
 	rename 			PASSAGE visit
 	label 			var visit "number of visit"
-	rename			grappe clusterid
-	label 			var clusterid "cluster number"
-	rename			menage hh_num
-	label 			var hh_num "household number - not unique id"
-	label 			var extension "extension of household"
+
 	*** will need to do these in every file
 	
 * identify and rename region specific variables 
@@ -68,6 +67,9 @@
 	rename 		    MS00Q14 zd 
 	label 			var zd "zd number" 
 
+	destring 		grappe, gen(clusterid) float
+	destring		ext, gen(extension) float
+	destring		menage, gen(hh_num) float
 	
 * **********************************************************************
 * 2 - end matter, clean up to save
