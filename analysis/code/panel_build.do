@@ -115,7 +115,7 @@
 	
 	
 * **********************************************************************
-* 5 - clean combined data
+* 6 - clean combined data
 * **********************************************************************
 
 * destring data type
@@ -208,10 +208,7 @@
 		qui: gen 		ln`v' = asinh(`v') 
 		qui: lab var 	ln`v' "ln of `v'" 
 	}
-	
-* replace missing values with zero
 
-	
 	order		lntf_yld, before(tf_yld)
 	order		lncp_yld, before(cp_yld)
 	
@@ -222,11 +219,65 @@
 	order		lncp_frt, before(cp_frt)
 
 * drop unnecessary variables
-	drop tf_hrv tf_lnd tf_yld cp_hrv cp_lnd cp_yld tf_lab tf_frt cp_lab cp_frt	
+	drop 		tf_hrv tf_lnd tf_yld cp_hrv cp_lnd cp_yld tf_lab ///
+					tf_frt cp_lab cp_frt	
+					
+					
+* **********************************************************************
+* 7 - replace missing weather values with zero
+* **********************************************************************
+	
+* replace missing values with zero - cycle through variables
+	forvalues		v = 1/9 {
+	    
+	* cycle through satellites
+	    forvalues		s = 1/6 {
+		    
+		*cycle through extractions
+			forvalues		x = 0/9 {
+			    
+				qui: replace			v0`v'_rf`s'_x`x' = 0 if v0`v'_rf`s'_x`x' == .	
+			}
+		}
+	}
+	
+* replace missing values with zero - cycle through variables
+	forvalues		v = 10/14 {
+	    
+	* cycle through satellites
+	    forvalues		s = 1/6 {
+		    
+		*cycle through extractions
+			forvalues		x = 0/9 {
+			    
+				qui: replace			v`v'_rf`s'_x`x' = 0 if v`v'_rf`s'_x`x' == .	
+			}
+		}
+	}
+	
+* summarize fainfall variables - make sure everything went well
+	sum			*rf*
+	
+* replace missing values with zero - cycle through variables
+	forvalues		v = 15/22 {
+	    
+	* cycle through satellites
+	    forvalues		s = 1/3 {
+		    
+		*cycle through extractions
+			forvalues		x = 0/9 {
+			    
+				qui: replace			v`v'_tp`s'_x`x' = 0 if v`v'_tp`s'_x`x' == .	
+			}
+		}
+	}
+	
+* summarize temp variables - make sure everything went well
+	sum			*tp*
 	
 	
 * **********************************************************************
-* 6 - end matter
+* 8 - end matter
 * **********************************************************************
 
 * save complete results

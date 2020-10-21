@@ -6,7 +6,7 @@
 * does
 	* NOTE IT TAKES 90 MIN TO RUN ALL REGRESSIONS
 	* loads multi country data set
-	* runs rainfall and temperature regressions
+	* runs rainfall and temperature for ag-eco zone
 	* outputs results file for analysis
 
 * assumes
@@ -28,7 +28,7 @@
 
 * open log	
 	cap log close
-	log 	using 		"`logout'/regressions", append
+	log 	using 		"`logout'/aez_regressions", append
 
 	
 * **********************************************************************
@@ -38,6 +38,9 @@
 * read in data file
 	use			"`source'/lsms_panel.dta", clear
 
+* drop aez with only a few observations
+	drop		if aez == 311 | aez ==321
+	
 	
 * **********************************************************************
 * 2 - regressions on weather data
@@ -49,13 +52,13 @@
 	loc		weather 	v*
 
 * create file to post results to
-	tempname 	myresults
-	postfile 	`myresults' country str3 sat str2 ext str2 depvar str4 regname str3 varname ///
+	tempname 	aez_results
+	postfile 	`aez_results' aez str3 sat str2 ext str2 depvar str4 regname str3 varname ///
 					betarain serain adjustedr loglike dfr ///
-					using myresults.dta, replace
+					using "`results'/aez_results.dta", replace
 					
 * define loop through levels of the data type variable	
-levelsof 	country		, local(levels)
+levelsof 	aez		, local(levels)
 foreach l of local levels {
 	
 	* set panel id so it varies by dtype
@@ -72,76 +75,40 @@ foreach l of local levels {
 		* 2.1: Value of Harvest
 		
 		* weather
-			reg 		lntf_yld `v' if country == `l', vce(cluster hhid)
+			reg 		lntf_yld `v' if aez == `l', vce(cluster hhid)
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("tf") ("reg1") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 
 		* weather and fe	
-			xtreg 		lntf_yld `v' i.year if country == `l', fe vce(cluster hhid)
+			xtreg 		lntf_yld `v' i.year if aez == `l', fe vce(cluster hhid)
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("tf") ("reg2") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 
 		* weather and inputs and fe
-			xtreg 		lntf_yld `v' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
+			xtreg 		lntf_yld `v' `inputsrs' i.year if aez == `l', fe vce(cluster hhid)
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("tf") ("reg3") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 			
-		* weather and squared weather
-			reg 		lntf_yld c.`v'##c.`v' if country == `l', vce(cluster hhid)
-			post 		`myresults' (`l') ("`sat'") ("`ext'") ("tf") ("reg4") ///
-						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
-						(`=e(ll)') (`=e(df_r)')
-		
-		* weather and squared weather and fe
-			xtreg 		lntf_yld c.`v'##c.`v' i.year if country == `l', fe vce(cluster hhid)
-			post 		`myresults' (`l') ("`sat'") ("`ext'") ("tf") ("reg5") ///
-						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
-						(`=e(ll)') (`=e(df_r)')
-		
-		* weather and squared weather and inputs and fe
-			xtreg 		lntf_yld c.`v'##c.`v' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
-			post 		`myresults' (`l') ("`sat'") ("`ext'") ("tf") ("reg6") ///
-						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
-						(`=e(ll)') (`=e(df_r)')
-
 		* 2.2: Quantity of Maize
 		
 		* weather
-			reg 		lncp_yld `v' if country == `l', vce(cluster hhid)
+			reg 		lncp_yld `v' if aez == `l', vce(cluster hhid)
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("cp") ("reg1") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 
 		* weather and fe	
-			xtreg 		lncp_yld `v' i.year if country == `l', fe vce(cluster hhid)
+			xtreg 		lncp_yld `v' i.year if aez == `l', fe vce(cluster hhid)
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("cp") ("reg2") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 
 		* weather and inputs and fe
-			xtreg 		lncp_yld `v' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
+			xtreg 		lncp_yld `v' `inputsrs' i.year if aez == `l', fe vce(cluster hhid)
 			post 		`myresults' (`l') ("`sat'") ("`ext'") ("cp") ("reg3") ///
-						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
-						(`=e(ll)') (`=e(df_r)')
-			
-		* weather and squared weather
-			reg 		lncp_yld c.`v'##c.`v' if country == `l', vce(cluster hhid)
-			post 		`myresults' (`l') ("`sat'") ("`ext'") ("cp") ("reg4") ///
-						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
-						(`=e(ll)') (`=e(df_r)')
-		
-		* weather and squared weather and fe
-			xtreg 		lncp_yld c.`v'##c.`v' i.year if country == `l', fe vce(cluster hhid)
-			post 		`myresults' (`l') ("`sat'") ("`ext'") ("cp") ("reg5") ///
-						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
-						(`=e(ll)') (`=e(df_r)')
-		
-		* weather and squared weather and inputs and fe
-			xtreg 		lncp_yld c.`v'##c.`v' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
-			post 		`myresults' (`l') ("`sat'") ("`ext'") ("cp") ("reg6") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 
@@ -149,8 +116,8 @@ foreach l of local levels {
 }
 
 * close the post file and open the data file
-	postclose	`myresults' 
-	use 		myresults, clear
+	postclose	`aez_results' 
+	use 		"`results'/aez_results", clear
 
 * drop the cross section FE results
 	drop if		loglike == .
