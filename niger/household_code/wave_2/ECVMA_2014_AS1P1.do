@@ -1,10 +1,12 @@
 * Project: WB Weather
 * Created on: June 2020
 * Created by: alj
+* Edited by: alj
+* Last edit: 21 October 2020 
 * Stata v.16
 
 * does
-	* reads in Niger, WAVE 2 (2014),POST PLANTING (first passage), ECVMA2_AS1P1
+	* reads in Niger, WAVE 2 (2014), POST PLANTING (first passage), ECVMA2_AS1P1
 	* cleans plot size (hecatres)
 	* outputs clean data file ready for combination with wave 2 plot data
 
@@ -52,17 +54,33 @@
 	rename 			AS01Q03 parcel 
 	label 			var parcel "parcel number"
 	
+* create new household id for merging with weather 
+	tostring		clusterid, replace 
+	gen str2 		hh_num1 = string(hh_num,"%02.0f")
+	tostring		extension, replace
+	egen			hhid_y2 = concat( clusterid hh_num1 extension  )
+	destring		hhid_y2, replace
+	order			hhid_y2 clusterid hh_num hh_num1 extension 
+	
+* create new household id for merging with year 1 
+	egen			hid = concat( clusterid hh_num1  )
+	destring		hid, replace
+	order			hhid_y2 hid clusterid hh_num hh_num1 
+	
+* need to destring variables for later use in imputes 	
+	destring 		clusterid, replace
+	
 * need to include clusterid, hhnumber, extension, order, field, and parcel to uniquely identify
 	describe
-	sort 			clusterid hh_num extension ord field parcel
-	isid 			clusterid hh_num extension ord field parcel
+	sort 			hhid_y2 ord
+	isid 			hhid_y2 ord
 
 * determine cultivated plot
 	rename 			AS01Q38 cultivated
 	label 			var cultivated "plot cultivated"
 * drop if not cultivated
 	keep 			if cultivated == 1
-	*** 488 observations dropped
+	*** 490 observations dropped
 	*** AS01Q43 asks about fallow specifically rather than did you cultivate 
 	
 * determine self reported plotsize
@@ -175,13 +193,13 @@
 						plot_size_hec_GPS < 0.01, sep(0)
 	pwcorr 			plot_size_hec_GPS plot_size_hec_SR 	if ///
 						plot_size_hec_GPS < 0.01
-	*** very small relationship between GPS and SR plotsize, correlation = -0.4776
+	*** large but negative relationship between GPS and SR plotsize, correlation = -0.4776
 	
 * compare GPS and SR
 * examine GPS 
 	sum 			plot_size_hec_GPS
 	sum 			plot_size_hec_SR
-	*** GPS tending to be smaller than self-reported, but only VERY slightly 2.32 v. 245
+	*** GPS tending to be smaller than self-reported, but only VERY slightly 2.32 v. 2.45
 	*** per conversations with WBG will not include SR in imputation - only will include GPS 
 	** tested with both including SR and not (findings below)
 			*** IMPUTE WITH ONLY GPS - mean 2.2, sd 4.31
@@ -198,8 +216,8 @@
 	mi set 			wide // declare the data to be wide.
 	mi xtset		, clear // this is a precautinary step to clear any existing xtset
 	mi register 	imputed plot_size_hec_GPS // identify plotsize_GPS as the variable being imputed
-	sort			clusterid hh_num extension ord field parcel, stable // sort to ensure reproducability of results
-	mi impute 		pmm plot_size_hec_GPS i.clusterid, add(1) rseed(245780) noisily dots ///
+	sort			clusterid hh_num extension ord, stable // sort to ensure reproducability of results
+	mi impute 		pmm plot_size_hec_GPS plot_size_hec_SR i.clusterid, add(1) rseed(245780) noisily dots ///
 						force knn(5) bootstrap
 	mi unset
 
@@ -208,7 +226,7 @@
 	tabstat 		plot_size_hec_GPS plot_size_hec_SR plot_size_hec_GPS_1_, ///
 						by(mi_miss) statistics(n mean min max) columns(statistics) ///
 						longstub format(%9.3g)
-	*** imputed values change VERY little - mean from 2.32 to 2.2 -- all very reasonable changes
+	*** imputed values change VERY little - mean from 2.32 to 2.23 -- all very reasonable changes
 	*** good impute
 
 * drop if anything else is still missing
@@ -225,13 +243,13 @@
 	rename			plot_size_hec_GPS_1_ plotsize
 	lab	var			plotsize	"plot size (ha)"
 
-	keep 			clusterid hh_num extension ord field parcel plotsize
+	keep 			hhid_y2 hid clusterid hh_num hh_num1 extension ord field parcel plotsize
 
 * create unique household-plot identifier
-	isid			clusterid hh_num extension field parcel
-	sort			clusterid hh_num extension field parcel
-	egen			plot_id = group(clusterid hh_num extension field parcel)
-	lab var			plot_id "unique field and parcel identifier"
+	isid			hhid_y2 ord
+	sort			hhid_y2 ord
+	egen			plot_id = group(hhid_y2 ord)
+	lab var			plot_id "unique field and parcel identifier (hhid_y2 ord)"
 
 	compress
 	describe

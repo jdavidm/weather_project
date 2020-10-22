@@ -1,6 +1,8 @@
 * Project: WB Weather
 * Created on: June 2020
 * Created by: alj
+* Edited by: alj
+* Last edit: 21 October 2020 
 * Stata v.16
 
 * does
@@ -54,10 +56,27 @@
 	rename 			AS02AQ03 parcel 
 	label 			var parcel "parcel number"
 	
+* create new household id for merging with weather 
+	tostring		clusterid, replace 
+	gen str2 		hh_num1 = string(hh_num,"%02.0f")
+	tostring		extension, replace
+	egen			hhid_y2 = concat( clusterid hh_num1 extension  )
+	destring		hhid_y2, replace
+	order			hhid_y2 clusterid hh_num hh_num1 extension 
+	
+* create new household id for merging with year 1 
+	egen			hid = concat( clusterid hh_num1  )
+	destring		hid, replace
+	order			hhid_y2 hid clusterid hh_num hh_num1 
+	
+* need to destring variables for later use in imputes 	
+	destring 		clusterid, replace
+	
+	
 * need to include clusterid, hhnumber, extension, order, field, and parcel to uniquely identify
 	describe
-	sort 			clusterid hh_num extension ord field parcel
-	isid 			clusterid hh_num extension ord field parcel
+	sort 			hhid_y2 ord
+	isid 			hhid_y2	ord 
 
 * determine cultivated plot
 	rename 			AS02AQ04 cultivated
@@ -172,7 +191,7 @@
 * impute each variable in local		
 	foreach var of loc labor {
 		mi register			imputed `var' // identify variable to be imputed
-		sort				clusterid hh_num extension ord field parcel, stable 
+		sort				hhid_y2 ord, stable 
 		// sort to ensure reproducability of results
 		mi impute 			pmm `var' i.clusterid, add(1) rseed(245780) ///
 								noisily dots force knn(5) bootstrap
@@ -328,7 +347,7 @@
 * impute each variable in local		
 	foreach var of loc laborimp {
 		mi register			imputed `var' // identify variable to be imputed
-		sort				clusterid hh_num extension ord field parcel, stable 
+		sort				hhid_y2 ord, stable 
 		// sort to ensure reproducability of results
 		mi impute 			pmm `var' i.clusterid, add(1) rseed(245780) ///
 								noisily dots force knn(5) bootstrap
@@ -357,21 +376,21 @@
 	*** no missing values
 	sum 			harvest_labor harvest_labor_all
 	*** which is used will not make that much of a difference (different max)
-	*** with free labor: average = 23.7, max = 335
-	*** without free labor: average = 24.1, max = 300
+	*** with free labor: average = 23.7, max = 300
+	*** without free labor: average = 24.1, max = 335
 	
 	
 * **********************************************************************
 * 6 - end matter, clean up to save
 * **********************************************************************
 
-	keep 			clusterid hh_num extension ord field parcel plant_labor plant_labor_all ///
+	keep 			hhid_y2 hid clusterid hh_num hh_num1 extension ord field parcel plant_labor plant_labor_all ///
 					harvest_labor harvest_labor_all
 
 * create unique household-plot identifier
-	isid				clusterid hh_num extension ord field parcel
-	sort				clusterid hh_num extension ord field parcel, stable 
-	egen				plot_id = group(clusterid hh_num extension ord field parcel)
+	isid				hhid_y2 ord 
+	sort				hhid_y2 ord, stable 
+	egen				plot_id = group(hhid_y2 ord)
 	lab var				plot_id "unique field and parcel identifier"
 
 	compress

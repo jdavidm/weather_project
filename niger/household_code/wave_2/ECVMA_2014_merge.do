@@ -1,6 +1,8 @@
 * Project: WB Weather
 * Created on: May 2020
 * Created by: alj
+* Edited by: alj
+* Last edit: 21 October 2020 
 * Stata v.16
 
 * does
@@ -583,6 +585,8 @@
 * **********************************************************************
 
 * verify unique household id
+
+* WILL NEED TO UPDATE
 	isid			clusterid hh_num extension
 
 * label variables
@@ -605,18 +609,9 @@
 	gen				year = 2014
 	lab var			year "Year"
 	
-* create unique household identifier
-
-	tostring		clusterid, gen(clustid)
-	gen str2 		hhnum = string(hh_num,"%02.0f")
-	tostring		extension, gen(ext)
-	egen			hhid_y2 = concat( clustid hhnum ext )
-	destring		hhid_y2, replace
-	order			hhid_y2 clusterid clustid hh_num hhnum extension ext ///
-
 	lab var				hhid_y2 "Unique wave 2 household identifier"
 		
-	order 			region dept canton zd clustid hhnum extension hhid_y2 year tf_hrv tf_lnd tf_yld ///
+	order 			region dept canton zd clusterid hh_num hh_num1 extension hhid_y2 year tf_hrv tf_lnd tf_yld ///
 						tf_lab tf_frt tf_pst tf_hrb cp_hrv cp_lnd ///
 						cp_yld cp_lab cp_frt cp_pst cp_hrb
 	compress

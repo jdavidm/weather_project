@@ -1,13 +1,15 @@
 * Project: WB Weather
 * Created on: May 2020
 * Created by: alj
+* Edited by: alj
+* Last edit: 21 October 2020 
 * Stata v.16
 
 * does
 	* reads in Niger, WAVE 2 (2014), POST HARVEST, ECVMA2 AS2E1P2
 	* file will broadly follow ag_i from Malawi "kitchen sink"
 	* cleans harvest sold (quantity in kg)
-	* determines prices for merge (five files) into 2014_ase1p2_1
+	* determines prices for merge (five files) into 2014_ase1p2
 
 * assumes
 	* cleaned version of 2014_ms00p1
@@ -28,7 +30,7 @@
 
 * open log
 	cap log close 
-	log 	using 	"`logout'/2014_AS2E2P2_p", append
+	log 	using 	"`logout'/2014_as2e2p2", append
 
 	
 * **********************************************************************
@@ -52,10 +54,26 @@
 	label 			var ord "number of order"
 	*** field and parcel not recorded in this file
 	
+* create new household id for merging with weather 
+	tostring		clusterid, replace 
+	gen str2 		hh_num1 = string(hh_num,"%02.0f")
+	tostring		extension, replace
+	egen			hhid_y2 = concat( clusterid hh_num1 extension  )
+	destring		hhid_y2, replace
+	order			hhid_y2 clusterid hh_num hh_num1 extension 
+	
+* create new household id for merging with year 1 
+	egen			hid = concat( clusterid hh_num1  )
+	destring		hid, replace
+	order			hhid_y2 hid clusterid hh_num hh_num1 
+	
+* need to destring variables for later use in imputes 	
+	destring 		clusterid, replace
+	
 * need to include clusterid, hhnumber, extension, order, field, and parcel to uniquely identify
 	describe
-	sort 			clusterid hh_num extension ord 
-	isid 			clusterid hh_num extension ord 
+	sort 			hhid_y2 ord
+	isid 			hhid_y2 ord 
 		
 	rename 			AS02EQ110B cropid
 	tab 			cropid
@@ -81,8 +99,8 @@
 	rename 			AS02EQ12C harvkgsold 
 
 	describe
-	sort 			clusterid hh_num extension ord
-	isid 			clusterid hh_num extension ord 
+	sort 			hhid_y2 ord 
+	isid 			hhid_y2 ord 
 
 	
 * **********************************************************************
@@ -110,7 +128,7 @@
 	mi set 			wide 	// declare the data to be wide.
 	mi xtset		, clear 	// clear any xtset that may have had in place previously
 	mi register		imputed harvkgsold // identify kilo_fert as the variable being imputed
-	sort			hh_num extension ord cropid, stable // sort to ensure reproducability of results
+	sort			hhid_y2 ord, stable // sort to ensure reproducability of results
 	mi impute 		pmm harvkg i.clusterid i.cropid, add(1) rseed(245780) ///
 						noisily dots force knn(5) bootstrap
 	mi 				unset	
@@ -151,7 +169,7 @@
 * **********************************************************************
 
 * merge in regional information 
-	merge m:1		clusterid hh_num extension using "`export'/2014_ms00p1"
+	merge m:1		hhid_y2 using "`export'/2014_ms00p1"
 	*** 5207 matched, 0 from master not matched, 1817 from using (which is fine)
 	keep if _merge == 3
 	drop _merge
@@ -171,27 +189,27 @@
 * make datasets with crop price information
 	preserve
 	collapse 		(p50) p_zd=cropprice (count) n_zd=cropprice, by(cropid region dept canton zd)
-	save 			"`export'/2014_ase1p2_p1.dta", replace 
+	save 			"`export'/2014_as2e2p2_p1.dta", replace 
 	restore
 	
 	preserve
 	collapse 		(p50) p_can=cropprice (count) n_can=cropprice, by(cropid region dept canton)
-	save 			"`export'/2014_ase1p2_p2.dta", replace 	
+	save 			"`export'/2014_as2e2p2_p2.dta", replace 	
 	restore
 	
 	preserve
 	collapse 		(p50) p_dept=cropprice (count) n_dept=cropprice, by(cropid region dept)
-	save 			"`export'/2014_ase1p2_p3.dta", replace 	
+	save 			"`export'/2014_as2e2p2_p3.dta", replace 	
 	restore
 	
 	preserve
 	collapse 		(p50) p_reg=cropprice (count) n_reg=cropprice, by(cropid region)
-	save 			"`export'/2014_ase1p2_p4.dta", replace 
+	save 			"`export'/2014_as2e2p2_p4.dta", replace 
 	restore
 	
 	preserve
 	collapse 		(p50) p_crop=cropprice (count) n_crop=cropprice, by(cropid)
-	save 			"`export'/2014_ase1p2_p5.dta", replace 
+	save 			"`export'/2014_as2e2p2_p5.dta", replace 
 	
 
 * **********************************************************************

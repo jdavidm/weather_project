@@ -210,8 +210,8 @@
 * save file
 
 	qui: compress	
-	describe
-	summarize 
+*	describe
+*	summarize 
 	
 	customsave 	, idvar(hhid_y2) filename("ecvmay2_merged.dta") ///
 		path("`export'") dofile(ecvmay2_build) user($user)

@@ -1,6 +1,8 @@
 * Project: WB Weather
 * Created on: May 2020
 * Created by: alj
+* Edited by: alj
+* Last edit: 21 October 2020 
 * Stata v.16
 
 * does
@@ -12,13 +14,12 @@
 	* outputs clean data file ready for combination with wave 2 plot data
 
 * assumes
-	* cleaned planting and harvest labor in 2014_as2ap2
+	* cleaned planting and harvest labor in "2014_as2ap2"
 	* customsave.ado
 	* mdesc.ado
 	
 * TO DO:
 	* complete
-
 	
 * **********************************************************************
 * 0 - setup
@@ -58,10 +59,26 @@
 	rename 			AS01Q03 parcel 
 	label 			var parcel "parcel number"
 	
+* create new household id for merging with weather 
+	tostring		clusterid, replace 
+	gen str2 		hh_num1 = string(hh_num,"%02.0f")
+	tostring		extension, replace
+	egen			hhid_y2 = concat( clusterid hh_num1 extension  )
+	destring		hhid_y2, replace
+	order			hhid_y2 clusterid hh_num hh_num1 extension 
+	
+* create new household id for merging with year 1 
+	egen			hid = concat( clusterid hh_num1  )
+	destring		hid, replace
+	order			hhid_y2 hid clusterid hh_num hh_num1 
+	
+* need to destring variables for later use in imputes 	
+	destring 		clusterid, replace
+	
 * need to include clusterid, hhnumber, extension, order, field, and parcel to uniquely identify
 	describe
-	sort 			clusterid hh_num extension ord field parcel
-	isid 			clusterid hh_num extension ord field parcel
+	sort 			hhid_y2 ord 
+	isid 			hhid_y2 ord
 
 * determine cultivated plot
 	rename 			AS02AQ04 cultivated
@@ -70,7 +87,6 @@
 	keep 			if cultivated == 1
 	*** 301 observations dropped
 
-	
 * **********************************************************************
 * 2 - determine pesticide and herbicide use - binaries 
 * **********************************************************************
@@ -109,19 +125,16 @@
 * **********************************************************************
 * 3 - determine fertilizer use - binary and kg 
 * **********************************************************************
-
-* create fertilizer binary value
-	egen 			fert_any = rsum(AS02AQ09B AS02AQ10B AS02AQ11B AS02AQ12B)
-	replace			fert_any = 1 if fert_any > 0 
-	tab 			fert_any, missing
-	lab var			fert_any "=1 if any fertilizer was used"
-	*** 1,123 use some sort of fertilizer (21%), none missing
 	
 * create conversion units - kgs, tiya
 	gen 			kgconv = 1 
 	gen 			tiyaconv = 3
-	*** will not create conversion for black and white sachet - will impute theses values 
+	*** will not create conversion for black and white sachet - will impute theses values 	
 	
+* create fert_any variable
+	egen 			fert_any = rsum(AS02AQ09B AS02AQ10B AS02AQ11B AS02AQ12B)
+	*** gets addressed later - but build now
+
 * create amount of fertilizer value (kg)
 ** UREA 
 	replace AS02AQ09C = . if AS02AQ09C == 9 
@@ -164,6 +177,9 @@
 	egen fert_use = rsum(kgurea kgdap npkkg blendkg)
 	count  if fert_use != . 
 	count  if fert_use == . 
+	replace fert_use = . if blendunits == 4
+	*** 10 changes made 
+	
 	*** need to replace those in sachets equal to . because those will be replaced with 0s in summation 
 	replace fert_use = . if ureaunits == 3
 	*** 43 changes made
@@ -176,15 +192,20 @@
 	replace fert_use = . if npkunits == 3
 	*** 24 changes made
 	replace fert_use = . if npkunits == 4
-	*** 5 changes made
+	*** 0 changes made
 	replace fert_use = . if blendunits == 3
-	*** 9 changes made
-	replace fert_use = . if blendunits == 4
-	*** 5 changes made 
+	*** 9 changes made 
+	
+* create fertilizer binary value
+	replace			fert_any = 1 if fert_any > 0 
+	tab 			fert_any, missing
+	lab var			fert_any "=1 if any fertilizer was used"
+	*** 1,123 use some sort of fertilizer (22%), none missing
 	
 * summarize fertilizer
 	sum				fert_use, detail
-	*** median , mean , max 
+	*** median 0, mean 5.5, max 297
+	*** relaly low values ... 
 
 * replace any +3 s.d. away from median as missing
 	replace			fert_use = . if fert_use > `r(p50)'+(3*`r(sd)')
@@ -194,7 +215,7 @@
 	mi set 			wide 	// declare the data to be wide.
 	mi xtset		, clear 	// clear any xtset that may have had in place previously
 	mi register		imputed fert_use // identify kilo_fert as the variable being imputed
-	sort			clusterid hh_num extension ord field parcel, stable // sort to ensure reproducability of results
+	sort			hhid_y2 ord, stable // sort to ensure reproducability of results
 	mi impute 		pmm fert_use i.clusterid, add(1) rseed(245780) ///
 						noisily dots force knn(5) bootstrap
 	mi 				unset
@@ -275,7 +296,7 @@
 	
 * mutual labor days from other households
 	tab 			AS02AQ23A
-	*** 417 received mutual labor, 4718 did not
+	*** 417 received mutual labor, 4718 did not, 4 missing 
 	
 	gen 			mutual_men = .
 	replace			mutual_men = AS02AQ23B if AS02AQ23A == 1
@@ -321,7 +342,7 @@
 * impute each variable in local		
 	foreach var of loc laborimp {
 		mi register			imputed `var' // identify variable to be imputed
-		sort				clusterid hh_num extension ord field parcel, stable 
+		sort				hhid_y2 ord, stable 
 		// sort to ensure reproducability of results
 		mi impute 			pmm `var' i.clusterid, add(1) rseed(245780) ///
 								noisily dots force knn(5) bootstrap
@@ -362,13 +383,13 @@
 * 6 - combine planting and harvest labor 
 * **********************************************************************
 
-	keep 			clusterid hh_num extension ord field parcel pest_any ///
+	keep 			hhid_y2 hid clusterid hh_num hh_num1 extension ord field parcel pest_any ///
 					fert_any fert_use herb_any prep_labor prep_labor_all
 	
 * create unique household-plot identifier
-	isid				clusterid hh_num extension ord field parcel
-	sort				clusterid hh_num extension ord field parcel, stable 
-	egen				plot_id = group(clusterid hh_num extension ord field parcel)
+	isid				hhid_y2 ord 
+	sort				hhid_y2 ord, stable 
+	egen				plot_id = group(hhid_y2 ord)
 	lab var				plot_id "unique field and parcel identifier"
 	
 					
@@ -381,7 +402,6 @@
 
 	drop _as2ap2
 
-	
 * **********************************************************************
 * 4 - end matter, clean up to save
 * **********************************************************************
