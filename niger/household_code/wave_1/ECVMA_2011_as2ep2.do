@@ -6,12 +6,12 @@
 * does
 	* reads in Niger, WAVE 1 (2011), POST HARVEST, ecvmaas2e_p2_en
 	* determines primary crops, cleans harvest (quantity in kg)
-	* merges in price files that are already in USD
+	* determines prices that are already in USD
 	* determines harvest for all crops - to determine value 
 	* outputs clean data file ready for combination with wave 1 plot data
 
 * assumes
-	* cleaned price files from AS2E2P2
+	* cleaned 2011_ms00p1.dta
 	* customsave.ado
 	
 * To Do:
@@ -29,14 +29,16 @@
 
 * open log
 	cap 	log 	close
-	log 	using	"`logout'/2014_AS2E1P2", append
+	log 	using	"`logout'/2011_as2ep2", append
 
+	
 * **********************************************************************
 * 1 - describing plot size - self-reported and GPS
 * **********************************************************************
 	
 * import the first relevant data file
 	use				"`root'/ecvmaas2e_p2_en", clear
+	
 	duplicates 		drop
 	
 	rename 			passage visit
@@ -48,30 +50,26 @@
 	rename 			as02eq0 ord 
 	label 			var ord "number of order"
 	*** note that ord is the id number
+	
 	rename 			as02eq01 field 
 	label 			var field "field number"
 	rename 			as02eq03 parcel 
 	label 			var parcel "parcel number"
-	*** cant find "extension" variable like they have in wave 2. 
+	rename			as02eq06 cropid
+	*** can't find "extension" variable like they have in wave 2
 	
-* need to include clusterid, hhnumber, order, field, and parcel to uniquely identify
-	describe
-	sort 			clusterid hh_num ord field parcel
-	isid 			clusterid hh_num ord field parcel
-	
-	rename 			as02eq06 cropid
 	tab 			cropid
 	*** main crop is "mil" = millet 
 	*** cropcode for millet == 1
 	*** second crop is cowpea, third is sorghum and then peanuts a distant fourth
 	
+* drop if parcel was not planted
+	drop			if as02eq04 == 2
+	*** 108 observations deleted
+	
 * drop if crop is "other"
 	drop if cropid == 48
-	
-* drop observations in which it was not harvest season. Identify harvest season if farmers say they worked the land this rainy season
-	tab as02eq04
-	drop if as02eq04 == 2
-	*** dropped 108 observations
+	*** 31 observations dropped
 	
 * rename variables associated with harvest
 	rename 			as02eq07c harvkg 
@@ -98,11 +96,23 @@
 	replace			harvkg = 0 if as02eq08 == 1 & as02eq09 == 100
 	*** 23 changes made
 
-	sort 			clusterid hh_num ord field parcel
-	isid 			clusterid hh_num ord field parcel
+* rename variables
+	rename 			as02eq11 soldprodsold
+	rename			as02eq13 earnwaf
+	rename 			as02eq12c harvkgsold 
+	
+* collapse to get rid of multiple observations of same crop on same parcel
+	collapse		(sum) harv harvkg soldprodsold harvkgsold earnwaf ///
+						(max) as02eq08 as02eq09, ///
+						by(hid visit clusterid hh_num field parcel cropid)
+	
+* need to include hid field parcel to uniquely identify
+	sort 			hid field parcel cropid
+	isid 			hid field parcel cropid
+	
 	
 * **********************************************************************
-* 2 - generate harvested values
+* 2 - generate harvested quantities
 * **********************************************************************
 
 * examine quantity harvested variable
@@ -120,7 +130,7 @@
 	mi set 			wide 	// declare the data to be wide.
 	mi xtset		, clear 	// clear any xtset that may have had in place previously
 	mi register		imputed harvkg // identify harvkg as the variable being imputed
-	sort			hh_num field parcel ord cropid, stable // sort to ensure reproducability of results
+	sort			hid field parcel, stable // sort to ensure reproducability of results
 	mi impute 		pmm harvkg i.clusterid i.cropid, add(1) rseed(245780) ///
 						noisily dots force knn(5) bootstrap
 	mi 				unset	
@@ -137,49 +147,158 @@
 	*** imputed 119 observations
 	*** mean from 127.11 to 97.67, max unchanged at 1392
 	
+
 * **********************************************************************
-* 3 - prices 
+* 3 - generate sold harvested values
+* **********************************************************************
+
+* examine market participation 
+	tab 			soldprod
+	replace			soldprod = . if soldprod == 9 
+	tab 			soldprod 
+	*** 1300 (10.86 percent) sold crops 
+
+* examine kg harvest value sold
+	tab 			harvkgsold , missing
+	lab	var			harvkgsold "quantity harvested and sold, in kilograms"
+	*** 10795 missing
+	
+	replace			harvkgsold  = . if harvkgsold == 9999 
+	*** 9 changed to missing (obs = 9999) - seems to be . in many cases for Niger
+	
+* examine quantity harvested variable 
+	sum				harvkgsold, detail
+	*** this is across all crops
+	*** average 245.95, max 11000, min 2 
+	*** how could you sell zero - replace to missing
+
+* replace any +3 s.d. away from median as missing, by cropid
+	sort 			cropid
+	sum				harvkgsold, detail 
+	by 				cropid: replace	harvkgsold = . if harvkgsold > `r(p50)'+ (3*`r(sd)')
+	sum				harvkgsold, detail
+	*** replaced 32 values, max is now 2595, mean 122.9  
+	
+* impute missing values
+	mi set 			wide 	// declare the data to be wide.
+	mi xtset		, clear 	// clear any xtset that may have had in place previously
+	mi register		imputed harvkgsold // identify harvkgsold as the variable being imputed
+	sort			hid field parcel, stable // sort to ensure reproducability of results
+	mi impute 		pmm harvkgsold i.clusterid i.cropid, add(1) rseed(245780) ///
+						noisily dots force knn(5) bootstrap
+	mi 				unset	
+
+* how did the imputation go?
+	tab				mi_miss
+	tabstat			harvkgsold harvkgsold_1_, by(mi_miss) ///
+						statistics(n mean min max) columns(statistics) ///
+						longstub format(%9.3g) 
+	replace			harvkgsold = harvkgsold_1_ if soldprod == 1
+	lab var			harvkgsold "kg of harvest sold, imputed (only if produce was sold)"
+	drop			harvkgsold_1_
+	*** imputed observations changed 45 observations for people who sold 
+	*** mean 122.9 to 148.83, max stays at 2595 
+	
+* check out amount sold
+* currently reported in West African CFA franc
+	tab 			earnwaf
+	replace 		earnwaf = . if earnwaf == 9999999 
+	*** 2 changed to missing
+
+* convert to usd
+	gen 			earn = earnwaf/517.0391802
+	lab var			earn 	"total earnings from sales in 2010 USD"
+	tab 			earn, missing
+	*** 10787 missing
+	sum				earn, detail
+	*** mean 60.9, max 4255, min 0.3868
+	*** total of 1273 observations 
+	
+	
+* **********************************************************************
+* 4 - price information - following ag_i in Malawi 
 * **********************************************************************
 
 * merge in regional information 
-	merge m:1		clusterid hh_num using "`export'/2011_ms00p1"
-	*** 11950 matched, 2 not matched from master, 1720 not matched from using
-	
+	merge m:1		hid using "`export'/2011_ms00p1"
+	*** 12058 matched, 2 from master not matched, 1720 from using (which is fine)
 	keep if _merge == 3
 	drop _merge
-	
+
+* condensed crop codes
+	inspect 		cropid
+	*** generally things look all right - only 30 unique values 
+
+* gen price per kg
+	sort 			cropid
+	by 				cropid: gen cropprice = earn / harvkgsold 
+	*** 10785 missing values, but 10,661 did not sell
+	sum 			cropprice, detail
+	*** mean = 0.427, max = 10.82, min = 0.0193
+	*** will do some imputations later
+
 * rename enumeration zd
 	rename 			enumeration zd
-	label var 		zd "enumeration"
+	lab var 		zd "enumeration zone"
+	
+* make datasets with crop price information
+	preserve
+	collapse 		(p50) p_zd=cropprice (count) n_zd=cropprice, by(cropid region dept canton zd)
+	save 			"`export'/2011_as2ep2_p1.dta", replace 
+	restore
+	
+	preserve
+	collapse 		(p50) p_can=cropprice (count) n_can=cropprice, by(cropid region dept canton)
+	save 			"`export'/2011_as2ep2_p2.dta", replace 	
+	restore
+	
+	preserve
+	collapse 		(p50) p_dept=cropprice (count) n_dept=cropprice, by(cropid region dept)
+	save 			"`export'/2011_as2ep2_p3.dta", replace 	
+	restore
+	
+	preserve
+	collapse 		(p50) p_reg=cropprice (count) n_reg=cropprice, by(cropid region)
+	save 			"`export'/2011_as2ep2_p4.dta", replace 
+	restore
+	
+	preserve
+	collapse 		(p50) p_crop=cropprice (count) n_crop=cropprice, by(cropid)
+	save 			"`export'/2011_as2ep2_p5.dta", replace 
+	restore
+			
+* **********************************************************************
+* 5 - merge back in prices 
+* **********************************************************************
 	
 * merge price data back into dataset
 	
-	merge m:1 cropid region dept canton zd	        using "`export'/2011_ase1p2_p1.dta", gen(p1)
+	merge m:1 cropid region dept canton zd	        using "`export'/2011_as2ep2_p1.dta", gen(p1)
 	drop			if p1 == 2
 	*** 1 observation deleted
 	
-	merge m:1 cropid region dept canton 	        using "`export'/2011_ase1p2_p2.dta", gen(p2)
+	merge m:1 cropid region dept canton 	        using "`export'/2011_as2ep2_p2.dta", gen(p2)
 	drop			if p2 == 2
 	*** 1 observation deleted
 
-	merge m:1 cropid region dept 			        using "`export'/2011_ase1p2_p3.dta", gen(p3)
+	merge m:1 cropid region dept 			        using "`export'/2011_as2ep2_p3.dta", gen(p3)
 	drop			if p3 == 2
 	*** 1 observation deleted
 
-	merge m:1 cropid region 						using "`export'/2011_ase1p2_p4.dta", gen(p4)
+	merge m:1 cropid region 						using "`export'/2011_as2ep2_p4.dta", gen(p4)
 	drop			if p4 == 2
 	*** 1 observation deleted
 	
-	merge m:1 cropid 						        using "`export'/2011_ase1p2_p5.dta", gen(p5)
+	merge m:1 cropid 						        using "`export'/2011_as2ep2_p5.dta", gen(p5)
 	keep			if p5 == 3
 	*** 1 observation deleted
 	
 * erase price files
-	erase			"`export'/2011_ase1p2_p1.dta"
-	erase			"`export'/2011_ase1p2_p2.dta"
-	erase			"`export'/2011_ase1p2_p3.dta"
-	erase			"`export'/2011_ase1p2_p4.dta"
-	erase			"`export'/2011_ase1p2_p5.dta"
+	erase			"`export'/2011_as2ep2_p1.dta"
+	erase			"`export'/2011_as2ep2_p2.dta"
+	erase			"`export'/2011_as2ep2_p3.dta"
+	erase			"`export'/2011_as2ep2_p4.dta"
+	erase			"`export'/2011_as2ep2_p5.dta"
 	
 	drop p1 p2 p3 p4 p5
 
@@ -199,15 +318,15 @@
 	gene	 		croppricei = .
 	*** 11916 missing values generated
 	
-	bys cropid (clusterid hh_num field parcel ord): replace croppricei = p_zd if n_zd>=10 & missing(croppricei)
+	bys cropid (hid field parcel): replace croppricei = p_zd if n_zd>=10 & missing(croppricei)
 	*** 11746 replaced
-	bys cropid (clusterid hh_num field parcel ord): replace croppricei = p_can if n_can>=10 & missing(croppricei)
+	bys cropid (hid field parcel): replace croppricei = p_can if n_can>=10 & missing(croppricei)
 	*** 0 replaced
-	bys cropid (clusterid hh_num field parcel ord): replace croppricei = p_dept if n_dept>=10 & missing(croppricei)
+	bys cropid (hid field parcel): replace croppricei = p_dept if n_dept>=10 & missing(croppricei)
 	*** 0 replaced 
-	bys cropid (clusterid hh_num field parcel ord): replace croppricei = p_reg if n_reg>=10 & missing(croppricei)
+	bys cropid (hid field parcel): replace croppricei = p_reg if n_reg>=10 & missing(croppricei)
 	*** 0 replaced
-	bys cropid (clusterid hh_num field parcel ord): replace croppricei = p_crop if missing(croppricei)
+	bys cropid (hid field parcel): replace croppricei = p_crop if missing(croppricei)
 	*** 170 replaced 
 	lab	var			croppricei	"implied unit value of crop"
 
@@ -238,7 +357,7 @@
 	mi set 			wide 	// declare the data to be wide.
 	mi xtset		, clear 	// clear any xtset that may have had in place previously
 	mi register		imputed cropvalue // identify cropvalue as the variable being imputed
-	sort			hh_num field parcel ord cropid, stable // sort to ensure reproducability of results
+	sort			hid field parcel, stable // sort to ensure reproducability of results
 	mi impute 		pmm cropvalue i.clusterid i.cropid, add(1) rseed(245780) ///
 						noisily dots force knn(5) bootstrap
 	mi 				unset	
@@ -255,8 +374,9 @@
 	*** imputed 352 out of 11916 total observations
 	*** mean from 21.9 to 22.6, max at 170.66 no change in max
 
+	
 * **********************************************************************
-* 4 - examine millet harvest quantities
+* 6 - examine millet harvest quantities
 * **********************************************************************
 
 * check to see if outliers can be dealt with
@@ -267,13 +387,15 @@
 	gen 			mz_hrv = harvkg 	if 	cropid == 1
 	*** for consistency going to keep the mz abbreviation though crop is millet
 	
-* create variable =1 if millet was damaged	
+* create variable = 1 if millet was damaged	
 	replace 		as02eq09 = . if as02eq09 == 999
 	gen				mz_damaged = 1		if  cropid == 1 ///
 						&  as02eq08 == 1 & as02eq09 == 100
+	lab var			mz_damaged "=1 if millet crop was lost"
 	sort			mz_damaged
 	tab 			mz_damaged, missing
 	replace			mz_damaged = 0 if mz_damaged == . & cropid == 1
+	replace			mz_hrv = 0 if mz_damaged == 1
 	*** all damaged millet have harvkg = zero
 						
 * replace any +3 s.d. away from median as missing
@@ -286,7 +408,7 @@
 	mi set 			wide 	// declare the data to be wide.
 	mi xtset		, clear 	// clear any xtset that may have had in place previously
 	mi register		imputed mz_hrv // identify mz_hrv as the variable being imputed
-	sort			hh_num field parcel ord cropid, stable // sort to ensure reproducability of results
+	sort			hid field parcel, stable // sort to ensure reproducability of results
 	mi impute 		pmm mz_hrv i.clusterid if cropid == 1, add(1) rseed(245780) ///
 						noisily dots force knn(5) bootstrap
 	mi 				unset	
@@ -297,33 +419,29 @@
 						statistics(n mean min max) columns(statistics) ///
 						longstub format(%9.3g) 
 	replace			mz_hrv = mz_hrv_1_  if cropid == 1
-	lab var			mz_hrv "Quantity of maize harvested (kg)"
+	lab var			mz_hrv "Quantity of millet harvested (kg)"
 	drop			mz_hrv_1_
 	sum				mz_hrv
-	*** imputed 142 values out of 4471 total values
-	*** mean from 141.2 to 143.2, max 710 (no change), min 0 (no change)
+	*** imputed 142 values out of 4451 total values
+	*** mean from 141.7 to 143.9, max 710 (no change), min 0 (no change)
 
 * replace non-maize harvest values as missing
 	replace			mz_hrv = . if mz_damaged == 0 & mz_hrv == 0
-	*** 33 changes made 
+	*** 32 changes made 
 
+	
 * **********************************************************************
-* 5 - end matter, clean up to save
+* 7 - end matter, clean up to save
 * **********************************************************************
 
 * create unique household-plot identifier
-	sort			clusterid hh_num ord field parcel
-	egen			plot_id = group(clusterid hh_num ord field parcel)
-	lab var			plot_id "unique field and parcel identifier"
+	sort			hid field parcel cropid
+	isid			hid field parcel cropid
+	egen			crop_id = group(hid field parcel cropid)
+	lab var			crop_id "unique crop, field, and parcel identifier"
 
-* create unique household-plot-crop identifier
-	isid			clusterid hh_num ord field parcel cropid
-	sort			clusterid hh_num ord field parcel cropid
-	egen			cropplot_id = group(clusterid hh_num ord field parcel cropid)
-	lab var			cropplot_id "unique field and parcel and crop identifier"
-	
-	keep 			clusterid hh_num ord field parcel region dept canton zd cropplot_id plot_id /// 
-					mz_hrv mz_damaged cropvalue harvkg cropid 
+	keep 			crop_id hid clusterid hh_num field parcel cropid ///
+						mz_hrv mz_damaged cropvalue harvkg
 					
 	rename 			cropvalue vl_hrv 
 	lab	var			vl_hrv "value of harvest, in 2010 USD"
@@ -333,8 +451,8 @@
 	summarize
 
 * save file
-	customsave , idvar(cropplot_id) filename("2011_ase1p2.dta") ///
-		path("`export'") dofile(2011_ase1p2) user($user)
+	customsave , idvar(crop_id) filename("2011_as2ep2.dta") ///
+		path("`export'") dofile(2011_as2ep2) user($user)
 
 * close the log
 	log		close

@@ -35,7 +35,7 @@
 * **********************************************************************
 
 * import the .dta houeshold file
-	use 		"`rooth'/hhfinal_niger2011.dta", clear
+	use 		"`rooth'/hhfinal_ecvma1.dta", clear
 	
 * generate variable to record data source
 	gen 		data = "ecvmay1"
@@ -210,8 +210,7 @@
 
 * save file
 	
-	qui: compress	
-	describe
+	qui: compress
 	summarize 
 
 	customsave 	, idvar(hid) filename("ecvmay1_merged.dta") ///

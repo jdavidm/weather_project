@@ -4,8 +4,8 @@
 * Stata v.16
 
 * does
-	* identifies regional elements
-	* for use in price data contruction 
+	* identifies regional elements for use in price data contruction 
+	* merges in household sampling weights
 	* outputs clean data file ready for combination with wave 1 data
 
 * assumes
@@ -28,18 +28,17 @@
 	cap 	log 	close
 	log 	using 	"`logout'/2011_ms00p1", append
 
+	
 * **********************************************************************
 * 1 - rename and identify regional variables
 * **********************************************************************
 
 * import the first relevant data file
-	use				"`root'/ecvmasection00_p2_en", clear
+	use				"`root'/ecvmasection00_p1_en", clear
 
 * need to rename for English
 	rename 			passage visit
 	label 			var visit "number of visit"
-	rename			grappe clusterid
-	label 			var clusterid "cluster number"
 	rename			menage hh_num
 	label 			var hh_num "household number - not unique id"
 	*** will need to do these in every file
@@ -56,22 +55,35 @@
 	label 			var enumeration "enumeration zone (instead of zd in wave 2)" 
 
 * **********************************************************************
-* 2 - end matter, clean up to save
+* 2 - merge in household weights
 * **********************************************************************
 
-	keep 			clusterid hh_num region dept canton enumeration 
-	isid 			clusterid hh_num 
+	merge			m:1 grappe using "`root'/Ponderation_Finale_31_05_2013_en"
+	*** all matched
 	
-	sort			clusterid hh_num
-	egen			idvar = group(clusterid hh_num)
-	lab var			idvar "unique identifier"
+	drop			_merge	
+	
+* rename grappe
+	rename			grappe clusterid
+	label 			var clusterid "cluster number"
+	
+	rename			zae aez
+	rename			hhweight pw
+	
+* **********************************************************************
+* 3 - end matter, clean up to save
+* **********************************************************************
+
+	keep 			hid clusterid hh_num region dept canton enumeration ///
+						aez pw
+	isid 			hid
 	
 	compress
 	describe
 	summarize
 
 * save file
-	customsave , idvar(idvar) filename("2011_ms00p1.dta") ///
+	customsave , idvar(hid) filename("2011_ms00p1.dta") ///
 		path("`export'") dofile(2011_ms00p1) user($user)
 
 * close the log

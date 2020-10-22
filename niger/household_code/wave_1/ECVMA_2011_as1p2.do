@@ -4,13 +4,17 @@
 * Stata v.16
 
 * does
-	* reads in Niger, WAVE 1 (2011), POST PLANTING (first passage), ecvmaas1_p2_en
+	* reads in Niger, WAVE 1 (2011), POST HARVEST (second passage), ecvmaas1_p2_en
 	* cleans labor post planting - planting labor 
 	* cleans labor post harvest - harvesting labor 
 	* outputs clean data file ready for combination with wave 1 plot data
 
 * assumes
 	* customsave.ado
+
+* To Do:
+	* done
+	
 	
 * **********************************************************************
 * 0 - setup
@@ -23,8 +27,9 @@
 
 * open log
 	cap 	log 	close
-	log 	using	"`logout'/2011_as2ap2", append
+	log 	using	"`logout'/2011_as1p2", append
 
+	
 * **********************************************************************
 * 1 - set up and organization 
 * **********************************************************************
@@ -61,11 +66,9 @@
 	drop 	if parcel == .
 	*** dropped 1630 observations
 	
-* need to include clusterid, hhnumber, order, field, and parcel to uniquely identify
-	describe
-	sort 			clusterid hh_num ord field parcel
-	isid 			clusterid hh_num ord field parcel
-
+* need to include hid field parcel to uniquely identify
+	sort 			hid field parcel
+	isid 			hid field parcel
 
 
 * **********************************************************************
@@ -126,11 +129,9 @@
 	replace 		hired_women = 0 if as02aq35c == 999
 	replace			hired_women = 0 if as02aq35a == .
 	replace 		hired_women = 0 if hired_women == .  
-	
 	*** we do not include child labor days
 	
 * mutual labor days from other households
-
 	tab 			as02aq34a, missing
 	*** 521 received mutual labor,  5681  did not
 	
@@ -147,8 +148,8 @@
 	replace			mutual_women = 0 if as02aq34a == 2
 	replace			mutual_women = 0 if as02aq34a == .
 	replace			mutual_women = 0 if mutual_women == . 
-
 	*** we do not include child labor days
+	
 	
 * **********************************************************************
 * 3 - impute planting labor outliers
@@ -178,7 +179,7 @@
 * impute each variable in local		
 	foreach var of loc labor {
 		mi register			imputed `var' // identify variable to be imputed
-		sort				clusterid hh_num ord field parcel, stable 
+		sort				hid field parcel, stable 
 		// sort to ensure reproducability of results
 	mi impute 			pmm `var' i.clusterid, add(1) rseed(245780) ///
 								noisily dots force knn(5) bootstrap
@@ -211,22 +212,14 @@
 * drop intermediate variables
 	drop 			hh_1- mutual_plant_labor
 
+	
 * **********************************************************************
 * 4 - determine harvest labor allocation 
 * **********************************************************************
 
-* per Palacios-Lopez et al. (2017) in Food Policy, we cap labor per activity
-* 7 days * 13 weeks = 91 days for land prep and planting
-* 7 days * 26 weeks = 182 days for weeding and other non-harvest activities
-* 7 days * 13 weeks = 91 days for harvesting
-* we will also exclude child labor_days
-* will not disaggregate gender / age - pool together, as with other rounds 
-* in line with others, will deal with each activity seperately
-
 * create household member labor 
 * as02aq36**a identified HH ID of laborer 
 * as02aq36**b identifies number of days that person worked 
-
 	gen				hh_1 = as02aq36b
 	replace			hh_1 = 0 if hh_1 == .
 	
@@ -244,14 +237,12 @@
 	
 	gen				hh_6 = as02aq41b
 	replace			hh_6 = 0 if hh_6 == .
-	
 	*** this calculation is for up to 6 members of the household that were laborers
 	*** per the survey, these are laborers from the main rainy season
 	*** includes labor for various planting activities - 91 day max 
 	*** does not include planting labor or prep labor 
 	
 * hired labor days   
-
 	tab 			as02aq43a, missing
 	*** 515 hired "other" labor, 5687  did not
 	
@@ -271,11 +262,9 @@
 	replace			hired_women = 0 if as02aq43c == .
 	replace 		hired_women = 0 if as02aq43c == 999
 	replace 		hired_women = 0 if hired_women == .  
-	
 	*** we do not include child labor days
 	
 * mutual labor days from other households
-
 	tab 			as02aq42a
 	*** 247 received mutual labor, 4587 did not
 	
@@ -292,9 +281,9 @@
 	replace			mutual_women = 0 if as02aq42a == 2
 	replace			mutual_women = 0 if as02aq42a == . 
 	replace			mutual_women = 0 if mutual_women == . 
-
 	*** we do not include child labor days
 
+	
 * **********************************************************************
 * 5 - impute labor outliers
 * **********************************************************************
@@ -323,7 +312,7 @@
 * impute each variable in local		
 	foreach var of loc laborimp {
 		mi register			imputed `var' // identify variable to be imputed
-		sort				clusterid hh_num ord field parcel, stable // sort to ensure reproducability of results
+		sort				hid field parcel, stable // sort to ensure reproducability of results
 		mi impute 			pmm `var' i.clusterid, add(1) rseed(245780) ///
 								noisily dots force knn(5) bootstrap
 	}						
@@ -357,13 +346,13 @@
 * 6 - end matter, clean up to save
 * **********************************************************************
 
-	keep 			clusterid hh_num ord field parcel plant_labor plant_labor_all ///
+	keep 			hid clusterid hh_num field parcel plant_labor plant_labor_all ///
 					harvest_labor harvest_labor_all
 
 * create unique household-plot identifier
-	isid				clusterid hh_num ord field parcel
-	sort				clusterid hh_num ord field parcel, stable 
-	egen				plot_id = group(clusterid hh_num ord field parcel)
+	isid				hid field parcel
+	sort				hid field parcel
+	egen				plot_id = group(hid field parcel)
 	lab var				plot_id "unique field and parcel identifier"
 
 	compress
@@ -371,16 +360,10 @@
 	summarize
 
 * save file
-		customsave , idvar(plot_id) filename("2011_as2ap2") ///
-			path("`export'") dofile(2011_as2ap2) user($user)
+		customsave , idvar(plot_id) filename("2011_as1p2") ///
+			path("`export'") dofile(2011_as1p2) user($user)
 
 * close the log
 	log	close
 
 /* END */
-
-	
-	
-	
-	
-	
