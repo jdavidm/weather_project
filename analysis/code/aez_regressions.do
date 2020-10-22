@@ -4,7 +4,7 @@
 * Stata v.16.1
 
 * does
-	* NOTE IT TAKES 90 MIN TO RUN ALL REGRESSIONS
+	* NOTE IT TAKES 85 MIN TO RUN ALL REGRESSIONS
 	* loads multi country data set
 	* runs rainfall and temperature for ag-eco zone
 	* outputs results file for analysis
@@ -76,19 +76,19 @@ foreach l of local levels {
 		
 		* weather
 			reg 		lntf_yld `v' if aez == `l', vce(cluster hhid)
-			post 		`myresults' (`l') ("`sat'") ("`ext'") ("tf") ("reg1") ///
+			post 		`aez_results' (`l') ("`sat'") ("`ext'") ("tf") ("reg1") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 
 		* weather and fe	
 			xtreg 		lntf_yld `v' i.year if aez == `l', fe vce(cluster hhid)
-			post 		`myresults' (`l') ("`sat'") ("`ext'") ("tf") ("reg2") ///
+			post 		`aez_results' (`l') ("`sat'") ("`ext'") ("tf") ("reg2") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 
 		* weather and inputs and fe
 			xtreg 		lntf_yld `v' `inputsrs' i.year if aez == `l', fe vce(cluster hhid)
-			post 		`myresults' (`l') ("`sat'") ("`ext'") ("tf") ("reg3") ///
+			post 		`aez_results' (`l') ("`sat'") ("`ext'") ("tf") ("reg3") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 			
@@ -96,19 +96,19 @@ foreach l of local levels {
 		
 		* weather
 			reg 		lncp_yld `v' if aez == `l', vce(cluster hhid)
-			post 		`myresults' (`l') ("`sat'") ("`ext'") ("cp") ("reg1") ///
+			post 		`aez_results' (`l') ("`sat'") ("`ext'") ("cp") ("reg1") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 
 		* weather and fe	
 			xtreg 		lncp_yld `v' i.year if aez == `l', fe vce(cluster hhid)
-			post 		`myresults' (`l') ("`sat'") ("`ext'") ("cp") ("reg2") ///
+			post 		`aez_results' (`l') ("`sat'") ("`ext'") ("cp") ("reg2") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 
 		* weather and inputs and fe
 			xtreg 		lncp_yld `v' `inputsrs' i.year if aez == `l', fe vce(cluster hhid)
-			post 		`myresults' (`l') ("`sat'") ("`ext'") ("cp") ("reg3") ///
+			post 		`aez_results' (`l') ("`sat'") ("`ext'") ("cp") ("reg3") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 
@@ -123,11 +123,14 @@ foreach l of local levels {
 	drop if		loglike == .
 	
 * create country type variable
-	lab def		country 1 "Ethiopia" 2 "Malawi" 3 "Mali" ///
-					4 "Niger" 5 "Nigeria" 6 "Tanzania" ///
-					7 "Uganda"
-	lab val		country country
-	lab var		country "Country"
+	lab def		aez 	312 "Tropic-warm/semiarid" ///
+						313 "Tropic-warm/subhumid" ///
+						314 "Tropic-warm/humid" ///
+						322 "Tropic-cool/semiarid" ///
+						323 "Tropic-cool/subhumid" ///
+						324 "Tropic-cool/humid"
+	lab val		aez aez
+	lab var		aez "Agro-ecological zones"
 	
 * create data type variables
 *	lab define 	dtype 0 "cx" 1 "lp" 2 "sp"
@@ -153,7 +156,7 @@ foreach l of local levels {
 	lab var		dfr "Degrees of freedom"
 
 * create unique id variable
-	egen 		reg_id = group(country sat ext depvar regname varname)
+	egen 		reg_id = group(aez sat ext depvar regname varname)
 	lab var 	reg_id "unique regression id"
 	
 * create variable to record the name of the rainfall variable
@@ -300,8 +303,8 @@ order	reg_id
 	
 	compress
 	
-	customsave 	, idvarname(reg_id) filename("lsms_complete_results.dta") ///
-		path("`results'") dofile(regression) user($user)
+	customsave 	, idvarname(reg_id) filename("lsms_aez_results.dta") ///
+		path("`results'") dofile(aez_regressions) user($user)
 
 * close the log
 	log	close
