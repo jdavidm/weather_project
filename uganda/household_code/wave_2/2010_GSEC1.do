@@ -1,34 +1,75 @@
-clear all
+* Project: WB Weather
+* Created on: Aug 2020
+* Created by: themacfreezie
+* Edited by: jdm
+* Stata v.16
 
-*attempting to clean Uganda household variables
-global user "themacfreezie"
+* does
+	* household Location data (2010_GSEC1) for the 1st season
 
-**********************************************************************************
-**	UNPS 2010 (Wave 2) - General(?) Section 1 
-**********************************************************************************
+* assumes
+	* customsave.ado
+	* mdesc.ado
 
-* For household data
-loc root = "C:\Users/$user\Dropbox\Weather_Project\Data\Uganda\analysis_datasets\Uganda_raw\UGA_2010"
-* To export results
-loc export = "C:\Users/$user\Dropbox\Weather_Project\Data\Uganda\analysis_datasets\Uganda_refined\UGA_2010"
+* TO DO:
+	* done
 
-use "`root'/GSEC1", clear
+	
+* **********************************************************************
+* 0 - setup
+* **********************************************************************
 
-isid HHID
-rename HHID hhid
+* define paths	
+	loc root 		= "$data/household_data/uganda/wave_2/raw"  
+	loc export 		= "$data/household_data/uganda/wave_2/refined"
+	loc logout 		= "$data/household_data/uganda/logs"
+	
+* open log	
+	cap log 		close
+	log using 		"`logout'/2010_GSEC1", append
 
-rename h1aq1 district
-rename h1aq2b county
-rename h1aq3b subcounty
-rename h1aq4b parish
+	
+* **********************************************************************
+* 1 - UNPS 2009 (Wave 2) - General(?) Section 1 
+* **********************************************************************
 
-tab region, missing
+* import wave 2 season 1
+	use 			"`root'/GSEC1", clear
 
-keep hhid region district county subcounty parish
+* rename variables
+	isid 			HHID
+	rename 			HHID hhid
 
-*	Prepare for export
-compress
-describe
-summarize 
-sort region
-save "`export'/2010_GSEC1", replace
+	rename 			h1aq1 district
+	rename 			h1aq2b county
+	rename 			h1aq3b subcounty
+	rename 			h1aq4b parish
+	rename 			hh_status hh_status2010
+	***	district variables not labeled in this wave, just coded
+
+	tab 			region, missing
+
+* drop if missing
+	drop if			district == ""
+	*** dropped 25 observations
+	
+	
+* **********************************************************************
+* 2 - end matter, clean up to save
+* **********************************************************************
+
+	keep 			hhid region district county subcounty parish ///
+						hh_status2010 spitoff09_10 spitoff10_11 wgt10
+
+	compress
+	describe
+	summarize
+
+* save file
+		customsave , idvar(hhid) filename("2010_GSEC1.dta") ///
+			path("`export'/`folder'") dofile(2010_GSEC1) user($user)
+
+* close the log
+	log	close
+
+/* END */	
