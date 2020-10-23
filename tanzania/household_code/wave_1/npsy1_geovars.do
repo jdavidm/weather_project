@@ -25,7 +25,7 @@
 	
 * open log	
 	cap log 		close
-	log using 		"`logout'/2008_geovars", append
+	log using 		"`logout'/npsy1_geovars", append
 
 	
 * **********************************************************************
@@ -52,8 +52,8 @@
 	summarize
 
 * save file
-		customsave , idvar(hhid) filename("2008_geovars.dta") ///
-			path("`export'") dofile(2008_geovars) user($user)
+		customsave , idvar(hhid) filename("npsy1_geovars.dta") ///
+			path("`export'") dofile(npsy1_geovars) user($user)
 
 * close the log
 	log	close
