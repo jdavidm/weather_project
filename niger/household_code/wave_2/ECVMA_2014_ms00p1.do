@@ -1,12 +1,14 @@
 * Project: WB Weather
 * Created on: May 2020
 * Created by: alj
-* Edited by: alj
-* Last edit: 21 October 2020 
+* Edited by: jdm
+* Last edit: 22 October 2020 
 * Stata v.16
 
 * does
 	* identifies regional elements, for use in price data contruction 
+	* merges in household sampling weights
+	* outputs clean data file ready for combination with wave 2 data
 
 * assumes
 	* customsave.ado
@@ -26,15 +28,31 @@
 
 * open log
 	cap		log 	close
-	log 	using 	"`logout'/2014_MS00P1", append
+	log 	using 	"`logout'/2014_ms00p1", append
 
 	
 * **********************************************************************
-* 1 - rename and identify regional variables
+* 1 - load data and merge in household weights
 * **********************************************************************
 
 * import the first relevant data file
 	use				"`root'/ECVMA2_MS00P1", clear
+
+	merge			1:1 GRAPPE MENAGE EXTENSION using "`root'/ECVMA2014_P1P2_ConsoMen"
+	*** all matched
+	
+* rename variables
+	rename			zae aez
+	lab var			aez "Agro-ecological zone"
+	rename			hhweight pw
+	lab var			pw "Household weight"
+	
+	drop			_merge	
+	
+	
+* **********************************************************************
+* 2 - rename and identify regional variables
+* **********************************************************************
 
 * build household identifier
 * need to rename for English
@@ -63,9 +81,7 @@
 * need to destring cluster again for matching with other files 	
 	destring 		clusterid, replace
 	
-* identify and rename region specific variables 
-	rename			MS00Q10 region
-	label 			var region "region"
+* identify and rename region specific variables
 	rename 			MS00Q11 dept
 	label 			var dept "department"
 	rename 			MS00Q12 canton
@@ -73,15 +89,13 @@
 	rename 		    MS00Q14 zd 
 	label 			var zd "zd number" 
 
-	*destring 		grappe, gen(clusterid) float
-	*destring		ext, gen(extension) float
-	*destring		menage, gen(hh_num) float
-	
+		
 * **********************************************************************
-* 2 - end matter, clean up to save
+* 3 - end matter, clean up to save
 * **********************************************************************
 
-	keep 			hhid_y2 hid clusterid hh_num hh_num1 extension region dept canton zd 
+	keep 			hhid_y2 hid clusterid hh_num hh_num1 extension ///
+						region dept canton zd aez pw
 	isid 			hhid_y2
 	
 	sort			hhid_y2 clusterid hh_num extension

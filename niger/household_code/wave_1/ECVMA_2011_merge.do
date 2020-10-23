@@ -14,9 +14,6 @@
 	* previously cleaned household datasets
 	* customsave.ado
 
-* note
-	* region, dept, and canton are missing for all variables
-
 * TO DO:
 	* done
 	
@@ -34,6 +31,11 @@
 	cap 	log 	close
 	log 	using 	"`logout'/2011_niger_merge", append
 
+	
+* **********************************************************************
+* 1 - combine data sets and merge to parcel level
+* **********************************************************************
+	
 	
 * **********************************************************************
 * 1a - merge plot level data sets together
@@ -92,7 +94,7 @@
 	merge m:1		hid using "`export'/2011_ms00p1", generate(_ms00p1)
 	*** 11745 matched, 0 from master not matched, 1745 from using (which is fine)
 	
-	keep if _ms00p1 == 3
+	keep 			if _ms00p1 == 3
 	
 	drop			_as1p1 _as1p2 _ms00p1
 
@@ -553,7 +555,7 @@
 	lab var			cp_pst	"Any maize plot has pesticide"
 	lab var			cp_hrb	"Any maize plot has herbicide"
 	
-	isid				hid
+	isid			hid
 		
 	order 			region dept canton enumeration clusterid aez pw ///
 						hid year tf_hrv tf_lnd tf_yld tf_lab tf_frt ///
