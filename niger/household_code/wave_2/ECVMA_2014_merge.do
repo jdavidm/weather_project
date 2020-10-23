@@ -2,7 +2,7 @@
 * Created on: May 2020
 * Created by: alj
 * Edited by: jdm
-* Last edit: 22 October 2020 
+* Last edit: 23 October 2020 
 * Stata v.16
 
 * does
@@ -543,6 +543,7 @@
 	lab var			tf_frt	"fertilizer rate (kg/ha)"
 	lab var			tf_pst	"Any plot has pesticide"
 	lab var			tf_hrb	"Any plot has herbicide"
+	lab var 		tf_irr 	"Any plot has irrigation"
 	lab var			cp_lnd	"Total maize area (ha)"
 	lab var			cp_hrv	"Total quantity of maize harvest (kg)"
 	lab var			cp_yld	"Maize yield (kg/ha)"
@@ -550,6 +551,8 @@
 	lab var			cp_frt	"fertilizer rate for maize (kg/ha)"
 	lab var			cp_pst	"Any maize plot has pesticide"
 	lab var			cp_hrb	"Any maize plot has herbicide"
+	lab var 		cp_irr  "Any maize plot has irrigation"
+	*** could probably drop both irr variables - all 0
 	
 	isid			hhid_y2
 		
