@@ -2,7 +2,7 @@
 * Created on: May 2020
 * Created by: alj
 * Edited by: alj
-* Last edit: 21 October 2020 
+* Last edit: 22 October 2020 
 * Stata v.16
 
 * does
@@ -50,10 +50,7 @@
 	rename 			EXTENSION extension 
 	label 			var extension "extension of household"
 	*** will need to do these in every file
-	rename 			AS02EQD ord 
-	label 			var ord "number of order"
-	*** field and parcel not recorded in this file
-	
+
 * create new household id for merging with weather 
 	tostring		clusterid, replace 
 	gen str2 		hh_num1 = string(hh_num,"%02.0f")
@@ -67,13 +64,12 @@
 	destring		hid, replace
 	order			hhid_y2 hid clusterid hh_num hh_num1 
 	
+	label var 		hhid_y2 "unique id - match w2 with weather"
+	label var		hid "unique id - match w2 with w1 (no extension)"
+	label var 		hh_num1 "household id - string changed, not unique"
+	
 * need to destring variables for later use in imputes 	
 	destring 		clusterid, replace
-	
-* need to include clusterid, hhnumber, extension, order, field, and parcel to uniquely identify
-	describe
-	sort 			hhid_y2 ord
-	isid 			hhid_y2 ord 
 		
 	rename 			AS02EQ110B cropid
 	tab 			cropid
@@ -99,8 +95,8 @@
 	rename 			AS02EQ12C harvkgsold 
 
 	describe
-	sort 			hhid_y2 ord 
-	isid 			hhid_y2 ord 
+	sort 			hhid_y2 cropid 
+	isid 			hhid_y2 cropid 
 
 	
 * **********************************************************************
@@ -128,7 +124,7 @@
 	mi set 			wide 	// declare the data to be wide.
 	mi xtset		, clear 	// clear any xtset that may have had in place previously
 	mi register		imputed harvkgsold // identify kilo_fert as the variable being imputed
-	sort			hhid_y2 ord, stable // sort to ensure reproducability of results
+	sort			hhid_y2 cropid, stable // sort to ensure reproducability of results
 	mi impute 		pmm harvkg i.clusterid i.cropid, add(1) rseed(245780) ///
 						noisily dots force knn(5) bootstrap
 	mi 				unset	
@@ -186,6 +182,8 @@
 	*** mean = 0.75, max = 92, min = 0.0003 
 	*** will do some imputations later
 	
+	label var 		cropprice "crop price"
+	
 * make datasets with crop price information
 	preserve
 	collapse 		(p50) p_zd=cropprice (count) n_zd=cropprice, by(cropid region dept canton zd)
@@ -211,7 +209,6 @@
 	collapse 		(p50) p_crop=cropprice (count) n_crop=cropprice, by(cropid)
 	save 			"`export'/2014_as2e2p2_p5.dta", replace 
 	
-
 * **********************************************************************
 * 4 - end matter, clean up to save
 * **********************************************************************

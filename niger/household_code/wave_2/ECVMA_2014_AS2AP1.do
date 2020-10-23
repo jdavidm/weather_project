@@ -2,7 +2,7 @@
 * Created on: May 2020
 * Created by: alj
 * Edited by: alj
-* Last edit: 21 October 2020 
+* Last edit: 22 October 2020 
 * Stata v.16
 
 * does
@@ -52,8 +52,6 @@
 	rename 			EXTENSION extension 
 	label 			var extension "extension of household"
 	*** will need to do these in every file
-	rename 			AS02AQA ord 
-	label 			var ord "number of order"
 	rename 			AS01Q01 field 
 	label 			var field "field number"
 	rename 			AS01Q03 parcel 
@@ -75,10 +73,10 @@
 * need to destring variables for later use in imputes 	
 	destring 		clusterid, replace
 	
-* need to include clusterid, hhnumber, extension, order, field, and parcel to uniquely identify
+* hhid_y2 field parcel to uniquely identify
 	describe
-	sort 			hhid_y2 ord 
-	isid 			hhid_y2 ord
+	sort 			hhid_y2 field parcel  
+	isid 			hhid_y2 field parcel
 
 * determine cultivated plot
 	rename 			AS02AQ04 cultivated
@@ -215,7 +213,7 @@
 	mi set 			wide 	// declare the data to be wide.
 	mi xtset		, clear 	// clear any xtset that may have had in place previously
 	mi register		imputed fert_use // identify kilo_fert as the variable being imputed
-	sort			hhid_y2 ord, stable // sort to ensure reproducability of results
+	sort			hhid_y2 field parcel, stable // sort to ensure reproducability of results
 	mi impute 		pmm fert_use i.clusterid, add(1) rseed(245780) ///
 						noisily dots force knn(5) bootstrap
 	mi 				unset
@@ -342,7 +340,7 @@
 * impute each variable in local		
 	foreach var of loc laborimp {
 		mi register			imputed `var' // identify variable to be imputed
-		sort				hhid_y2 ord, stable 
+		sort				hhid_y2 field parcel, stable 
 		// sort to ensure reproducability of results
 		mi impute 			pmm `var' i.clusterid, add(1) rseed(245780) ///
 								noisily dots force knn(5) bootstrap
@@ -383,18 +381,18 @@
 * 6 - combine planting and harvest labor 
 * **********************************************************************
 
-	keep 			hhid_y2 hid clusterid hh_num hh_num1 extension ord field parcel pest_any ///
+	keep 			hhid_y2 hid clusterid hh_num hh_num1 extension field parcel pest_any ///
 					fert_any fert_use herb_any prep_labor prep_labor_all
 	
 * create unique household-plot identifier
-	isid				hhid_y2 ord 
-	sort				hhid_y2 ord, stable 
-	egen				plot_id = group(hhid_y2 ord)
+	isid				hhid_y2 field parcel 
+	sort				hhid_y2 field parcel, stable 
+	egen				plot_id = group(hhid_y2 field parcel)
 	lab var				plot_id "unique field and parcel identifier"
 	
 					
 * merging in plant labor data
-	merge		m:1 plot_id using "`export'/2014_as2ap2", generate(_as2ap2)
+	merge		1:1 plot_id using "`export'/2014_as2ap2", generate(_as2ap2)
 	*** 305 missing in master, 0 not matched from using 
 	*** presumably those which did not match will have issues matching will full file, also 
 	*** total of 4834 matched 
@@ -405,6 +403,9 @@
 * **********************************************************************
 * 4 - end matter, clean up to save
 * **********************************************************************
+	label var 		hhid_y2 "unique id - match w2 with weather"
+	label var		hid "unique id - match w2 with w1 (no extension)"
+	label var 		hh_num1 "household id - string changed, not unique"
 
 	compress
 	describe

@@ -2,7 +2,7 @@
 * Created on: June 2020
 * Created by: alj
 * Edited by: alj
-* Last edit: 21 October 2020 
+* Last edit: 22 October 2020 
 * Stata v.16
 
 * does
@@ -49,8 +49,6 @@
 	rename 			EXTENSION extension 
 	label 			var extension "extension of household"
 	*** will need to do these in every file
-	rename 			AS02AQA ord 
-	label 			var ord "number of order"
 	rename 			AS02AQ01 field 
 	label 			var field "field number"
 	rename 			AS02AQ03 parcel 
@@ -73,10 +71,11 @@
 	destring 		clusterid, replace
 	
 	
-* need to include clusterid, hhnumber, extension, order, field, and parcel to uniquely identify
+* hhid_y2 field, and parcel to uniquely identify
 	describe
-	sort 			hhid_y2 ord
-	isid 			hhid_y2	ord 
+	sort 			hhid_y2 field parcel
+	*isid 			hhid_y2	field parcel  
+	*** NOT UNIQUELY IDENTIFYING - will address at the end of the file 
 
 * determine cultivated plot
 	rename 			AS02AQ04 cultivated
@@ -191,7 +190,7 @@
 * impute each variable in local		
 	foreach var of loc labor {
 		mi register			imputed `var' // identify variable to be imputed
-		sort				hhid_y2 ord, stable 
+		sort				hhid_y2 field parcel, stable 
 		// sort to ensure reproducability of results
 		mi impute 			pmm `var' i.clusterid, add(1) rseed(245780) ///
 								noisily dots force knn(5) bootstrap
@@ -228,8 +227,8 @@
 	*** no missing values
 	sum 			plant_labor plant_labor_all
 	*** which is used will not make that much of a difference
-	*** with free labor: average = 48.1, max = 392
-	*** without free labor: average = 49.1, max = 392
+	*** with free labor: average = 46.9, max = 392
+	*** without free labor: average = 47.4, max = 392
 	
 * drop intermediate variables
 	drop 			hh_1- mutual_plant_labor
@@ -347,7 +346,7 @@
 * impute each variable in local		
 	foreach var of loc laborimp {
 		mi register			imputed `var' // identify variable to be imputed
-		sort				hhid_y2 ord, stable 
+		sort				hhid_y2 field parcel, stable 
 		// sort to ensure reproducability of results
 		mi impute 			pmm `var' i.clusterid, add(1) rseed(245780) ///
 								noisily dots force knn(5) bootstrap
@@ -383,15 +382,24 @@
 * **********************************************************************
 * 6 - end matter, clean up to save
 * **********************************************************************
-
-	keep 			hhid_y2 hid clusterid hh_num hh_num1 extension ord field parcel plant_labor plant_labor_all ///
-					harvest_labor harvest_labor_all
+		
+* collapse to get rid of multiple observations of same crop on same parcel
+	collapse		(sum) plant_labor plant_labor_all harvest_labor harvest_labor_all, ///
+						by(hhid_y2 hid clusterid hh_num hh_num1 extension field parcel)
+	
+* need to include hid field parcel to uniquely identify
+	sort 			hhid_y2 field parcel
+	isid 			hhid_y2 field parcel
 
 * create unique household-plot identifier
-	isid				hhid_y2 ord 
-	sort				hhid_y2 ord, stable 
-	egen				plot_id = group(hhid_y2 ord)
-	lab var				plot_id "unique field and parcel identifier"
+	isid				hhid_y2 field parcel 
+	sort				hhid_y2 field parcel, stable 
+	egen				plot_id = group(hhid_y2 field parcel)
+	lab var				plot_id "unique field and parcel identifier (hhid_y2 field parcel)"
+	
+	label var 		hhid_y2 "unique id - match w2 with weather"
+	label var		hid "unique id - match w2 with w1 (no extension)"
+	label var 		hh_num1 "household id - string changed, not unique"
 
 	compress
 	describe

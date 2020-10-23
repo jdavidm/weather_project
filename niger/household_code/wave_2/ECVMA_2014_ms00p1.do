@@ -98,8 +98,11 @@
 						region dept canton zd aez pw
 	isid 			hhid_y2
 	
-	sort			hhid_y2 clusterid hh_num extension
-	lab var			hhid_y2 "unique identifier"
+	sort			hhid_y2 clusterid hh_num extension	
+	
+	label var 		hhid_y2 "unique id - match w2 with weather"
+	label var		hid "unique id - match w2 with w1 (no extension)"
+	label var 		hh_num1 "household id - string changed, not unique"
 	
 	compress
 	describe

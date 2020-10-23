@@ -2,7 +2,7 @@
 * Created on: June 2020
 * Created by: alj
 * Edited by: alj
-* Last edit: 21 October 2020 
+* Last edit: 22 October 2020 
 * Stata v.16
 
 * does
@@ -47,8 +47,6 @@
 	rename 			EXTENSION extension 
 	label 			var extension "extension of household"
 	*** will need to do these in every file
-	rename 			AS01QA ord 
-	label 			var ord "number of order"
 	rename 			AS01Q01 field 
 	label 			var field "field number"
 	rename 			AS01Q03 parcel 
@@ -70,10 +68,10 @@
 * need to destring variables for later use in imputes 	
 	destring 		clusterid, replace
 	
-* need to include clusterid, hhnumber, extension, order, field, and parcel to uniquely identify
+* hhid_y2 field parcel should uniquely identify 
 	describe
-	sort 			hhid_y2 ord
-	isid 			hhid_y2 ord
+	sort 			hhid_y2 field parcel 
+	isid 			hhid_y2 field parcel 
 
 * determine cultivated plot
 	rename 			AS01Q38 cultivated
@@ -216,7 +214,7 @@
 	mi set 			wide // declare the data to be wide.
 	mi xtset		, clear // this is a precautinary step to clear any existing xtset
 	mi register 	imputed plot_size_hec_GPS // identify plotsize_GPS as the variable being imputed
-	sort			clusterid hh_num extension ord, stable // sort to ensure reproducability of results
+	sort			hhid_y2 field parcel, stable // sort to ensure reproducability of results
 	mi impute 		pmm plot_size_hec_GPS plot_size_hec_SR i.clusterid, add(1) rseed(245780) noisily dots ///
 						force knn(5) bootstrap
 	mi unset
@@ -226,7 +224,7 @@
 	tabstat 		plot_size_hec_GPS plot_size_hec_SR plot_size_hec_GPS_1_, ///
 						by(mi_miss) statistics(n mean min max) columns(statistics) ///
 						longstub format(%9.3g)
-	*** imputed values change VERY little - mean from 2.32 to 2.23 -- all very reasonable changes
+	*** imputed values change VERY little - mean from 2.32 to 2.29 -- all very reasonable changes
 	*** good impute
 
 * drop if anything else is still missing
@@ -243,13 +241,17 @@
 	rename			plot_size_hec_GPS_1_ plotsize
 	lab	var			plotsize	"plot size (ha)"
 
-	keep 			hhid_y2 hid clusterid hh_num hh_num1 extension ord field parcel plotsize
+	keep 			hhid_y2 hid clusterid hh_num hh_num1 extension field parcel plotsize
 
 * create unique household-plot identifier
-	isid			hhid_y2 ord
-	sort			hhid_y2 ord
-	egen			plot_id = group(hhid_y2 ord)
-	lab var			plot_id "unique field and parcel identifier (hhid_y2 ord)"
+	isid			hhid_y2 field parcel 
+	sort			hhid_y2 field parcel, stable 
+	egen			plot_id = group(hhid_y2 field parcel)
+	lab var			plot_id "unique field and parcel identifier (hhid_y2 field parcel)"
+	
+	label var 		hhid_y2 "unique id - match w2 with weather"
+	label var		hid "unique id - match w2 with w1 (no extension)"
+	label var 		hh_num1 "household id - string changed, not unique"
 
 	compress
 	describe

@@ -42,7 +42,7 @@
 * **********************************************************************
 
 * start by loading harvest quantity and value, since this is our limiting factor
-	use 			"`root'/2014_ase1p2.dta", clear
+	use 			"`root'/2014_as2e1p2.dta", clear
 
 	isid 			hhid_y2 field parcel cropid
 
@@ -51,16 +51,16 @@
 	lab var			irr_any "=1 if any irrigation was used"
 	
 * merge in plot size data
-	merge 			m:1 hhid_y2 field parcel cropid using "`root'/2014_as1p1", generate(_as1p1)
-	*** 254 not matched from master out of 1294 not matched 
-	*** most unmerged (1040) are from using, meaning we lack production data
+	merge 			m:1 hhid_y2 field parcel using "`root'/2014_as1p1", generate(_as1p1)
+	*** 270 not matched from master out of 1307 not matched 
+	*** most unmerged (1037) are from using, meaning we lack production data
 	*** per Malawi (rs_plot) we drop all unmerged observations
 	
 	drop			if _as1p1 != 3
 
 * merging in fertilizer, pesticide, herbicide use and labor
-	merge		m:1 hhid_y2 field parcel cropid using "`root'/2014_as2ap1", generate(_as2ap1)
-	*** 43 not matched from master
+	merge		m:1 hhid_y2 field parcel using "`root'/2014_as2ap1", generate(_as2ap1)
+	*** 43 not matched from master, 1130 not matched from using 
 	*** we assume these are plots without inputs
 	
 	replace			pest_any = 0 if pest_any == .
@@ -74,7 +74,7 @@
 	lab val			fert_any yesno
 	lab val			irr_any yesno
 	
-* 1121 did not match from using 	
+* 1130 did not match from using 	
 	drop			if _as2ap1 == 2
 
 * drop observations missing values (not in continuous)
@@ -85,11 +85,14 @@
 
 * merge in regional information 
 	merge m:1		hhid_y2 using "`export'/2014_ms00p1", generate(_ms00p1)
-	*** 11745 matched, 0 from master not matched, 1745 from using (which is fine)
+	*** 8389 matched, 0 from master not matched, 1876 from using (which is fine)
 	
 	keep 			if _ms00p1 == 3
 	
-	drop			_as1p1 _as1p2 _ms00p1
+	rename 			zd enumeration 
+	label var 		region "region"
+	
+	drop			_as2ap1 _as1p1 _ms00p1
 
 	
 * **********************************************************************

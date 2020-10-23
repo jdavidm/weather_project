@@ -2,7 +2,7 @@
 * Created on: May 2020
 * Created by: alj
 * Edited by: alj
-* Last edit: 21 October 2020 
+* Last edit: 22 October 2020 
 * Stata v.16
 
 * does
@@ -51,8 +51,6 @@
 	rename 			EXTENSION extension 
 	label 			var extension "extension of household"
 	*** will need to do these in every file
-	rename 			AS02EQ0 ord 
-	label 			var ord "number of order"
 	rename 			AS02EQ01 field 
 	label 			var field "field number"
 	rename 			AS02EQ03 parcel 
@@ -67,7 +65,7 @@
 	order			hhid_y2 clusterid hh_num hh_num1 extension 
 	
 * create new household id for merging with year 1 
-	egen			hid = concat( clusterid hh_num1  )
+	egen			hid = concat( clusterid hh_num1)
 	destring		hid, replace
 	order			hhid_y2 hid clusterid hh_num hh_num1 
 	
@@ -76,8 +74,9 @@
 	
 * uniquely identify
 	describe
-	sort 			hhid_y2 ord
-	isid 			hhid_y2 ord
+	sort 			hhid_y2 field parcel
+	isid 			hhid_y2 field parcel CULTURE 
+	
 		
 	rename 			CULTURE cropid
 	tab 			cropid
@@ -126,8 +125,8 @@
 	replace			harvkg = 0 if AS02EQ08 == 1 & AS02EQ09 == 100
 	*** 59 missing changed to 0
 	
-	sort 			hhid_y2 ord
-	isid 			hhid_y2 ord
+	sort 			hhid_y2 field parcel cropid
+	isid 			hhid_y2 field parcel cropid
 
 	
 * **********************************************************************
@@ -149,7 +148,7 @@
 	mi set 			wide 	// declare the data to be wide.
 	mi xtset		, clear 	// clear any xtset that may have had in place previously
 	mi register		imputed harvkg // identify kilo_fert as the variable being imputed
-	sort			hhid_y2 ord cropid, stable // sort to ensure reproducability of results
+	sort			hhid_y2 field parcel cropid, stable // sort to ensure reproducability of results
 	mi impute 		pmm harvkg i.clusterid i.cropid, add(1) rseed(245780) ///
 						noisily dots force knn(5) bootstrap
 	mi 				unset	
@@ -223,15 +222,15 @@
 	gen	 		croppricei = .
 	*** 8659 missing values generated
 	
-	bys cropid (hhid_y2 ord): replace croppricei = p_zd if n_zd>=10 & missing(croppricei)
+	bys cropid (hhid_y2 field parcel): replace croppricei = p_zd if n_zd>=10 & missing(croppricei)
 	*** 583 replaced
-	bys cropid (hhid_y2 ord): replace croppricei = p_can if n_can>=10 & missing(croppricei)
+	bys cropid (hhid_y2 field parcel): replace croppricei = p_can if n_can>=10 & missing(croppricei)
 	*** 391 replaced
-	bys cropid (hhid_y2 ord): replace croppricei = p_dept if n_dept>=10 & missing(croppricei)
+	bys cropid (hhid_y2 field parcel): replace croppricei = p_dept if n_dept>=10 & missing(croppricei)
 	*** 2002 replaced 
-	bys cropid (hhid_y2 ord): replace croppricei = p_reg if n_reg>=10 & missing(croppricei)
+	bys cropid (hhid_y2 field parcel): replace croppricei = p_reg if n_reg>=10 & missing(croppricei)
 	*** 4559 replaced
-	bys cropid (hhid_y2 ord): replace croppricei = p_crop if missing(croppricei)
+	bys cropid (hhid_y2 field parcel): replace croppricei = p_crop if missing(croppricei)
 	*** 1124 replaced 
 	lab	var			croppricei	"implied unit value of crop"
 
@@ -263,7 +262,7 @@
 	mi set 			wide 	// declare the data to be wide.
 	mi xtset		, clear 	// clear any xtset that may have had in place previously
 	mi register		imputed cropvalue // identify kilo_fert as the variable being imputed
-	sort			hhid_y2 ord cropid, stable // sort to ensure reproducability of results
+	sort			hhid_y2 field parcel cropid, stable // sort to ensure reproducability of results
 	mi impute 		pmm cropvalue i.clusterid i.cropid, add(1) rseed(245780) ///
 						noisily dots force knn(5) bootstrap
 	mi 				unset	
@@ -311,7 +310,7 @@
 	mi set 			wide 	// declare the data to be wide.
 	mi xtset		, clear 	// clear any xtset that may have had in place previously
 	mi register		imputed mz_hrv // identify kilo_fert as the variable being imputed
-	sort			hhid_y2 ord cropid, stable // sort to ensure reproducability of results
+	sort			hhid_y2 field parcel cropid, stable // sort to ensure reproducability of results
 	mi impute 		pmm mz_hrv i.clusterid if cropid == 1, add(1) rseed(245780) ///
 						noisily dots force knn(5) bootstrap
 	mi 				unset	
@@ -330,34 +329,34 @@
 * replace non-maize harvest values as missing
 	replace			mz_hrv = . if mz_damaged == 0 & mz_hrv == 0
 	*** 13 changes made 
+	label var		mz_damaged "maize damaged"
 	
 * **********************************************************************
 * 5 - end matter, clean up to save
 * **********************************************************************
 
-* create unique household-plot identifier
-	sort			hhid_y2 ord
-	egen			plot_id = group(hhid_y2 ord)
-	lab var			plot_id "unique field and parcel identifier"
-
 * create unique household-plot-crop identifier
-	isid			hhid_y2 ord cropid
-	sort			hhid_y2 ord cropid
-	egen			cropplot_id = group(hhid_y2 ord cropid)
-	lab var			cropplot_id "unique field and parcel and crop identifier"
+	isid			hhid_y2 field parcel cropid
+	sort			hhid_y2 field parcel cropid, stable 
+	egen			crop_id = group(hhid_y2 field parcel cropid)
+	lab var			crop_id "unique field and parcel and crop identifier"
 	
-	keep 			hhid_y2 hid clusterid hh_num hh_num1 extension ord field parcel region dept canton zd cropplot_id plot_id /// 
+	keep 			hhid_y2 hid clusterid hh_num hh_num1 extension field parcel region dept canton zd crop_id /// 
 					mz_hrv mz_damaged cropvalue harvkg cropid 
 					
 	rename 			cropvalue vl_hrv 
 	lab	var			vl_hrv "value of harvest, in 2010 USD"
+	
+	label var 		hhid_y2 "unique id - match w2 with weather"
+	label var		hid "unique id - match w2 with w1 (no extension)"
+	label var 		hh_num1 "household id - string changed, not unique"
 
 	compress
 	describe
 	summarize
 
 * save file
-	customsave , idvar(cropplot_id) filename("2014_as2e1p2.dta") ///
+	customsave , idvar(crop_id) filename("2014_as2e1p2.dta") ///
 		path("`export'") dofile(2014_as2e1p2) user($user)
 
 * close the log
