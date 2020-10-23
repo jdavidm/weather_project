@@ -12,7 +12,11 @@
 	* subsidiary, wave-specific .do files
 
 * TO DO:
+<<<<<<< Updated upstream
 	* done
+=======
+	* complete
+>>>>>>> Stashed changes
 
 	
 * **********************************************************************
@@ -22,8 +26,19 @@
 * define paths
 	loc dofile = "$code/nigeria/household_code"
 
+
 * **********************************************************************
-* 1 - run individual HH cleaning .do files
+* 1 - run conversion factor .do files
+* **********************************************************************
+
+* merge each cleaned file together
+	do 			"`dofile'/wave_1/harvconv_wave_1.do"		//	cleans wv 1 conversions
+	do 			"`dofile'/wave_2/harvconv_wave_2.do"		//	cleans wv 2 conversions
+	do 			"`dofile'/wave_3/harvconv_wave_3.do"		//	cleans wv 3 conversions
+
+	
+* **********************************************************************
+* 2 - run individual HH cleaning .do files
 * **********************************************************************
 
 * loops through three waves of nga hh code
@@ -36,7 +51,7 @@
 	foreach folder of loc folderList {
 
 	* loop through each NGA file in the folder local
-		loc NGA : dir "`dofile'/`folder'" files "NGA*.do"
+		loc NGA : dir "`dofile'/`folder'" files "20*.do"
 	
 	* loop through each file in the above local
 		foreach file in `NGA' {
@@ -46,28 +61,32 @@
 	}		
 }
 
-* **********************************************************************
-* 2 - run wave specific .do files to merge hh data together
-* **********************************************************************
-
-* do each GHSY2 household cleaning files
-	do 			"`dofile'/wave_1/GHSY1_merge.do"			//	merges wv 1 hh datasets
-	do 			"`dofile'/wave_2/GHSY2_merge.do"			//	merges wv 2 hh datasets
-	do 			"`dofile'/wave_3/GHSY3_merge.do"			//	merges wv 3 hh datasets
 
 * **********************************************************************
-* 3 - run wave specific .do files to merge with weather
+* 3 - run wave specific .do files to merge hh data together
 * **********************************************************************
 
-* do each IHS3 household cleaning files
-	do 			"`dofile'/wave_1/GHSY1_build.do"			//	merges NPSY1 to weather
-	do 			"`dofile'/wave_2/GHSY2_build.do"			//	merges NPSY2 to weather
-	do 			"`dofile'/wave_3/GHSY3_build.do"			//	merges NPSY3 to weather
+* merge each cleaned file together
+	do 			"`dofile'/wave_1/ghsy1_merge.do"			//	merges wv 1 hh datasets
+	do 			"`dofile'/wave_2/ghsy2_merge.do"			//	merges wv 2 hh datasets
+	do 			"`dofile'/wave_3/ghsy3_merge.do"			//	merges wv 3 hh datasets
 
+	
+* **********************************************************************
+* 4 - run wave specific .do files to merge with weather
+* **********************************************************************
+
+* merge weather data into cleaned household data
+	do 			"`dofile'/wave_1/ghsy1_build.do"			//	merges NPSY1 to weather
+	do 			"`dofile'/wave_2/ghsy2_build.do"			//	merges NPSY2 to weather
+	do 			"`dofile'/wave_3/ghsy3_build.do"			//	merges NPSY3 to weather
+
+	
 * **********************************************************************
 * 5 - run .do file to append each wave
 * **********************************************************************
 
-	do			"$code/nigeria/household_code/NGA_append_built.do"				// append waves
+	do			"$code/nigeria/household_code/nga_append_built.do"			// append waves
+	
 	
 /* END */
