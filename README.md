@@ -27,7 +27,7 @@ go through each step, from cleaning raw data to analysis.
 
 ## Data cleaning
 
-The code in `masterDoFile.do` (to be done) replicates
+The code in `projectdo.do` (to be done) replicates
     the data cleaning and analysis.
 
 ### Pre-requisites
@@ -41,7 +41,8 @@ The code in `masterDoFile.do` (to be done) replicates
     3. `estout`
     4. `customsave`
     5. `winsor2`
-
+    6. `mdesc`
+    7. `distinct`
 
 #### Folder structure
 
@@ -52,7 +53,7 @@ The general repo structure looks as follows:<br>
 ```stata
 weather_project
 ├────README.md
-├────masterDoFile.do
+├────projectdo.do
 │    
 ├────country             /* one dir for each country */
 │    ├──household_code
