@@ -124,8 +124,8 @@
 	replace 		y2_hhid = "0" if y2_hhid == ""
 	replace 		y3_hhid = "0" if y3_hhid == ""
 	
-	egen			pl_id = group(y1_hhid y2_hhid y3_hhid)
-	lab var			pl_id "panel household id"
+	egen			tza_id = group(y1_hhid y2_hhid y3_hhid)
+	lab var			tza_id "Tanzania panel household id"
 
 	gen				country = "tanzania"
 	lab var			country "Country"
@@ -133,14 +133,14 @@
 	gen				dtype = "lp"
 	lab var			dtype "Data type"
 	
-	isid			pl_id year
+	isid			tza_id year
 
 * drop unnecessary variables
 	drop			y1_hhid y2_hhid y3_hhid mover2010 mover2012 _merge
 						
 * order variables
 	order			country dtype region district ward ea strataid clusterid ///
-						pl_id hhweight year
+						tza_id hhweight year
 				
 * label household variables	
 	lab var			strataid  "Design Strata"
@@ -311,8 +311,9 @@
 		
 * save file
 	qui: compress
-	customsave 	, idvarname(pl_id) filename("tza_lp.dta") ///
+	customsave 	, idvarname(tza_id) filename("tza_lp.dta") ///
 		path("`export'") dofile(tza_append_built) user($user)
+		
 		
 * **********************************************************************
 * 4 - generate wave 4 cross section Tanzania 
@@ -353,12 +354,23 @@
 * append the two panel files
 	append		using "`export'/tza_cx.dta", force	
 
+* rename household weight
+	rename		hhweight pw
+
+* drop variables
+	drop			region district ward ea strataid clusterid
+	
+	rename			tza_id lp_id
+	
+	order			country dtype cx_id lp_id year aez pw	
+		
 * create household, country, and data identifiers
+	sort			lp_id cx_id year
 	egen			uid = seq()
 	lab var			uid "unique id"
 	
 * order variables
-	order		uid pl_id cx_id, after(clusterid)
+	order			uid
 	
 * save file
 	qui: compress

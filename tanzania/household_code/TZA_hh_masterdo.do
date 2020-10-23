@@ -43,7 +43,16 @@
 		foreach file in `HHfile' {
 	    
 		* run each individual file
-			do "`dofile'/`folder'/`file'"		
+			do "`dofile'/`folder'/`file'"	
+	}
+	* loop through each HHSEC file in the folder local
+		loc GEOfile : dir "`dofile'/`folder'" files "*GEO*.do"
+	
+	* loop through each file in the above local
+		foreach file in `GEOfile' {
+	    
+		* run each individual file
+			do "`dofile'/`folder'/`file'"	
 	}
 	* loop through each AGSEC file in the folder local
 		loc AGfile : dir "`dofile'/`folder'" files "*AGSEC*.do"

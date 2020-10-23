@@ -31,6 +31,7 @@
 	loc		logout 	= 	"$data/merged_data/malawi/logs"
 
 * open log	
+	cap 	log 	close 
 	log 	using 		"`logout'/mwi_append_built", append
 
 	
@@ -101,11 +102,11 @@
 	drop		dup
 
 * create household, country, and data identifiers
-	egen		spid = group(case_id)
-	lab var		spid "Short panel household id"
+	egen		sp_id = group(case_id)
+	lab var		sp_id "Short panel household id"
 	
-	egen		sp_id = seq()
-	lab var		sp_id "Short panel unique id"
+	egen		spid = seq()
+	lab var		spid "Short panel unique id"
 
 	gen			country = "malawi"
 	lab var		country "Country"
@@ -125,7 +126,7 @@
 	
 * save file
 	qui: compress
-	customsave 	, idvarname(sp_id) filename("mwi_sp.dta") ///
+	customsave 	, idvarname(spid) filename("mwi_sp.dta") ///
 		path("`export'") dofile(mwi_append_built) user($user)
 
 
@@ -143,8 +144,8 @@
 	format %15.0g case_id
 	
 * create household panel id for lp1 and lp2 using case_id
-	egen		lpid = group(case_id)
-	lab var		lpid "Long panel household id"	
+	egen		lp_id = group(case_id)
+	lab var		lp_id "Long panel household id"	
 	
 * append the third long panel file	
 	append		using "`root'/wave_4/lp3_merged.dta", force	
@@ -152,11 +153,11 @@
 * fill in missing lpid for third long panel using y2_hhid
 	egen		aux_id = group(y2_hhid)
 	xtset 		aux_id
-	xfill 		lpid if aux_id != ., i(aux_id)
+	xfill 		lp_id if aux_id != ., i(aux_id)
 	drop		aux_id
 	
 * drop split-off households, keep only original households
-	duplicates 	tag lpid year, generate(dup)
+	duplicates 	tag lp_id year, generate(dup)
 	drop if		dup > 0 & mover_R1R2R3 == 1
 	drop		dup
 	duplicates 	tag case_id year, generate(dup)
@@ -168,9 +169,9 @@
 	drop		dup
 
 * create household, country, and data identifiers
-	sort		lpid year
-	egen		lp_id = seq()
-	lab var		lp_id "Long panel unique id"
+	sort		lp_id year
+	egen		lpid = seq()
+	lab var		lpid "Long panel unique id"
 
 	gen			country = "malawi"
 	lab var		country "Country"
@@ -207,12 +208,94 @@
 	append		using "`export'/mwi_sp.dta", force	
 	append		using "`export'/mwi_lp.dta", force	
 
+* drop dry season values - we just focus on the rainy season (rs)
+	drop		ds*
+
+* create or rename variables for maize production (seed rate missing in data)
+	rename		rsmz_harvestimp cp_hrv
+	lab var 	cp_hrv "Harvest of maize (kg)"
+		
+	rename		rsmz_cultivatedarea cp_lnd
+	lab var 	cp_lnd "Land area planted to maize (ha)"
+		
+	gen 		cp_yld = cp_hrv/cp_lnd
+	lab var 	cp_yld "Yield of maize (kg/ha)"
+
+	gen 		cp_lab = rsmz_labordaysimp/cp_lnd
+	lab var 	cp_lab "Labor for maize (days/ha)"
+		
+	rename		rsmz_fert_inorgpct cp_frt
+	lab var		cp_frt "Fertilizer (inorganic) for maize (kg/ha)"
+		
+	rename		rsmz_pest cp_pst
+	lab var		cp_pst "Pesticide/Insecticide for maize (=1)"
+		
+	rename		rsmz_herb cp_hrb
+	lab var		cp_hrb "Herbicide/Fungicide for maize (=1)"
+		
+	rename		rsmz_irrigationany cp_irr
+	lab var		cp_irr "Irrigation for maize (=1)"
+
+* convert kwacha into 2010 USD
+* exchange rates come from world_bank_exchange_rates.xlsx
+	replace		rs_harvest_valueimp = rs_harvest_valueimp/124.3845647 ///
+					if year == 2008
+	replace		rs_harvest_valueimp = rs_harvest_valueimp/134.2107246 ///
+					if year == 2009
+	replace		rs_harvest_valueimp = rs_harvest_valueimp/201.9788745 ///
+					if year == 2012
+	replace		rs_harvest_valueimp = rs_harvest_valueimp/310.8160671 ///
+					if year == 2014
+	replace		rs_harvest_valueimp = rs_harvest_valueimp/374.6410851 ///
+					if year == 2015
+		
+* create or rename variables for total farm production (seed rate missing)
+	rename		rs_harvest_valueimp tf_hrv
+	lab var 	tf_hrv "Harvest of all crops (2010 USD)"
+		
+	rename		rs_cultivatedarea tf_lnd
+	lab var 	tf_lnd "Land area planted to all crops (ha)"
+		
+	gen 		tf_yld = tf_hrv/tf_lnd
+	lab var 	tf_yld "Yield of all crops (USD/ha)"
+		
+	gen 		tf_lab = rs_labordaysimp/tf_lnd
+	lab var 	tf_lab "Labor for all crops (days/ha)"
+		
+	rename		rs_fert_inorgpct tf_frt
+	lab var		tf_frt "Fertilizer (inorganic) for all crops (kg/ha)"
+		
+	rename		rs_pest tf_pst
+	lab var		tf_pst "Pesticide/Insecticide for all crops (=1)"
+		
+	rename		rs_herb tf_hrb
+	lab var		tf_hrb "Herbicide/Fungicide for all crops (=1)"
+		
+	rename		rs_irrigationany tf_irr
+	lab var		tf_irr "Irrigation for all crops (=1)"
+	
+* rename household weights
+	rename		hhweight pw
+	
+* drop unnecessary variables and reorder remaining
+	drop		rs* case_id region district urban strata cluster ea_id spid ///
+					y2_hhid y3_hhid hhid hh_x02 hh_x04 intmonth ///
+					intyear qx_type ta lpid
+	
+	order		country dtype cx_id sp_id lp_id year aez pw tf_hrv tf_lnd tf_yld tf_lab ///
+					tf_frt tf_pst tf_hrb tf_irr cp_hrv cp_lnd cp_yld cp_lab ///
+					cp_frt cp_pst cp_hrb cp_irr
+
+* create household, country, and data identifiers
+	egen			uid = seq()
+	lab var			uid "unique id"
+	
 * order variables
-	order		country dtype region district urban ta strata cluster ///
-				ea_id case_id spid- y3_hhid hhweight	
+	order			uid
+	
 * save file
 	qui: compress
-	customsave 	, idvarname(case_id) filename("mwi_complete.dta") ///
+	customsave 	, idvarname(uid) filename("mwi_complete.dta") ///
 		path("`export'") dofile(mwi_append_built) user($user)
 
 * close the log

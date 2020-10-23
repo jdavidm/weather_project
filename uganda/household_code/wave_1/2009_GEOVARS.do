@@ -1,15 +1,14 @@
 * Project: WB Weather
-* Created on: Aug 2020
-* Created by: alj
+* Created on: Oct 2020
+* Created by: jdm
 * Edited by: jdm
 * Stata v.16
 
 * does
-	* household Location data (2009_GSEC1) for the 1st season
+	* cleans geovars
 
 * assumes
 	* customsave.ado
-	* mdesc.ado
 
 * TO DO:
 	* done
@@ -26,48 +25,36 @@
 	
 * open log	
 	cap log 		close
-	log using 		"`logout'/2009_GSEC1", append
+	log using 		"`logout'/2009_geovars", append
 
 	
 * **********************************************************************
-* 1 - UNPS 2009 (Wave 1) - General(?) Section 1 
+* 1 - UNPS 2009 (Wave 1) - geovars
 * **********************************************************************
 
-* import wave 1 season 1
-	use 			"`root'/2009_GSEC1.dta", clear
+* import wave 1 geovars
+	use 			"`root'/2009_UNPS_Geovars_0910.dta", clear
 
 * rename variables
 	isid 			HHID
 	rename 			HHID hhid
 
-	rename 			h1aq1 district
-	rename 			h1aq2b county
-	rename 			h1aq3b subcounty
-	rename 			h1aq4b parish
-	rename 			hh_status hh_status2009
-	***	district variables not labeled in this wave, just coded
-
-	tab 			region, missing
-
-* drop if missing
-	drop if			district == .
-	*** dropped 6 observations
+	rename 			ssa_aez09 aez
 	
 	
 * **********************************************************************
 * 2 - end matter, clean up to save
 * **********************************************************************
 
-	keep 			hhid region district county subcounty parish ///
-						hh_status2009 wgt09wosplits wgt09
+	keep 			hhid aez
 
 	compress
 	describe
 	summarize
 
 * save file
-		customsave , idvar(hhid) filename("2009_GSEC1.dta") ///
-			path("`export'") dofile(2009_GSEC1) user($user)
+		customsave , idvar(hhid) filename("2009_geovars.dta") ///
+			path("`export'") dofile(2009_geovars) user($user)
 
 * close the log
 	log	close

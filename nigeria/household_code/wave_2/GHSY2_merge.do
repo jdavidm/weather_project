@@ -539,9 +539,9 @@
 	*** max is determined by comparing the right end tail distribution to wave 1 maxes using a kdensity peak.
 	sum 			tf_lab , detail			
 	
-	kdensity 		tf_lab if tf_lab > 1400
+*	kdensity 		tf_lab if tf_lab > 1400
 	*** peak is around 1900
-	kdensity tf_lab if tf_lnd < 0.1
+*	kdensity tf_lab if tf_lnd < 0.1
 	
 	replace 		tf_lab = . if tf_lab > 1400 
 	*** 71 changes
@@ -568,7 +568,7 @@
 	
 * impute tf_hrv outliers
 
-	kdensity 		tf_yld if tf_yld > 9000
+*	kdensity 		tf_yld if tf_yld > 9000
 	*** max is 11000
 	sum 			tf_yld, detail
 	*** mean 835, max 17300
@@ -594,9 +594,9 @@
 						
 * impute cp_lab
 	sum 			cp_lab, detail
-	scatter			cp_lnd cp_lab
-	kdensity cp_lab if cp_lab > 1800
-	kdensity cp_lab if cp_lab > 1800 & cp_lab < 4000
+*	scatter			cp_lnd cp_lab
+*	kdensity cp_lab if cp_lab > 1800
+*	kdensity cp_lab if cp_lab > 1800 & cp_lab < 4000
 	*** max is 2100. the 1800 is the max of cp_lab in wave 2
 
 	replace 		cp_lab = . if cp_lab > 1800
@@ -624,7 +624,7 @@
 	*** mean 2375.3, std dev 5878.58, max is 83841.6
 	sum 			cp_hrv, detail
 	*** mean 803.43, std dev 1000.29, max 9600
-	kdensity cp_yld if cp_yld > 20000
+*	kdensity cp_yld if cp_yld > 20000
 	
 	sum cp_hrv if cp_lnd < 0.1 & cp_yld > 10000, detail
 	
@@ -674,11 +674,16 @@
 * verify unique household id
 	isid			hhid
 
+* merge in geovars
+	merge			m:1 hhid using "`root'/NGA_geovars", force
+	keep			if _merge == 3
+	drop			_merge
+	
 * generate year identifier
 	gen				year = 2012
 	lab var			year "Year"
 		
-	order 			zone state lga sector ea hhid /// 	
+	order 			zone state lga sector ea hhid aez year /// 	
 					tf_hrv tf_lnd tf_yld tf_lab tf_frt ///
 					tf_pst tf_hrb tf_irr cp_hrv cp_lnd cp_yld cp_lab ///
 					cp_frt cp_pst cp_hrb cp_irr

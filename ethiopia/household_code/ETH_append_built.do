@@ -55,44 +55,24 @@
 	count if 		year == 2015
 	*** wave 3 has 2718
 	
-	gen				pl_id = household_id if year == 2011
-	replace			pl_id = household_id2 if year == 2013 | year == 2015
-	lab var			pl_id "panel household id/hhid"
-	*** important to note: pl_id is therefore not unique without the year
-	*** is this the right approach?
+* drop observations missing year 1 household id
+	drop if			household_id == ""
 	
+* dropping 2017 weather data
+	drop			*2017
+
+* generate ethiopia panel id
+	egen			eth_id = group(household_id)
+	lab var			eth_id "Ethiopia panel household id"	
+
+* generate country and data types
 	gen				country = "ethiopia"
 	lab var			country "Country"
 
 	gen				dtype = "lp"
 	lab var			dtype "Data type"
 	
-	isid			pl_id year
-	
-* order variables
-	order			country dtype region zone woreda ea ///
-						 year
-						 
-* label household variables	
-	lab var			region "Region"
-	lab var			zone "Zone"	
-	lab var			woreda "Woreda"
-	lab var			ea "Enumeration area"
-	
-	
-* **********************************************************************
-* 4 - End matter
-* **********************************************************************
-
-* create household, country, and data identifiers
-	egen			uid = seq()
-	lab var			uid "unique id"
-	
-* order variables
-	order			uid pl_id
-	
-* dropping 2017 weather data
-	drop			*2017
+	isid			eth_id year
 	
 * generate one variable for sampling weight
 	gen				weight = pw
@@ -106,6 +86,25 @@
 	
 	rename			weight pw
 	lab var			pw "Household Sample Weight"
+	
+* drop variables
+	drop			region zone woreda ea household_id2 household_id
+	
+	order			country dtype eth_id year aez pw
+	
+	
+* **********************************************************************
+* 4 - end matter
+* **********************************************************************
+
+* create household, country, and data identifiers
+	sort			eth_id year
+	egen			uid = seq()
+	lab var			uid "Unique id"
+	
+* order variables
+	order			uid
+
 	
 * save file
 	qui: compress

@@ -204,7 +204,7 @@
 
 * save file
 		customsave , idvar(hhid) filename("2011_AGSEC3A.dta") ///
-			path("`export'/`folder'") dofile(2011_AGSEC3A) user($user)
+			path("`export'") dofile(2011_AGSEC3A) user($user)
 
 * close the log
 	log	close
