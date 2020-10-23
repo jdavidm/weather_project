@@ -547,6 +547,7 @@
 	lab var			tf_frt	"fertilizer rate (kg/ha)"
 	lab var			tf_pst	"Any plot has pesticide"
 	lab var			tf_hrb	"Any plot has herbicide"
+	lab var			tf_irr	"Any plot has irrigation"
 	lab var			cp_lnd	"Total maize area (ha)"
 	lab var			cp_hrv	"Total quantity of maize harvest (kg)"
 	lab var			cp_yld	"Maize yield (kg/ha)"
@@ -554,6 +555,7 @@
 	lab var			cp_frt	"fertilizer rate for maize (kg/ha)"
 	lab var			cp_pst	"Any maize plot has pesticide"
 	lab var			cp_hrb	"Any maize plot has herbicide"
+	lab var			cp_irr	"Any plot has irrigation"
 	
 	isid			hid
 		

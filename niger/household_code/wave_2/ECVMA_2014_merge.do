@@ -133,8 +133,8 @@
 						mz_hrv mz_lnd mz_lab mz_frt ///
 			 (max)	pest_any herb_any irr_any  ///
 						mz_pst mz_hrb mz_irr mz_damaged, ///
-						by(hhid_y2 clusterid hh_num field parcel ///
-						region dept canton enumeration aez pw)
+						by(hhid_y2 hid clusterid hh_num extension field ///
+						parcel region dept canton enumeration aez pw)
 
 * replace non-maize harvest values as missing
 	tab				mz_damaged, missing
@@ -144,7 +144,7 @@
 	}	
 	replace			mz_hrv = . if mz_damaged == . & mz_hrv == 0		
 	drop 			mz_damaged
-	*** 1,421 changes made	
+	*** 814 changes made	
 
 	
 * **********************************************************************
@@ -522,7 +522,7 @@
 	}		
 	
 	collapse (max)	tf_* cp_*, by(region dept canton enumeration ///
-						clusterid hhid_y2 aez pw)
+						clusterid hhid_y2 hid extension aez pw)
 	*** we went from 5,805 to 2,223 observations 
 	
 * return non-maize production to missing
@@ -547,7 +547,7 @@
 * **********************************************************************
 
 * generate year identifier
-	gen				year = 2011
+	gen				year = 2014
 	lab var			year "Year"
 	
 * label variables
@@ -558,7 +558,7 @@
 	lab var			tf_frt	"fertilizer rate (kg/ha)"
 	lab var			tf_pst	"Any plot has pesticide"
 	lab var			tf_hrb	"Any plot has herbicide"
-	lab var 		tf_irr 	"Any plot has irrigation"
+	lab var			tf_irr	"Any plot has irrigation"
 	lab var			cp_lnd	"Total maize area (ha)"
 	lab var			cp_hrv	"Total quantity of maize harvest (kg)"
 	lab var			cp_yld	"Maize yield (kg/ha)"
@@ -566,13 +566,12 @@
 	lab var			cp_frt	"fertilizer rate for maize (kg/ha)"
 	lab var			cp_pst	"Any maize plot has pesticide"
 	lab var			cp_hrb	"Any maize plot has herbicide"
-	lab var 		cp_irr  "Any maize plot has irrigation"
-	*** could probably drop both irr variables - all 0
+	lab var			cp_irr	"Any plot has irrigation"
 	
 	isid			hhid_y2
 		
 	order 			region dept canton enumeration clusterid aez pw ///
-						hhid_y2 year tf_hrv tf_lnd tf_yld tf_lab tf_frt ///
+						hhid_y2 extension hid year tf_hrv tf_lnd tf_yld tf_lab tf_frt ///
 						tf_pst tf_hrb tf_irr cp_hrv cp_lnd cp_yld ///
 						cp_lab cp_frt cp_pst cp_hrb cp_irr
 	compress

@@ -44,16 +44,18 @@
 	
 * check the number of observations again
 	count
-	*** 8384 observations 
+	*** 3,952 observations 
 	count if 		year == 2011
 	*** wave 1 has 2,233
 	count if 		year == 2014
-	*** wave 2 has  1,735
+	*** wave 2 has  1,729
 
-	
+* create household panel id
 	gen				pl_id = hid
-	replace			pl_id = hhid_y2 if pl_id == .
 	lab var			pl_id "panel household id/hhid"
+	
+	drop			if extension == "1" | extension == "2"
+	*** 39 observations deleted
 
 	gen				country = "niger"
 	lab var			country "Country"
@@ -64,29 +66,22 @@
 	isid			pl_id year
 	
 * order variables
-	order			country dtype region dept canton zd extension ///
-						 clustid
-				
-* label household variables	
-	lab var			region  "Region"
-	lab var			dept "Department"	
-	lab var			canton "Canton"
-	lab var 		zd "Zd"
-	lab var			extension "Extension"
-	lab var			clustid "Cluster ID"
-	 
+	order			country dtype region dept canton enumeration clusterid ///
+						 hhid pl_id pw aez year 
+	
+	drop			extension
 	
 * **********************************************************************
 * 4 - End matter
 * **********************************************************************
 
 * create household, country, and data identifiers
+	sort			pl_id year
 	egen			uid = seq()
 	lab var			uid "unique id"
 	
 * order variables
 	order			uid pl_id
-	
 * save file
 	qui: compress
 	customsave 	, idvarname(uid) filename("ngr_complete.dta") ///
