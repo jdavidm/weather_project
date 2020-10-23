@@ -51,8 +51,9 @@
 	*** wave 2 has  1,729
 
 * create household panel id
-	gen				pl_id = hid
-	lab var			pl_id "panel household id/hhid"
+	sort			hid year
+	egen			ngr_id = group(hid)
+	lab var			ngr_id "Niger panel household id"
 	
 	drop			if extension == "1" | extension == "2"
 	*** 39 observations deleted
@@ -63,28 +64,29 @@
 	gen				dtype = "lp"
 	lab var			dtype "Data type"
 	
-	isid			pl_id year
+	isid			ngr_id year
 	
 * order variables
-	order			country dtype region dept canton enumeration clusterid ///
-						 hhid pl_id pw aez year 
+	drop			extension region dept canton enumeration clusterid
 	
-	drop			extension
+	order			country dtype hhid pw aez year 
+	
 	
 * **********************************************************************
 * 4 - End matter
 * **********************************************************************
 
 * create household, country, and data identifiers
-	sort			pl_id year
+	sort			ngr_id year
 	egen			uid = seq()
 	lab var			uid "unique id"
 	
 * order variables
-	order			uid pl_id
+	order			uid ngr_id
+	
 * save file
 	qui: compress
-	customsave 	, idvarname(uid) filename("ngr_complete.dta") ///
+	customsave 	, idvarname(ngr_id) filename("ngr_complete.dta") ///
 		path("`export'") dofile(ngr_append_built) user($user)
 
 * close the log

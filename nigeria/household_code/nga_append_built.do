@@ -21,6 +21,7 @@
 * **********************************************************************
 
 * define paths
+	loc 	weight	= 	"$data/household_data/nigeria/wave_3/raw"  
 	loc		root 	= 	"$data/merged_data/nigeria"
 	loc		export 	= 	"$data/regression_data/nigeria"
 	loc		logout 	= 	"$data/merged_data/nigeria/logs"
@@ -55,6 +56,22 @@
 	*** wave 2 has 2768
 	count if 		year == 2015
 	*** wave 3 has 2783
+
+* **********************************************************************
+* 2 - merge in sampling weights
+* **********************************************************************
+	
+	merge			m:1 hhid using "`weight'/HHTrack"
+	*** all in master matched
+	
+	keep			if _merge == 3
+	
+	gen				pw = wt_wave1 if year == 2010
+	replace			pw = wt_wave2 if year == 2012
+	replace			pw = wt_wave3 if year == 2015
+	lab var			pw "Final household weight"
+	
+	drop			hhstatus_w1v1 - _merge
 	
 * generate panel id
 	sort			hhid year
@@ -72,7 +89,7 @@
 * drop variables
 	drop			zone state lga sector ea hhid
 	
-	order			country dtype nga_id year aez
+	order			country dtype nga_id pw aez year 
 
 	
 * **********************************************************************
