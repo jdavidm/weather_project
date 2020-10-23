@@ -64,7 +64,7 @@ if $pack == 1 {
 	* temporarily set delimiter to ; so can break the line
 		#delimit ;
 	* for packages/commands, make a local containing any required packages
-		loc userpack "blindschemes mdesc estout reghdfe ftools distinct winsor2" ;
+		loc userpack "blindschemes mdesc estout distinct winsor2" ;
 		#delimit cr
 	
 	* install packages that are on ssc	
