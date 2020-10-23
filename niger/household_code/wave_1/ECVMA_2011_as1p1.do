@@ -55,9 +55,7 @@
 	rename 			as01q05 parcel 
 	label 			var parcel "parcel number"
 	*** cant find "extension" variable like they have in wave 2
-	*** this is a problem because in wave 2 we make a unique id based on 
-		*** clusterid, hhnumber, extension, order, field, and parcel to uniquely identify
-	*** here we just need hid and ord
+	*** extension designates movers in wave 2 - does not exist in wave 1 
 	
 * need to include hid field parcel to uniquely identify
 	sort 			hid field parcel

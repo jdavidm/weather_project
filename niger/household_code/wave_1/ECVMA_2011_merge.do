@@ -536,7 +536,23 @@
 * generate year identifier
 	gen				year = 2011
 	lab var			year "Year"
-
+	
+* label variables
+	lab var			tf_lnd	"Total farmed area (ha)"
+	lab var			tf_hrv	"Total value of harvest (2010 USD)"
+	lab var			tf_yld	"value of yield (2010 USD/ha)"
+	lab var			tf_lab	"labor rate (days/ha)"
+	lab var			tf_frt	"fertilizer rate (kg/ha)"
+	lab var			tf_pst	"Any plot has pesticide"
+	lab var			tf_hrb	"Any plot has herbicide"
+	lab var			cp_lnd	"Total maize area (ha)"
+	lab var			cp_hrv	"Total quantity of maize harvest (kg)"
+	lab var			cp_yld	"Maize yield (kg/ha)"
+	lab var			cp_lab	"labor rate for maize (days/ha)"
+	lab var			cp_frt	"fertilizer rate for maize (kg/ha)"
+	lab var			cp_pst	"Any maize plot has pesticide"
+	lab var			cp_hrb	"Any maize plot has herbicide"
+	
 	isid				hid
 		
 	order 			region dept canton enumeration clusterid aez pw ///
