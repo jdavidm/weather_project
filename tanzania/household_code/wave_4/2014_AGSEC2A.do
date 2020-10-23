@@ -114,7 +114,7 @@
 * inverstingating the high and low end of gps measurments
 	* high end
 		tab			plotsize_gps
-		histogram	plotsize_gps if plotsize_gps > 2
+		*hist		plotsize_gps if plotsize_gps > 2
 		sum			plotsize_gps, detail
 		*** mean = 1.29
 		*** 90% of obs < 2.7
@@ -150,7 +150,7 @@
 
 	* low end
 		tab			plotsize_gps
-		histogram	plotsize_gps if plotsize_gps < 0.5
+		*hist		plotsize_gps if plotsize_gps < 0.5
 		sum			plotsize_gps, detail
 		*** mean = 1.29
 		*** 10% of obs < 0.061

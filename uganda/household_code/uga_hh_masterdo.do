@@ -28,9 +28,9 @@
 * **********************************************************************
 
 * do each GSEC1 household cleaning files
-	do 			"`dofile'/wave_1/2009_GSEC1.do"			//	clean location information wv1 
-	do 			"`dofile'/wave_2/2010_GSEC1.do"			//	clean location information wv2 
-	do 			"`dofile'/wave_3/2011_GSEC1.do"			//	clean location information wv3 
+	do 			"`dofile'/wave_1/2009_gsec1.do"			//	clean location information wv1 
+	do 			"`dofile'/wave_2/2010_gsec1.do"			//	clean location information wv2 
+	do 			"`dofile'/wave_3/2011_gsec1.do"			//	clean location information wv3 
 
 
 * do each GSEC1 household cleaning files
@@ -48,7 +48,7 @@
 	foreach folder of loc folderList {
 
 	* loop through each NGA file in the folder local
-		loc uga : dir "`dofile'/`folder'" files "20*_A*.do"
+		loc uga : dir "`dofile'/`folder'" files "20*_a*.do"
 	
 	* loop through each file in the above local
 		foreach file in `uga' {
@@ -66,7 +66,7 @@
 * 2 - run wave specific .do files to merge hh data together
 * **********************************************************************
 
-* do each GHSY2 household cleaning files
+* merge each cleaned file together
 	do 			"`dofile'/wave_1/unps1_merge.do"			//	merges wv 1 hh datasets
 	do 			"`dofile'/wave_2/unps2_merge.do"			//	merges wv 2 hh datasets
 	do 			"`dofile'/wave_3/unps3_merge.do"			//	merges wv 3 hh datasets
@@ -76,7 +76,7 @@
 * 3 - run wave specific .do files to merge with weather
 * **********************************************************************
 
-* do each IHS3 household cleaning files
+* merge weather data into cleaned household data
 	do 			"`dofile'/wave_1/unps1_build.do"			//	merges unps1 to weather
 	do 			"`dofile'/wave_2/unps2_build.do"			//	merges unps2 to weather
 	do 			"`dofile'/wave_3/unps3_build.do"			//	merges unps3 to weather

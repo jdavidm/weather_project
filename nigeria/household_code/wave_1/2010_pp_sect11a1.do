@@ -167,8 +167,8 @@
 	*** GPS tending to be smaller than self-reported - and more realistic
 	*** as in Y1, will not include SR in imputation - only will include GPS 
 	
-	histogram 		plot_size_hec_GPS 	if 	plot_size_hec_GPS < 0.3
-	histogram 		plot_size_hec_GPS 	if 	plot_size_hec_GPS < 0.2
+	*hist	 		plot_size_hec_GPS 	if 	plot_size_hec_GPS < 0.3
+	*hist	 		plot_size_hec_GPS 	if 	plot_size_hec_GPS < 0.2
 	***appears that GPS becomes less accurate around 0.05
 
 *make GPS values missing if below 0.05 for impute

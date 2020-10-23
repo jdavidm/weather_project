@@ -37,7 +37,7 @@
 	foreach folder of loc folderList {
 
 	* loop through each HHSEC file in the folder local
-		loc HHfile : dir "`dofile'/`folder'" files "*HHSEC*.do"
+		loc HHfile : dir "`dofile'/`folder'" files "*hhsec*.do"
 	
 	* loop through each file in the above local
 		foreach file in `HHfile' {
@@ -55,7 +55,7 @@
 			do "`dofile'/`folder'/`file'"	
 	}
 	* loop through each AGSEC file in the folder local
-		loc AGfile : dir "`dofile'/`folder'" files "*AGSEC*.do"
+		loc AGfile : dir "`dofile'/`folder'" files "*agsec*.do"
 	
 	* loop through each file in the above local
 		foreach file in `AGfile' {
@@ -78,18 +78,18 @@
 * 3 - run wave specific .do files to merge hh data together
 * **********************************************************************
 
-* do each IHS3 household cleaning files
-	do 			"`dofile'/wave_1/NPSY1_merge.do"			//	merges wv 1 hh datasets
-	do 			"`dofile'/wave_2/NPSY2_merge.do"			//	merges wv 2 hh datasets
-	do 			"`dofile'/wave_3/NPSY3_merge.do"			//	merges wv 3 hh datasets
-	do 			"`dofile'/wave_4/NPSY4_merge.do"			//	merges wv 4 hh datasets
+* merge each cleaned file together
+	do 			"`dofile'/wave_1/npsy1_merge.do"			//	merges wv 1 hh datasets
+	do 			"`dofile'/wave_2/npsy2_merge.do"			//	merges wv 2 hh datasets
+	do 			"`dofile'/wave_3/npsy3_merge.do"			//	merges wv 3 hh datasets
+	do 			"`dofile'/wave_4/npsy4_merge.do"			//	merges wv 4 hh datasets
 
 
 * **********************************************************************
 * 4 - run wave specific .do files to merge with weather
 * **********************************************************************
 
-* do each IHS3 household cleaning files
+* merge weather data into cleaned household data
 	do 			"`dofile'/wave_1/npsy1_build.do"			//	merges NPSY1 to weather
 	do 			"`dofile'/wave_2/npsy2_build.do"			//	merges NPSY2 to weather
 	do 			"`dofile'/wave_3/npsy3_build.do"			//	merges NPSY3 to weather
@@ -100,7 +100,7 @@
 * 5 - run .do file to append each wave
 * **********************************************************************
 
-	do			"`dofile'/TZA_append_built.do"				// append waves
+	do			"`dofile'/tza_append_built.do"				// append waves
 	
 /* END */
 

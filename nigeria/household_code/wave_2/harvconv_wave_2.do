@@ -25,7 +25,8 @@
 	loc 	logout	= 	"$data/household_data/nigeria/logs"
 
 * open log
-	log 	using 	"`logout'/harvconv_master_wave_2_wave_3", append	
+	cap log close
+	log 	using 	"`logout'/harvconv_master_wave_2", append	
 	
 * **********************************************************************
 * 1 - general import and clean up
@@ -996,7 +997,7 @@
 	summarize
 
 * save file
-	customsave , idvar(crop_unit) filename("harvconv_wave_2_wave_3.dta") ///
+	customsave , idvar(crop_unit) filename("harvconv_wave_2.dta") ///
 		path("`export'") dofile(harvconv_wave_2_wave_3) user($user)
 
 * close the log
