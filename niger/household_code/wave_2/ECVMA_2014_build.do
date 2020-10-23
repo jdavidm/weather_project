@@ -1,6 +1,8 @@
 * Project: WB Weather
 * Created on: May 2020
 * Created by: ek
+* Edited by: jdm
+* Last edit: 23 October 2020 
 * Stata v.16
 
 * does
@@ -12,7 +14,7 @@
 	* customsave.ado
 
 * TO DO:
-	* adapt the code from nigera to niger
+	* complete
 
 	
 * **********************************************************************
@@ -28,6 +30,7 @@
 * open log	
 	cap 	log			 close
 	log 	using 		"`logout'/ECVMA_2014_build", append
+	
 	
 * **********************************************************************
 * 1 - merge all household data with rainfall data
@@ -59,7 +62,7 @@
 			drop 	if 	_merge != 3
 			drop 		_merge
 		
-		*drop variables for all years but 2011
+		*drop variables for all years but 2014
 			drop 		mean_season_1983- dry_2013 mean_season_2015- dry_2017
 			drop 		mean_period_total_season- z_total_season_2013 ///
 						dev_total_season_2015- z_total_season_2017
@@ -149,7 +152,7 @@
 			drop 	if 	_merge != 3
 			drop 		_merge
 		
-		* drop variables for all years but 2011
+		* drop variables for all years but 2014
 			drop 		mean_season_1983- tempbin1002013 ///
 						mean_season_2015- tempbin1002017
 			drop 		mean_gdd- z_gdd_2013 dev_gdd_2015- z_gdd_2017

@@ -65,6 +65,7 @@
 	
 	replace			pest_any = 0 if pest_any == .
 	replace			herb_any = 0 if herb_any == .
+	replace			fert_use = 0 if fert_use == .
 	replace			fert_any = 0 if fert_any == . & fert_use == 0
 	*** 43 changes made
 	
@@ -82,6 +83,20 @@
 	drop			if pest_any == .
 	drop			if herb_any == .
 	*** no observations dropped
+		
+* merging in plant labor data
+	merge		m:1 hhid_y2 field parcel using "`export'/2014_as2ap2", generate(_as2ap2)
+	*** 130 missing in master, 385 not matched from using 
+	*** total of 8259 matched 
+	
+* 1121 did not match from using 	
+	drop			if _as2ap2 == 2
+	
+* set labor in 130 unmatched observations to zero
+	replace			plant_labor = 0 if plant_labor == . & _as2ap2 == 1
+	replace			plant_labor_all = 0 if plant_labor_all == . & _as2ap2 == 1
+	replace			harvest_labor = 0 if harvest_labor == . & _as2ap2 == 1
+	replace			harvest_labor_all = 0 if harvest_labor_all == . & _as2ap2 == 1
 
 * merge in regional information 
 	merge m:1		hhid_y2 using "`export'/2014_ms00p1", generate(_ms00p1)
@@ -92,7 +107,7 @@
 	rename 			zd enumeration 
 	label var 		region "region"
 	
-	drop			_as2ap1 _as1p1 _ms00p1
+	drop			_as2ap1 _as1p1 _as2ap2 _ms00p1
 
 	
 * **********************************************************************
@@ -563,7 +578,6 @@
 	compress
 	describe
 	summarize 
-	
 	
 * saving production dataset
 	customsave , idvar(hhid_y2) filename(hhfinal_ecvma2.dta) path("`export'") ///

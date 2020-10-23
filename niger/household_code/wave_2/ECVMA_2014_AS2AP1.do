@@ -1,8 +1,8 @@
 * Project: WB Weather
 * Created on: May 2020
 * Created by: alj
-* Edited by: alj
-* Last edit: 22 October 2020 
+* Edited by: jdm
+* Last edit: 23 October 2020 
 * Stata v.16
 
 * does
@@ -10,11 +10,9 @@
 	* creates binaries for pesticide and herbicide use
 	* creates binaries and kg for fertilizer use
 	* cleans labor post planting - prep labor 
-	* combines all labor files in Niger for combination with wave 2 plot data (harvest, planting)
 	* outputs clean data file ready for combination with wave 2 plot data
 
 * assumes
-	* cleaned planting and harvest labor in "2014_as2ap2"
 	* customsave.ado
 	* mdesc.ado
 	
@@ -390,15 +388,6 @@
 	egen				plot_id = group(hhid_y2 field parcel)
 	lab var				plot_id "unique field and parcel identifier"
 	
-					
-* merging in plant labor data
-	merge		1:1 plot_id using "`export'/2014_as2ap2", generate(_as2ap2)
-	*** 305 missing in master, 0 not matched from using 
-	*** presumably those which did not match will have issues matching will full file, also 
-	*** total of 4834 matched 
-	*** we will impute the missing values later
-
-	drop _as2ap2
 
 * **********************************************************************
 * 4 - end matter, clean up to save
