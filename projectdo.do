@@ -108,23 +108,30 @@ if $pack == 1 {
 * 1 - run weather data cleaning .do file
 * **********************************************************************
 /*
-	do 			"$code/ethiopia/weather_code/ETH_ESS_masterdo.do"
-	do 			"$code/malawi/weather_code/MWI_IHS_masterdo.do"
-	do 			"$code/nigeria/weather_code/NGA_GHSY_masterdo.do"
-	do 			"$code/tanzania/weather_code/TZA_NPS_masterdo.do"
-	do 			"$code/uganda/weather_code/UGA_UNPS_masterdo.do"
+	do 			"$code/ethiopia/weather_code/eth_ess_masterdo.do"
+	do 			"$code/malawi/weather_code/mwi_ihs_masterdo.do"
+	do 			"$code/niger/weather_code/ngr_ecvma_masterdo.do"
+	do 			"$code/nigeria/weather_code/nga_ghs_masterdo.do"
+	do 			"$code/tanzania/weather_code/tza_nps_masterdo.do"
+	do 			"$code/uganda/weather_code/uga_unps_masterdo.do"
 */
 
 * **********************************************************************
 * 2 - run household data cleaning .do file
 * **********************************************************************
 /*
-	do 			"$code/ethiopia/household_code/ETH_hh_masterdo.do"
-	do 			"$code/malawi/household_code/ETH_hh_masterdo.do"
-	do 			"$code/nigeria/household_code/ETH_hh_masterdo.do"
-	do 			"$code/tanzania/household_code/ETH_hh_masterdo.do"
-	do 			"$code/uganda/household_code/ETH_hh_masterdo.do"
+	do 			"$code/ethiopia/household_code/eth_hh_masterdo.do"
+	do 			"$code/malawi/household_code/mwi_hh_masterdo.do"
+	do 			"$code/niger/household_code/ngr_hh_masterdo.do"
+	do 			"$code/nigeria/household_code/nga_hh_masterdo.do"
+	do 			"$code/tanzania/household_code/tza_hh_masterdo.do"
+	do 			"$code/uganda/household_code/uga_hh_masterdo.do"
 */
+
+* **********************************************************************
+* 3 - run .do files that merge weather and household data
+* **********************************************************************
+
 
 * **********************************************************************
 * 5 - run regression .do files
