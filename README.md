@@ -27,7 +27,7 @@ go through each step, from cleaning raw data to analysis.
 
 ## Data cleaning
 
-The code in `masterDoFile.do` (to be done) replicates
+The code in `projectdo.do` (to be done) replicates
     the data cleaning and analysis.
 
 ### Pre-requisites
