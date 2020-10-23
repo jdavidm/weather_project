@@ -30,9 +30,9 @@
 * **********************************************************************
 
 * do each GSEC1 household cleaning files
-	do 			"`root'/wave_1/ECVMA_2011_ms00p1.do"		//	clean location information wv1 
-	do 			"`root'/wave_2/ECVMA_2014_ms00p1.do"		//	clean location information wv2 
-	do 			"`root'/wave_2/ECVMA_2014_as2e2p2.do"		//	clean price data wv2
+	do 			"`root'/wave_1/2011_ms00p1.do"		//	clean location information wv1 
+	do 			"`root'/wave_2/2014_ms00p1.do"		//	clean location information wv2 
+	do 			"`root'/wave_2/2014_as2e2p2.do"		//	clean price data wv2
 
 * **********************************************************************
 * 2 - run individual hh_cleaning .do files
@@ -42,15 +42,15 @@
 * it is easier to just run each file individually
 
 * wave 1 cleaning files
-	do 			"`root'/wave_1/ECVMA_2011_as1p1.do"		//	clean plot and inputs
-	do 			"`root'/wave_1/ECVMA_2011_as1p2.do"		//	clean post planting labor
-	do 			"`root'/wave_1/ECVMA_2011_as2ep2.do"		//	clean crop production & prices
+	do 			"`root'/wave_1/2011_as1p1.do"		//	clean plot and inputs
+	do 			"`root'/wave_1/2011_as1p2.do"		//	clean post planting labor
+	do 			"`root'/wave_1/2011_as2ep2.do"		//	clean crop production & prices
 
 * wave 2 cleaning files
-	do 			"`root'/wave_2/ECVMA_2014_as1p1.do"		//	clean plot size
-	do 			"`root'/wave_2/ECVMA_2014_as2ap1.do"		//	clean inputs
-	do 			"`root'/wave_2/ECVMA_2014_as2ap2.do"		//	clean post planting labor
-	do 			"`root'/wave_2/ECVMA_2014_as2e1p2.do"		//	clean crop production
+	do 			"`root'/wave_2/2014_as1p1.do"		//	clean plot size
+	do 			"`root'/wave_2/2014_as2ap1.do"		//	clean inputs
+	do 			"`root'/wave_2/2014_as2ap2.do"		//	clean post planting labor
+	do 			"`root'/wave_2/2014_as2e1p2.do"		//	clean crop production
 	
 		
 * **********************************************************************
@@ -58,8 +58,8 @@
 * **********************************************************************
 
 * merge each cleaned file together
-	do 			"`root'/wave_1/ECVMA_2011_merge.do"			//	merges wv 1 hh datasets
-	do 			"`root'/wave_2/ECVMA_2014_merge.do"			//	merges wv 2 hh datasets
+	do 			"`root'/wave_1/ecvmay1_merge.do"			//	merges wv 1 hh datasets
+	do 			"`root'/wave_2/ecvmay2_merge.do"			//	merges wv 2 hh datasets
 
 	
 * **********************************************************************
@@ -67,14 +67,14 @@
 * **********************************************************************
 
 * merge weather data into cleaned household data
-	do 			"`root'/wave_1/ECVMA_2011_build.do"			//	merges ECVAMAY1 to weather
-	do 			"`root'/wave_2/ECVMA_2014_build.do"			//	merges ECVAMAY2 to weather
+	do 			"`root'/wave_1/ecvmay1_build.do"			//	merges ECVAMAY1 to weather
+	do 			"`root'/wave_2/ecvmay2_build.do"			//	merges ECVAMAY2 to weather
 
 	
 * **********************************************************************
 * 5 - run .do file to append each wave
 * **********************************************************************
 
-	do			"`root'/NGR_append_built.do"				// append waves
+	do			"`root'/ngr_append_built.do"				// append waves
 	
 /* END */
