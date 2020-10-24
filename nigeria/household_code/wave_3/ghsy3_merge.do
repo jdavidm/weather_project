@@ -553,37 +553,15 @@
 	lab var			cp_irr	"Any maize plot has irrigation"
 	
 * clean tf yield outliers
-<<<<<<< Updated upstream
-*	scatter 		tf_yld tf_lnd
-*	scatter 		tf_yld tf_lnd if tf_lnd < 0.5
-	tab				tf_hrv if tf_yld > 6000
-*	scatter 		tf_lab tf_lnd
-=======
 	*scatter 		tf_yld tf_lnd
 	*scatter 		tf_yld tf_lnd if tf_lnd < 0.5
 	tab				tf_hrv if tf_yld > 6000
 	*scatter 		tf_lab tf_lnd
->>>>>>> Stashed changes
 	*** yield outliers appear unreasonable above 5000 yields
 	
 	* max is determined by comparing the right end tail distribution to wave 1 maxes using a kdensity peak.
 	sum 			tf_yld tf_lab tf_hrv, detail			
 	
-<<<<<<< Updated upstream
-*	kdensity 		tf_hrv if tf_hrv > 5000
-	*** peak is at 5,250
-*	kdensity		tf_yld if tf_yld > 9000
-	*** peak is at 10,000
-*	kdensity 		tf_lab if tf_lab > 1400
-	*** peak is around 1,900
-*	kdensity		tf_lnd if tf_yld > 10000
-	
-*	kdensity tf_yld if tf_lnd < 0.1 & tf_yld < 10000
-	*** max tf_yld when lnd is 0.1
-	
-*	kdensity tf_lab if tf_lnd < 0.1 & tf_lab > 400
-*	kdensity tf_lab if tf_lnd < 0.1 & tf_lab < 10000
-=======
 	*kdensity 		tf_hrv if tf_hrv > 5000
 	*** peak is at 5,250
 	*kdensity		tf_yld if tf_yld > 9000
@@ -597,7 +575,6 @@
 	
 	*kdensity tf_lab if tf_lnd < 0.1 & tf_lab > 400
 	*kdensity tf_lab if tf_lnd < 0.1 & tf_lab < 10000
->>>>>>> Stashed changes
 
 	replace 		tf_lab = . if tf_lab > 500 & tf_lnd < 0.1
 	*** 131 changes
@@ -606,11 +583,7 @@
 	replace 		tf_hrv = . if tf_yld > 1000 & tf_lnd < 0.1
 	*** 173 changes
 
-<<<<<<< Updated upstream
-*	scatter 		tf_yld tf_lnd 
-=======
 	*scatter 		tf_yld tf_lnd 
->>>>>>> Stashed changes
 	
 * impute missing labor
 	sum 			tf_lab
@@ -661,13 +634,8 @@
 	
 * impute cp_lab
 	sum 			cp_lab, detail
-<<<<<<< Updated upstream
-*	scatter			cp_lnd cp_lab
-*	kdensity 		cp_lab if cp_lnd < 1 & cp_lab < 500
-=======
 	*scatter			cp_lnd cp_lab
 	*kdensity 		cp_lab if cp_lnd < 1 & cp_lab < 500
->>>>>>> Stashed changes
 	*** max is 50
 	
 	replace 		cp_lab = . if cp_lab > 200 & cp_lnd < 0.1
@@ -691,24 +659,15 @@
 	*** none missing
 	
 * cp yield outliers
-<<<<<<< Updated upstream
-*	scatter 		cp_yld cp_lnd
-*	scatter 		cp_yld cp_lnd if cp_lnd < 0.5
-=======
 	*scatter 		cp_yld cp_lnd
 	*scatter 		cp_yld cp_lnd if cp_lnd < 0.5
->>>>>>> Stashed changes
 	*** maize yield is higher on average than the total crop yield, mean is 5221.5
 	sum 			cp_yld, detail
 	*** mean 5221.55, std dev 31808.34, max is 720661
 	sum 			cp_hrv, detail
 	*** mean 894.53, std dev 1183.46, max 10466.78
 	sum 			cp_yld if cp_lnd < 0.5, detail
-<<<<<<< Updated upstream
-*	kdensity 		cp_yld if cp_lnd < 0.5 & cp_yld <10000
-=======
 	*kdensity 		cp_yld if cp_lnd < 0.5 & cp_yld <10000
->>>>>>> Stashed changes
 	*** max cp_yld is 1000
 	
 	* change outliers to missing
@@ -721,12 +680,8 @@
 	
 	sum 			cp_lnd if cp_yld == ., detail
 	*** mean 0.0837, std dev 0.084, max 0.4
-<<<<<<< Updated upstream
-*	scatter 		cp_yld cp_lnd 
-=======
 	*scatter 		cp_yld cp_lnd 
->>>>>>> Stashed changes
-
+	
 * impute missing values (impute in stages to get imputation near similar land values)
 	sum 			cp_hrv
 	

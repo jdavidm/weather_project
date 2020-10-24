@@ -12,12 +12,8 @@
 	* subsidiary, wave-specific .do files
 
 * TO DO:
-<<<<<<< Updated upstream
-	* done
-=======
 	* complete
->>>>>>> Stashed changes
-
+	
 	
 * **********************************************************************
 * 0 - setup

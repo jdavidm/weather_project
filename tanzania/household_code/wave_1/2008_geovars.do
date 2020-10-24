@@ -52,7 +52,7 @@
 	summarize
 
 * save file
-		customsave , idvar(hhid) filename("npsy1_geovars.dta") ///
+		customsave , idvar(hhid) filename("2008_geovars.dta") ///
 			path("`export'") dofile(npsy1_geovars) user($user)
 
 * close the log

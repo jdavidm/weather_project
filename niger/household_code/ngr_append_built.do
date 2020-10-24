@@ -67,9 +67,10 @@
 	isid			ngr_id year
 	
 * order variables
-	drop			extension region dept canton enumeration clusterid
+	drop			extension region dept canton enumeration clusterid ///
+						hhid_y2 hid
 	
-	order			country dtype hhid pw aez year 
+	order			country dtype ngr_id pw aez year 
 	
 	
 * **********************************************************************

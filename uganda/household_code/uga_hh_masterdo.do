@@ -34,9 +34,9 @@
 
 
 * do each GSEC1 household cleaning files
-	do 			"`dofile'/wave_1/2009_GEOVARS.do"			//	clean location information wv1 
-	do 			"`dofile'/wave_2/2010_GEOVARS.do"			//	clean location information wv2 
-	do 			"`dofile'/wave_3/2011_GEOVARS.do"			//	clean location information wv3 
+	do 			"`dofile'/wave_1/2009_geovars.do"			//	clean location information wv1 
+	do 			"`dofile'/wave_2/2010_geovars.do"			//	clean location information wv2 
+	do 			"`dofile'/wave_3/2011_geovars.do"			//	clean location information wv3 
 
 * loops through three waves of uga hh code
 

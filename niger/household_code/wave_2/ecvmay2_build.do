@@ -158,7 +158,7 @@
 			drop 		mean_gdd- z_gdd_2013 dev_gdd_2015- z_gdd_2017
 		
 		* define file naming criteria
-			loc 		sat = substr("`file'", 12, 2)
+			loc 		sat = substr("`file'", 13, 1)
 			loc 		ext = substr("`file'", 9, 2)
 			
 		* generate variable to record extraction method

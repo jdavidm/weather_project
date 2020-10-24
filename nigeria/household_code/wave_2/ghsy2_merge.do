@@ -539,15 +539,9 @@
 	*** max is determined by comparing the right end tail distribution to wave 1 maxes using a kdensity peak.
 	sum 			tf_lab , detail			
 	
-<<<<<<< Updated upstream
-*	kdensity 		tf_lab if tf_lab > 1400
-	*** peak is around 1900
-*	kdensity tf_lab if tf_lnd < 0.1
-=======
 	*kdensity 		tf_lab if tf_lab > 1400
 	*** peak is around 1900
 	*kdensity tf_lab if tf_lnd < 0.1
->>>>>>> Stashed changes
 	
 	replace 		tf_lab = . if tf_lab > 1400 
 	*** 71 changes
@@ -573,12 +567,7 @@
 	*** none missing
 	
 * impute tf_hrv outliers
-
-<<<<<<< Updated upstream
-*	kdensity 		tf_yld if tf_yld > 9000
-=======
 	*kdensity 		tf_yld if tf_yld > 9000
->>>>>>> Stashed changes
 	*** max is 11000
 	sum 			tf_yld, detail
 	*** mean 835, max 17300
@@ -604,15 +593,9 @@
 						
 * impute cp_lab
 	sum 			cp_lab, detail
-<<<<<<< Updated upstream
-*	scatter			cp_lnd cp_lab
-*	kdensity cp_lab if cp_lab > 1800
-*	kdensity cp_lab if cp_lab > 1800 & cp_lab < 4000
-=======
 	*scatter		cp_lnd cp_lab
 	*kdensity 		cp_lab if cp_lab > 1800
 	*kdensity 		cp_lab if cp_lab > 1800 & cp_lab < 4000
->>>>>>> Stashed changes
 	*** max is 2100. the 1800 is the max of cp_lab in wave 2
 
 	replace 		cp_lab = . if cp_lab > 1800
@@ -640,11 +623,7 @@
 	*** mean 2375.3, std dev 5878.58, max is 83841.6
 	sum 			cp_hrv, detail
 	*** mean 803.43, std dev 1000.29, max 9600
-<<<<<<< Updated upstream
-*	kdensity cp_yld if cp_yld > 20000
-=======
 	*kdensity cp_yld if cp_yld > 20000
->>>>>>> Stashed changes
 	
 	sum cp_hrv if cp_lnd < 0.1 & cp_yld > 10000, detail
 	

@@ -46,7 +46,7 @@
 			do "`dofile'/`folder'/`file'"	
 	}
 	* loop through each HHSEC file in the folder local
-		loc GEOfile : dir "`dofile'/`folder'" files "*GEO*.do"
+		loc GEOfile : dir "`dofile'/`folder'" files "*geo*.do"
 	
 	* loop through each file in the above local
 		foreach file in `GEOfile' {
