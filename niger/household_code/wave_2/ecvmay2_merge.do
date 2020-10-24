@@ -134,7 +134,7 @@
 			 (max)	pest_any herb_any irr_any  ///
 						mz_pst mz_hrb mz_irr mz_damaged, ///
 						by(hhid_y2 hid clusterid hh_num extension field ///
-						parcel region dept canton enumeration aez pw)
+						parcel region dept canton enumeration pw)
 
 * replace non-maize harvest values as missing
 	tab				mz_damaged, missing
@@ -522,7 +522,7 @@
 	}		
 	
 	collapse (max)	tf_* cp_*, by(region dept canton enumeration ///
-						clusterid hhid_y2 hid extension aez pw)
+						clusterid hhid_y2 hid extension pw)
 	*** we went from 5,805 to 2,223 observations 
 	
 * return non-maize production to missing
@@ -570,7 +570,7 @@
 	
 	isid			hhid_y2
 		
-	order 			region dept canton enumeration clusterid aez pw ///
+	order 			region dept canton enumeration clusterid pw ///
 						hhid_y2 extension hid year tf_hrv tf_lnd tf_yld tf_lab tf_frt ///
 						tf_pst tf_hrb tf_irr cp_hrv cp_lnd cp_yld ///
 						cp_lab cp_frt cp_pst cp_hrb cp_irr

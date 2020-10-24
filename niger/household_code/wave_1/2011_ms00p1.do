@@ -6,6 +6,7 @@
 * does
 	* identifies regional elements for use in price data contruction 
 	* merges in household sampling weights
+	* merges in geovariables
 	* outputs clean data file ready for combination with wave 1 data
 
 * assumes
@@ -63,15 +64,28 @@
 	
 	drop			_merge	
 	
-* rename grappe
+* rename variables
 	rename			grappe clusterid
 	label 			var clusterid "cluster number"
-	
-	rename			zae aez
 	rename			hhweight pw
+
 	
 * **********************************************************************
-* 3 - end matter, clean up to save
+* 3 - merge in household weights
+* **********************************************************************
+
+	merge			1:1 hid using "`root'/NER_HouseholdGeovars_Y1"
+	*** all matched in master, 83 in using unmatched
+	
+	keep			if _merge == 3
+	drop			_merge	
+	
+* rename variables
+	rename			ssa_aez09 aez
+	
+	
+* **********************************************************************
+* 4 - end matter, clean up to save
 * **********************************************************************
 
 	keep 			hid clusterid hh_num region dept canton enumeration ///

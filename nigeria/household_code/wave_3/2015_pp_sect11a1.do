@@ -154,8 +154,8 @@
 	*** GPS tending to be smaller than self-reported - and more realistic
 	*** as in wave 2, will not include SR in imputation - only will include GPS 
 	
-	histogram 		plot_size_hec_GPS 	if 	plot_size_hec_GPS < 0.3
-	histogram 		plot_size_hec_GPS 	if 	plot_size_hec_GPS < 0.2
+	*hist	 		plot_size_hec_GPS 	if 	plot_size_hec_GPS < 0.3
+	*hist	 		plot_size_hec_GPS 	if 	plot_size_hec_GPS < 0.2
 	*** roughly uniform distribution until 0.5 to 0.3 hectares
 	*** distribution looks okay! 
 

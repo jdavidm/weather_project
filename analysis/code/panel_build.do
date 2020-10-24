@@ -4,19 +4,17 @@
 * Stata v.16.1
 
 * does
+	* TAKES ABOUT 5 MINUTES TO COMBINE DATA SETS
 	* combines data from all countries
 	* drops cross sectional data in Malawi and Tanzania
-	* does final cleaning of data
-	* outputs data set for analysis
+	* outputs data set for final cleaing
 
 * assumes
 	* cleaned, merged (weather), and appended (waves) data
 	* customsave.ado
-	* winsor2.ado
 
 * TO DO:
-	* missing Nigeria household weights
-	* missing Niger data
+	* complete
 
 	
 * **********************************************************************
@@ -25,127 +23,145 @@
 
 * define paths
 	loc		source	= 	"$data/regression_data"
-	loc		export = 	"$data/regression_data"
+	loc		export  = 	"$data/regression_data"
 	loc		logout 	= 	"$data/regression_data/logs"
 
 * open log	
 	cap log close
-	log 	using 		"`logout'/panel_build", append
+	log 	using 	"`logout'/panel_build", append
 
 	
 * **********************************************************************
-* 1 - load in and clean malawi data
+* 1 - load in ethiopia data
+* **********************************************************************
+
+* read in ethiopia
+	use				"`source'/ethiopia/eth_complete", clear
+				
+* organize variables
+	order			eth_id
+
+* drop unnecessary variables
+	drop			uid
+
+
+* **********************************************************************
+* 2 - load in malawi data
 * **********************************************************************
 
 * read in data file
-	use			"`source'/malawi/mwi_complete.dta", clear
+	append			using "`source'/malawi/mwi_complete.dta"
 
 * drop short panel and cross sectional
-	keep if		dtype == "lp"
+	keep			if dtype == "lp"
 
 * rename panel id
-	rename		lp_id mwi_id
+	rename			lp_id mwi_id
 	
-* drop unnecessary variables
-	drop		uid cx_id sp_id
-	
-
-* **********************************************************************
-* 2 - load in ethiopia data
-* **********************************************************************
-
-* append ethiopia
-	append		using "`source'/ethiopia/eth_complete"
-				
 * organize variables
-	order		eth_id, before(mwi_id)
-
+	order			mwi_id, after(eth_id)		
+	
 * drop unnecessary variables
-	drop		uid
-
+	drop			uid cx_id sp_id
+		
+		
 * **********************************************************************
-* 3 - load in nigeria data
+* 3 - load in niger data
+* **********************************************************************
+
+* append niger
+	append			using "`source'/niger/ngr_complete"
+			
+* organize variables
+	order			ngr_id, after(mwi_id)		
+		
+* drop unnecessary variables
+	drop			uid
+
+	
+* **********************************************************************
+* 4 - load in nigeria data
 * **********************************************************************
 
 * append nigeria
-	append		using "`source'/nigeria/nga_complete"
+	append			using "`source'/nigeria/nga_complete"
 			
 * organize variables
-	order		nga_id, after(mwi_id)		
+	order			nga_id, after(ngr_id)		
 		
 * drop unnecessary variables
-	drop		uid
+	drop			uid
 		
 
 * **********************************************************************
-* 4 - load in tanzania data
+* 5 - load in tanzania data
 * **********************************************************************
 
 * append tanzania
-	append		using "`source'/tanzania/tza_complete"		
+	append			using "`source'/tanzania/tza_complete"		
 
 * drop short panel and cross sectional
-	keep if		dtype == "lp"
+	keep			if dtype == "lp"
 
 * rename panel id
-	rename		lp_id tza_id
+	rename			lp_id tza_id
 	
 * organize variables
-	order		tza_id, after(nga_id)					
+	order			tza_id, after(nga_id)					
 
 * drop unnecessary variables
-	drop		uid cx_id
+	drop			uid cx_id
 	
 	
 * **********************************************************************
-* 5 - load in uganda data
+* 6 - load in uganda data
 * **********************************************************************
 
-* append tanzania
-	append		using "`source'/uganda/uga_complete"		
+* append uganda
+	append			using "`source'/uganda/uga_complete"		
 
 * drop short panel and cross sectional
-	keep if		dtype == "lp"
+	keep if			dtype == "lp"
 
 * organize variables
-	order		uga_id, after(tza_id)			
+	order			uga_id, after(tza_id)			
 	
 * drop unnecessary variables
-	drop		uid
-	
+	drop			uid
+
 	
 * **********************************************************************
-* 6 - clean combined data
+* 7 - clean combined data
 * **********************************************************************
 
 * destring data type
-	gen			Dtype = 0 if dtype == "cx"
-	replace		Dtype = 1 if dtype == "lp"
-	replace		Dtype = 2 if dtype == "sp"
-	lab var		Dtype "Data type"
-	drop		dtype
-	rename		Dtype dtype
-	order		dtype, after(country)
-	lab def 	dtype 0 "cx" 1 "lp" 2 "sp"
-	label val 	dtype dtype		
+	gen				Dtype = 0 if dtype == "cx"
+	replace			Dtype = 1 if dtype == "lp"
+	replace			Dtype = 2 if dtype == "sp"
+	lab var			Dtype "Data type"
+	drop			dtype
+	rename			Dtype dtype
+	order			dtype, after(country)
+	lab def 		dtype 0 "cx" 1 "lp" 2 "sp"
+	lab val 		dtype dtype		
 
 * destring country
-	gen			Country = 1 if country == "ethiopia"
-	replace		Country = 2 if country == "malawi"
-	replace		Country = 3 if country == "mali"
-	replace		Country = 4 if country == "niger"
-	replace		Country = 5 if country == "nigeria"
-	replace		Country = 6 if country == "tanzania"
-	replace		Country = 7 if country == "uganda"
-	lab var		Country "Country"
-	drop		country
-	rename		Country country
-	order		country
-	lab def		country 1 "Ethiopia" 2 "Malawi" 3 "Mali" ///
-					4 "Niger" 5 "Nigeria" 6 "Tanzania" ///
-					7 "Uganda"
-	lab val		country country
-	sort 		country
+	gen				Country = 1 if country == "ethiopia"
+	replace			Country = 2 if country == "malawi"
+	replace			Country = 3 if country == "mali"
+	replace			Country = 4 if country == "niger"
+	replace			Country = 5 if country == "nigeria"
+	replace			Country = 6 if country == "tanzania"
+	replace			Country = 7 if country == "uganda"
+	lab var			Country "Country"
+	drop			country
+	rename			Country country
+	order			country
+	lab def			country 1 "Ethiopia" 2 "Malawi" 3 "Mali" ///
+							4 "Niger" 5 "Nigeria" 6 "Tanzania" ///
+							7 "Uganda"
+	lab val			country country
+	sort 			country
 
 * redefine country household ids
 	sort 			country eth_id year
@@ -157,6 +173,11 @@
 	tostring		mwi_id, replace
 	replace 		mwi_id = "mwi" + mwi_id if mwi_id != "."
 	replace			mwi_id = "" if mwi_id == "."
+	
+	sort 			country ngr_id year
+	tostring		ngr_id, replace
+	replace 		ngr_id = "ngr" + ngr_id if ngr_id != "."
+	replace			ngr_id = "" if ngr_id == "."
 	
 	sort 			country nga_id year
 	tostring		nga_id, replace
@@ -176,6 +197,7 @@
 * define cross country household id
 	gen				HHID = eth_id if eth_id != ""
 	replace			HHID = mwi_id if mwi_id != ""
+	replace			HHID = ngr_id if ngr_id != ""
 	replace			HHID = nga_id if nga_id != ""
 	replace			HHID = tza_id if tza_id != ""
 	replace			HHID = uga_id if uga_id != ""
@@ -183,12 +205,12 @@
 	sort			country HHID year
 	egen			hhid = group(HHID)
 	
-	drop			HHID eth_id mwi_id nga_id tza_id uga_id
+	drop			HHID eth_id mwi_id ngr_id nga_id tza_id uga_id
 	order			hhid, after(country)
 	lab var			hhid "Unique household ID"
 	
 * drop temperature bins (for now)
-	drop		v23* v24* v25* v26* v27*
+	drop			v23* v24* v25* v26* v27*
 		
 * create locals for sets of variables
 	loc		output		tf_yld cp_yld
@@ -209,22 +231,22 @@
 		qui: lab var 	ln`v' "ln of `v'" 
 	}
 
-	order		lntf_yld, before(tf_yld)
-	order		lncp_yld, before(cp_yld)
+	order			lntf_yld, before(tf_yld)
+	order			lncp_yld, before(cp_yld)
 	
-	order		lntf_la, before(tf_la)
-	order		lncp_lab, before(cp_lab)
+	order			lntf_la, before(tf_la)
+	order			lncp_lab, before(cp_lab)
 	
-	order		lntf_frt, before(tf_frt)
-	order		lncp_frt, before(cp_frt)
+	order			lntf_frt, before(tf_frt)
+	order			lncp_frt, before(cp_frt)
 
 * drop unnecessary variables
-	drop 		tf_hrv tf_lnd tf_yld cp_hrv cp_lnd cp_yld tf_lab ///
-					tf_frt cp_lab cp_frt	
+	drop 			tf_hrv tf_lnd tf_yld cp_hrv cp_lnd cp_yld tf_lab ///
+						tf_frt cp_lab cp_frt	
 					
 					
 * **********************************************************************
-* 7 - replace missing weather values with zero
+* 8 - replace missing weather values with zero
 * **********************************************************************
 	
 * replace missing values with zero - cycle through variables
@@ -256,7 +278,7 @@
 	}
 	
 * summarize fainfall variables - make sure everything went well
-	sum			*rf*
+	sum				*rf*
 	
 * replace missing values with zero - cycle through variables
 	forvalues		v = 15/22 {
@@ -273,11 +295,11 @@
 	}
 	
 * summarize temp variables - make sure everything went well
-	sum			*tp*
+	sum				*tp*
 	
 	
 * **********************************************************************
-* 8 - end matter
+* 9 - end matter
 * **********************************************************************
 
 * save complete results
