@@ -69,6 +69,7 @@
 	gen				pw = wt_wave1 if year == 2010
 	replace			pw = wt_wave2 if year == 2012
 	replace			pw = wt_wave3 if year == 2015
+	replace			pw = wt_w2v2 if pw == .
 	lab var			pw "Final household weight"
 	
 	drop			hhstatus_w1v1 - _merge

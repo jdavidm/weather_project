@@ -92,6 +92,24 @@ foreach l of local levels {
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 			
+		* weather and squared weather
+			reg 		lntf_yld c.`v'##c.`v' if aez == `l', vce(cluster hhid)
+			post 		`aez_results' (`l') ("`sat'") ("`ext'") ("tf") ("reg4") ///
+						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
+						(`=e(ll)') (`=e(df_r)')
+		
+		* weather and squared weather and fe
+			xtreg 		lntf_yld c.`v'##c.`v' i.year if aez == `l', fe vce(cluster hhid)
+			post 		`aez_results' (`l') ("`sat'") ("`ext'") ("tf") ("reg5") ///
+						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
+						(`=e(ll)') (`=e(df_r)')
+		
+		* weather and squared weather and inputs and fe
+			xtreg 		lntf_yld c.`v'##c.`v' `inputsrs' i.year if aez == `l', fe vce(cluster hhid)
+			post 		`aez_results' (`l') ("`sat'") ("`ext'") ("tf") ("reg6") ///
+						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
+						(`=e(ll)') (`=e(df_r)')
+			
 		* 2.2: Quantity of Maize
 		
 		* weather
@@ -109,6 +127,24 @@ foreach l of local levels {
 		* weather and inputs and fe
 			xtreg 		lncp_yld `v' `inputsrs' i.year if aez == `l', fe vce(cluster hhid)
 			post 		`aez_results' (`l') ("`sat'") ("`ext'") ("cp") ("reg3") ///
+						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
+						(`=e(ll)') (`=e(df_r)')
+			
+		* weather and squared weather
+			reg 		lncp_yld c.`v'##c.`v' if aez == `l', vce(cluster hhid)
+			post 		`aez_results' (`l') ("`sat'") ("`ext'") ("cp") ("reg4") ///
+						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
+						(`=e(ll)') (`=e(df_r)')
+		
+		* weather and squared weather and fe
+			xtreg 		lncp_yld c.`v'##c.`v' i.year if aez == `l', fe vce(cluster hhid)
+			post 		`aez_results' (`l') ("`sat'") ("`ext'") ("cp") ("reg5") ///
+						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
+						(`=e(ll)') (`=e(df_r)')
+		
+		* weather and squared weather and inputs and fe
+			xtreg 		lncp_yld c.`v'##c.`v' `inputsrs' i.year if aez == `l', fe vce(cluster hhid)
+			post 		`aez_results' (`l') ("`sat'") ("`ext'") ("cp") ("reg6") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 

@@ -42,8 +42,6 @@
 	*** all matched
 	
 * rename variables
-	rename			zae aez
-	lab var			aez "Agro-ecological zone"
 	rename			hhweight pw
 	lab var			pw "Household weight"
 	
@@ -56,14 +54,15 @@
 
 * build household identifier
 * need to rename for English
+	label 			var region "Region"
 	rename 			PASSAGE visit
-	label 			var visit "number of visit"
+	label 			var visit "Number of visit"
 	rename			GRAPPE clusterid
-	label 			var clusterid "cluster number"
+	label 			var clusterid "Cluster number"
 	rename			MENAGE hh_num
-	label 			var hh_num "household number - not unique id"
+	label 			var hh_num "Household number - not unique id"
 	rename 			EXTENSION extension 
-	label 			var extension "extension of household"
+	label 			var extension "Extension of household"
 	
 * create new household id for merging with weather 
 	tostring		clusterid, replace 
@@ -83,11 +82,11 @@
 	
 * identify and rename region specific variables
 	rename 			MS00Q11 dept
-	label 			var dept "department"
+	label 			var dept "Department"
 	rename 			MS00Q12 canton
-	label 			var canton "canton/commune"
+	label 			var canton "Canton/commune"
 	rename 		    MS00Q14 zd 
-	label 			var zd "zd number" 
+	label 			var zd "ZD number" 
 
 		
 * **********************************************************************
@@ -95,14 +94,14 @@
 * **********************************************************************
 
 	keep 			hhid_y2 hid clusterid hh_num hh_num1 extension ///
-						region dept canton zd aez pw
+						region dept canton zd pw
 	isid 			hhid_y2
 	
 	sort			hhid_y2 clusterid hh_num extension	
 	
-	label var 		hhid_y2 "unique id - match w2 with weather"
-	label var		hid "unique id - match w2 with w1 (no extension)"
-	label var 		hh_num1 "household id - string changed, not unique"
+	label var 		hhid_y2 "Unique id - match w2 with weather"
+	label var		hid "Unique id - match w2 with w1 (no extension)"
+	label var 		hh_num1 "Household id - string changed, not unique"
 	
 	compress
 	describe

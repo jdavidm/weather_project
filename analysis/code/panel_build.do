@@ -4,19 +4,17 @@
 * Stata v.16.1
 
 * does
+	* TAKES ABOUT 5 MINUTES TO COMBINE DATA SETS
 	* combines data from all countries
 	* drops cross sectional data in Malawi and Tanzania
-	* does final cleaning of data
-	* outputs data set for analysis
+	* outputs data set for final cleaing
 
 * assumes
 	* cleaned, merged (weather), and appended (waves) data
 	* customsave.ado
-	* winsor2.ado
 
 * TO DO:
-	* missing Nigeria household weights
-	* missing Niger data
+	* complete
 
 	
 * **********************************************************************
@@ -130,7 +128,7 @@
 	
 * drop unnecessary variables
 	drop			uid
-	
+
 	
 * **********************************************************************
 * 7 - clean combined data
@@ -248,7 +246,7 @@
 					
 					
 * **********************************************************************
-* 7 - replace missing weather values with zero
+* 8 - replace missing weather values with zero
 * **********************************************************************
 	
 * replace missing values with zero - cycle through variables
@@ -301,7 +299,7 @@
 	
 	
 * **********************************************************************
-* 8 - end matter
+* 9 - end matter
 * **********************************************************************
 
 * save complete results

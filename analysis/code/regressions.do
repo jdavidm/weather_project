@@ -49,10 +49,10 @@
 	loc		weather 	v*
 
 * create file to post results to
-	tempname 	myresults
-	postfile 	`myresults' country str3 sat str2 ext str2 depvar str4 regname str3 varname ///
+	tempname 	reg_results
+	postfile 	`reg_results' country str3 sat str2 ext str2 depvar str4 regname str3 varname ///
 					betarain serain adjustedr loglike dfr ///
-					using myresults.dta, replace
+					using "`results'/reg_results.dta", replace
 					
 * define loop through levels of the data type variable	
 levelsof 	country		, local(levels)
@@ -73,37 +73,37 @@ foreach l of local levels {
 		
 		* weather
 			reg 		lntf_yld `v' if country == `l', vce(cluster hhid)
-			post 		`myresults' (`l') ("`sat'") ("`ext'") ("tf") ("reg1") ///
+			post 		`reg_results' (`l') ("`sat'") ("`ext'") ("tf") ("reg1") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 
 		* weather and fe	
 			xtreg 		lntf_yld `v' i.year if country == `l', fe vce(cluster hhid)
-			post 		`myresults' (`l') ("`sat'") ("`ext'") ("tf") ("reg2") ///
+			post 		`reg_results' (`l') ("`sat'") ("`ext'") ("tf") ("reg2") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 
 		* weather and inputs and fe
 			xtreg 		lntf_yld `v' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
-			post 		`myresults' (`l') ("`sat'") ("`ext'") ("tf") ("reg3") ///
+			post 		`reg_results' (`l') ("`sat'") ("`ext'") ("tf") ("reg3") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 			
 		* weather and squared weather
 			reg 		lntf_yld c.`v'##c.`v' if country == `l', vce(cluster hhid)
-			post 		`myresults' (`l') ("`sat'") ("`ext'") ("tf") ("reg4") ///
+			post 		`reg_results' (`l') ("`sat'") ("`ext'") ("tf") ("reg4") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 		
 		* weather and squared weather and fe
 			xtreg 		lntf_yld c.`v'##c.`v' i.year if country == `l', fe vce(cluster hhid)
-			post 		`myresults' (`l') ("`sat'") ("`ext'") ("tf") ("reg5") ///
+			post 		`reg_results' (`l') ("`sat'") ("`ext'") ("tf") ("reg5") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 		
 		* weather and squared weather and inputs and fe
 			xtreg 		lntf_yld c.`v'##c.`v' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
-			post 		`myresults' (`l') ("`sat'") ("`ext'") ("tf") ("reg6") ///
+			post 		`reg_results' (`l') ("`sat'") ("`ext'") ("tf") ("reg6") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 
@@ -111,37 +111,37 @@ foreach l of local levels {
 		
 		* weather
 			reg 		lncp_yld `v' if country == `l', vce(cluster hhid)
-			post 		`myresults' (`l') ("`sat'") ("`ext'") ("cp") ("reg1") ///
+			post 		`reg_results' (`l') ("`sat'") ("`ext'") ("cp") ("reg1") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 
 		* weather and fe	
 			xtreg 		lncp_yld `v' i.year if country == `l', fe vce(cluster hhid)
-			post 		`myresults' (`l') ("`sat'") ("`ext'") ("cp") ("reg2") ///
+			post 		`reg_results' (`l') ("`sat'") ("`ext'") ("cp") ("reg2") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 
 		* weather and inputs and fe
 			xtreg 		lncp_yld `v' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
-			post 		`myresults' (`l') ("`sat'") ("`ext'") ("cp") ("reg3") ///
+			post 		`reg_results' (`l') ("`sat'") ("`ext'") ("cp") ("reg3") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 			
 		* weather and squared weather
 			reg 		lncp_yld c.`v'##c.`v' if country == `l', vce(cluster hhid)
-			post 		`myresults' (`l') ("`sat'") ("`ext'") ("cp") ("reg4") ///
+			post 		`reg_results' (`l') ("`sat'") ("`ext'") ("cp") ("reg4") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 		
 		* weather and squared weather and fe
 			xtreg 		lncp_yld c.`v'##c.`v' i.year if country == `l', fe vce(cluster hhid)
-			post 		`myresults' (`l') ("`sat'") ("`ext'") ("cp") ("reg5") ///
+			post 		`reg_results' (`l') ("`sat'") ("`ext'") ("cp") ("reg5") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 		
 		* weather and squared weather and inputs and fe
 			xtreg 		lncp_yld c.`v'##c.`v' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
-			post 		`myresults' (`l') ("`sat'") ("`ext'") ("cp") ("reg6") ///
+			post 		`reg_results' (`l') ("`sat'") ("`ext'") ("cp") ("reg6") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 
@@ -149,8 +149,8 @@ foreach l of local levels {
 }
 
 * close the post file and open the data file
-	postclose	`myresults' 
-	use 		myresults, clear
+	postclose	`reg_results' 
+	use 		"`results'/reg_results", clear
 
 * drop the cross section FE results
 	drop if		loglike == .

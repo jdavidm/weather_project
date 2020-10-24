@@ -11,6 +11,7 @@
 * assumes
 	* all Niger data has been cleaned and merged with rainfall
 	* customsave.ado
+	* xfill.ado
 
 * TO DO:
 	* complete
@@ -65,6 +66,33 @@
 	lab var			dtype "Data type"
 	
 	isid			ngr_id year
+
+* fill in missing aez
+	xtset			ngr_id
+	xfill			aez, i(ngr_id)
+	*** 97 still missing
+
+	replace			aez = 311 if aez == . & region == 1
+	replace			aez = 312 if aez == . & region == 3
+	replace			aez = 312 if aez == . & region == 4
+	replace			aez = 312 if aez == . & region == 8
+	*** 41 still missing
+
+	replace			aez = 311 if aez == . & dept == 21
+	replace			aez = 312 if aez == . & dept == 51
+	replace			aez = 312 if aez == . & dept == 53
+	replace			aez = 312 if aez == . & dept == 56
+	replace			aez = 312 if aez == . & dept == 57
+	replace			aez = 311 if aez == . & dept == 61
+	replace			aez = 312 if aez == . & dept == 62
+	replace			aez = 312 if aez == . & dept == 63
+	replace			aez = 312 if aez == . & dept == 64
+	replace			aez = 312 if aez == . & dept == 65
+	replace			aez = 312 if aez == . & dept == 66
+	replace			aez = 312 if aez == . & dept == 71
+	replace			aez = 311 if aez == . & dept == 72
+	replace			aez = 312 if aez == . & dept == 75
+	*** 0 missing
 	
 * order variables
 	drop			extension region dept canton enumeration clusterid ///

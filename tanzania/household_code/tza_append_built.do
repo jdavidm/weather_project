@@ -308,7 +308,16 @@
 		lab var 		`v' "Temperature Bin 80-100"	
 	}
 		
-		
+* fill in missing aez values
+	replace			aez = 313 if aez == . & region == 55
+	replace			aez = 313 if aez == . & region == 54
+	replace			aez = 313 if aez == . & region == 51
+	replace			aez = 313 if aez == . & region == 9
+	replace			aez = 313 if aez == . & region == 8
+	replace			aez = 313 if aez == . & region == 6
+	lab var			aez "Agro-ecological zone"
+	*** 35 missing observations replaced
+	
 * save file
 	qui: compress
 	customsave 	, idvarname(tza_id) filename("tza_lp.dta") ///
@@ -347,7 +356,7 @@
 * **********************************************************************
 * 4 - append all Tanzania data
 * **********************************************************************
-	
+
 * import the cross section file
 	use 		"`export'/tza_lp.dta", clear
 

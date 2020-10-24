@@ -286,6 +286,17 @@
 					tf_frt tf_pst tf_hrb tf_irr cp_hrv cp_lnd cp_yld cp_lab ///
 					cp_frt cp_pst cp_hrb cp_irr
 
+* replace missing variables
+	replace		aez = 312 if lp_id == 320
+	replace		aez = 312 if lp_id == 1142
+				
+* drop observations missing output
+	drop 		if tf_hrv == . & cp_hrv == .
+	*** drop observations are from those who cultivated dry but NOT rainy season
+	
+	replace		cp_pst = . if cp_hrv == .
+	replace		cp_hrb = . if cp_hrv == .
+				
 * create household, country, and data identifiers
 	egen			uid = seq()
 	lab var			uid "unique id"
