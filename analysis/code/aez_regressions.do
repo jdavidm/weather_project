@@ -4,7 +4,7 @@
 * Stata v.16.1
 
 * does
-	* NOTE IT TAKES 85 MIN TO RUN ALL REGRESSIONS
+	* NOTE IT TAKES 4 HOURS TO RUN ALL REGRESSIONS
 	* loads multi country data set
 	* runs rainfall and temperature for ag-eco zone
 	* outputs results file for analysis
@@ -39,7 +39,7 @@
 	use			"`source'/lsms_panel.dta", clear
 
 * drop aez with only a few observations
-	drop		if aez == 311 | aez ==321
+	drop		if aez ==321
 	
 	
 * **********************************************************************
