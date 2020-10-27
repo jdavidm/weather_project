@@ -16,6 +16,7 @@
 	* customsave.ado
 
 * TO DO:
+	* everything 
 	* complete
 
 	
@@ -54,7 +55,7 @@
 	tempname 	reg_results
 	postfile 	`reg_results' country str3 sat str2 ext str2 depvar str4 regname str3 varname ///
 					betarain serain adjustedr loglike dfr ///
-					using "`results'/reg_results.dta", replace
+					using "`results'/reg_results-linearcombo.dta", replace
 					
 * define loop through levels of the data type variable	
 levelsof 	country		, local(levels)
@@ -152,7 +153,7 @@ foreach l of local levels {
 
 * close the post file and open the data file
 	postclose	`reg_results' 
-	use 		"`results'/reg_results", clear
+	use 		"`results'/reg_results-linearcombo", clear
 
 * drop the cross section FE results
 	drop if		loglike == .
@@ -331,12 +332,12 @@ foreach l of local levels {
 order	reg_id
 	
 * save complete results
-	loc		results = 	"$data/results_data"
+	loc		results = 	"$data/results_data-linearcombo"
 	
 	compress
 	
-	customsave 	, idvarname(reg_id) filename("lsms_complete_results.dta") ///
-		path("`results'") dofile(regression) user($user)
+	customsave 	, idvarname(reg_id) filename("lsms_complete_results-linearcombo.dta") ///
+		path("`results-linearcombo'") dofile(regression) user($user)
 
 * close the log
 	log	close
