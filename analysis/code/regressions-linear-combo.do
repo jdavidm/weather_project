@@ -31,7 +31,7 @@
 
 * open log	
 	cap log close
-	log 	using 		"`logout'/regressions", append
+	log 	using 		"`logout'/regressions_lc", append
 
 	
 * **********************************************************************
@@ -46,67 +46,75 @@
 * 2 - regressions on weather data
 * **********************************************************************
 
+foreach i = 0/9 {
+	*** want to compare only like to like - so need to find a way to limit in this way ... 
+
 * create locals for total farm and just for maize
 	loc 	inputscp 	lncp_lab lncp_frt cp_pst cp_hrb cp_irr
 	loc		inputstf 	lntf_lab lntf_frt tf_pst tf_hrb tf_irr
-	loc		weather 	v*
+	loc		rain 		v01*`i' 
+	loc 	temp 		v15*`i' 
 
 * create file to post results to
-	tempname 	reg_results
-	postfile 	`reg_results' country str3 sat str2 ext str2 depvar str4 regname str3 varname ///
+	tempname 	reg_results_lc
+	postfile 	`reg_results_lc' country str3 sat str2 ext str2 depvar str4 regname str3 varname ///
 					betarain serain adjustedr loglike dfr ///
-					using "`results'/reg_results-linearcombo.dta", replace
+					using "`results'/reg_results_lc.dta", replace
 					
 * define loop through levels of the data type variable	
 levelsof 	country		, local(levels)
 foreach l of local levels {
+ 
 	
 	* set panel id so it varies by dtype
 		xtset		hhid
 		
 	* rainfall			
-		foreach 	v of varlist `weather' { 
+		foreach 	r of varlist `rain' { 
 
 		* define locals for naming conventions
-			loc 	sat = 	substr("`v'", 5, 3)
-			loc 	ext = 	substr("`v'", 9, 2)
-			loc 	varn = 	substr("`v'", 1, 3)
+			loc 	sat = 	substr("`r'", 5, 3)
+			loc 	ext = 	substr("`r'", 9, 2)
+			loc 	varn = 	substr("`r'", 1, 3)
+			
+	* temp			
+		foreach 	t of varlist `temp' { 
 
 		* 2.1: Value of Harvest
 		
 		* weather
-			reg 		lntf_yld `v' if country == `l', vce(cluster hhid)
-			post 		`reg_results' (`l') ("`sat'") ("`ext'") ("tf") ("reg1") ///
-						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
+			reg 		lntf_yld `r' `t' if country == `l', vce(cluster hhid)
+			post 		`reg_results_lc' (`l') ("`sat'") ("`ext'") ("tf") ("reg1") ///
+						("`varn'") (`=_b[`r']') (`=_se[`r']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
-
+/*
 		* weather and fe	
 			xtreg 		lntf_yld `v' i.year if country == `l', fe vce(cluster hhid)
-			post 		`reg_results' (`l') ("`sat'") ("`ext'") ("tf") ("reg2") ///
+			post 		`reg_results-lc' (`l') ("`sat'") ("`ext'") ("tf") ("reg2") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 
 		* weather and inputs and fe
 			xtreg 		lntf_yld `v' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
-			post 		`reg_results' (`l') ("`sat'") ("`ext'") ("tf") ("reg3") ///
+			post 		`reg_results-lc' (`l') ("`sat'") ("`ext'") ("tf") ("reg3") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 			
 		* weather and squared weather
 			reg 		lntf_yld c.`v'##c.`v' if country == `l', vce(cluster hhid)
-			post 		`reg_results' (`l') ("`sat'") ("`ext'") ("tf") ("reg4") ///
+			post 		`reg_results-lc' (`l') ("`sat'") ("`ext'") ("tf") ("reg4") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 		
 		* weather and squared weather and fe
 			xtreg 		lntf_yld c.`v'##c.`v' i.year if country == `l', fe vce(cluster hhid)
-			post 		`reg_results' (`l') ("`sat'") ("`ext'") ("tf") ("reg5") ///
+			post 		`reg_results-lc' (`l') ("`sat'") ("`ext'") ("tf") ("reg5") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 		
 		* weather and squared weather and inputs and fe
 			xtreg 		lntf_yld c.`v'##c.`v' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
-			post 		`reg_results' (`l') ("`sat'") ("`ext'") ("tf") ("reg6") ///
+			post 		`reg_results-lc' (`l') ("`sat'") ("`ext'") ("tf") ("reg6") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 
@@ -114,47 +122,49 @@ foreach l of local levels {
 		
 		* weather
 			reg 		lncp_yld `v' if country == `l', vce(cluster hhid)
-			post 		`reg_results' (`l') ("`sat'") ("`ext'") ("cp") ("reg1") ///
+			post 		`reg_results-lc' (`l') ("`sat'") ("`ext'") ("cp") ("reg1") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 
 		* weather and fe	
 			xtreg 		lncp_yld `v' i.year if country == `l', fe vce(cluster hhid)
-			post 		`reg_results' (`l') ("`sat'") ("`ext'") ("cp") ("reg2") ///
+			post 		`reg_results-lc' (`l') ("`sat'") ("`ext'") ("cp") ("reg2") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 
 		* weather and inputs and fe
 			xtreg 		lncp_yld `v' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
-			post 		`reg_results' (`l') ("`sat'") ("`ext'") ("cp") ("reg3") ///
+			post 		`reg_results-lc' (`l') ("`sat'") ("`ext'") ("cp") ("reg3") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 			
 		* weather and squared weather
 			reg 		lncp_yld c.`v'##c.`v' if country == `l', vce(cluster hhid)
-			post 		`reg_results' (`l') ("`sat'") ("`ext'") ("cp") ("reg4") ///
+			post 		`reg_results-lc' (`l') ("`sat'") ("`ext'") ("cp") ("reg4") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 		
 		* weather and squared weather and fe
 			xtreg 		lncp_yld c.`v'##c.`v' i.year if country == `l', fe vce(cluster hhid)
-			post 		`reg_results' (`l') ("`sat'") ("`ext'") ("cp") ("reg5") ///
+			post 		`reg_results-lc' (`l') ("`sat'") ("`ext'") ("cp") ("reg5") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
 		
 		* weather and squared weather and inputs and fe
 			xtreg 		lncp_yld c.`v'##c.`v' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
-			post 		`reg_results' (`l') ("`sat'") ("`ext'") ("cp") ("reg6") ///
+			post 		`reg_results-lc' (`l') ("`sat'") ("`ext'") ("cp") ("reg6") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
-
+*/
+	}
 	}
 }
+} 
 
 * close the post file and open the data file
-	postclose	`reg_results' 
-	use 		"`results'/reg_results-linearcombo", clear
-
+	postclose	`reg_results-lc' 
+	use 		"`results'/reg_results-lc", clear
+/*
 * drop the cross section FE results
 	drop if		loglike == .
 	
@@ -332,12 +342,12 @@ foreach l of local levels {
 order	reg_id
 	
 * save complete results
-	loc		results = 	"$data/results_data-linearcombo"
+	loc		results = 	"$data/results_data-lc"
 	
 	compress
 	
-	customsave 	, idvarname(reg_id) filename("lsms_complete_results-linearcombo.dta") ///
-		path("`results-linearcombo'") dofile(regression) user($user)
+	customsave 	, idvarname(reg_id) filename("lsms_complete_results-lc.dta") ///
+		path("`results-lc'") dofile(regression) user($user)
 
 * close the log
 	log	close
