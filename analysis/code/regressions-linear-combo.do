@@ -6,7 +6,7 @@
 * Stata v.16.1
 
 * does
-	* NOTE IT TAKES 90 MIN+ TO RUN ALL REGRESSIONS
+	* NOTE IT TAKES 90 MIN+ TO RUN ALL REGRESSIONS - update this itme
 	* loads multi country data set
 	* runs rainfall and temperature regressions
 	* outputs results file for analysis
@@ -46,19 +46,26 @@
 * 2 - regressions on weather data
 * **********************************************************************
 
-foreach i = 0/9 {
-	*** want to compare only like to like - so need to find a way to limit in this way ... 
-
 * create locals for total farm and just for maize
 	loc 	inputscp 	lncp_lab lncp_frt cp_pst cp_hrb cp_irr
 	loc		inputstf 	lntf_lab lntf_frt tf_pst tf_hrb tf_irr
-	loc		rain 		v01*`i' 
-	loc 	temp 		v15*`i' 
+	loc		rainmean 	v01*
+	loc 	tempmean 	v15*
+	loc 	rainvari	v03*
+	loc 	tempvari	v17*
+	loc		rainskew	v04*
+	loc		tempskew	v18*
+	loc		rainmed 	v02*
+	loc 	tempmed		v16* 
+	loc		raintot		v05*
+	loc 	tempgdd		v19*
+	loc 	raintotz	v07*
+	loc 	tempgddz 	v21*
 
 * create file to post results to
 	tempname 	reg_results_lc
 	postfile 	`reg_results_lc' country str3 sat str2 ext str2 depvar str4 regname str3 varname ///
-					betarain serain adjustedr loglike dfr ///
+					betarain serain betatemp setemp adjustedr loglike dfr ///
 					using "`results'/reg_results_lc.dta", replace
 					
 * define loop through levels of the data type variable	
@@ -70,7 +77,7 @@ foreach l of local levels {
 		xtset		hhid
 		
 	* rainfall			
-		foreach 	r of varlist `rain' { 
+		foreach 	r of varlist `rainmean' { 
 
 		* define locals for naming conventions
 			loc 	sat = 	substr("`r'", 5, 3)
@@ -78,93 +85,93 @@ foreach l of local levels {
 			loc 	varn = 	substr("`r'", 1, 3)
 			
 	* temp			
-		foreach 	t of varlist `temp' { 
+		foreach 	t of varlist `tempmean' {
 
 		* 2.1: Value of Harvest
 		
 		* weather
 			reg 		lntf_yld `r' `t' if country == `l', vce(cluster hhid)
 			post 		`reg_results_lc' (`l') ("`sat'") ("`ext'") ("tf") ("reg1") ///
-						("`varn'") (`=_b[`r']') (`=_se[`r']') (`=e(r2_a)') ///
-						(`=e(ll)') (`=e(df_r)')
-/*
+						("`varn'") (`=_b[`r']') (`=_se[`r']') (`=_b[`t']') (`=_se[`t']') ///
+						(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
+
 		* weather and fe	
-			xtreg 		lntf_yld `v' i.year if country == `l', fe vce(cluster hhid)
-			post 		`reg_results-lc' (`l') ("`sat'") ("`ext'") ("tf") ("reg2") ///
-						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
-						(`=e(ll)') (`=e(df_r)')
+			xtreg 		lntf_yld `r' `t' i.year if country == `l', fe vce(cluster hhid)
+			post 		`reg_results_lc' (`l') ("`sat'") ("`ext'") ("tf") ("reg2") ///
+						("`varn'") (`=_b[`r']') (`=_se[`r']') (`=_b[`t']') (`=_se[`t']') ///
+						(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
 
 		* weather and inputs and fe
-			xtreg 		lntf_yld `v' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
-			post 		`reg_results-lc' (`l') ("`sat'") ("`ext'") ("tf") ("reg3") ///
-						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
-						(`=e(ll)') (`=e(df_r)')
+			xtreg 		lntf_yld `r' `t' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
+			post 		`reg_results_lc' (`l') ("`sat'") ("`ext'") ("tf") ("reg3") ///
+						("`varn'") (`=_b[`r']') (`=_se[`r']') (`=_b[`t']') (`=_se[`t']') ///
+						(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
 			
 		* weather and squared weather
-			reg 		lntf_yld c.`v'##c.`v' if country == `l', vce(cluster hhid)
-			post 		`reg_results-lc' (`l') ("`sat'") ("`ext'") ("tf") ("reg4") ///
-						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
-						(`=e(ll)') (`=e(df_r)')
+			reg 		lntf_yld c.`r'##c.`r' c.`t'##c.`t' if country == `l', vce(cluster hhid)
+			post 		`reg_results_lc' (`l') ("`sat'") ("`ext'") ("tf") ("reg4") ///
+						("`varn'") (`=_b[`r']') (`=_se[`r']') (`=_b[`t']') (`=_se[`t']') ///
+						(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
 		
 		* weather and squared weather and fe
-			xtreg 		lntf_yld c.`v'##c.`v' i.year if country == `l', fe vce(cluster hhid)
-			post 		`reg_results-lc' (`l') ("`sat'") ("`ext'") ("tf") ("reg5") ///
-						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
-						(`=e(ll)') (`=e(df_r)')
+			xtreg 		lntf_yld c.`r'##c.`r' c.`t'##c.`t' i.year if country == `l', fe vce(cluster hhid)
+			post 		`reg_results_lc' (`l') ("`sat'") ("`ext'") ("tf") ("reg5") ///
+						("`varn'") (`=_b[`r']') (`=_se[`r']') (`=_b[`t']') (`=_se[`t']') ///
+						(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
 		
 		* weather and squared weather and inputs and fe
-			xtreg 		lntf_yld c.`v'##c.`v' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
-			post 		`reg_results-lc' (`l') ("`sat'") ("`ext'") ("tf") ("reg6") ///
-						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
-						(`=e(ll)') (`=e(df_r)')
+			xtreg 		lntf_yld c.`r'##c.`r' c.`t'##c.`t' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
+			post 		`reg_results_lc' (`l') ("`sat'") ("`ext'") ("tf") ("reg6") ///
+						("`varn'") (`=_b[`r']') (`=_se[`r']') (`=_b[`t']') (`=_se[`t']') ///
+						(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
 
 		* 2.2: Quantity of Maize
 		
 		* weather
-			reg 		lncp_yld `v' if country == `l', vce(cluster hhid)
-			post 		`reg_results-lc' (`l') ("`sat'") ("`ext'") ("cp") ("reg1") ///
-						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
-						(`=e(ll)') (`=e(df_r)')
+			reg 		lncp_yld `r' `t' if country == `l', vce(cluster hhid)
+			post 		`reg_results_lc' (`l') ("`sat'") ("`ext'") ("cp") ("reg1") ///
+						("`varn'") (`=_b[`r']') (`=_se[`r']') (`=_b[`t']') (`=_se[`t']') ///
+						(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
 
 		* weather and fe	
-			xtreg 		lncp_yld `v' i.year if country == `l', fe vce(cluster hhid)
-			post 		`reg_results-lc' (`l') ("`sat'") ("`ext'") ("cp") ("reg2") ///
-						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
-						(`=e(ll)') (`=e(df_r)')
+			xtreg 		lncp_yld `r' `t' i.year if country == `l', fe vce(cluster hhid)
+			post 		`reg_results_lc' (`l') ("`sat'") ("`ext'") ("cp") ("reg2") ///
+						("`varn'") (`=_b[`r']') (`=_se[`r']') (`=_b[`t']') (`=_se[`t']') ///
+						(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
 
 		* weather and inputs and fe
-			xtreg 		lncp_yld `v' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
-			post 		`reg_results-lc' (`l') ("`sat'") ("`ext'") ("cp") ("reg3") ///
-						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
-						(`=e(ll)') (`=e(df_r)')
+			xtreg 		lncp_yld `r' `t' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
+			post 		`reg_results_lc' (`l') ("`sat'") ("`ext'") ("cp") ("reg3") ///
+						("`varn'") (`=_b[`r']') (`=_se[`r']') (`=_b[`t']') (`=_se[`t']') ///
+						(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
 			
 		* weather and squared weather
-			reg 		lncp_yld c.`v'##c.`v' if country == `l', vce(cluster hhid)
-			post 		`reg_results-lc' (`l') ("`sat'") ("`ext'") ("cp") ("reg4") ///
-						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
-						(`=e(ll)') (`=e(df_r)')
-		
+			reg 		lncp_yld c.`r'##c.`r' c.`t'##c.`t' if country == `l', vce(cluster hhid)
+			post 		`reg_results_lc' (`l') ("`sat'") ("`ext'") ("cp") ("reg4") ///
+						("`varn'") (`=_b[`r']') (`=_se[`r']') (`=_b[`t']') (`=_se[`t']') ///
+						(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
+						
 		* weather and squared weather and fe
-			xtreg 		lncp_yld c.`v'##c.`v' i.year if country == `l', fe vce(cluster hhid)
-			post 		`reg_results-lc' (`l') ("`sat'") ("`ext'") ("cp") ("reg5") ///
-						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
-						(`=e(ll)') (`=e(df_r)')
+			xtreg 		lncp_yld c.`r'##c.`r' c.`t'##c.`t' i.year if country == `l', fe vce(cluster hhid)
+			post 		`reg_results_lc' (`l') ("`sat'") ("`ext'") ("cp") ("reg5") ///
+						("`varn'") (`=_b[`r']') (`=_se[`r']') (`=_b[`t']') (`=_se[`t']') ///
+						(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
 		
 		* weather and squared weather and inputs and fe
-			xtreg 		lncp_yld c.`v'##c.`v' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
-			post 		`reg_results-lc' (`l') ("`sat'") ("`ext'") ("cp") ("reg6") ///
-						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
-						(`=e(ll)') (`=e(df_r)')
+			xtreg 		lncp_yld c.`r'##c.`r' c.`t'##c.`t' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
+			post 		`reg_results_lc' (`l') ("`sat'") ("`ext'") ("cp") ("reg6") ///
+						("`varn'") (`=_b[`r']') (`=_se[`r']') (`=_b[`t']') (`=_se[`t']') ///
+						(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
 */
 	}
 	}
-}
 } 
 
+
 * close the post file and open the data file
-	postclose	`reg_results-lc' 
-	use 		"`results'/reg_results-lc", clear
-/*
+	postclose	`reg_results_lc' 
+	use 		"`results'/reg_results_lc", clear
+
 * drop the cross section FE results
 	drop if		loglike == .
 	
@@ -342,12 +349,12 @@ foreach l of local levels {
 order	reg_id
 	
 * save complete results
-	loc		results = 	"$data/results_data-lc"
+	loc		results = 	"$data/results_data_lc"
 	
 	compress
 	
-	customsave 	, idvarname(reg_id) filename("lsms_complete_results-lc.dta") ///
-		path("`results-lc'") dofile(regression) user($user)
+	customsave 	, idvarname(reg_id) filename("lsms_complete_results_lc.dta") ///
+		path("`results_lc'") dofile(regression) user($user)
 
 * close the log
 	log	close
