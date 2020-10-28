@@ -232,14 +232,6 @@
 * 3 - generate p-value graphs for by country
 * **********************************************************************
 
-* test
-	ttest p99 if country == 1 | country == 2, by(country)
-	
-	
-* **********************************************************************
-* 4 - generate p-value graphs for by country
-* **********************************************************************
-
 *** ethiopia ***
 
 * p-value graph of rainfall by extraction method
@@ -454,9 +446,9 @@
 						
 	graph export "$xfig\pval_sat_tp.pdf", as(pdf) replace		
 	
-
+	
 * **********************************************************************
-* 3 - end matter
+* 4 - end matter
 * **********************************************************************
 
 

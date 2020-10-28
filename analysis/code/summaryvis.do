@@ -125,9 +125,9 @@
 */
 
 * **********************************************************************
-* 3 - generate total season distribution graphs
+* 3 - generate total season distribution graphs by country
 * **********************************************************************
-
+/*
 * total season rainfall - Ethiopia		
 	twoway  (kdensity v05_rf1 if country == 1, color(gray%30) recast(area)) ///
 			(kdensity v05_rf2 if country == 1, color(vermillion%30) recast(area)) ///
@@ -154,6 +154,19 @@
 			label(3 "Rainfall 3") label(4 "Rainfall 4") label(5 "Rainfall 5") ///
 			label(6 "Rainfall 6")) saving("$xfig/mwi_density_rf", replace)
 
+* total season rainfall - Niger		
+	twoway  (kdensity v05_rf1 if country == 4, color(gray%30) recast(area)) ///
+			(kdensity v05_rf2 if country == 4, color(vermillion%30) recast(area)) ///
+			(kdensity v05_rf3 if country == 4, color(sea%30) recast(area)) ///
+			(kdensity v05_rf4 if country == 4, color(turquoise%30) recast(area)) ///
+			(kdensity v05_rf5 if country == 4, color(reddish%30) recast(area)) ///
+			(kdensity v05_rf6 if country == 4, color(ananas%30) recast(area) ///
+			xtitle("Total Season Rainfall (mm)") xscale(r(0(100)800)) title("Niger") ///
+			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			legend(pos(6) col(3) label(1 "Rainfall 1") label(2 "Rainfall 2") ///
+			label(3 "Rainfall 3") label(4 "Rainfall 4") label(5 "Rainfall 5") ///
+			label(6 "Rainfall 6")) saving("$xfig/ngr_density_rf", replace)
+			
 * total season rainfall - Nigeria		
 	twoway  (kdensity v05_rf1 if country == 5, color(gray%30) recast(area)) ///
 			(kdensity v05_rf2 if country == 5, color(vermillion%30) recast(area)) ///
@@ -174,14 +187,28 @@
 			(kdensity v05_rf4 if country == 6, color(turquoise%30) recast(area)) ///
 			(kdensity v05_rf5 if country == 6, color(reddish%30) recast(area)) ///
 			(kdensity v05_rf6 if country == 6, color(ananas%30) recast(area) ///
-			xtitle("Total Season Rainfall (mm)") xscale(r(0(1000)8000)) title("Tanzania") ///
+			xtitle("Total Season Rainfall (mm)") xscale(r(0(1000)7000)) title("Tanzania") ///
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "Rainfall 1") label(2 "Rainfall 2") ///
 			label(3 "Rainfall 3") label(4 "Rainfall 4") label(5 "Rainfall 5") ///
 			label(6 "Rainfall 6")) saving("$xfig/tza_density_rf", replace)
 
+* total season rainfall - Uganda		
+	twoway  (kdensity v05_rf1 if country == 7, color(gray%30) recast(area)) ///
+			(kdensity v05_rf2 if country == 7, color(vermillion%30) recast(area)) ///
+			(kdensity v05_rf3 if country == 7, color(sea%30) recast(area)) ///
+			(kdensity v05_rf4 if country == 7, color(turquoise%30) recast(area)) ///
+			(kdensity v05_rf5 if country == 7, color(reddish%30) recast(area)) ///
+			(kdensity v05_rf6 if country == 7, color(ananas%30) recast(area) ///
+			xtitle("Total Season Rainfall (mm)") xscale(r(0(500)4000)) title("Uganda") ///
+			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			legend(pos(6) col(3) label(1 "Rainfall 1") label(2 "Rainfall 2") ///
+			label(3 "Rainfall 3") label(4 "Rainfall 4") label(5 "Rainfall 5") ///
+			label(6 "Rainfall 6")) saving("$xfig/uga_density_rf", replace)
+			
 	grc1leg2 		"$xfig/eth_density_rf.gph" "$xfig/mwi_density_rf.gph" ///
-						"$xfig/nga_density_rf.gph" "$xfig/tza_density_rf.gph", ///
+						"$xfig/ngr_density_rf.gph" "$xfig/nga_density_rf.gph" ///
+						"$xfig/tza_density_rf.gph" "$xfig/uga_density_rf.gph", ///
 						col(2) iscale(.5) commonscheme imargin(0 0 0 0)
 						
 	graph export "$xfig\density_rf.pdf", as(pdf) replace
@@ -233,70 +260,328 @@
 						col(2) iscale(.5) commonscheme imargin(0 0 0 0)
 						
 	graph export "$xfig\density_tp.pdf", as(pdf) replace	
-		
-/*	
-*No Rain - Ethiopia
-twoway 	(line avg_norain year if sat == 1 & country == 1, color(gray) lpattern(solid)) ///
-		(line avg_norain year if sat == 2 & country == 1, color(vermillion) lpattern(solid)) ///
-		(line avg_norain year if sat == 3 & country == 1, color(sea) lpattern(solid)) ///
-		(line avg_norain year if sat == 4 & country == 1, color(turquoise) lpattern(solid)) ///
-		(line avg_norain year if sat == 5 & country == 1, color(reddish)lpattern(solid)) ///
-		(line avg_norain year if sat == 6 & country == 1, color(ananas%30) lpattern(solid) ///
-		xtitle("Year") xscale(r(1983(2)2016)) ///
-		ytitle("Days") ylabel(, nogrid labsize(small)) ///
-		xlabel(, nogrid labsize(small))), title("Days without Rain in Ethiopia by Satellite") ///
-		legend(pos(6) col(3) label(1 "Rainfall 1") label(2 "Rainfall 2") label(3 "Rainfall 3") ///
-		label(4 "Rainfall 4") label(5 "Rainfall 5") label(6 "Rainfall 6"))
+*/	
 
-		graph export "`all'/eth_norain.eps", as(eps) replace
-		
-*No Rain - Malawi
-twoway 	(line avg_norain year if sat == 1 & country == 2, color(gray) lpattern(solid)) ///
-		(line avg_norain year if sat == 2 & country == 2, color(vermillion) lpattern(solid)) ///
-		(line avg_norain year if sat == 3 & country == 2, color(sea) lpattern(solid)) ///
-		(line avg_norain year if sat == 4 & country == 2, color(turquoise) lpattern(solid)) ///
-		(line avg_norain year if sat == 5 & country == 2, color(reddish)lpattern(solid)) ///
-		(line avg_norain year if sat == 6 & country == 2, color(ananas%30) lpattern(solid) ///
-		xtitle("Year") xscale(r(1983(2)2016)) ///
-		ytitle("Days") ylabel(, nogrid labsize(small)) ///
-		xlabel(, nogrid labsize(small))), title("Days without Rain in Malawi by Satellite") ///
-		legend(pos(6) col(3) label(1 "Rainfall 1") label(2 "Rainfall 2") label(3 "Rainfall 3") ///
-		label(4 "Rainfall 4") label(5 "Rainfall 5") label(6 "Rainfall 6"))
+* **********************************************************************
+* 5 - generate total season distribution graphs by aez
+* **********************************************************************
 
-		graph export "`all'/mwi_norain.eps", as(eps) replace
-		
-*No Rain - Nigeria
-twoway 	(line avg_norain year if sat == 1 & country == 5, color(gray) lpattern(solid)) ///
-		(line avg_norain year if sat == 2 & country == 5, color(vermillion) lpattern(solid)) ///
-		(line avg_norain year if sat == 3 & country == 5, color(sea) lpattern(solid)) ///
-		(line avg_norain year if sat == 4 & country == 5, color(turquoise) lpattern(solid)) ///
-		(line avg_norain year if sat == 5 & country == 5, color(reddish)lpattern(solid)) ///
-		(line avg_norain year if sat == 6 & country == 5, color(ananas%30) lpattern(solid) ///
-		xtitle("Year") xscale(r(1983(2)2016)) ///
-		ytitle("Days") ylabel(, nogrid labsize(small)) ///
-		xlabel(, nogrid labsize(small))), title("Days without Rain in Nigeria by Satellite") ///
-		legend(pos(6) col(3) label(1 "Rainfall 1") label(2 "Rainfall 2") label(3 "Rainfall 3") ///
-		label(4 "Rainfall 4") label(5 "Rainfall 5") label(6 "Rainfall 6"))
+* total season rainfall - Tropic-warm/semiarid	
+	twoway  (kdensity v05_rf1 if aez == 312, color(gray%30) recast(area)) ///
+			(kdensity v05_rf2 if aez == 312, color(vermillion%30) recast(area)) ///
+			(kdensity v05_rf3 if aez == 312, color(sea%30) recast(area)) ///
+			(kdensity v05_rf4 if aez == 312, color(turquoise%30) recast(area)) ///
+			(kdensity v05_rf5 if aez == 312, color(reddish%30) recast(area)) ///
+			(kdensity v05_rf6 if aez == 312, color(ananas%30) recast(area) ///
+			xtitle("") xscale(r(0(500)2000)) title("Tropic-warm/semiarid (n = 9,095)") ///
+			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			legend(pos(6) col(3) label(1 "Rainfall 1") label(2 "Rainfall 2") ///
+			label(3 "Rainfall 3") label(4 "Rainfall 4") label(5 "Rainfall 5") ///
+			label(6 "Rainfall 6")) saving("$xfig/twsa_density_rf", replace)
 
-		graph export "`all'/nga_norain.eps", as(eps) replace
+* total season rainfall - Tropic-warm/subhumid		
+	twoway  (kdensity v05_rf1 if aez == 313, color(gray%30) recast(area)) ///
+			(kdensity v05_rf2 if aez == 313, color(vermillion%30) recast(area)) ///
+			(kdensity v05_rf3 if aez == 313, color(sea%30) recast(area)) ///
+			(kdensity v05_rf4 if aez == 313, color(turquoise%30) recast(area)) ///
+			(kdensity v05_rf5 if aez == 313, color(reddish%30) recast(area)) ///
+			(kdensity v05_rf6 if aez == 313, color(ananas%30) recast(area) ///
+			xtitle("") xscale(r(0(1000)4000)) title("Tropic-warm/subhumid (n = 9,009)") ///
+			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			legend(pos(6) col(3) label(1 "Rainfall 1") label(2 "Rainfall 2") ///
+			label(3 "Rainfall 3") label(4 "Rainfall 4") label(5 "Rainfall 5") ///
+			label(6 "Rainfall 6")) saving("$xfig/twsh_density_rf", replace)
 
-*No Rain - Tanzania
-twoway 	(line avg_norain year if sat == 1 & country == 6, color(gray) lpattern(solid)) ///
-		(line avg_norain year if sat == 2 & country == 6, color(vermillion) lpattern(solid)) ///
-		(line avg_norain year if sat == 3 & country == 6, color(sea) lpattern(solid)) ///
-		(line avg_norain year if sat == 4 & country == 6, color(turquoise) lpattern(solid)) ///
-		(line avg_norain year if sat == 5 & country == 6, color(reddish)lpattern(solid)) ///
-		(line avg_norain year if sat == 6 & country == 6, color(ananas%30) lpattern(solid) ///
-		xtitle("Year") xscale(r(1983(2)2016)) ///
-		ytitle("Days") ylabel(, nogrid labsize(small)) ///
-		xlabel(, nogrid labsize(small))), title("Days without Rain in Tanzania by Satellite") ///
-		legend(pos(6) col(3) label(1 "Rainfall 1") label(2 "Rainfall 2") label(3 "Rainfall 3") ///
-		label(4 "Rainfall 4") label(5 "Rainfall 5") label(6 "Rainfall 6"))
+* total season rainfall - Tropic-warm/humid		
+	twoway  (kdensity v05_rf1 if aez == 314, color(gray%30) recast(area)) ///
+			(kdensity v05_rf2 if aez == 314, color(vermillion%30) recast(area)) ///
+			(kdensity v05_rf3 if aez == 314, color(sea%30) recast(area)) ///
+			(kdensity v05_rf4 if aez == 314, color(turquoise%30) recast(area)) ///
+			(kdensity v05_rf5 if aez == 314, color(reddish%30) recast(area)) ///
+			(kdensity v05_rf6 if aez == 314, color(ananas%30) recast(area) ///
+			xtitle("") xscale(r(0(1000)4000)) title("Tropic-warm/humid (n = 3,280)") ///
+			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			legend(pos(6) col(3) label(1 "Rainfall 1") label(2 "Rainfall 2") ///
+			label(3 "Rainfall 3") label(4 "Rainfall 4") label(5 "Rainfall 5") ///
+			label(6 "Rainfall 6")) saving("$xfig/twh_density_rf", replace)
 
-		graph export "`all'/tza_norain.eps", as(eps) replace
+* total season rainfall - Tropic-cool/semiarid	
+	twoway  (kdensity v05_rf1 if aez == 322, color(gray%30) recast(area)) ///
+			(kdensity v05_rf2 if aez == 322, color(vermillion%30) recast(area)) ///
+			(kdensity v05_rf3 if aez == 322, color(sea%30) recast(area)) ///
+			(kdensity v05_rf4 if aez == 322, color(turquoise%30) recast(area)) ///
+			(kdensity v05_rf5 if aez == 322, color(reddish%30) recast(area)) ///
+			(kdensity v05_rf6 if aez == 322, color(ananas%30) recast(area) ///
+			xtitle("") xscale(r(0(500)2500)) title("Tropic-cool/semiarid (n = 2,840)") ///
+			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			legend(pos(6) col(3) label(1 "Rainfall 1") label(2 "Rainfall 2") ///
+			label(3 "Rainfall 3") label(4 "Rainfall 4") label(5 "Rainfall 5") ///
+			label(6 "Rainfall 6")) saving("$xfig/tcsa_density_rf", replace)
+
+* total season rainfall - Tropic-cool/subhumid		
+	twoway  (kdensity v05_rf1 if aez == 323, color(gray%30) recast(area)) ///
+			(kdensity v05_rf2 if aez == 323, color(vermillion%30) recast(area)) ///
+			(kdensity v05_rf3 if aez == 323, color(sea%30) recast(area)) ///
+			(kdensity v05_rf4 if aez == 323, color(turquoise%30) recast(area)) ///
+			(kdensity v05_rf5 if aez == 323, color(reddish%30) recast(area)) ///
+			(kdensity v05_rf6 if aez == 323, color(ananas%30) recast(area) ///
+			xtitle("Total Season Rainfall (mm)") xscale(r(0(1000)7000)) ///
+			title("Tropic-cool/subhumid (n = 5,886)") ///
+			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			legend(pos(6) col(3) label(1 "Rainfall 1") label(2 "Rainfall 2") ///
+			label(3 "Rainfall 3") label(4 "Rainfall 4") label(5 "Rainfall 5") ///
+			label(6 "Rainfall 6")) saving("$xfig/tcsh_density_rf", replace)
+
+* total season rainfall - Tropic-cool/humid		
+	twoway  (kdensity v05_rf1 if aez == 324, color(gray%30) recast(area)) ///
+			(kdensity v05_rf2 if aez == 324, color(vermillion%30) recast(area)) ///
+			(kdensity v05_rf3 if aez == 324, color(sea%30) recast(area)) ///
+			(kdensity v05_rf4 if aez == 324, color(turquoise%30) recast(area)) ///
+			(kdensity v05_rf5 if aez == 324, color(reddish%30) recast(area)) ///
+			(kdensity v05_rf6 if aez == 324, color(ananas%30) recast(area) ///
+			xtitle("Total Season Rainfall (mm)") xscale(r(0(1000)4000)) ///
+			title("Tropic-cool/humid (n = 2,960)") ///
+			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			legend(pos(6) col(3) label(1 "Rainfall 1") label(2 "Rainfall 2") ///
+			label(3 "Rainfall 3") label(4 "Rainfall 4") label(5 "Rainfall 5") ///
+			label(6 "Rainfall 6")) saving("$xfig/tch_density_rf", replace)			
+			
+	grc1leg2 		"$xfig/twsa_density_rf.gph" "$xfig/twsh_density_rf.gph" ///
+						"$xfig/twh_density_rf.gph" "$xfig/tcsa_density_rf.gph" ///
+						"$xfig/tcsh_density_rf.gph" "$xfig/tch_density_rf.gph", ///
+						col(2) iscale(.5) commonscheme
+						
+	graph export "$xfig\density_aez_rf.pdf", as(pdf) replace
+
 	
 * **********************************************************************
-* 3 - end matter
+* 6 - generate mean temperature distribution graphs
+* **********************************************************************
+
+* mean temp - Tropic-warm/semiarid
+	twoway	(kdensity v15_tp1 if aez == 312, color(gray%30) recast(area)) ///
+			(kdensity v15_tp2 if aez == 312, color(vermillion%30) recast(area)) ///
+			(kdensity v15_tp3 if aez == 312, color(sea%30) recast(area) ///
+			xtitle("") xscale(r(20(5)32)) title("Tropic-warm/semiarid (n = 9,095)") ///
+			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			legend(pos(6) col(3) label(1 "Temperature 1") label(2 "Temperature 2") ///
+			label(3 "Temperature 3")) saving("$xfig/twsa_density_tp", replace)
+
+* mean temp - Tropic-warm/subhumid
+	twoway	(kdensity v15_tp1 if aez == 313, color(gray%30) recast(area)) ///
+			(kdensity v15_tp2 if aez == 313, color(vermillion%30) recast(area)) ///
+			(kdensity v15_tp3 if aez == 313, color(sea%30) recast(area) ///
+			xtitle("") xscale(r(15(5)30)) title("Tropic-warm/subhumid (n = 9,009)") ///
+			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			legend(pos(6) col(3) label(1 "Temperature 1") label(2 "Temperature 2") ///
+			label(3 "Temperature 3")) saving("$xfig/twsh_density_tp", replace)
+
+* mean temp - Tropic-warm/humid
+	twoway	(kdensity v15_tp1 if aez == 314, color(gray%30) recast(area)) ///
+			(kdensity v15_tp2 if aez == 314, color(vermillion%30) recast(area)) ///
+			(kdensity v15_tp3 if aez == 314, color(sea%30) recast(area) ///
+			xtitle("") xscale(r(20(5)30)) title("Tropic-warm/humid (n = 3,280)") ///
+			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			legend(pos(6) col(3) label(1 "Temperature 1") label(2 "Temperature 2") ///
+			label(3 "Temperature 3")) saving("$xfig/twh_density_tp", replace)		
+
+* mean temp - Tropic-cool/semiarid
+	twoway	(kdensity v15_tp1 if aez == 322, color(gray%30) recast(area)) ///
+			(kdensity v15_tp2 if aez == 322, color(vermillion%30) recast(area)) ///
+			(kdensity v15_tp3 if aez == 322, color(sea%30) recast(area) ///
+			xtitle("") xscale(r(15(5)30)) title("Tropic-cool/semiarid (n = 2,840)") ///
+			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			legend(pos(6) col(3) label(1 "Temperature 1") label(2 "Temperature 2") ///
+			label(3 "Temperature 3")) saving("$xfig/tcsa_density_tp", replace)
+
+* mean temp - Tropic-cool/subhumid
+	twoway	(kdensity v15_tp1 if aez == 323, color(gray%30) recast(area)) ///
+			(kdensity v15_tp2 if aez == 323, color(vermillion%30) recast(area)) ///
+			(kdensity v15_tp3 if aez == 323, color(sea%30) recast(area) ///
+			xtitle("Mean Seasonal Temperature (C)") xscale(r(10(5)30)) ///
+			title("Tropic-warm/subhumid (n = 5,886)") ///
+			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			legend(pos(6) col(3) label(1 "Temperature 1") label(2 "Temperature 2") ///
+			label(3 "Temperature 3")) saving("$xfig/tcsh_density_tp", replace)
+
+* mean temp - Tropic-cool/humid
+	twoway	(kdensity v15_tp1 if aez == 324, color(gray%30) recast(area)) ///
+			(kdensity v15_tp2 if aez == 324, color(vermillion%30) recast(area)) ///
+			(kdensity v15_tp3 if aez == 324, color(sea%30) recast(area) ///
+			xtitle("Mean Seasonal Temperature (C)") xscale(r(16(2)26)) ///
+			title("Tropic-warm/humid (n = 2,960)") ///
+			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			legend(pos(6) col(3) label(1 "Temperature 1") label(2 "Temperature 2") ///
+			label(3 "Temperature 3")) saving("$xfig/tch_density_tp", replace)				
+		
+		
+	grc1leg2 		"$xfig/twsa_density_tp.gph" "$xfig/twsh_density_tp.gph" ///
+						"$xfig/twh_density_tp.gph" "$xfig/tcsa_density_tp.gph" ///
+						"$xfig/tcsh_density_tp.gph" "$xfig/tch_density_tp.gph", ///
+						col(2) iscale(.5) commonscheme
+						
+	graph export "$xfig\density_aez_tp.pdf", as(pdf) replace
+	
+
+* **********************************************************************
+* 7 - generate days without rain line graphs by aez
+* **********************************************************************
+
+* days without rain - Tropic-warm/semiarid	
+	twoway  (fpfitci v10_rf1 year if aez == 312, color(gray%30) ) ///
+			(fpfitci v10_rf2 year if aez == 312, color(vermillion%30) ) ///
+			(fpfitci v10_rf3 year if aez == 312, color(sea%30) ) ///
+			(fpfitci v10_rf4 year if aez == 312, color(turquoise%30) ) ///
+			(fpfitci v10_rf5 year if aez == 312, color(reddish%30) ) ///
+			(fpfitci v10_rf6 year if aez == 312, color(ananas%30)  ///
+			xtitle("") xscale(r(2008(1)2015)) title("Tropic-warm/semiarid (n = 9,095)") ///
+			ytitle("Days without Rain") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			legend(pos(6) col(3) label(1 "Rainfall 1") label(3 "Rainfall 2") ///
+			label(5 "Rainfall 3") label(7 "Rainfall 4") label(9 "Rainfall 5") ///
+			label(11 "Rainfall 6") order(1 3 5 7 9 11)) saving("$xfig/twsa_norain_rf", replace)
+
+* days without rain - Tropic-warm/subhumid	
+	twoway  (fpfitci v10_rf1 year if aez == 313, color(gray%30) ) ///
+			(fpfitci v10_rf2 year if aez == 313, color(vermillion%30) ) ///
+			(fpfitci v10_rf3 year if aez == 313, color(sea%30) ) ///
+			(fpfitci v10_rf4 year if aez == 313, color(turquoise%30) ) ///
+			(fpfitci v10_rf5 year if aez == 313, color(reddish%30) ) ///
+			(fpfitci v10_rf6 year if aez == 313, color(ananas%30)  ///
+			xtitle("") xscale(r(2008(1)2015)) title("Tropic-warm/subhumid (n = 9,009)") ///
+			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			legend(pos(6) col(3) label(1 "Rainfall 1") label(3 "Rainfall 2") ///
+			label(5 "Rainfall 3") label(7 "Rainfall 4") label(9 "Rainfall 5") ///
+			label(11 "Rainfall 6") order(1 3 5 7 9 11)) saving("$xfig/twsh_norain_rf", replace)
+			
+* days without rain - Tropic-warm/humid	
+	twoway  (fpfitci v10_rf1 year if aez == 314, color(gray%30) ) ///
+			(fpfitci v10_rf2 year if aez == 314, color(vermillion%30) ) ///
+			(fpfitci v10_rf3 year if aez == 314, color(sea%30) ) ///
+			(fpfitci v10_rf4 year if aez == 314, color(turquoise%30) ) ///
+			(fpfitci v10_rf5 year if aez == 314, color(reddish%30) ) ///
+			(fpfitci v10_rf6 year if aez == 314, color(ananas%30)  ///
+			xtitle("") xscale(r(2008(1)2015)) title("Tropic-warm/humid (n = 3,280)") ///
+			ytitle("Days without Rain") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			legend(pos(6) col(3) label(1 "Rainfall 1") label(3 "Rainfall 2") ///
+			label(5 "Rainfall 3") label(7 "Rainfall 4") label(9 "Rainfall 5") ///
+			label(11 "Rainfall 6") order(1 3 5 7 9 11)) saving("$xfig/twh_norain_rf", replace)
+
+* days without rain - Tropic-cool/semiarid	
+	twoway  (fpfitci v10_rf1 year if aez == 322, color(gray%30) ) ///
+			(fpfitci v10_rf2 year if aez == 322, color(vermillion%30) ) ///
+			(fpfitci v10_rf3 year if aez == 322, color(sea%30) ) ///
+			(fpfitci v10_rf4 year if aez == 322, color(turquoise%30) ) ///
+			(fpfitci v10_rf5 year if aez == 322, color(reddish%30) ) ///
+			(fpfitci v10_rf6 year if aez == 322, color(ananas%30)  ///
+			xtitle("") xscale(r(2008(1)2015)) title("Tropic-cool/semiarid (n = 2,840)") ///
+			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			legend(pos(6) col(3) label(1 "Rainfall 1") label(3 "Rainfall 2") ///
+			label(5 "Rainfall 3") label(7 "Rainfall 4") label(9 "Rainfall 5") ///
+			label(11 "Rainfall 6") order(1 3 5 7 9 11)) saving("$xfig/tcsa_norain_rf", replace)
+
+* days without rain - Tropic-cool/subhumid	
+	twoway  (fpfitci v10_rf1 year if aez == 323, color(gray%30) ) ///
+			(fpfitci v10_rf2 year if aez == 323, color(vermillion%30) ) ///
+			(fpfitci v10_rf3 year if aez == 323, color(sea%30) ) ///
+			(fpfitci v10_rf4 year if aez == 323, color(turquoise%30) ) ///
+			(fpfitci v10_rf5 year if aez == 323, color(reddish%30) ) ///
+			(fpfitci v10_rf6 year if aez == 323, color(ananas%30)  ///
+			xtitle("Year") xscale(r(2008(1)2015)) title("Tropic-cool/subhumid (n = 5,886)") ///
+			ytitle("Days without Rain") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			legend(pos(6) col(3) label(1 "Rainfall 1") label(3 "Rainfall 2") ///
+			label(5 "Rainfall 3") label(7 "Rainfall 4") label(9 "Rainfall 5") ///
+			label(11 "Rainfall 6") order(1 3 5 7 9 11)) saving("$xfig/tcsh_norain_rf", replace)
+			
+* days without rain - Tropic-cool/humid	
+	twoway  (fpfitci v10_rf1 year if aez == 324, color(gray%30) ) ///
+			(fpfitci v10_rf2 year if aez == 324, color(vermillion%30) ) ///
+			(fpfitci v10_rf3 year if aez == 324, color(sea%30) ) ///
+			(fpfitci v10_rf4 year if aez == 324, color(turquoise%30) ) ///
+			(fpfitci v10_rf5 year if aez == 324, color(reddish%30) ) ///
+			(fpfitci v10_rf6 year if aez == 324, color(ananas%30)  ///
+			xtitle("Year") xscale(r(2008(1)2015)) title("Tropic-cool/humid (n = 2,960)") ///
+			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			legend(pos(6) col(3) label(1 "Rainfall 1") label(3 "Rainfall 2") ///
+			label(5 "Rainfall 3") label(7 "Rainfall 4") label(9 "Rainfall 5") ///
+			label(11 "Rainfall 6") order(1 3 5 7 9 11)) saving("$xfig/tch_norain_rf", replace)				
+		
+		
+	grc1leg2 		"$xfig/twsa_norain_rf.gph" "$xfig/twsh_norain_rf.gph" ///
+						"$xfig/twh_norain_rf.gph" "$xfig/tcsa_norain_rf.gph" ///
+						"$xfig/tcsh_norain_rf.gph" "$xfig/tch_norain_rf.gph", ///
+						col(2) iscale(.5) commonscheme
+						
+	graph export "$xfig\norain_aez_rf.pdf", as(pdf) replace	
+			
+
+* **********************************************************************
+* 8 - generate GDD line graphs by aez
+* **********************************************************************
+
+* growing degree days - Tropic-warm/semiarid
+	twoway	(fpfitci v19_tp1 year if aez == 312, color(gray%30) ) ///
+			(fpfitci v19_tp2 year if aez == 312, color(vermillion%30) ) ///
+			(fpfitci v19_tp3 year if aez == 312, color(sea%30)  ///
+			xtitle("") xscale(r(2008(1)2015)) title("Tropic-warm/semiarid (n = 9,095)") ///
+			ytitle("Growing degree days") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			legend(pos(6) col(3) label(1 "Temperature 1") label(3 "Temperature 2") ///
+			label(5 "Temperature 3") order(1 3 5)) saving("$xfig/twsa_gdd_tp", replace)
+
+* growing degree days - Tropic-warm/subhumid
+	twoway	(fpfitci v19_tp1 year if aez == 313, color(gray%30) ) ///
+			(fpfitci v19_tp2 year if aez == 313, color(vermillion%30) ) ///
+			(fpfitci v19_tp3 year if aez == 313, color(sea%30)  ///
+			xtitle("") xscale(r(2008(1)2015)) title("Tropic-warm/subhumid (n = 9,009)") ///
+			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			legend(pos(6) col(3) label(1 "Temperature 1") label(3 "Temperature 2") ///
+			label(5 "Temperature 3") order(1 3 5)) saving("$xfig/twsh_gdd_tp", replace)
+
+* growing degree days - Tropic-warm/humid
+	twoway	(fpfitci v19_tp1 year if aez == 314, color(gray%30) ) ///
+			(fpfitci v19_tp2 year if aez == 314, color(vermillion%30) ) ///
+			(fpfitci v19_tp3 year if aez == 314, color(sea%30) ///
+			xtitle("") xscale(r(2008(1)2015)) title("Tropic-warm/humid (n = 3,280)") ///
+			ytitle("Growing degree days") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			legend(pos(6) col(3) label(1 "Temperature 1") label(3 "Temperature 2") ///
+			label(5 "Temperature 3") order(1 3 5)) saving("$xfig/twh_gdd_tp", replace)		
+
+* growing degree days - Tropic-cool/semiarid
+	twoway	(fpfitci v19_tp1 year if aez == 322, color(gray%30) ) ///
+			(fpfitci v19_tp2 year if aez == 322, color(vermillion%30) ) ///
+			(fpfitci v19_tp3 year if aez == 322, color(sea%30)  ///
+			xtitle("") xscale(r(2008(1)2015)) title("Tropic-cool/semiarid (n = 2,840)") ///
+			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			legend(pos(6) col(3) label(1 "Temperature 1") label(3 "Temperature 2") ///
+			label(5 "Temperature 3") order(1 3 5)) saving("$xfig/tcsa_gdd_tp", replace)
+
+* growing degree days - Tropic-cool/subhumid
+	twoway	(fpfitci v19_tp1 year if aez == 323, color(gray%30) ) ///
+			(fpfitci v19_tp2 year if aez == 323, color(vermillion%30) ) ///
+			(fpfitci v19_tp3 year if aez == 323, color(sea%30)  ///
+			xtitle("Year") xscale(r(2008(1)2015)) title("Tropic-cool/subhumid (n = 5,886)") ///
+			ytitle("Gorwing degree days") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			legend(pos(6) col(3) label(1 "Temperature 1") label(3 "Temperature 2") ///
+			label(5 "Temperature 3") order(1 3 5)) saving("$xfig/tcsh_gdd_tp", replace)
+
+* growing degree days - Tropic-cool/humid
+	twoway	(fpfitci v19_tp1 year if aez == 324, color(gray%30) ) ///
+			(fpfitci v19_tp2 year if aez == 324, color(vermillion%30) ) ///
+			(fpfitci v19_tp3 year if aez == 324, color(sea%30)  ///
+			xtitle("Year") xscale(r(2008(1)2015)) title("Tropic-cool/humid (n = 2,960)") ///
+			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			legend(pos(6) col(3) label(1 "Temperature 1") label(3 "Temperature 2") ///
+			label(5 "Temperature 3") order(1 3 5)) saving("$xfig/tch_gdd_tp", replace)				
+			
+	grc1leg2 		"$xfig/twsa_gdd_tp.gph" "$xfig/twsh_gdd_tp.gph" ///
+						"$xfig/twh_gdd_tp.gph" "$xfig/tcsa_gdd_tp.gph" ///
+						"$xfig/tcsh_gdd_tp.gph" "$xfig/tch_gdd_tp.gph", ///
+						col(2) iscale(.5) commonscheme
+						
+	graph export "$xfig\gdd_aez_tp.pdf", as(pdf) replace			
+			
+			
+* **********************************************************************
+* 9 - end matter
 * **********************************************************************
 
 * close the log
