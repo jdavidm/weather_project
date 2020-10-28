@@ -921,7 +921,7 @@ restore
 						
 	graph export "$xfig\cty_total_tp.pdf", as(pdf) replace
 	
-/*
+
 * **********************************************************************
 * 3 - generate serrbar graphs by extraction
 * **********************************************************************
@@ -934,7 +934,7 @@ restore
 * mean daily rainfall
 preserve
 	keep			if varname == 1
-	sort 			varname extraction beta
+	sort 			varname ext beta
 	gen 			obs = _n	
 
 	serrbar 		beta stdrd_err obs, lcolor(edkblue%10) ///
@@ -942,17 +942,20 @@ preserve
 						mfcolor(edkblue%5) mlcolor(edkblue%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Mean Daily Rainfall") ///
-						xline(720 1440 2160 2880 3600 4320) xmtick(360(720)3960)  ///
-						xlabel(0 "0" 360 "Ethiopia" 720 "720" 1080 "Malawi" ///
-						1440 "1,440" 1800 "Niger" 2160 "2,160" 2520 "Nigeria" ///
-						2880 "2,880" 3240 "Tanzania" 3600 "3,600" 3960 "Uganda" ///
-						4320 "4,320", alt) xtitle("") saving("$xfig/v01_ext", replace)
+						xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
+						xmtick(216(432)4320) xlabel(0 "0" 216 "Ext 1" ///
+						432 "432" 648 "Ext 2" 864 "864" 1080 "Ext 3" ///
+						1296 "1,296" 1512 "Ext 4" 1728 "1,728" 1944 "Ext 5" ///
+						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
+						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
+						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
+						xtitle("") saving("$xfig/v01_ext", replace)
 restore
 
 * median daily rainfall
 preserve
 	keep			if varname == 2
-	sort 			varname extraction beta
+	sort 			varname ext beta
 	gen 			obs = _n
 	
 	serrbar 		beta stdrd_err obs, lcolor(emidblue%10) ///
@@ -960,17 +963,20 @@ preserve
 						mfcolor(emidblue%5) mlcolor(emidblue%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Median Daily Rainfall") ///
-						xline(720 1440 2160 2880 3600 4320) xmtick(360(720)3960)  ///
-						xlabel(0 "0" 360 "Ethiopia" 720 "720" 1080 "Malawi" ///
-						1440 "1440" 1800 "Niger" 2160 "2160" 2520 "Nigeria" ///
-						2880 "2880" 3240 "Tanzania" 3600 "3600" 3960 "Uganda" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v02_ext", replace)
+						xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
+						xmtick(216(432)4320) xlabel(0 "0" 216 "Ext 1" ///
+						432 "432" 648 "Ext 2" 864 "864" 1080 "Ext 3" ///
+						1296 "1,296" 1512 "Ext 4" 1728 "1,728" 1944 "Ext 5" ///
+						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
+						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
+						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
+						xtitle("") saving("$xfig/v02_ext", replace)
 restore	
 
 * variance of daily rainfall
 preserve
 	keep			if varname == 3
-	sort 			varname extraction beta
+	sort 			varname ext beta
 	gen 			obs = _n
 	
 	serrbar 		beta stdrd_err obs, lcolor(eltblue%10) ///
@@ -978,17 +984,20 @@ preserve
 						mfcolor(eltblue%5) mlcolor(eltblue%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Variance of Daily Rainfall") ///
-						xline(720 1440 2160 2880 3600 4320) xmtick(360(720)3960)  ///
-						xlabel(0 "0" 360 "Ethiopia" 720 "720" 1080 "Malawi" ///
-						1440 "1440" 1800 "Niger" 2160 "2160" 2520 "Nigeria" ///
-						2880 "2880" 3240 "Tanzania" 3600 "3600" 3960 "Uganda" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v03_ext", replace)
+						xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
+						xmtick(216(432)4320) xlabel(0 "0" 216 "Ext 1" ///
+						432 "432" 648 "Ext 2" 864 "864" 1080 "Ext 3" ///
+						1296 "1,296" 1512 "Ext 4" 1728 "1,728" 1944 "Ext 5" ///
+						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
+						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
+						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
+						xtitle("") saving("$xfig/v03_ext", replace)
 restore
 	
 * skew of daily rainfall
 preserve
 	keep			if varname == 4
-	sort 			varname extraction beta
+	sort 			varname ext beta
 	gen 			obs = _n
 	
 	serrbar 		beta stdrd_err obs, lcolor(emerald%10) ///
@@ -996,17 +1005,20 @@ preserve
 						mfcolor(emerald%5) mlcolor(emerald%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Skew of Daily Rainfall") ///
-						xline(720 1440 2160 2880 3600 4320) xmtick(360(720)3960)  ///
-						xlabel(0 "0" 360 "Ethiopia" 720 "720" 1080 "Malawi" ///
-						1440 "1440" 1800 "Niger" 2160 "2160" 2520 "Nigeria" ///
-						2880 "2880" 3240 "Tanzania" 3600 "3600" 3960 "Uganda" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v04_ext", replace)
+						xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
+						xmtick(216(432)4320) xlabel(0 "0" 216 "Ext 1" ///
+						432 "432" 648 "Ext 2" 864 "864" 1080 "Ext 3" ///
+						1296 "1,296" 1512 "Ext 4" 1728 "1,728" 1944 "Ext 5" ///
+						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
+						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
+						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
+						xtitle("") saving("$xfig/v04_ext", replace)
 restore
 
 * total seasonal rainfall
 preserve
 	keep			if varname == 5
-	sort 			varname extraction beta
+	sort 			varname ext beta
 	gen 			obs = _n
 	
 	serrbar 		beta stdrd_err obs, lcolor(erose%10) ///
@@ -1014,17 +1026,20 @@ preserve
 						mfcolor(erose%5) mlcolor(erose%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Total Seasonal Rainfall") ///
-						xline(720 1440 2160 2880 3600 4320) xmtick(360(720)3960)  ///
-						xlabel(0 "0" 360 "Ethiopia" 720 "720" 1080 "Malawi" ///
-						1440 "1440" 1800 "Niger" 2160 "2160" 2520 "Nigeria" ///
-						2880 "2880" 3240 "Tanzania" 3600 "3600" 3960 "Uganda" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v05_ext", replace)
+						xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
+						xmtick(216(432)4320) xlabel(0 "0" 216 "Ext 1" ///
+						432 "432" 648 "Ext 2" 864 "864" 1080 "Ext 3" ///
+						1296 "1,296" 1512 "Ext 4" 1728 "1,728" 1944 "Ext 5" ///
+						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
+						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
+						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
+						xtitle("") saving("$xfig/v05_ext", replace)
 restore
 
 * deviation in total rainfall
 preserve
 	keep			if varname == 6
-	sort 			varname extraction beta
+	sort 			varname ext beta
 	gen 			obs = _n
 	
 	serrbar 		beta stdrd_err obs, lcolor(ebblue%10) ///
@@ -1032,17 +1047,20 @@ preserve
 						mfcolor(ebblue%5) mlcolor(ebblue%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Deviation in Total Seasonal Rainfall") ///
-						xline(720 1440 2160 2880 3600 4320) xmtick(360(720)3960)  ///
-						xlabel(0 "0" 360 "Ethiopia" 720 "720" 1080 "Malawi" ///
-						1440 "1440" 1800 "Niger" 2160 "2160" 2520 "Nigeria" ///
-						2880 "2880" 3240 "Tanzania" 3600 "3600" 3960 "Uganda" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v06_ext", replace)
+						xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
+						xmtick(216(432)4320) xlabel(0 "0" 216 "Ext 1" ///
+						432 "432" 648 "Ext 2" 864 "864" 1080 "Ext 3" ///
+						1296 "1,296" 1512 "Ext 4" 1728 "1,728" 1944 "Ext 5" ///
+						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
+						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
+						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
+						xtitle("") saving("$xfig/v06_ext", replace)
 restore
 
 * z-score of total rainfall
 preserve
 	keep			if varname == 7
-	sort 			varname extraction beta
+	sort 			varname ext beta
 	gen 			obs = _n
 	
 	serrbar 		beta stdrd_err obs, lcolor(eltgreen%10) ///
@@ -1050,17 +1068,20 @@ preserve
 						mfcolor(eltgreen%5) mlcolor(eltgreen%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("z-Score of Total Seasonal Rainfall") ///
-						xline(720 1440 2160 2880 3600 4320) xmtick(360(720)3960)  ///
-						xlabel(0 "0" 360 "Ethiopia" 720 "720" 1080 "Malawi" ///
-						1440 "1440" 1800 "Niger" 2160 "2160" 2520 "Nigeria" ///
-						2880 "2880" 3240 "Tanzania" 3600 "3600" 3960 "Uganda" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v07_ext", replace)
+						xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
+						xmtick(216(432)4320) xlabel(0 "0" 216 "Ext 1" ///
+						432 "432" 648 "Ext 2" 864 "864" 1080 "Ext 3" ///
+						1296 "1,296" 1512 "Ext 4" 1728 "1,728" 1944 "Ext 5" ///
+						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
+						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
+						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
+						xtitle("") saving("$xfig/v07_ext", replace)
 restore
 
 * number of days with rain
 preserve
 	keep			if varname == 8
-	sort 			varname extraction beta
+	sort 			varname ext beta
 	gen 			obs = _n
 	
 	serrbar 		beta stdrd_err obs, lcolor(stone%10) ///
@@ -1068,17 +1089,20 @@ preserve
 						mfcolor(stone%5) mlcolor(stone%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Number of Days with Rain") ///
-						xline(720 1440 2160 2880 3600 4320) xmtick(360(720)3960)  ///
-						xlabel(0 "0" 360 "Ethiopia" 720 "720" 1080 "Malawi" ///
-						1440 "1440" 1800 "Niger" 2160 "2160" 2520 "Nigeria" ///
-						2880 "2880" 3240 "Tanzania" 3600 "3600" 3960 "Uganda" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v08_ext", replace)
+						xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
+						xmtick(216(432)4320) xlabel(0 "0" 216 "Ext 1" ///
+						432 "432" 648 "Ext 2" 864 "864" 1080 "Ext 3" ///
+						1296 "1,296" 1512 "Ext 4" 1728 "1,728" 1944 "Ext 5" ///
+						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
+						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
+						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
+						xtitle("") saving("$xfig/v08_ext", replace)
 restore
 
 * deviation in rainy days
 preserve
 	keep			if varname == 9
-	sort 			varname extraction beta
+	sort 			varname ext beta
 	gen 			obs = _n
 	
 	serrbar 		beta stdrd_err obs, lcolor(navy%10) ///
@@ -1086,17 +1110,20 @@ preserve
 						mfcolor(navy%5) mlcolor(navy%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Deviation in Number of Days with Rain") ///
-						xline(720 1440 2160 2880 3600 4320) xmtick(360(720)3960)  ///
-						xlabel(0 "0" 360 "Ethiopia" 720 "720" 1080 "Malawi" ///
-						1440 "1440" 1800 "Niger" 2160 "2160" 2520 "Nigeria" ///
-						2880 "2880" 3240 "Tanzania" 3600 "3600" 3960 "Uganda" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v09_ext", replace)
+						xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
+						xmtick(216(432)4320) xlabel(0 "0" 216 "Ext 1" ///
+						432 "432" 648 "Ext 2" 864 "864" 1080 "Ext 3" ///
+						1296 "1,296" 1512 "Ext 4" 1728 "1,728" 1944 "Ext 5" ///
+						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
+						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
+						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
+						xtitle("") saving("$xfig/v09_ext", replace)
 restore
 
 * number of days without rain
 preserve
 	keep			if varname == 10
-	sort 			varname extraction beta
+	sort 			varname ext beta
 	gen 			obs = _n
 	
 	serrbar 		beta stdrd_err obs, lcolor(brown%10) ///
@@ -1104,17 +1131,20 @@ preserve
 						mfcolor(brown%5) mlcolor(brown%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Number of Days without Rain") ///
-						xline(720 1440 2160 2880 3600 4320) xmtick(360(720)3960)  ///
-						xlabel(0 "0" 360 "Ethiopia" 720 "720" 1080 "Malawi" ///
-						1440 "1440" 1800 "Niger" 2160 "2160" 2520 "Nigeria" ///
-						2880 "2880" 3240 "Tanzania" 3600 "3600" 3960 "Uganda" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v10_ext", replace)
+						xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
+						xmtick(216(432)4320) xlabel(0 "0" 216 "Ext 1" ///
+						432 "432" 648 "Ext 2" 864 "864" 1080 "Ext 3" ///
+						1296 "1,296" 1512 "Ext 4" 1728 "1,728" 1944 "Ext 5" ///
+						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
+						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
+						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
+						xtitle("") saving("$xfig/v10_ext", replace)
 restore
 
 * deviation in no rain days
 preserve
 	keep			if varname == 11
-	sort 			varname extraction beta
+	sort 			varname ext beta
 	gen 			obs = _n
 	
 	serrbar 		beta stdrd_err obs, lcolor(lavender%10) ///
@@ -1122,17 +1152,20 @@ preserve
 						mfcolor(lavender%5) mlcolor(lavender%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Deviation in Number of Days without Rain") ///
-						xline(720 1440 2160 2880 3600 4320) xmtick(360(720)3960)  ///
-						xlabel(0 "0" 360 "Ethiopia" 720 "720" 1080 "Malawi" ///
-						1440 "1440" 1800 "Niger" 2160 "2160" 2520 "Nigeria" ///
-						2880 "2880" 3240 "Tanzania" 3600 "3600" 3960 "Uganda" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v11_ext", replace)
+						xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
+						xmtick(216(432)4320) xlabel(0 "0" 216 "Ext 1" ///
+						432 "432" 648 "Ext 2" 864 "864" 1080 "Ext 3" ///
+						1296 "1,296" 1512 "Ext 4" 1728 "1,728" 1944 "Ext 5" ///
+						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
+						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
+						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
+						xtitle("") saving("$xfig/v11_ext", replace)
 restore
 
 * Percentage of days with rain
 preserve
 	keep			if varname == 12
-	sort 			varname extraction beta
+	sort 			varname ext beta
 	gen 			obs = _n
 	
 	serrbar 		beta stdrd_err obs, lcolor(teal%10) ///
@@ -1140,17 +1173,20 @@ preserve
 						mfcolor(teal%5) mlcolor(teal%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Percentage of Days with Rain") ///
-						xline(720 1440 2160 2880 3600 4320) xmtick(360(720)3960)  ///
-						xlabel(0 "0" 360 "Ethiopia" 720 "720" 1080 "Malawi" ///
-						1440 "1440" 1800 "Niger" 2160 "2160" 2520 "Nigeria" ///
-						2880 "2880" 3240 "Tanzania" 3600 "3600" 3960 "Uganda" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v12_ext", replace)
+						xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
+						xmtick(216(432)4320) xlabel(0 "0" 216 "Ext 1" ///
+						432 "432" 648 "Ext 2" 864 "864" 1080 "Ext 3" ///
+						1296 "1,296" 1512 "Ext 4" 1728 "1,728" 1944 "Ext 5" ///
+						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
+						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
+						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
+						xtitle("") saving("$xfig/v12_ext", replace)
 restore
 
 * deviation in % rainy days
 preserve
 	keep			if varname == 13
-	sort 			varname extraction beta
+	sort 			varname ext beta
 	gen 			obs = _n
 	
 	serrbar 		beta stdrd_err obs, lcolor(cranberry%10) ///
@@ -1158,17 +1194,20 @@ preserve
 						mfcolor(cranberry%5) mlcolor(cranberry%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Deviation in Percentage of Days with Rain") ///
-						xline(720 1440 2160 2880 3600 4320) xmtick(360(720)3960)  ///
-						xlabel(0 "0" 360 "Ethiopia" 720 "720" 1080 "Malawi" ///
-						1440 "1440" 1800 "Niger" 2160 "2160" 2520 "Nigeria" ///
-						2880 "2880" 3240 "Tanzania" 3600 "3600" 3960 "Uganda" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v13_ext", replace)
+						xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
+						xmtick(216(432)4320) xlabel(0 "0" 216 "Ext 1" ///
+						432 "432" 648 "Ext 2" 864 "864" 1080 "Ext 3" ///
+						1296 "1,296" 1512 "Ext 4" 1728 "1,728" 1944 "Ext 5" ///
+						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
+						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
+						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
+						xtitle("") saving("$xfig/v13_ext", replace)
 restore
 
 * longest dry spell
 preserve
 	keep			if varname == 14
-	sort 			varname extraction beta
+	sort 			varname ext beta
 	gen 			obs = _n
 	
 	serrbar 		beta stdrd_err obs, lcolor(khaki%10) ///
@@ -1176,11 +1215,14 @@ preserve
 						mfcolor(khaki%5) mlcolor(khaki%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Longest Dry Spell") ///
-						xline(720 1440 2160 2880 3600 4320) xmtick(360(720)3960)  ///
-						xlabel(0 "0" 360 "Ethiopia" 720 "720" 1080 "Malawi" ///
-						1440 "1440" 1800 "Niger" 2160 "2160" 2520 "Nigeria" ///
-						2880 "2880" 3240 "Tanzania" 3600 "3600" 3960 "Uganda" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v14_ext", replace)
+						xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
+						xmtick(216(432)4320) xlabel(0 "0" 216 "Ext 1" ///
+						432 "432" 648 "Ext 2" 864 "864" 1080 "Ext 3" ///
+						1296 "1,296" 1512 "Ext 4" 1728 "1,728" 1944 "Ext 5" ///
+						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
+						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
+						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
+						xtitle("") saving("$xfig/v14_ext", replace)
 restore
 
 * combine moments graphs
@@ -1215,7 +1257,7 @@ restore
 * mean daily temperature
 preserve
 	keep			if varname == 15
-	sort 			varname extraction beta
+	sort 			varname ext beta
 	gen 			obs = _n	
 
 	serrbar 		beta stdrd_err obs, lcolor(edkblue%10) ///
@@ -1223,17 +1265,20 @@ preserve
 						mfcolor(edkblue%5) mlcolor(edkblue%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Mean Daily Temperature") ///
-						xline(360 720 1080 1440 1800) xmtick(180(360)1980)  ///
-						xlabel(0 "0" 180 "Ethiopia" 360 "360" 540 "Malawi" ///
-						720 "720" 900 "Niger" 1080 "1080" 1260 "Nigeria" ///
-						1440 "1440" 1620 "Tanzania" 1800 "1800" 1980 "Uganda" ///
-						2160 "2160", alt) xtitle("") saving("$xfig/var15_ext", replace)
+						xline(216 432 648 864 1080 1296 1512 1728 1944) ///
+						xmtick(108(216)2160) xlabel(0 "0" 108 "Ext 1" ///
+						216 "216" 324 "Ext 2" 432 "432" 540 "Ext 3" ///
+						648 "648" 756 "Ext 4" 865 "864" 972 "Ext 5" ///
+						1080 "1,080" 1188 "Ext 6" 1296 "1,296" 1404 "Ext 7" ///
+						1512 "1,512" 1620 "Ext 8" 1728 "1,728" 1836 "Ext 9" ///
+						1944 "1,944" 2052 "Ext 10" 2160 "2,160", alt) ///
+						xtitle("") saving("$xfig/var15_ext", replace)
 restore
 
 * median daily temperature
 preserve
 	keep			if varname == 16
-	sort 			varname extraction beta
+	sort 			varname ext beta
 	gen 			obs = _n	
 
 	serrbar 		beta stdrd_err obs, lcolor(emidblue%10) ///
@@ -1241,17 +1286,20 @@ preserve
 						mfcolor(emidblue%5) mlcolor(emidblue%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Median Daily Temperature") ///
-						xline(360 720 1080 1440 1800) xmtick(180(360)1980)  ///
-						xlabel(0 "0" 180 "Ethiopia" 360 "360" 540 "Malawi" ///
-						720 "720" 900 "Niger" 1080 "1080" 1260 "Nigeria" ///
-						1440 "1440" 1620 "Tanzania" 1800 "1800" 1980 "Uganda" ///
-						2160 "2160", alt) xtitle("") saving("$xfig/var16_ext", replace)
+						xline(216 432 648 864 1080 1296 1512 1728 1944) ///
+						xmtick(108(216)2160) xlabel(0 "0" 108 "Ext 1" ///
+						216 "216" 324 "Ext 2" 432 "432" 540 "Ext 3" ///
+						648 "648" 756 "Ext 4" 865 "864" 972 "Ext 5" ///
+						1080 "1,080" 1188 "Ext 6" 1296 "1,296" 1404 "Ext 7" ///
+						1512 "1,512" 1620 "Ext 8" 1728 "1,728" 1836 "Ext 9" ///
+						1944 "1,944" 2052 "Ext 10" 2160 "2,160", alt) ///
+						xtitle("") saving("$xfig/var16_ext", replace)
 restore
 
 * variance of daily temperature
 preserve
 	keep			if varname == 17
-	sort 			varname extraction beta
+	sort 			varname ext beta
 	gen 			obs = _n	
 
 	serrbar 		beta stdrd_err obs, lcolor(eltblue%10) ///
@@ -1259,17 +1307,20 @@ preserve
 						mfcolor(eltblue%5) mlcolor(eltblue%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Variance of Daily Temperature") ///
-						xline(360 720 1080 1440 1800) xmtick(180(360)1980)  ///
-						xlabel(0 "0" 180 "Ethiopia" 360 "360" 540 "Malawi" ///
-						720 "720" 900 "Niger" 1080 "1080" 1260 "Nigeria" ///
-						1440 "1440" 1620 "Tanzania" 1800 "1800" 1980 "Uganda" ///
-						2160 "2160", alt) xtitle("") saving("$xfig/var17_ext", replace)
+						xline(216 432 648 864 1080 1296 1512 1728 1944) ///
+						xmtick(108(216)2160) xlabel(0 "0" 108 "Ext 1" ///
+						216 "216" 324 "Ext 2" 432 "432" 540 "Ext 3" ///
+						648 "648" 756 "Ext 4" 865 "864" 972 "Ext 5" ///
+						1080 "1,080" 1188 "Ext 6" 1296 "1,296" 1404 "Ext 7" ///
+						1512 "1,512" 1620 "Ext 8" 1728 "1,728" 1836 "Ext 9" ///
+						1944 "1,944" 2052 "Ext 10" 2160 "2,160", alt) ///
+						xtitle("") saving("$xfig/var17_ext", replace)
 restore
 
 * skew of daily temperature
 preserve
 	keep			if varname == 18
-	sort 			varname extraction beta
+	sort 			varname ext beta
 	gen 			obs = _n	
 
 	serrbar 		beta stdrd_err obs, lcolor(emerald%10) ///
@@ -1277,17 +1328,20 @@ preserve
 						mfcolor(emerald%5) mlcolor(emerald%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Skew of Daily Temperature") ///
-						xline(360 720 1080 1440 1800) xmtick(180(360)1980)  ///
-						xlabel(0 "0" 180 "Ethiopia" 360 "360" 540 "Malawi" ///
-						720 "720" 900 "Niger" 1080 "1080" 1260 "Nigeria" ///
-						1440 "1440" 1620 "Tanzania" 1800 "1800" 1980 "Uganda" ///
-						2160 "2160", alt) xtitle("") saving("$xfig/var18_ext", replace)
+						xline(216 432 648 864 1080 1296 1512 1728 1944) ///
+						xmtick(108(216)2160) xlabel(0 "0" 108 "Ext 1" ///
+						216 "216" 324 "Ext 2" 432 "432" 540 "Ext 3" ///
+						648 "648" 756 "Ext 4" 865 "864" 972 "Ext 5" ///
+						1080 "1,080" 1188 "Ext 6" 1296 "1,296" 1404 "Ext 7" ///
+						1512 "1,512" 1620 "Ext 8" 1728 "1,728" 1836 "Ext 9" ///
+						1944 "1,944" 2052 "Ext 10" 2160 "2,160", alt) ///
+						xtitle("") saving("$xfig/var18_ext", replace)
 restore
 
 * growing degree days (gdd)
 preserve
 	keep			if varname == 19
-	sort 			varname extraction beta
+	sort 			varname ext beta
 	gen 			obs = _n	
 
 	serrbar 		beta stdrd_err obs, lcolor(erose%10) ///
@@ -1295,17 +1349,20 @@ preserve
 						mfcolor(erose%5) mlcolor(erose%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Growing Degree Days (GDD)") ///
-						xline(360 720 1080 1440 1800) xmtick(180(360)1980)  ///
-						xlabel(0 "0" 180 "Ethiopia" 360 "360" 540 "Malawi" ///
-						720 "720" 900 "Niger" 1080 "1080" 1260 "Nigeria" ///
-						1440 "1440" 1620 "Tanzania" 1800 "1800" 1980 "Uganda" ///
-						2160 "2160", alt) xtitle("") saving("$xfig/var19_ext", replace)
+						xline(216 432 648 864 1080 1296 1512 1728 1944) ///
+						xmtick(108(216)2160) xlabel(0 "0" 108 "Ext 1" ///
+						216 "216" 324 "Ext 2" 432 "432" 540 "Ext 3" ///
+						648 "648" 756 "Ext 4" 865 "864" 972 "Ext 5" ///
+						1080 "1,080" 1188 "Ext 6" 1296 "1,296" 1404 "Ext 7" ///
+						1512 "1,512" 1620 "Ext 8" 1728 "1,728" 1836 "Ext 9" ///
+						1944 "1,944" 2052 "Ext 10" 2160 "2,160", alt) ///
+						xtitle("") saving("$xfig/var19_ext", replace)
 restore
 
 * deviation in gdd
 preserve
 	keep			if varname == 20
-	sort 			varname extraction beta
+	sort 			varname ext beta
 	gen 			obs = _n	
 
 	serrbar 		beta stdrd_err obs, lcolor(ebblue%10) ///
@@ -1313,17 +1370,20 @@ preserve
 						mfcolor(ebblue%5) mlcolor(ebblue%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Deviation in Growing Degree Days (GDD)") ///
-						xline(360 720 1080 1440 1800) xmtick(180(360)1980)  ///
-						xlabel(0 "0" 180 "Ethiopia" 360 "360" 540 "Malawi" ///
-						720 "720" 900 "Niger" 1080 "1080" 1260 "Nigeria" ///
-						1440 "1440" 1620 "Tanzania" 1800 "1800" 1980 "Uganda" ///
-						2160 "2160", alt) xtitle("") saving("$xfig/var20_ext", replace)
+						xline(216 432 648 864 1080 1296 1512 1728 1944) ///
+						xmtick(108(216)2160) xlabel(0 "0" 108 "Ext 1" ///
+						216 "216" 324 "Ext 2" 432 "432" 540 "Ext 3" ///
+						648 "648" 756 "Ext 4" 865 "864" 972 "Ext 5" ///
+						1080 "1,080" 1188 "Ext 6" 1296 "1,296" 1404 "Ext 7" ///
+						1512 "1,512" 1620 "Ext 8" 1728 "1,728" 1836 "Ext 9" ///
+						1944 "1,944" 2052 "Ext 10" 2160 "2,160", alt) ///
+						xtitle("") saving("$xfig/var20_ext", replace)
 restore
 
 * z-score of gdd
 preserve
 	keep			if varname == 21
-	sort 			varname extraction beta
+	sort 			varname ext beta
 	gen 			obs = _n	
 
 	serrbar 		beta stdrd_err obs, lcolor(eltgreen%10) ///
@@ -1331,17 +1391,20 @@ preserve
 						mfcolor(eltgreen%5) mlcolor(eltgreen%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("z-Score of Growing Degree Days (GDD)") ///
-						xline(360 720 1080 1440 1800) xmtick(180(360)1980)  ///
-						xlabel(0 "0" 180 "Ethiopia" 360 "360" 540 "Malawi" ///
-						720 "720" 900 "Niger" 1080 "1080" 1260 "Nigeria" ///
-						1440 "1440" 1620 "Tanzania" 1800 "1800" 1980 "Uganda" ///
-						2160 "2160", alt) xtitle("") saving("$xfig/var21_ext", replace)
+						xline(216 432 648 864 1080 1296 1512 1728 1944) ///
+						xmtick(108(216)2160) xlabel(0 "0" 108 "Ext 1" ///
+						216 "216" 324 "Ext 2" 432 "432" 540 "Ext 3" ///
+						648 "648" 756 "Ext 4" 865 "864" 972 "Ext 5" ///
+						1080 "1,080" 1188 "Ext 6" 1296 "1,296" 1404 "Ext 7" ///
+						1512 "1,512" 1620 "Ext 8" 1728 "1,728" 1836 "Ext 9" ///
+						1944 "1,944" 2052 "Ext 10" 2160 "2,160", alt) ///
+						xtitle("") saving("$xfig/var21_ext", replace)
 restore
 
 * max daily temperaturegdd
 preserve
 	keep			if varname == 22
-	sort 			varname extraction beta
+	sort 			varname ext beta
 	gen 			obs = _n	
 
 	serrbar 		beta stdrd_err obs, lcolor(stone%10) ///
@@ -1349,11 +1412,14 @@ preserve
 						mfcolor(stone%5) mlcolor(stone%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Maximum Daily Temperature") ///
-						xline(360 720 1080 1440 1800) xmtick(180(360)1980)  ///
-						xlabel(0 "0" 180 "Ethiopia" 360 "360" 540 "Malawi" ///
-						720 "720" 900 "Niger" 1080 "1080" 1260 "Nigeria" ///
-						1440 "1440" 1620 "Tanzania" 1800 "1800" 1980 "Uganda" ///
-						2160 "2160", alt) xtitle("") saving("$xfig/var22_ext", replace)
+						xline(216 432 648 864 1080 1296 1512 1728 1944) ///
+						xmtick(108(216)2160) xlabel(0 "0" 108 "Ext 1" ///
+						216 "216" 324 "Ext 2" 432 "432" 540 "Ext 3" ///
+						648 "648" 756 "Ext 4" 865 "864" 972 "Ext 5" ///
+						1080 "1,080" 1188 "Ext 6" 1296 "1,296" 1404 "Ext 7" ///
+						1512 "1,512" 1620 "Ext 8" 1728 "1,728" 1836 "Ext 9" ///
+						1944 "1,944" 2052 "Ext 10" 2160 "2,160", alt) ///
+						xtitle("") saving("$xfig/var22_ext", replace)
 restore
 
 * combine moments graphs
