@@ -48,8 +48,8 @@
 
 
 * create locals for total farm and just for maize
-	loc 	inputscp 	lncp_lab lncp_frt cp_pst cp_hrb cp_irr
 	loc		inputstf 	lntf_lab lntf_frt tf_pst tf_hrb tf_irr
+	loc 	inputscp 	lncp_lab lncp_frt cp_pst cp_hrb cp_irr
 	loc		rainmean 	v01* v03* v04* v02* v05* v07*
 	loc		tempmean 	v15* v17* v18* v16* v19* v21*
 
@@ -91,7 +91,7 @@
 	
 				* define pairs of extrations to compare
 					if `"`extr'"' == `"`extt'"' {
-				    
+						
 				    * 2.1: Value of Harvest
 		
 					* weather
@@ -109,7 +109,7 @@
 										(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
 
 					* weather and inputs and fe
-						xtreg 		lntf_yld `r' `t' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
+						xtreg 		lntf_yld `r' `t' `inputstf' i.year if country == `l', fe vce(cluster hhid)
 						post 		`reg_results_lc' (`l') ("`varr'") ("`satr'") ("`extr'") ///
 										("`vart'") ("`satt'") ("`extt'") ("tf") ("reg3") ///
 										(`=_b[`r']') (`=_se[`r']') (`=_b[`t']') (`=_se[`t']') ///
@@ -132,7 +132,7 @@
 										(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
 
 					* weather and inputs and fe
-						xtreg 		lncp_yld `r' `t' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
+						xtreg 		lncp_yld `r' `t' `inputscp' i.year if country == `l', fe vce(cluster hhid)
 						post 		`reg_results_lc' (`l') ("`varr'") ("`satr'") ("`extr'") ///
 										("`vart'") ("`satt'") ("`extt'") ("cp") ("reg3") ///
 										(`=_b[`r']') (`=_se[`r']') (`=_b[`t']') (`=_se[`t']') ///
@@ -163,7 +163,7 @@
 										(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
 		
 					* weather and squared weather and inputs and fe
-						xtreg 		lntf_yld c.`r'##c.`r' c.`t'##c.`t' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
+						xtreg 		lntf_yld c.`r'##c.`r' c.`t'##c.`t' `inputstf' i.year if country == `l', fe vce(cluster hhid)
 						post 		`reg_results_lc' (`l') ("`varr'") ("`satr'") ("`extr'") ///
 										("`vart'") ("`satt'") ("`extt'") ("tf") ("reg6") ///
 										(`=_b[`r']') (`=_se[`r']') (`=_b[`t']') (`=_se[`t']') ///
@@ -186,7 +186,7 @@
 										(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
 		
 					* weather and squared weather and inputs and fe
-						xtreg 		lncp_yld c.`r'##c.`r' c.`t'##c.`t' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
+						xtreg 		lncp_yld c.`r'##c.`r' c.`t'##c.`t' `inputscp' i.year if country == `l', fe vce(cluster hhid)
 						post 		`reg_results_lc' (`l') ("`varr'") ("`satr'") ("`extr'") ///
 										("`vart'") ("`satt'") ("`extt'") ("cp") ("reg6") ///
 										(`=_b[`r']') (`=_se[`r']') (`=_b[`t']') (`=_se[`t']') ///
