@@ -47,12 +47,10 @@
 * **********************************************************************
 
 * create locals for total farm and just for maize
-	loc 	inputscp 	lncp_lab lncp_frt cp_pst cp_hrb cp_irr
-	loc		inputstf 	lntf_lab lntf_frt tf_pst tf_hrb tf_irr
 	loc		rainmean 	v01*
 	loc		rainvar		v03* 
-	loc		rainskw		v04*
 	loc		tempmean 	v15*
+	loc		tempvar 	v17*
 
 * create file to post results to
 	tempname 	reg_results_mv
@@ -112,6 +110,8 @@
 								`"`sattm'"' == `"`sattv'"' {
 				    
 							* 2.1: Value of Harvest
+							loc		inputstf 	lntf_lab lntf_frt tf_pst tf_hrb tf_irr
+							loc 	inputscp 	lncp_lab lncp_frt cp_pst cp_hrb cp_irr
 		
 							* weather
 								reg 		lntf_yld `rm' `rv' `tm' `tv' if country == `l', vce(cluster hhid)
@@ -136,7 +136,7 @@
 												(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
 
 							* weather and inputs and fe
-								xtreg 		lntf_yld `rm' `rv' `tm' `tv' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
+								xtreg 		lntf_yld `rm' `rv' `tm' `tv' `inputstf' i.year if country == `l', fe vce(cluster hhid)
 								post 		`reg_results_mv' (`l') ("`varrm'") ("`satrm'") ("`extrm'") ///
 												("`varrv'") ("`satrv'") ("`extrv'") ///
 												("`vartm'") ("`sattm'") ("`exttm'") ///
@@ -171,7 +171,7 @@
 												(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
 
 							* weather and inputs and fe
-								xtreg 		lncp_yld `rm' `rv' `tm' `tv' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
+								xtreg 		lncp_yld `rm' `rv' `tm' `tv' `inputscp' i.year if country == `l', fe vce(cluster hhid)
 								post 		`reg_results_mv' (`l') ("`varrm'") ("`satrm'") ("`extrm'") ///
 												("`varrv'") ("`satrv'") ("`extrv'") ///
 												("`vartm'") ("`sattm'") ("`exttm'") ///
