@@ -1,8 +1,8 @@
 * Project: WB Weather
-* Created on: September 2020
-* Created by: alj
-* Last updated: 26 October 2020 
-* Last updated by: alj 
+* Created on: October 2020
+* Created by: jdm
+* Last updated: 28 October 2020 
+* Last updated by: jdm 
 * Stata v.16.1
 
 * does
@@ -47,6 +47,8 @@
 * **********************************************************************
 
 * create locals for total farm and just for maize
+	loc 	inputscp 	lncp_lab lncp_frt cp_pst cp_hrb cp_irr
+	loc		inputstf 	lntf_lab lntf_frt tf_pst tf_hrb tf_irr
 	loc		rainmean 	v01*
 	loc		rainvar		v03* 
 	loc		rainskw		v04*
@@ -123,7 +125,7 @@
 												(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
 									
 							* weather and fe	
-								xtreg 		lntf_yld `r' `t' i.year if country == `l', fe vce(cluster hhid)
+								xtreg 		lntf_yld `rm' `rv' `tm' `tv' i.year if country == `l', fe vce(cluster hhid)
 								post 		`reg_results_mv' (`l') ("`varrm'") ("`satrm'") ("`extrm'") ///
 												("`varrv'") ("`satrv'") ("`extrv'") ///
 												("`vartm'") ("`sattm'") ("`exttm'") ///
@@ -134,7 +136,7 @@
 												(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
 
 							* weather and inputs and fe
-								xtreg 		lntf_yld `r' `t' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
+								xtreg 		lntf_yld `rm' `rv' `tm' `tv' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
 								post 		`reg_results_mv' (`l') ("`varrm'") ("`satrm'") ("`extrm'") ///
 												("`varrv'") ("`satrv'") ("`extrv'") ///
 												("`vartm'") ("`sattm'") ("`exttm'") ///
@@ -147,7 +149,7 @@
 							* 2.2: Quantity of Maize
 		
 							* weather
-								reg 		lncp_yld `r' `t' if country == `l', vce(cluster hhid)
+								reg 		lncp_yld `rm' `rv' `tm' `tv' if country == `l', vce(cluster hhid)
 								post 		`reg_results_mv' (`l') ("`varrm'") ("`satrm'") ("`extrm'") ///
 												("`varrv'") ("`satrv'") ("`extrv'") ///
 												("`vartm'") ("`sattm'") ("`exttm'") ///
@@ -158,7 +160,7 @@
 												(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
 
 							* weather and fe	
-								xtreg 		lncp_yld `r' `t' i.year if country == `l', fe vce(cluster hhid)
+								xtreg 		lncp_yld `rm' `rv' `tm' `tv' i.year if country == `l', fe vce(cluster hhid)
 								post 		`reg_results_mv' (`l') ("`varrm'") ("`satrm'") ("`extrm'") ///
 												("`varrv'") ("`satrv'") ("`extrv'") ///
 												("`vartm'") ("`sattm'") ("`exttm'") ///
@@ -169,7 +171,7 @@
 												(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
 
 							* weather and inputs and fe
-								xtreg 		lncp_yld `r' `t' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
+								xtreg 		lncp_yld `rm' `rv' `tm' `tv' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
 								post 		`reg_results_mv' (`l') ("`varrm'") ("`satrm'") ("`extrm'") ///
 												("`varrv'") ("`satrv'") ("`extrv'") ///
 												("`vartm'") ("`sattm'") ("`exttm'") ///
@@ -189,7 +191,7 @@
 	postclose	`reg_results_mv' 
 	use 		"`results'/reg_results_mv", clear
 
-
+/*
 * close the log
 	log	close
 

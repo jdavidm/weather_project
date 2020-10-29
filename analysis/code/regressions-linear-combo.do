@@ -1,14 +1,14 @@
 * Project: WB Weather
 * Created on: September 2020
 * Created by: alj
-* Last updated: 26 October 2020 
-* Last updated by: alj 
+* Last updated: 28 October 2020 
+* Last updated by: jdm
 * Stata v.16.1
 
 * does
 	* NOTE IT TAKES 2.5 HOURS TO RUN ALL REGRESSIONS
 	* loads multi country data set
-	* runs rainfall and temperature regressions
+	* runs rainfall and temperature lineara combo regressions
 	* outputs results file for analysis
 
 * assumes
@@ -48,6 +48,8 @@
 
 
 * create locals for total farm and just for maize
+	loc 	inputscp 	lncp_lab lncp_frt cp_pst cp_hrb cp_irr
+	loc		inputstf 	lntf_lab lntf_frt tf_pst tf_hrb tf_irr
 	loc		rainmean 	v01* v03* v04* v02* v05* v07*
 	loc		tempmean 	v15* v17* v18* v16* v19* v21*
 
