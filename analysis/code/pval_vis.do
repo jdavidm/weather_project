@@ -232,14 +232,6 @@
 * 3 - generate p-value graphs for by country
 * **********************************************************************
 
-* test
-	ttest p99 if country == 1 | country == 2, by(country)
-	
-	
-* **********************************************************************
-* 4 - generate p-value graphs for by country
-* **********************************************************************
-
 *** ethiopia ***
 
 * p-value graph of rainfall by extraction method
@@ -333,6 +325,52 @@
 						label(2 "p>0.95") label(3 "p>0.99")) ///
 						saving("$xfig/mwi_pval_sat_tp", replace)
 
+*** niger ***
+
+* p-value graph of rainfall by extraction method
+	graph bar 		(mean) p90 p95 p99 if country == 4 & varname < 15, ///
+						over(ext, label(angle(45) labsize(vsmall))) ///
+						yscale(r(0 1)) ylab(0 .2 .4 .6 .8 1, labsize(small)) ///
+						bar(1, color(emerald*1.5)) bar(2, color(eltblue*1.5)) ///
+						bar(3, color(khaki*1.5)) title("Niger") ///
+						ytitle("Share of Significant Point Estimates")  ///
+						legend(pos(12) col(3) label(1 "p>0.90") ///
+						label(2 "p>0.95") label(3 "p>0.99")) ///
+						saving("$xfig/ngr_pval_ext_rf", replace)
+
+* p-value graph of temperature by extraction method
+	graph bar 		(mean) p90 p95 p99 if country == 4 & varname > 14, ///
+						over(ext, label(angle(45) labsize(vsmall))) ///
+						yscale(r(0 1)) ylab(0 .2 .4 .6 .8 1, labsize(small)) ///
+						bar(1, color(maroon*1.5)) bar(2, color(lavender*1.5)) ///
+						bar(3, color(brown*1.5)) title("Niger") ///
+						ytitle("Share of Significant Point Estimates")  ///
+						legend(pos(12) col(3) label(1 "p>0.90") ///
+						label(2 "p>0.95") label(3 "p>0.99")) ///
+						saving("$xfig/ngr_pval_ext_tp", replace)
+
+* p-value graph of rainfall by satellite
+	graph bar 		(mean) p90 p95 p99 if country == 4 & varname < 15, ///
+						over(sat, label(angle(45) labsize(vsmall))) ///
+						yscale(r(0 1)) ylab(0 .2 .4 .6 .8 1, labsize(small)) ///
+						bar(1, color(emerald*1.5)) bar(2, color(eltblue*1.5)) ///
+						bar(3, color(khaki*1.5)) title("Niger") ///
+						ytitle("Share of Significant Point Estimates")  ///
+						legend(pos(12) col(3) label(1 "p>0.90") ///
+						label(2 "p>0.95") label(3 "p>0.99")) ///
+						saving("$xfig/ngr_pval_sat_rf", replace)
+
+* p-value graph of temperature by satellite
+	graph bar 		(mean) p90 p95 p99 if country == 4 & varname > 14, ///
+						over(sat, label(angle(45) labsize(vsmall))) ///
+						yscale(r(0 1)) ylab(0 .2 .4 .6 .8 1, labsize(small)) ///
+						bar(1, color(maroon*1.5)) bar(2, color(lavender*1.5)) ///
+						bar(3, color(brown*1.5)) title("Niger") ///
+						ytitle("Share of Significant Point Estimates")  ///
+						legend(pos(12) col(3) label(1 "p>0.90") ///
+						label(2 "p>0.95") label(3 "p>0.99")) ///
+						saving("$xfig/ngr_pval_sat_tp", replace)
+	
 *** nigeria ***
 
 * p-value graph of rainfall by extraction method
@@ -425,38 +463,88 @@
 						label(2 "p>0.95") label(3 "p>0.99")) ///
 						saving("$xfig/tza_pval_sat_tp", replace)
 
+*** uganda ***
+
+* p-value graph of rainfall by extraction method
+	graph bar 		(mean) p90 p95 p99 if country == 7 & varname < 15, ///
+						over(ext, label(angle(45) labsize(vsmall))) ///
+						yscale(r(0 1)) ylab(0 .2 .4 .6 .8 1, labsize(small)) ///
+						bar(1, color(emerald*1.5)) bar(2, color(eltblue*1.5)) ///
+						bar(3, color(khaki*1.5)) title("Uganda") ///
+						ytitle("Share of Significant Point Estimates")  ///
+						legend(pos(12) col(3) label(1 "p>0.90") ///
+						label(2 "p>0.95") label(3 "p>0.99")) ///
+						saving("$xfig/uga_pval_ext_rf", replace)
+
+* p-value graph of temperature by extraction method
+	graph bar 		(mean) p90 p95 p99 if country == 7 & varname > 14, ///
+						over(ext, label(angle(45) labsize(vsmall))) ///
+						yscale(r(0 1)) ylab(0 .2 .4 .6 .8 1, labsize(small)) ///
+						bar(1, color(maroon*1.5)) bar(2, color(lavender*1.5)) ///
+						bar(3, color(brown*1.5)) title("Uganda") ///
+						ytitle("Share of Significant Point Estimates")  ///
+						legend(pos(12) col(3) label(1 "p>0.90") ///
+						label(2 "p>0.95") label(3 "p>0.99")) ///
+						saving("$xfig/uga_pval_ext_tp", replace)
+
+* p-value graph of rainfall by satellite
+	graph bar 		(mean) p90 p95 p99 if country == 7 & varname < 15, ///
+						over(sat, label(angle(45) labsize(vsmall))) ///
+						yscale(r(0 1)) ylab(0 .2 .4 .6 .8 1, labsize(small)) ///
+						bar(1, color(emerald*1.5)) bar(2, color(eltblue*1.5)) ///
+						bar(3, color(khaki*1.5)) title("Uganda") ///
+						ytitle("Share of Significant Point Estimates")  ///
+						legend(pos(12) col(3) label(1 "p>0.90") ///
+						label(2 "p>0.95") label(3 "p>0.99")) ///
+						saving("$xfig/uga_pval_sat_rf", replace)
+
+* p-value graph of temperature by satellite
+	graph bar 		(mean) p90 p95 p99 if country == 7 & varname > 14, ///
+						over(sat, label(angle(45) labsize(vsmall))) ///
+						yscale(r(0 1)) ylab(0 .2 .4 .6 .8 1, labsize(small)) ///
+						bar(1, color(maroon*1.5)) bar(2, color(lavender*1.5)) ///
+						bar(3, color(brown*1.5)) title("Uganda") ///
+						ytitle("Share of Significant Point Estimates")  ///
+						legend(pos(12) col(3) label(1 "p>0.90") ///
+						label(2 "p>0.95") label(3 "p>0.99")) ///
+						saving("$xfig/uga_pval_sat_tp", replace)
+
 						
 * p-value extraction method for rainfall
 	grc1leg2 		"$xfig/eth_pval_ext_rf.gph" "$xfig/mwi_pval_ext_rf.gph" ///
-						"$xfig/nga_pval_ext_rf.gph" "$xfig/tza_pval_ext_rf.gph", ///
-						col(2) iscale(.5) commonscheme imargin(0 0 0 0)
+						"$xfig/ngr_pval_ext_rf.gph" "$xfig/nga_pval_ext_rf.gph" ///
+						"$xfig/tza_pval_ext_rf.gph" "$xfig/uga_pval_ext_rf.gph", ///
+						col(3) iscale(.5) commonscheme imargin(0 0 0 0)
 						
 	graph export "$xfig\pval_ext_rf.pdf", as(pdf) replace					
 
 * p-value extraction method for temperature
 	grc1leg2 		"$xfig/eth_pval_ext_tp.gph" "$xfig/mwi_pval_ext_tp.gph" ///
-						"$xfig/nga_pval_ext_tp.gph" "$xfig/tza_pval_ext_tp.gph", ///
-						col(2) iscale(.5) commonscheme imargin(0 0 0 0)
+						"$xfig/ngr_pval_ext_tp.gph" "$xfig/nga_pval_ext_tp.gph" ///
+						"$xfig/tza_pval_ext_tp.gph" "$xfig/uga_pval_ext_tp.gph", ///
+						col(3) iscale(.5) commonscheme imargin(0 0 0 0)
 						
 	graph export "$xfig\pval_ext_tp.pdf", as(pdf) replace		
 						
 * p-value satellite for rainfall
 	grc1leg2 		"$xfig/eth_pval_sat_rf.gph" "$xfig/mwi_pval_sat_rf.gph" ///
-						"$xfig/nga_pval_sat_rf.gph" "$xfig/tza_pval_sat_rf.gph", ///
-						col(2) iscale(.5) commonscheme imargin(0 0 0 0)
+						"$xfig/ngr_pval_sat_rf.gph" "$xfig/nga_pval_sat_rf.gph" ///
+						"$xfig/tza_pval_sat_rf.gph" "$xfig/uga_pval_sat_rf.gph", ///
+						col(3) iscale(.5) commonscheme imargin(0 0 0 0)
 						
 	graph export "$xfig\pval_sat_rf.pdf", as(pdf) replace					
 
 * p-value satellite for temperature
 	grc1leg2 		"$xfig/eth_pval_sat_tp.gph" "$xfig/mwi_pval_sat_tp.gph" ///
-						"$xfig/nga_pval_sat_tp.gph" "$xfig/tza_pval_sat_tp.gph", ///
-						col(2) iscale(.5) commonscheme imargin(0 0 0 0)
+						"$xfig/ngr_pval_sat_tp.gph" "$xfig/nga_pval_sat_tp.gph" ///
+						"$xfig/tza_pval_sat_tp.gph" "$xfig/uga_pval_sat_tp.gph", ///
+						col(3) iscale(.5) commonscheme imargin(0 0 0 0)
 						
 	graph export "$xfig\pval_sat_tp.pdf", as(pdf) replace		
 	
-
+	
 * **********************************************************************
-* 3 - end matter
+* 4 - end matter
 * **********************************************************************
 
 

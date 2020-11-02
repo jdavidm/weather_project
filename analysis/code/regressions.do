@@ -4,7 +4,7 @@
 * Stata v.16.1
 
 * does
-	* NOTE IT TAKES 90 MIN+ TO RUN ALL REGRESSIONS
+	* NOTE IT TAKES 3.5 HOURS TO RUN ALL REGRESSIONS
 	* loads multi country data set
 	* runs rainfall and temperature regressions
 	* outputs results file for analysis
@@ -84,7 +84,7 @@ foreach l of local levels {
 						(`=e(ll)') (`=e(df_r)')
 
 		* weather and inputs and fe
-			xtreg 		lntf_yld `v' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
+			xtreg 		lntf_yld `v' `inputstf' i.year if country == `l', fe vce(cluster hhid)
 			post 		`reg_results' (`l') ("`sat'") ("`ext'") ("tf") ("reg3") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
@@ -102,7 +102,7 @@ foreach l of local levels {
 						(`=e(ll)') (`=e(df_r)')
 		
 		* weather and squared weather and inputs and fe
-			xtreg 		lntf_yld c.`v'##c.`v' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
+			xtreg 		lntf_yld c.`v'##c.`v' `inputstf' i.year if country == `l', fe vce(cluster hhid)
 			post 		`reg_results' (`l') ("`sat'") ("`ext'") ("tf") ("reg6") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
@@ -122,7 +122,7 @@ foreach l of local levels {
 						(`=e(ll)') (`=e(df_r)')
 
 		* weather and inputs and fe
-			xtreg 		lncp_yld `v' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
+			xtreg 		lncp_yld `v' `inputscp' i.year if country == `l', fe vce(cluster hhid)
 			post 		`reg_results' (`l') ("`sat'") ("`ext'") ("cp") ("reg3") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
@@ -140,7 +140,7 @@ foreach l of local levels {
 						(`=e(ll)') (`=e(df_r)')
 		
 		* weather and squared weather and inputs and fe
-			xtreg 		lncp_yld c.`v'##c.`v' `inputsrs' i.year if country == `l', fe vce(cluster hhid)
+			xtreg 		lncp_yld c.`v'##c.`v' `inputscp' i.year if country == `l', fe vce(cluster hhid)
 			post 		`reg_results' (`l') ("`sat'") ("`ext'") ("cp") ("reg6") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)')
