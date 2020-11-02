@@ -270,16 +270,12 @@
 										if 	`"`extrm'"' == `"`extrv'"' & ///
 											`"`extrv'"' == `"`extrs'"' & ///
 											`"`satrm'"' == `"`satrv'"' & ///
-											`"`satrv'"' == `"`satrs'"' & ///
-											`"`exttm'"' == `"`exttv'"' & ///
-											`"`exttv'"' == `"`extts'"' & ///
-											`"`sattm'"' == `"`sattv'"' & ///
-											`"`sattv'"' == `"`satts'"' {
+											`"`satrv'"' == `"`satrs'"' {
 				    
 										* 2.1: Value of Harvest
 									
 										* weather
-											reg 		lntf_yld `rm' `rv' `rs' `tm' `ts' if country == `l', vce(cluster hhid)
+											reg 		lntf_yld `rm' `rv' `rs' `tm' `tv' `ts' if country == `l', vce(cluster hhid)
 											post 		`reg_results_mvs' (`l') ("`varrm'") ("`satrm'") ("`extrm'") ///
 															("`varrv'") ("`satrv'") ("`extrv'") ("`varrs'") ("`satrs'") ("`extrs'") ///
 															("`vartm'") ("`sattm'") ("`exttm'") ("`vartv'") ("`sattv'") ("`exttv'") ///
@@ -288,7 +284,7 @@
 															(`=_b[`rs']') (`=_se[`rs']') (`=_b[`tm']') (`=_se[`tm']') ///
 															(`=_b[`tv']') (`=_se[`tv']') (`=_b[`ts']') (`=_se[`ts']') ///
 															(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
-										/*
+										
 										* weather and fe	
 											xtreg 		lntf_yld `rm' `rv' `rs' `tm' `tv' `ts' i.year if country == `l', fe vce(cluster hhid)
 											post 		`reg_results_mvs' (`l') ("`varrm'") ("`satrm'") ("`extrm'") ///
@@ -344,7 +340,7 @@
 															(`=_b[`rm']') (`=_se[`rm']') (`=_b[`rv']') (`=_se[`rv']') ///
 															(`=_b[`rs']') (`=_se[`rs']') (`=_b[`tm']') (`=_se[`tm']') ///
 															(`=_b[`tv']') (`=_se[`tv']') (`=_b[`ts']') (`=_se[`ts']') ///
-															(`=e(r2_a)') (`=e(ll)') (`=e(df_r)') */
+															(`=e(r2_a)') (`=e(ll)') (`=e(df_r)') 
 								}
 							}
 						}
