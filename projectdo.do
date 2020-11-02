@@ -15,6 +15,7 @@
 
 * TO DO:
 	* add all do-files
+	* add info on grc1leg2.ado
 
 
 * **********************************************************************
@@ -22,7 +23,7 @@
 * **********************************************************************
 
 * set $pack to 0 to skip package installation
-	global 			pack 	0
+	global 			pack 	1
 		
 * Specify Stata version in use
     global stataVersion 16.1    // set Stata version
@@ -64,7 +65,7 @@ if $pack == 1 {
 	* temporarily set delimiter to ; so can break the line
 		#delimit ;
 	* for packages/commands, make a local containing any required packages
-		loc userpack "blindschemes mdesc estout reghdfe ftools distinct winsor2" ;
+		loc userpack "blindschemes mdesc estout distinct winsor2" ;
 		#delimit cr
 	
 	* install packages that are on ssc	
@@ -107,12 +108,26 @@ if $pack == 1 {
 * **********************************************************************
 * 1 - run weather data cleaning .do file
 * **********************************************************************
-
+/*
+	do 			"$code/ethiopia/weather_code/eth_ess_masterdo.do"
+	do 			"$code/malawi/weather_code/mwi_ihs_masterdo.do"
+	do 			"$code/niger/weather_code/ngr_ecvma_masterdo.do"
+	do 			"$code/nigeria/weather_code/nga_ghs_masterdo.do"
+	do 			"$code/tanzania/weather_code/tza_nps_masterdo.do"
+	do 			"$code/uganda/weather_code/uga_unps_masterdo.do"
+*/
 
 * **********************************************************************
 * 2 - run household data cleaning .do file
 * **********************************************************************
-
+/*
+	do 			"$code/ethiopia/household_code/eth_hh_masterdo.do"
+	do 			"$code/malawi/household_code/mwi_hh_masterdo.do"
+	do 			"$code/niger/household_code/ngr_hh_masterdo.do"
+	do 			"$code/nigeria/household_code/nga_hh_masterdo.do"
+	do 			"$code/tanzania/household_code/tza_hh_masterdo.do"
+	do 			"$code/uganda/household_code/uga_hh_masterdo.do"
+*/
 
 * **********************************************************************
 * 3 - run .do files that merge weather and household data
@@ -120,7 +135,7 @@ if $pack == 1 {
 
 
 * **********************************************************************
-* 4 - run regression .do files
+* 5 - run regression .do files
 * **********************************************************************
 
 

@@ -522,7 +522,14 @@
 * merge in harvest season
 	merge			m:1 region district using "`root'/harv_month", force
 	drop			if _merge == 2
+	drop			_merge
 
+* merge in geovars
+	merge			m:1 hhid using "`root'/2010_geovars", force
+	keep			if _merge == 3
+	
+	replace			aez = 324 if aez == .
+	
 * replace missing values
 	replace			season = 1 if region == 3
 	replace			season = 0 if season == .
@@ -534,7 +541,7 @@
 	gen				year = 2010
 	lab var			year "Year"
 		
-	order 			region district county subcounty parish hhid wgt10 /// 	
+	order 			region district county subcounty parish aez hhid wgt10 /// 	
 					year season tf_hrv tf_lnd tf_yld tf_lab tf_frt ///
 					tf_pst tf_hrb tf_irr cp_hrv cp_lnd cp_yld cp_lab ///
 					cp_frt cp_pst cp_hrb cp_irr 

@@ -13,7 +13,7 @@
 	* customsave.ado
 
 * TO DO:
-	* 
+	* done
 
 
 * **********************************************************************
@@ -647,12 +647,17 @@
 
 * rename and hhid2
 	rename			hhid2 household_id2
+	
+* merge in geovars
+	merge			m:1 household_id2 using "`root'/ess2_geovars", force
+	keep			if _merge == 3
+	drop			_merge	
 
 * generate year identifier
 	gen				year = 2013
 	lab var			year "Year"
 	
-	order 			household_id2 hhid region zone woreda ea rural ///
+	order 			household_id2 hhid region zone woreda ea rural aez ///
 						pw2 year tf_hrv tf_lnd tf_yld tf_lab tf_frt tf_pst ///
 						tf_hrb tf_irr cp_hrv cp_lnd cp_yld cp_lab cp_frt ///
 						cp_pst cp_hrb cp_irr

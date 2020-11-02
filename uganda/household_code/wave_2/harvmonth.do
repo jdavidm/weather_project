@@ -20,7 +20,7 @@
 
 * define paths
 	loc root 		= "$data/household_data/uganda"
-	loc logout 		= "$data/variable_related_files/Uganda planting month"
+	loc logout 		= "$data/household_data/uganda/logs"
 	
 	cap log 		close
 	log using 		"`logout'/harvmonth", append
