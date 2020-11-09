@@ -1,7 +1,7 @@
 * Project: WB Weather
 * Created on: October 2020
 * Created by: jdm
-* Last updated: 28 October 2020 
+* Last updated: 9 November 2020 
 * Last updated by: jdm 
 * Stata v.16.1
 
@@ -52,7 +52,7 @@
 	loc		tempvar 	v17*
 	loc		tempskw 	v18*
 
-/*					
+				
 * **********************************************************************
 * 2 - regressions on mean and variance of rainfall and temperature
 * **********************************************************************
@@ -90,99 +90,105 @@
 				loc 	varrv = substr("`rv'", 1, 3)
 				loc 	satrv = substr("`rv'", 5, 3)
 				loc 	extrv = substr("`rv'", 9, 2)
+				
+			* set conditionals
+				if 	`"`extrm'"' == `"`extrv'"' & ///
+					`"`satrm'"' == `"`satrv'"' {
 			
 				* define loop through temperature mean local
 					foreach 	tm of	varlist `tempmean' {
 				
-				* define locals for temperature mean naming conventions
-					loc 	vartm = substr("`tm'", 1, 3)
-					loc 	sattm = substr("`tm'", 5, 3)
-					loc 	exttm = substr("`tm'", 9, 2)
-			
-					* define loop through temperature mean local
-						foreach 	tv of	varlist `tempvar' {
+					* define locals for temperature mean naming conventions
+						loc 	vartm = substr("`tm'", 1, 3)
+						loc 	sattm = substr("`tm'", 5, 3)
+						loc 	exttm = substr("`tm'", 9, 2)
 				
-					* define locals for temperature variance naming conventions
-						loc 	vartv = substr("`tv'", 1, 3)
-						loc 	sattv = substr("`tv'", 5, 3)
-						loc 	exttv = substr("`tv'", 9, 2)
-						
-						* define pairs of extrations to compare
-							if 	`"`extrm'"' == `"`extrv'"' & ///
-								`"`extrv'"' == `"`exttm'"' & ///
-								`"`exttm'"' == `"`exttv'"' & ///
-								`"`satrm'"' == `"`satrv'"' & ///
-								`"`sattm'"' == `"`sattv'"' {
+					* set conditionals
+						if 	`"`extrv'"' == `"`exttm'"' {
+			
+						* define loop through temperature mean local
+							foreach 	tv of	varlist `tempvar' {
+				
+							* define locals for temperature variance naming conventions
+								loc 	vartv = substr("`tv'", 1, 3)
+								loc 	sattv = substr("`tv'", 5, 3)
+								loc 	exttv = substr("`tv'", 9, 2)
+				
+							* set conditionals
+								if 	`"`exttm'"' == `"`exttv'"' & ///
+									`"`sattm'"' == `"`sattv'"' {
 				    
-							* 2.1: Value of Harvest
+								* 2.1: Value of Harvest
 		
-							* weather
-								reg 		lntf_yld `rm' `rv' `tm' `tv' if country == `l', vce(cluster hhid)
-								post 		`reg_results_mv' (`l') ("`varrm'") ("`satrm'") ("`extrm'") ///
-												("`varrv'") ("`satrv'") ("`extrv'") ///
-												("`vartm'") ("`sattm'") ("`exttm'") ///
-												("`vartv'") ("`sattv'") ("`exttv'") ///
-												("tf") ("reg1") (`=_b[`rm']') (`=_se[`rm']') ///
-												(`=_b[`rv']') (`=_se[`rv']') (`=_b[`tm']') ///
-												(`=_se[`tm']') (`=_b[`tv']') (`=_se[`tv']') ///
-												(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
+								* weather
+									reg 		lntf_yld `rm' `rv' `tm' `tv' if country == `l', vce(cluster hhid)
+									post 		`reg_results_mv' (`l') ("`varrm'") ("`satrm'") ("`extrm'") ///
+													("`varrv'") ("`satrv'") ("`extrv'") ///
+													("`vartm'") ("`sattm'") ("`exttm'") ///
+													("`vartv'") ("`sattv'") ("`exttv'") ///
+													("tf") ("reg1") (`=_b[`rm']') (`=_se[`rm']') ///
+													(`=_b[`rv']') (`=_se[`rv']') (`=_b[`tm']') ///
+													(`=_se[`tm']') (`=_b[`tv']') (`=_se[`tv']') ///
+													(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
 									
-							* weather and fe	
-								xtreg 		lntf_yld `rm' `rv' `tm' `tv' i.year if country == `l', fe vce(cluster hhid)
-								post 		`reg_results_mv' (`l') ("`varrm'") ("`satrm'") ("`extrm'") ///
-												("`varrv'") ("`satrv'") ("`extrv'") ///
-												("`vartm'") ("`sattm'") ("`exttm'") ///
-												("`vartv'") ("`sattv'") ("`exttv'") ///
-												("tf") ("reg2") (`=_b[`rm']') (`=_se[`rm']') ///
-												(`=_b[`rv']') (`=_se[`rv']') (`=_b[`tm']') ///
-												(`=_se[`tm']') (`=_b[`tv']') (`=_se[`tv']') ///
-												(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
+								* weather and fe	
+									xtreg 		lntf_yld `rm' `rv' `tm' `tv' i.year if country == `l', fe vce(cluster hhid)
+									post 		`reg_results_mv' (`l') ("`varrm'") ("`satrm'") ("`extrm'") ///
+													("`varrv'") ("`satrv'") ("`extrv'") ///
+													("`vartm'") ("`sattm'") ("`exttm'") ///
+													("`vartv'") ("`sattv'") ("`exttv'") ///
+													("tf") ("reg2") (`=_b[`rm']') (`=_se[`rm']') ///
+													(`=_b[`rv']') (`=_se[`rv']') (`=_b[`tm']') ///
+													(`=_se[`tm']') (`=_b[`tv']') (`=_se[`tv']') ///
+													(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
 
-							* weather and inputs and fe
-								xtreg 		lntf_yld `rm' `rv' `tm' `tv' `inputstf' i.year if country == `l', fe vce(cluster hhid)
-								post 		`reg_results_mv' (`l') ("`varrm'") ("`satrm'") ("`extrm'") ///
-												("`varrv'") ("`satrv'") ("`extrv'") ///
-												("`vartm'") ("`sattm'") ("`exttm'") ///
-												("`vartv'") ("`sattv'") ("`exttv'") ///
-												("tf") ("reg3") (`=_b[`rm']') (`=_se[`rm']') ///
-												(`=_b[`rv']') (`=_se[`rv']') (`=_b[`tm']') ///
-												(`=_se[`tm']') (`=_b[`tv']') (`=_se[`tv']') ///
-												(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
+								* weather and inputs and fe
+									xtreg 		lntf_yld `rm' `rv' `tm' `tv' `inputstf' i.year if country == `l', fe vce(cluster hhid)
+									post 		`reg_results_mv' (`l') ("`varrm'") ("`satrm'") ("`extrm'") ///
+													("`varrv'") ("`satrv'") ("`extrv'") ///
+													("`vartm'") ("`sattm'") ("`exttm'") ///
+													("`vartv'") ("`sattv'") ("`exttv'") ///
+													("tf") ("reg3") (`=_b[`rm']') (`=_se[`rm']') ///
+													(`=_b[`rv']') (`=_se[`rv']') (`=_b[`tm']') ///
+													(`=_se[`tm']') (`=_b[`tv']') (`=_se[`tv']') ///
+													(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
 												
-							* 2.2: Quantity of Maize
+								* 2.2: Quantity of Maize
 		
-							* weather
-								reg 		lncp_yld `rm' `rv' `tm' `tv' if country == `l', vce(cluster hhid)
-								post 		`reg_results_mv' (`l') ("`varrm'") ("`satrm'") ("`extrm'") ///
-												("`varrv'") ("`satrv'") ("`extrv'") ///
-												("`vartm'") ("`sattm'") ("`exttm'") ///
-												("`vartv'") ("`sattv'") ("`exttv'") ///
-												("cp") ("reg1") (`=_b[`rm']') (`=_se[`rm']') ///
-												(`=_b[`rv']') (`=_se[`rv']') (`=_b[`tm']') ///
-												(`=_se[`tm']') (`=_b[`tv']') (`=_se[`tv']') ///
-												(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
+								* weather
+									reg 		lncp_yld `rm' `rv' `tm' `tv' if country == `l', vce(cluster hhid)
+									post 		`reg_results_mv' (`l') ("`varrm'") ("`satrm'") ("`extrm'") ///
+													("`varrv'") ("`satrv'") ("`extrv'") ///
+													("`vartm'") ("`sattm'") ("`exttm'") ///
+													("`vartv'") ("`sattv'") ("`exttv'") ///
+													("cp") ("reg1") (`=_b[`rm']') (`=_se[`rm']') ///
+													(`=_b[`rv']') (`=_se[`rv']') (`=_b[`tm']') ///
+													(`=_se[`tm']') (`=_b[`tv']') (`=_se[`tv']') ///
+													(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
 
-							* weather and fe	
-								xtreg 		lncp_yld `rm' `rv' `tm' `tv' i.year if country == `l', fe vce(cluster hhid)
-								post 		`reg_results_mv' (`l') ("`varrm'") ("`satrm'") ("`extrm'") ///
-												("`varrv'") ("`satrv'") ("`extrv'") ///
-												("`vartm'") ("`sattm'") ("`exttm'") ///
-												("`vartv'") ("`sattv'") ("`exttv'") ///
-												("cp") ("reg2") (`=_b[`rm']') (`=_se[`rm']') ///
-												(`=_b[`rv']') (`=_se[`rv']') (`=_b[`tm']') ///
-												(`=_se[`tm']') (`=_b[`tv']') (`=_se[`tv']') ///
-												(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
+								* weather and fe	
+									xtreg 		lncp_yld `rm' `rv' `tm' `tv' i.year if country == `l', fe vce(cluster hhid)
+									post 		`reg_results_mv' (`l') ("`varrm'") ("`satrm'") ("`extrm'") ///
+													("`varrv'") ("`satrv'") ("`extrv'") ///
+													("`vartm'") ("`sattm'") ("`exttm'") ///
+													("`vartv'") ("`sattv'") ("`exttv'") ///
+													("cp") ("reg2") (`=_b[`rm']') (`=_se[`rm']') ///
+													(`=_b[`rv']') (`=_se[`rv']') (`=_b[`tm']') ///
+													(`=_se[`tm']') (`=_b[`tv']') (`=_se[`tv']') ///
+													(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
 
-							* weather and inputs and fe
-								xtreg 		lncp_yld `rm' `rv' `tm' `tv' `inputscp' i.year if country == `l', fe vce(cluster hhid)
-								post 		`reg_results_mv' (`l') ("`varrm'") ("`satrm'") ("`extrm'") ///
-												("`varrv'") ("`satrv'") ("`extrv'") ///
-												("`vartm'") ("`sattm'") ("`exttm'") ///
-												("`vartv'") ("`sattv'") ("`exttv'") ///
-												("cp") ("reg3") (`=_b[`rm']') (`=_se[`rm']') ///
-												(`=_b[`rv']') (`=_se[`rv']') (`=_b[`tm']') ///
-												(`=_se[`tm']') (`=_b[`tv']') (`=_se[`tv']') ///
-												(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
+								* weather and inputs and fe
+									xtreg 		lncp_yld `rm' `rv' `tm' `tv' `inputscp' i.year if country == `l', fe vce(cluster hhid)
+									post 		`reg_results_mv' (`l') ("`varrm'") ("`satrm'") ("`extrm'") ///
+													("`varrv'") ("`satrv'") ("`extrv'") ///
+													("`vartm'") ("`sattm'") ("`exttm'") ///
+													("`vartv'") ("`sattv'") ("`exttv'") ///
+													("cp") ("reg3") (`=_b[`rm']') (`=_se[`rm']') ///
+													(`=_b[`rv']') (`=_se[`rv']') (`=_b[`tm']') ///
+													(`=_se[`tm']') (`=_b[`tv']') (`=_se[`tv']') ///
+													(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
+								}
+							}
 						}
 					}	
 				}
@@ -192,12 +198,12 @@
 
 * close the post file and open the data file
 	postclose	`reg_results_mv' 
-*/
+
+
 * **********************************************************************
 * 3 - regressions on mean, variance, and skew of rainfall and temperature
 * **********************************************************************
 		
-
 * create file to post results to
 	tempname 	reg_results_mvs
 	postfile 	`reg_results_mvs' country str3 varrm str3 satrm str2 extrm ///
@@ -234,6 +240,10 @@
 				loc 	satrv = substr("`rv'", 5, 3)
 				loc 	extrv = substr("`rv'", 9, 2)
 				
+			* set conditionals
+				if 	`"`extrm'"' == `"`extrv'"' & ///
+					`"`satrm'"' == `"`satrv'"' {
+
 				* define loop through rainfall variance local
 					foreach 	rs of	varlist `rainskw' {
 		    
@@ -241,106 +251,119 @@
 						loc 	varrs = substr("`rs'", 1, 3)
 						loc 	satrs = substr("`rs'", 5, 3)
 						loc 	extrs = substr("`rs'", 9, 2)
+				
+					* set conditionals
+						if 	`"`extrv'"' == `"`extrs'"' & ///
+							`"`satrv'"' == `"`satrs'"' {
 						
 						* define loop through temperature mean local
 							foreach 	tm of	varlist `tempmean' {
 				
-						* define locals for temperature mean naming conventions
-							loc 	vartm = substr("`tm'", 1, 3)
-							loc 	sattm = substr("`tm'", 5, 3)
-							loc 	exttm = substr("`tm'", 9, 2)	
-								
-							* define loop through temperature mean local
-								foreach 	tv of	varlist `tempvar' {
+							* define locals for temperature mean naming conventions
+								loc 	vartm = substr("`tm'", 1, 3)
+								loc 	sattm = substr("`tm'", 5, 3)
+								loc 	exttm = substr("`tm'", 9, 2)	
 				
-							* define locals for temperature variance naming conventions
-								loc 	vartv = substr("`tv'", 1, 3)
-								loc 	sattv = substr("`tv'", 5, 3)
-								loc 	exttv = substr("`tv'", 9, 2)
+							* set conditionals
+								if 	`"`extrs'"' == `"`exttm'"' {
 								
-								* define loop through temperature skew local
-									foreach 	ts of	varlist `tempskw' {
+								* define loop through temperature mean local
+									foreach 	tv of	varlist `tempvar' {
 				
-								* define locals for temperature variance naming conventions
-									loc 	varts = substr("`ts'", 1, 3)
-									loc 	satts = substr("`ts'", 5, 3)
-									loc 	extts = substr("`ts'", 9, 2)
-						
-									* define pairs of extrations to compare
-										if 	`"`extrm'"' == `"`extrv'"' & ///
-											`"`extrv'"' == `"`extrs'"' & ///
-											`"`satrm'"' == `"`satrv'"' & ///
-											`"`satrv'"' == `"`satrs'"' {
+									* define locals for temperature variance naming conventions
+										loc 	vartv = substr("`tv'", 1, 3)
+										loc 	sattv = substr("`tv'", 5, 3)
+										loc 	exttv = substr("`tv'", 9, 2)
+				
+									* set conditionals
+										if 	`"`exttm'"' == `"`exttv'"' & ///
+											`"`sattm'"' == `"`sattv'"' {
+								
+										* define loop through temperature skew local
+											foreach 	ts of	varlist `tempskw' {
+				
+											* define locals for temperature variance naming conventions
+												loc 	varts = substr("`ts'", 1, 3)
+												loc 	satts = substr("`ts'", 5, 3)
+												loc 	extts = substr("`ts'", 9, 2)
+				
+											* set conditionals
+												if 	`"`exttv'"' == `"`extts'"' & ///
+													`"`sattv'"' == `"`satts'"' {
 				    
-										* 2.1: Value of Harvest
+												* 2.1: Value of Harvest
 									
-										* weather
-											reg 		lntf_yld `rm' `rv' `rs' `tm' `tv' `ts' if country == `l', vce(cluster hhid)
-											post 		`reg_results_mvs' (`l') ("`varrm'") ("`satrm'") ("`extrm'") ///
-															("`varrv'") ("`satrv'") ("`extrv'") ("`varrs'") ("`satrs'") ("`extrs'") ///
-															("`vartm'") ("`sattm'") ("`exttm'") ("`vartv'") ("`sattv'") ("`exttv'") ///
-															("`varts'") ("`satts'") ("`extts'") ("tf") ("reg1") ///
-															(`=_b[`rm']') (`=_se[`rm']') (`=_b[`rv']') (`=_se[`rv']') ///
-															(`=_b[`rs']') (`=_se[`rs']') (`=_b[`tm']') (`=_se[`tm']') ///
-															(`=_b[`tv']') (`=_se[`tv']') (`=_b[`ts']') (`=_se[`ts']') ///
-															(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
+												* weather
+													reg 		lntf_yld `rm' `rv' `rs' `tm' `tv' `ts' if country == `l', vce(cluster hhid)
+													post 		`reg_results_mvs' (`l') ("`varrm'") ("`satrm'") ("`extrm'") ///
+																	("`varrv'") ("`satrv'") ("`extrv'") ("`varrs'") ("`satrs'") ("`extrs'") ///
+																	("`vartm'") ("`sattm'") ("`exttm'") ("`vartv'") ("`sattv'") ("`exttv'") ///
+																	("`varts'") ("`satts'") ("`extts'") ("tf") ("reg1") ///
+																	(`=_b[`rm']') (`=_se[`rm']') (`=_b[`rv']') (`=_se[`rv']') ///
+																	(`=_b[`rs']') (`=_se[`rs']') (`=_b[`tm']') (`=_se[`tm']') ///
+																	(`=_b[`tv']') (`=_se[`tv']') (`=_b[`ts']') (`=_se[`ts']') ///
+																	(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
 										
-										* weather and fe	
-											xtreg 		lntf_yld `rm' `rv' `rs' `tm' `tv' `ts' i.year if country == `l', fe vce(cluster hhid)
-											post 		`reg_results_mvs' (`l') ("`varrm'") ("`satrm'") ("`extrm'") ///
-															("`varrv'") ("`satrv'") ("`extrv'") ("`varrs'") ("`satrs'") ("`extrs'") ///
-															("`vartm'") ("`sattm'") ("`exttm'") ("`vartv'") ("`sattv'") ("`exttv'") ///
-															("`varts'") ("`satts'") ("`extts'") ("tf") ("reg1") ///
-															(`=_b[`rm']') (`=_se[`rm']') (`=_b[`rv']') (`=_se[`rv']') ///
-															(`=_b[`rs']') (`=_se[`rs']') (`=_b[`tm']') (`=_se[`tm']') ///
-															(`=_b[`tv']') (`=_se[`tv']') (`=_b[`ts']') (`=_se[`ts']') ///
-															(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
+												* weather and fe	
+													xtreg 		lntf_yld `rm' `rv' `rs' `tm' `tv' `ts' i.year if country == `l', fe vce(cluster hhid)
+													post 		`reg_results_mvs' (`l') ("`varrm'") ("`satrm'") ("`extrm'") ///
+																	("`varrv'") ("`satrv'") ("`extrv'") ("`varrs'") ("`satrs'") ("`extrs'") ///
+																	("`vartm'") ("`sattm'") ("`exttm'") ("`vartv'") ("`sattv'") ("`exttv'") ///
+																	("`varts'") ("`satts'") ("`extts'") ("tf") ("reg1") ///
+																	(`=_b[`rm']') (`=_se[`rm']') (`=_b[`rv']') (`=_se[`rv']') ///
+																	(`=_b[`rs']') (`=_se[`rs']') (`=_b[`tm']') (`=_se[`tm']') ///
+																	(`=_b[`tv']') (`=_se[`tv']') (`=_b[`ts']') (`=_se[`ts']') ///
+																	(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
 
-										* weather and inputs and fe
-											xtreg 		lntf_yld `rm' `rv' `rs' `tm' `tv' `ts' `inputstf' i.year if country == `l', fe vce(cluster hhid)
-											post 		`reg_results_mvs' (`l') ("`varrm'") ("`satrm'") ("`extrm'") ///
-															("`varrv'") ("`satrv'") ("`extrv'") ("`varrs'") ("`satrs'") ("`extrs'") ///
-															("`vartm'") ("`sattm'") ("`exttm'") ("`vartv'") ("`sattv'") ("`exttv'") ///
-															("`varts'") ("`satts'") ("`extts'") ("tf") ("reg1") ///
-															(`=_b[`rm']') (`=_se[`rm']') (`=_b[`rv']') (`=_se[`rv']') ///
-															(`=_b[`rs']') (`=_se[`rs']') (`=_b[`tm']') (`=_se[`tm']') ///
-															(`=_b[`tv']') (`=_se[`tv']') (`=_b[`ts']') (`=_se[`ts']') ///
-															(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
+												* weather and inputs and fe
+													xtreg 		lntf_yld `rm' `rv' `rs' `tm' `tv' `ts' `inputstf' i.year if country == `l', fe vce(cluster hhid)
+													post 		`reg_results_mvs' (`l') ("`varrm'") ("`satrm'") ("`extrm'") ///
+																	("`varrv'") ("`satrv'") ("`extrv'") ("`varrs'") ("`satrs'") ("`extrs'") ///
+																	("`vartm'") ("`sattm'") ("`exttm'") ("`vartv'") ("`sattv'") ("`exttv'") ///
+																	("`varts'") ("`satts'") ("`extts'") ("tf") ("reg1") ///
+																	(`=_b[`rm']') (`=_se[`rm']') (`=_b[`rv']') (`=_se[`rv']') ///
+																	(`=_b[`rs']') (`=_se[`rs']') (`=_b[`tm']') (`=_se[`tm']') ///
+																	(`=_b[`tv']') (`=_se[`tv']') (`=_b[`ts']') (`=_se[`ts']') ///
+																	(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
 												
-										* 2.2: Quantity of Maize
+												* 2.2: Quantity of Maize
 		
-										* weather
-											reg 		lncp_yld `rm' `rv' `rs' `tm' `tv' `ts' if country == `l', vce(cluster hhid)
-											post 		`reg_results_mvs' (`l') ("`varrm'") ("`satrm'") ("`extrm'") ///
-															("`varrv'") ("`satrv'") ("`extrv'") ("`varrs'") ("`satrs'") ("`extrs'") ///
-															("`vartm'") ("`sattm'") ("`exttm'") ("`vartv'") ("`sattv'") ("`exttv'") ///
-															("`varts'") ("`satts'") ("`extts'") ("tf") ("reg1") ///
-															(`=_b[`rm']') (`=_se[`rm']') (`=_b[`rv']') (`=_se[`rv']') ///
-															(`=_b[`rs']') (`=_se[`rs']') (`=_b[`tm']') (`=_se[`tm']') ///
-															(`=_b[`tv']') (`=_se[`tv']') (`=_b[`ts']') (`=_se[`ts']') ///
-															(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
+												* weather
+													reg 		lncp_yld `rm' `rv' `rs' `tm' `tv' `ts' if country == `l', vce(cluster hhid)
+													post 		`reg_results_mvs' (`l') ("`varrm'") ("`satrm'") ("`extrm'") ///
+																	("`varrv'") ("`satrv'") ("`extrv'") ("`varrs'") ("`satrs'") ("`extrs'") ///
+																	("`vartm'") ("`sattm'") ("`exttm'") ("`vartv'") ("`sattv'") ("`exttv'") ///
+																	("`varts'") ("`satts'") ("`extts'") ("tf") ("reg1") ///
+																	(`=_b[`rm']') (`=_se[`rm']') (`=_b[`rv']') (`=_se[`rv']') ///
+																	(`=_b[`rs']') (`=_se[`rs']') (`=_b[`tm']') (`=_se[`tm']') ///
+																	(`=_b[`tv']') (`=_se[`tv']') (`=_b[`ts']') (`=_se[`ts']') ///
+																	(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
 
-										* weather and fe	
-											xtreg 		lncp_yld `rm' `rv' `rs' `tm' `tv' `ts' i.year if country == `l', fe vce(cluster hhid)
-											post 		`reg_results_mvs' (`l') ("`varrm'") ("`satrm'") ("`extrm'") ///
-															("`varrv'") ("`satrv'") ("`extrv'") ("`varrs'") ("`satrs'") ("`extrs'") ///
-															("`vartm'") ("`sattm'") ("`exttm'") ("`vartv'") ("`sattv'") ("`exttv'") ///
-															("`varts'") ("`satts'") ("`extts'") ("tf") ("reg1") ///
-															(`=_b[`rm']') (`=_se[`rm']') (`=_b[`rv']') (`=_se[`rv']') ///
-															(`=_b[`rs']') (`=_se[`rs']') (`=_b[`tm']') (`=_se[`tm']') ///
-															(`=_b[`tv']') (`=_se[`tv']') (`=_b[`ts']') (`=_se[`ts']') ///
-															(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
+												* weather and fe	
+													xtreg 		lncp_yld `rm' `rv' `rs' `tm' `tv' `ts' i.year if country == `l', fe vce(cluster hhid)
+													post 		`reg_results_mvs' (`l') ("`varrm'") ("`satrm'") ("`extrm'") ///
+																	("`varrv'") ("`satrv'") ("`extrv'") ("`varrs'") ("`satrs'") ("`extrs'") ///
+																	("`vartm'") ("`sattm'") ("`exttm'") ("`vartv'") ("`sattv'") ("`exttv'") ///
+																	("`varts'") ("`satts'") ("`extts'") ("tf") ("reg1") ///
+																	(`=_b[`rm']') (`=_se[`rm']') (`=_b[`rv']') (`=_se[`rv']') ///
+																	(`=_b[`rs']') (`=_se[`rs']') (`=_b[`tm']') (`=_se[`tm']') ///
+																	(`=_b[`tv']') (`=_se[`tv']') (`=_b[`ts']') (`=_se[`ts']') ///
+																	(`=e(r2_a)') (`=e(ll)') (`=e(df_r)')
 
-										* weather and inputs and fe
-											xtreg 		lncp_yld `rm' `rv' `rs' `tm' `tv' `ts' `inputscp' i.year if country == `l', fe vce(cluster hhid)
-											post 		`reg_results_mvs' (`l') ("`varrm'") ("`satrm'") ("`extrm'") ///
-															("`varrv'") ("`satrv'") ("`extrv'") ("`varrs'") ("`satrs'") ("`extrs'") ///
-															("`vartm'") ("`sattm'") ("`exttm'") ("`vartv'") ("`sattv'") ("`exttv'") ///
-															("`varts'") ("`satts'") ("`extts'") ("tf") ("reg1") ///
-															(`=_b[`rm']') (`=_se[`rm']') (`=_b[`rv']') (`=_se[`rv']') ///
-															(`=_b[`rs']') (`=_se[`rs']') (`=_b[`tm']') (`=_se[`tm']') ///
-															(`=_b[`tv']') (`=_se[`tv']') (`=_b[`ts']') (`=_se[`ts']') ///
-															(`=e(r2_a)') (`=e(ll)') (`=e(df_r)') 
+												* weather and inputs and fe
+													xtreg 		lncp_yld `rm' `rv' `rs' `tm' `tv' `ts' `inputscp' i.year if country == `l', fe vce(cluster hhid)
+													post 		`reg_results_mvs' (`l') ("`varrm'") ("`satrm'") ("`extrm'") ///
+																	("`varrv'") ("`satrv'") ("`extrv'") ("`varrs'") ("`satrs'") ("`extrs'") ///
+																	("`vartm'") ("`sattm'") ("`exttm'") ("`vartv'") ("`sattv'") ("`exttv'") ///
+																	("`varts'") ("`satts'") ("`extts'") ("tf") ("reg1") ///
+																	(`=_b[`rm']') (`=_se[`rm']') (`=_b[`rv']') (`=_se[`rv']') ///
+																	(`=_b[`rs']') (`=_se[`rs']') (`=_b[`tm']') (`=_se[`tm']') ///
+																	(`=_b[`tv']') (`=_se[`tv']') (`=_b[`ts']') (`=_se[`ts']') ///
+																	(`=e(r2_a)') (`=e(ll)') (`=e(df_r)') 
+												}
+											}
+										}
+									}
 								}
 							}
 						}
@@ -349,7 +372,7 @@
 			}
 		}
 	}
-	
+
 * close the post file and open the data file
 	postclose	`reg_results_mvs' 
 	use 		"`results'/reg_results_mvs", clear
@@ -358,13 +381,13 @@
 * **********************************************************************
 * 4 - combine and clean post files
 * **********************************************************************
-/*	
+
 * load and append files	
 	use 		"`results'/reg_results_mv", clear
 	
 	append		using "`results'/reg_results_mvs"
 
-/*
+
 * close the log
 	log	close
 
