@@ -2,7 +2,7 @@
 * Created on: September 2019
 * Created by: jdm
 * Edited by: alj
-* Last edit: 28 September 2020 
+* Last edit: 9 November 2020 
 * Stata v.16.1 
 
 * does
@@ -15,7 +15,7 @@
 	* grc1leg2.ado
 
 * TO DO:
-	* all of it
+	* complete
 
 	
 * **********************************************************************
@@ -24,13 +24,15 @@
 
 * define paths
 	global	root 	= 	"$data/results_data"
-	global	xtab 	= 	"$data/results_data/tables"
-	global 	xfig    =   "$data/results_data/figures"
+	global	stab 	= 	"$data/results_data/tables"
+	global	xtab 	= 	"$data/output/paper/tables"
+	global	sfig	= 	"$data/results_data/figures"	
+	global 	xfig    =   "$data/output/paper/figures"
 	global	logout 	= 	"$data/results_data/logs"
 
 * open log	
 	cap log close
-	log 	using 		"$logout/resultsvis", append
+	log 	using 		"$logout/pval_vis", append
 
 		
 * **********************************************************************
@@ -64,7 +66,7 @@
 						ytitle("Share of Significant Point Estimates") ///
 						legend(pos(12) col(3) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99")) ///
-						saving("$xfig/pval_varname_rf", replace)
+						saving("$sfig/pval_varname_rf", replace)
 						
 * p-value graph of temperature by varname
 	graph bar 		(mean) p90 p95 p99 if varname > 14, over(varname, label(angle(45) ///
@@ -74,12 +76,12 @@
 						ytitle("Share of Significant Point Estimates") ///
 						legend(pos(12) col(3) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99")) ///
-						saving("$xfig/pval_varname_tp", replace)
+						saving("$sfig/pval_varname_tp", replace)
 
-	grc1leg2 		"$xfig/pval_varname_rf.gph" "$xfig/pval_varname_tp.gph", ///
+	grc1leg2 		"$sfig/pval_varname_rf.gph" "$sfig/pval_varname_tp.gph", ///
 						col(1) iscale(.5) commonscheme imargin(0 0 0 0)
 						
-	graph export "$xfig\pval_varname.pdf", as(pdf) replace							
+	graph export 	"$xfig\pval_varname.png", as(png) replace							
 
 	
 *** satellite ***
@@ -92,7 +94,7 @@
 						ytitle("Share of Significant Point Estimates") ///
 						legend(pos(12) col(3) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99")) ///
-						saving("$xfig/pval_sat_rf", replace)
+						saving("$sfig/pval_sat_rf", replace)
 						
 
 * p-value graph of temperature by satellite
@@ -103,13 +105,13 @@
 						ytitle("Share of Significant Point Estimates") ///
 						legend(pos(12) col(3) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99")) ///
-						saving("$xfig/pval_sat_tp", replace)
+						saving("$sfig/pval_sat_tp", replace)
 						
 
-	grc1leg2 		"$xfig/pval_sat_rf.gph" "$xfig/pval_sat_tp.gph", ///
+	grc1leg2 		"$sfig/pval_sat_rf.gph" "$sfig/pval_sat_tp.gph", ///
 						col(1) iscale(.5) commonscheme imargin(0 0 0 0)
 						
-	graph export "$xfig\pval_sat.pdf", as(pdf) replace							
+	graph export 	"$xfig\pval_sat.png", as(png) replace							
 
 	
 *** extraction method ***
@@ -122,7 +124,7 @@
 						ytitle("Share of Significant Point Estimates") ///
 						legend(pos(12) col(3) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99")) ///
-						saving("$xfig/pval_ext_rf", replace)
+						saving("$sfig/pval_ext_rf", replace)
 
 * p-value graph of temperature by extraction
 	graph bar 		(mean) p90 p95 p99 if varname > 14, over(ext, label(angle(45) ///
@@ -132,13 +134,13 @@
 						ytitle("Share of Significant Point Estimates") ///
 						legend(pos(12) col(3) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99")) ///
-						saving("$xfig/pval_ext_tp", replace)
+						saving("$sfig/pval_ext_tp", replace)
 						
 
-	grc1leg2 		"$xfig/pval_ext_rf.gph" "$xfig/pval_ext_tp.gph", ///
+	grc1leg2 		"$sfig/pval_ext_rf.gph" "$sfig/pval_ext_tp.gph", ///
 						col(1) iscale(.5) commonscheme imargin(0 0 0 0)
 						
-	graph export "$xfig\pval_ext.pdf", as(pdf) replace							
+	graph export 	"$xfig\pval_ext.png", as(png) replace							
 	
 
 *** dependant variable ***
@@ -151,7 +153,7 @@
 						ytitle("Share of Significant Point Estimates") ///
 						legend(pos(12) col(3) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99")) ///
-						saving("$xfig/pval_depvar_rf", replace)
+						saving("$sfig/pval_depvar_rf", replace)
 
 * p-value graph of temperature by dependant variable
 	graph bar 		(mean) p90 p95 p99 if varname > 14, over(depvar, label(angle(45) ///
@@ -161,13 +163,13 @@
 						ytitle("Share of Significant Point Estimates") ///
 						legend(pos(12) col(3) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99")) ///
-						saving("$xfig/pval_depvar_tp", replace)
+						saving("$sfig/pval_depvar_tp", replace)
 						
 
-	grc1leg2 		"$xfig/pval_depvar_rf.gph" "$xfig/pval_depvar_tp.gph", ///
+	grc1leg2 		"$sfig/pval_depvar_rf.gph" "$sfig/pval_depvar_tp.gph", ///
 						col(1) iscale(.5) commonscheme imargin(0 0 0 0)
 						
-	graph export "$xfig\pval_depvar.pdf", as(pdf) replace			
+	graph export 	"$xfig\pval_depvar.png", as(png) replace			
 	
 
 *** regression specification ***	
@@ -180,7 +182,7 @@
 						ytitle("Share of Significant Point Estimates") ///
 						legend(pos(12) col(3) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99")) ///
-						saving("$xfig/pval_regname_rf", replace)
+						saving("$sfig/pval_regname_rf", replace)
 
 * p-value graph of temperature by regression
 	graph bar 		(mean) p90 p95 p99 if varname > 14, over(regname, label(angle(45) ///
@@ -190,13 +192,13 @@
 						ytitle("Share of Significant Point Estimates") ///
 						legend(pos(12) col(3) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99")) ///
-						saving("$xfig/pval_regname_tp", replace)
+						saving("$sfig/pval_regname_tp", replace)
 						
 
-	grc1leg2 		"$xfig/pval_regname_rf.gph" "$xfig/pval_regname_tp.gph", ///
+	grc1leg2 		"$sfig/pval_regname_rf.gph" "$sfig/pval_regname_tp.gph", ///
 						col(1) iscale(.5) commonscheme imargin(0 0 0 0)
 						
-	graph export "$xfig\pval_regname.pdf", as(pdf) replace							
+	graph export 	"$xfig\pval_regname.png", as(png) replace							
 
 	
 *** country ***
@@ -209,7 +211,7 @@
 						ytitle("Share of Significant Point Estimates") ///
 						legend(pos(12) col(3) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99")) ///
-						saving("$xfig/pval_country_rf", replace)
+						saving("$sfig/pval_country_rf", replace)
 
 * p-value graph of temperature by country
 	graph bar 		(mean) p90 p95 p99 if varname > 14, over(country, label(angle(45) ///
@@ -219,13 +221,13 @@
 						ytitle("Share of Significant Point Estimates") ///
 						legend(pos(12) col(3) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99")) ///
-						saving("$xfig/pval_country_tp", replace)
+						saving("$sfig/pval_country_tp", replace)
 						
 
-	grc1leg2 		"$xfig/pval_country_rf.gph" "$xfig/pval_country_tp.gph", ///
+	grc1leg2 		"$sfig/pval_country_rf.gph" "$sfig/pval_country_tp.gph", ///
 						col(1) iscale(.5) commonscheme imargin(0 0 0 0)
 						
-	graph export "$xfig\pval_country.pdf", as(pdf) replace					
+	graph export 	"$xfig\pval_country.png", as(png) replace					
 
 	
 * **********************************************************************
@@ -243,7 +245,7 @@
 						ytitle("Share of Significant Point Estimates")  ///
 						legend(pos(12) col(3) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99")) ///
-						saving("$xfig/eth_pval_ext_rf", replace)
+						saving("$sfig/eth_pval_ext_rf", replace)
 
 
 * p-value graph of temperature by extraction method
@@ -255,7 +257,7 @@
 						ytitle("Share of Significant Point Estimates")  ///
 						legend(pos(12) col(3) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99")) ///
-						saving("$xfig/eth_pval_ext_tp", replace)
+						saving("$sfig/eth_pval_ext_tp", replace)
 
 * p-value graph of rainfall by satellite
 	graph bar 		(mean) p90 p95 p99 if country == 1 & varname < 15, ///
@@ -266,7 +268,7 @@
 						ytitle("Share of Significant Point Estimates")  ///
 						legend(pos(12) col(3) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99")) ///
-						saving("$xfig/eth_pval_sat_rf", replace)
+						saving("$sfig/eth_pval_sat_rf", replace)
 
 * p-value graph of temperature by satellite
 	graph bar 		(mean) p90 p95 p99 if country == 1 & varname > 14, ///
@@ -277,7 +279,7 @@
 						ytitle("Share of Significant Point Estimates")  ///
 						legend(pos(12) col(3) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99")) ///
-						saving("$xfig/eth_pval_sat_tp", replace)
+						saving("$sfig/eth_pval_sat_tp", replace)
 	
 *** malawi ***
 
@@ -290,7 +292,7 @@
 						ytitle("Share of Significant Point Estimates")  ///
 						legend(pos(12) col(3) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99")) ///
-						saving("$xfig/mwi_pval_ext_rf", replace)
+						saving("$sfig/mwi_pval_ext_rf", replace)
 
 * p-value graph of temperature by extraction method
 	graph bar 		(mean) p90 p95 p99 if country == 2 & varname > 14, ///
@@ -301,7 +303,7 @@
 						ytitle("Share of Significant Point Estimates")  ///
 						legend(pos(12) col(3) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99")) ///
-						saving("$xfig/mwi_pval_ext_tp", replace)
+						saving("$sfig/mwi_pval_ext_tp", replace)
 
 * p-value graph of rainfall by satellite
 	graph bar 		(mean) p90 p95 p99 if country == 2 & varname < 15, ///
@@ -312,7 +314,7 @@
 						ytitle("Share of Significant Point Estimates")  ///
 						legend(pos(12) col(3) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99")) ///
-						saving("$xfig/mwi_pval_sat_rf", replace)
+						saving("$sfig/mwi_pval_sat_rf", replace)
 
 * p-value graph of temperature by satellite
 	graph bar 		(mean) p90 p95 p99 if country == 2 & varname > 14, ///
@@ -323,7 +325,7 @@
 						ytitle("Share of Significant Point Estimates")  ///
 						legend(pos(12) col(3) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99")) ///
-						saving("$xfig/mwi_pval_sat_tp", replace)
+						saving("$sfig/mwi_pval_sat_tp", replace)
 
 *** niger ***
 
@@ -336,7 +338,7 @@
 						ytitle("Share of Significant Point Estimates")  ///
 						legend(pos(12) col(3) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99")) ///
-						saving("$xfig/ngr_pval_ext_rf", replace)
+						saving("$sfig/ngr_pval_ext_rf", replace)
 
 * p-value graph of temperature by extraction method
 	graph bar 		(mean) p90 p95 p99 if country == 4 & varname > 14, ///
@@ -347,7 +349,7 @@
 						ytitle("Share of Significant Point Estimates")  ///
 						legend(pos(12) col(3) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99")) ///
-						saving("$xfig/ngr_pval_ext_tp", replace)
+						saving("$sfig/ngr_pval_ext_tp", replace)
 
 * p-value graph of rainfall by satellite
 	graph bar 		(mean) p90 p95 p99 if country == 4 & varname < 15, ///
@@ -358,7 +360,7 @@
 						ytitle("Share of Significant Point Estimates")  ///
 						legend(pos(12) col(3) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99")) ///
-						saving("$xfig/ngr_pval_sat_rf", replace)
+						saving("$sfig/ngr_pval_sat_rf", replace)
 
 * p-value graph of temperature by satellite
 	graph bar 		(mean) p90 p95 p99 if country == 4 & varname > 14, ///
@@ -369,7 +371,7 @@
 						ytitle("Share of Significant Point Estimates")  ///
 						legend(pos(12) col(3) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99")) ///
-						saving("$xfig/ngr_pval_sat_tp", replace)
+						saving("$sfig/ngr_pval_sat_tp", replace)
 	
 *** nigeria ***
 
@@ -382,7 +384,7 @@
 						ytitle("Share of Significant Point Estimates")  ///
 						legend(pos(12) col(3) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99")) ///
-						saving("$xfig/nga_pval_ext_rf", replace)
+						saving("$sfig/nga_pval_ext_rf", replace)
 
 * p-value graph of temperature by extraction method
 	graph bar 		(mean) p90 p95 p99 if country == 5 & varname > 14, ///
@@ -393,7 +395,7 @@
 						ytitle("Share of Significant Point Estimates")  ///
 						legend(pos(12) col(3) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99")) ///
-						saving("$xfig/nga_pval_ext_tp", replace)
+						saving("$sfig/nga_pval_ext_tp", replace)
 
 * p-value graph of rainfall by satellite
 	graph bar 		(mean) p90 p95 p99 if country == 5 & varname < 15, ///
@@ -404,7 +406,7 @@
 						ytitle("Share of Significant Point Estimates")  ///
 						legend(pos(12) col(3) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99")) ///
-						saving("$xfig/nga_pval_sat_rf", replace)
+						saving("$sfig/nga_pval_sat_rf", replace)
 
 * p-value graph of temperature by satellite
 	graph bar 		(mean) p90 p95 p99 if country == 5 & varname > 14, ///
@@ -415,7 +417,7 @@
 						ytitle("Share of Significant Point Estimates")  ///
 						legend(pos(12) col(3) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99")) ///
-						saving("$xfig/nga_pval_sat_tp", replace)
+						saving("$sfig/nga_pval_sat_tp", replace)
 	
 *** tanzania ***
 
@@ -428,7 +430,7 @@
 						ytitle("Share of Significant Point Estimates")  ///
 						legend(pos(12) col(3) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99")) ///
-						saving("$xfig/tza_pval_ext_rf", replace)
+						saving("$sfig/tza_pval_ext_rf", replace)
 
 * p-value graph of temperature by extraction method
 	graph bar 		(mean) p90 p95 p99 if country == 6 & varname > 14, ///
@@ -439,7 +441,7 @@
 						ytitle("Share of Significant Point Estimates")  ///
 						legend(pos(12) col(3) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99")) ///
-						saving("$xfig/tza_pval_ext_tp", replace)
+						saving("$sfig/tza_pval_ext_tp", replace)
 
 * p-value graph of rainfall by satellite
 	graph bar 		(mean) p90 p95 p99 if country == 6 & varname < 15, ///
@@ -450,7 +452,7 @@
 						ytitle("Share of Significant Point Estimates")  ///
 						legend(pos(12) col(3) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99")) ///
-						saving("$xfig/tza_pval_sat_rf", replace)
+						saving("$sfig/tza_pval_sat_rf", replace)
 
 * p-value graph of temperature by satellite
 	graph bar 		(mean) p90 p95 p99 if country == 6 & varname > 14, ///
@@ -461,7 +463,7 @@
 						ytitle("Share of Significant Point Estimates")  ///
 						legend(pos(12) col(3) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99")) ///
-						saving("$xfig/tza_pval_sat_tp", replace)
+						saving("$sfig/tza_pval_sat_tp", replace)
 
 *** uganda ***
 
@@ -474,7 +476,7 @@
 						ytitle("Share of Significant Point Estimates")  ///
 						legend(pos(12) col(3) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99")) ///
-						saving("$xfig/uga_pval_ext_rf", replace)
+						saving("$sfig/uga_pval_ext_rf", replace)
 
 * p-value graph of temperature by extraction method
 	graph bar 		(mean) p90 p95 p99 if country == 7 & varname > 14, ///
@@ -485,7 +487,7 @@
 						ytitle("Share of Significant Point Estimates")  ///
 						legend(pos(12) col(3) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99")) ///
-						saving("$xfig/uga_pval_ext_tp", replace)
+						saving("$sfig/uga_pval_ext_tp", replace)
 
 * p-value graph of rainfall by satellite
 	graph bar 		(mean) p90 p95 p99 if country == 7 & varname < 15, ///
@@ -496,7 +498,7 @@
 						ytitle("Share of Significant Point Estimates")  ///
 						legend(pos(12) col(3) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99")) ///
-						saving("$xfig/uga_pval_sat_rf", replace)
+						saving("$sfig/uga_pval_sat_rf", replace)
 
 * p-value graph of temperature by satellite
 	graph bar 		(mean) p90 p95 p99 if country == 7 & varname > 14, ///
@@ -507,40 +509,40 @@
 						ytitle("Share of Significant Point Estimates")  ///
 						legend(pos(12) col(3) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99")) ///
-						saving("$xfig/uga_pval_sat_tp", replace)
+						saving("$sfig/uga_pval_sat_tp", replace)
 
 						
 * p-value extraction method for rainfall
-	grc1leg2 		"$xfig/eth_pval_ext_rf.gph" "$xfig/mwi_pval_ext_rf.gph" ///
-						"$xfig/ngr_pval_ext_rf.gph" "$xfig/nga_pval_ext_rf.gph" ///
-						"$xfig/tza_pval_ext_rf.gph" "$xfig/uga_pval_ext_rf.gph", ///
+	grc1leg2 		"$sfig/eth_pval_ext_rf.gph" "$sfig/mwi_pval_ext_rf.gph" ///
+						"$sfig/ngr_pval_ext_rf.gph" "$sfig/nga_pval_ext_rf.gph" ///
+						"$sfig/tza_pval_ext_rf.gph" "$sfig/uga_pval_ext_rf.gph", ///
 						col(3) iscale(.5) commonscheme imargin(0 0 0 0)
 						
-	graph export "$xfig\pval_ext_rf.pdf", as(pdf) replace					
+	graph export 	"$xfig\pval_ext_rf.png", as(png) replace					
 
 * p-value extraction method for temperature
-	grc1leg2 		"$xfig/eth_pval_ext_tp.gph" "$xfig/mwi_pval_ext_tp.gph" ///
-						"$xfig/ngr_pval_ext_tp.gph" "$xfig/nga_pval_ext_tp.gph" ///
-						"$xfig/tza_pval_ext_tp.gph" "$xfig/uga_pval_ext_tp.gph", ///
+	grc1leg2 		"$sfig/eth_pval_ext_tp.gph" "$sfig/mwi_pval_ext_tp.gph" ///
+						"$sfig/ngr_pval_ext_tp.gph" "$sfig/nga_pval_ext_tp.gph" ///
+						"$sfig/tza_pval_ext_tp.gph" "$sfig/uga_pval_ext_tp.gph", ///
 						col(3) iscale(.5) commonscheme imargin(0 0 0 0)
 						
-	graph export "$xfig\pval_ext_tp.pdf", as(pdf) replace		
+	graph export 	"$xfig\pval_ext_tp.png", as(png) replace		
 						
 * p-value satellite for rainfall
-	grc1leg2 		"$xfig/eth_pval_sat_rf.gph" "$xfig/mwi_pval_sat_rf.gph" ///
-						"$xfig/ngr_pval_sat_rf.gph" "$xfig/nga_pval_sat_rf.gph" ///
-						"$xfig/tza_pval_sat_rf.gph" "$xfig/uga_pval_sat_rf.gph", ///
+	grc1leg2 		"$sfig/eth_pval_sat_rf.gph" "$sfig/mwi_pval_sat_rf.gph" ///
+						"$sfig/ngr_pval_sat_rf.gph" "$sfig/nga_pval_sat_rf.gph" ///
+						"$sfig/tza_pval_sat_rf.gph" "$sfig/uga_pval_sat_rf.gph", ///
 						col(3) iscale(.5) commonscheme imargin(0 0 0 0)
 						
-	graph export "$xfig\pval_sat_rf.pdf", as(pdf) replace					
+	graph export 	"$xfig\pval_sat_rf.png", as(png) replace					
 
 * p-value satellite for temperature
-	grc1leg2 		"$xfig/eth_pval_sat_tp.gph" "$xfig/mwi_pval_sat_tp.gph" ///
-						"$xfig/ngr_pval_sat_tp.gph" "$xfig/nga_pval_sat_tp.gph" ///
-						"$xfig/tza_pval_sat_tp.gph" "$xfig/uga_pval_sat_tp.gph", ///
+	grc1leg2 		"$sfig/eth_pval_sat_tp.gph" "$sfig/mwi_pval_sat_tp.gph" ///
+						"$sfig/ngr_pval_sat_tp.gph" "$sfig/nga_pval_sat_tp.gph" ///
+						"$sfig/tza_pval_sat_tp.gph" "$sfig/uga_pval_sat_tp.gph", ///
 						col(3) iscale(.5) commonscheme imargin(0 0 0 0)
 						
-	graph export "$xfig\pval_sat_tp.pdf", as(pdf) replace		
+	graph export 	"$xfig\pval_sat_tp.png", as(png) replace		
 	
 	
 * **********************************************************************

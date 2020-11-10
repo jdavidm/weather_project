@@ -2,7 +2,7 @@
 * Created on: September 2019
 * Created by: jdm
 * Edited by: alj
-* Last edit: 28 September 2020 
+* Last edit: 9 November 2020 
 * Stata v.16.1 
 
 * does
@@ -15,7 +15,7 @@
 	* grc1leg2.ado
 
 * TO DO:
-	* all of it
+	* complete
 
 	
 * **********************************************************************
@@ -24,13 +24,15 @@
 
 * define paths
 	global	root 	= 	"$data/results_data"
-	global	xtab 	= 	"$data/results_data/tables"
-	global 	xfig    =   "$data/results_data/figures"
+	global	stab 	= 	"$data/results_data/tables"
+	global	xtab 	= 	"$data/output/paper/tables"
+	global	sfig	= 	"$data/results_data/figures"	
+	global 	xfig    =   "$data/output/paper/figures"
 	global	logout 	= 	"$data/results_data/logs"
 
 * open log	
 	cap log close
-	log 	using 		"$logout/resultsvis", append
+	log 	using 	"$logout/resultsvis", append
 
 * load data 
 	use 			"$root/lsms_complete_results", clear
@@ -60,7 +62,7 @@ preserve
 						xlabel(0 "0" 360 "Rainfall 1" 720 "720" 1080 "Rainfall 2" ///
 						1440 "1,440" 1800 "Rainfall 3" 2160 "2,160" 2520 "Rainfall 4" ///
 						2880 "2,880" 3240 "Rainfall 5" 3600 "3,600" 3960 "Rainfall 6" ///
-						4320 "4,320", alt) xtitle("") saving("$xfig/v01_sat", replace)
+						4320 "4,320", alt) xtitle("") saving("$sfig/v01_sat", replace)
 restore
 
 * median daily rainfall
@@ -78,7 +80,7 @@ preserve
 						xlabel(0 "0" 360 "Rainfall 1" 720 "720" 1080 "Rainfall 2" ///
 						1440 "1440" 1800 "Rainfall 3" 2160 "2160" 2520 "Rainfall 4" ///
 						2880 "2880" 3240 "Rainfall 5" 3600 "3600" 3960 "Rainfall 6" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v02_sat", replace)
+						4320 "4320", alt) xtitle("") saving("$sfig/v02_sat", replace)
 restore	
 
 * variance of daily rainfall
@@ -96,7 +98,7 @@ preserve
 						xlabel(0 "0" 360 "Rainfall 1" 720 "720" 1080 "Rainfall 2" ///
 						1440 "1440" 1800 "Rainfall 3" 2160 "2160" 2520 "Rainfall 4" ///
 						2880 "2880" 3240 "Rainfall 5" 3600 "3600" 3960 "Rainfall 6" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v03_sat", replace)
+						4320 "4320", alt) xtitle("") saving("$sfig/v03_sat", replace)
 restore
 	
 * skew of daily rainfall
@@ -114,7 +116,7 @@ preserve
 						xlabel(0 "0" 360 "Rainfall 1" 720 "720" 1080 "Rainfall 2" ///
 						1440 "1440" 1800 "Rainfall 3" 2160 "2160" 2520 "Rainfall 4" ///
 						2880 "2880" 3240 "Rainfall 5" 3600 "3600" 3960 "Rainfall 6" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v04_sat", replace)
+						4320 "4320", alt) xtitle("") saving("$sfig/v04_sat", replace)
 restore
 
 * total seasonal rainfall
@@ -132,7 +134,7 @@ preserve
 						xlabel(0 "0" 360 "Rainfall 1" 720 "720" 1080 "Rainfall 2" ///
 						1440 "1440" 1800 "Rainfall 3" 2160 "2160" 2520 "Rainfall 4" ///
 						2880 "2880" 3240 "Rainfall 5" 3600 "3600" 3960 "Rainfall 6" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v05_sat", replace)
+						4320 "4320", alt) xtitle("") saving("$sfig/v05_sat", replace)
 restore
 
 * deviation in total rainfall
@@ -150,7 +152,7 @@ preserve
 						xlabel(0 "0" 360 "Rainfall 1" 720 "720" 1080 "Rainfall 2" ///
 						1440 "1440" 1800 "Rainfall 3" 2160 "2160" 2520 "Rainfall 4" ///
 						2880 "2880" 3240 "Rainfall 5" 3600 "3600" 3960 "Rainfall 6" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v06_sat", replace)
+						4320 "4320", alt) xtitle("") saving("$sfig/v06_sat", replace)
 restore
 
 * z-score of total rainfall
@@ -168,7 +170,7 @@ preserve
 						xlabel(0 "0" 360 "Rainfall 1" 720 "720" 1080 "Rainfall 2" ///
 						1440 "1440" 1800 "Rainfall 3" 2160 "2160" 2520 "Rainfall 4" ///
 						2880 "2880" 3240 "Rainfall 5" 3600 "3600" 3960 "Rainfall 6" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v07_sat", replace)
+						4320 "4320", alt) xtitle("") saving("$sfig/v07_sat", replace)
 restore
 
 * number of days with rain
@@ -186,7 +188,7 @@ preserve
 						xlabel(0 "0" 360 "Rainfall 1" 720 "720" 1080 "Rainfall 2" ///
 						1440 "1440" 1800 "Rainfall 3" 2160 "2160" 2520 "Rainfall 4" ///
 						2880 "2880" 3240 "Rainfall 5" 3600 "3600" 3960 "Rainfall 6" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v08_sat", replace)
+						4320 "4320", alt) xtitle("") saving("$sfig/v08_sat", replace)
 restore
 
 * deviation in rainy days
@@ -204,7 +206,7 @@ preserve
 						xlabel(0 "0" 360 "Rainfall 1" 720 "720" 1080 "Rainfall 2" ///
 						1440 "1440" 1800 "Rainfall 3" 2160 "2160" 2520 "Rainfall 4" ///
 						2880 "2880" 3240 "Rainfall 5" 3600 "3600" 3960 "Rainfall 6" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v09_sat", replace)
+						4320 "4320", alt) xtitle("") saving("$sfig/v09_sat", replace)
 restore
 
 * number of days without rain
@@ -222,7 +224,7 @@ preserve
 						xlabel(0 "0" 360 "Rainfall 1" 720 "720" 1080 "Rainfall 2" ///
 						1440 "1440" 1800 "Rainfall 3" 2160 "2160" 2520 "Rainfall 4" ///
 						2880 "2880" 3240 "Rainfall 5" 3600 "3600" 3960 "Rainfall 6" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v10_sat", replace)
+						4320 "4320", alt) xtitle("") saving("$sfig/v10_sat", replace)
 restore
 
 * deviation in no rain days
@@ -240,7 +242,7 @@ preserve
 						xlabel(0 "0" 360 "Rainfall 1" 720 "720" 1080 "Rainfall 2" ///
 						1440 "1440" 1800 "Rainfall 3" 2160 "2160" 2520 "Rainfall 4" ///
 						2880 "2880" 3240 "Rainfall 5" 3600 "3600" 3960 "Rainfall 6" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v11_sat", replace)
+						4320 "4320", alt) xtitle("") saving("$sfig/v11_sat", replace)
 restore
 
 * Percentage of days with rain
@@ -258,7 +260,7 @@ preserve
 						xlabel(0 "0" 360 "Rainfall 1" 720 "720" 1080 "Rainfall 2" ///
 						1440 "1440" 1800 "Rainfall 3" 2160 "2160" 2520 "Rainfall 4" ///
 						2880 "2880" 3240 "Rainfall 5" 3600 "3600" 3960 "Rainfall 6" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v12_sat", replace)
+						4320 "4320", alt) xtitle("") saving("$sfig/v12_sat", replace)
 restore
 
 * deviation in % rainy days
@@ -276,7 +278,7 @@ preserve
 						xlabel(0 "0" 360 "Rainfall 1" 720 "720" 1080 "Rainfall 2" ///
 						1440 "1440" 1800 "Rainfall 3" 2160 "2160" 2520 "Rainfall 4" ///
 						2880 "2880" 3240 "Rainfall 5" 3600 "3600" 3960 "Rainfall 6" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v13_sat", replace)
+						4320 "4320", alt) xtitle("") saving("$sfig/v13_sat", replace)
 restore
 
 * longest dry spell
@@ -294,32 +296,32 @@ preserve
 						xlabel(0 "0" 360 "Rainfall 1" 720 "720" 1080 "Rainfall 2" ///
 						1440 "1440" 1800 "Rainfall 3" 2160 "2160" 2520 "Rainfall 4" ///
 						2880 "2880" 3240 "Rainfall 5" 3600 "3600" 3960 "Rainfall 6" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v14_sat", replace)
+						4320 "4320", alt) xtitle("") saving("$sfig/v14_sat", replace)
 restore
 
 * combine moments graphs
-	gr combine 		"$xfig/v01_sat.gph" "$xfig/v02_sat.gph" "$xfig/v03_sat.gph" ///
-						"$xfig/v04_sat.gph", col(2) iscale(.5) commonscheme
+	gr combine 		"$sfig/v01_sat.gph" "$sfig/v02_sat.gph" "$sfig/v03_sat.gph" ///
+						"$sfig/v04_sat.gph", col(2) iscale(.5) commonscheme
 						
-	graph export "$xfig\sat_moment_rf.pdf", as(pdf) replace
+	graph export 	"$xfig\sat_moment_rf.png", as(png) replace
 	
 * combine total graphs
-	gr combine 		"$xfig/v05_sat.gph" "$xfig/v06_sat.gph" "$xfig/v07_sat.gph", ///
+	gr combine 		"$sfig/v05_sat.gph" "$sfig/v06_sat.gph" "$sfig/v07_sat.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export "$xfig\sat_total_rf.pdf", as(pdf) replace
+	graph export 	"$xfig\sat_total_rf.png", as(png) replace
 	
 * combine rainy days
-	gr combine 		"$xfig/v08_sat.gph" "$xfig/v09_sat.gph" "$xfig/v12_sat.gph" ///
-						"$xfig/v13_sat.gph", col(2) iscale(.5) commonscheme
+	gr combine 		"$sfig/v08_sat.gph" "$sfig/v09_sat.gph" "$sfig/v12_sat.gph" ///
+						"$sfig/v13_sat.gph", col(2) iscale(.5) commonscheme
 						
-	graph export "$xfig\sat_rain_rf.pdf", as(pdf) replace
+	graph export 	"$xfig\sat_rain_rf.png", as(png) replace
 	
 * combine total graphs
-	gr combine 		"$xfig/v10_sat.gph" "$xfig/v11_sat.gph" "$xfig/v14_sat.gph", ///
+	gr combine 		"$sfig/v10_sat.gph" "$sfig/v11_sat.gph" "$sfig/v14_sat.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export "$xfig\sat_none_rf.pdf", as(pdf) replace
+	graph export 	"$xfig\sat_none_rf.png", as(png) replace
 	
 
 * **********************************************************************
@@ -340,7 +342,7 @@ preserve
 						xline(720 1440) xmtick(360(720)2160)  ///
 						xlabel(0 "0" 360 "Temperature 1" 720 "720" 1080 "Temperature 2" ///
 						1440 "1,440" 1800 "Temperature 3" 2160 "2,160", alt) ///
-						xtitle("") saving("$xfig/v15_sat", replace)
+						xtitle("") saving("$sfig/v15_sat", replace)
 restore
 
 * median daily temperature
@@ -357,7 +359,7 @@ preserve
 						xline(720 1440) xmtick(360(720)2160)  ///
 						xlabel(0 "0" 360 "Temperature 1" 720 "720" 1080 "Temperature 2" ///
 						1440 "1,440" 1800 "Temperature 3" 2160 "2,160", alt) ///
-						xtitle("") saving("$xfig/v16_sat", replace)
+						xtitle("") saving("$sfig/v16_sat", replace)
 restore
 
 * variance of daily temperature
@@ -374,7 +376,7 @@ preserve
 						xline(720 1440) xmtick(360(720)2160)  ///
 						xlabel(0 "0" 360 "Temperature 1" 720 "720" 1080 "Temperature 2" ///
 						1440 "1,440" 1800 "Temperature 3" 2160 "2,160", alt) ///
-						xtitle("") saving("$xfig/v17_sat", replace)
+						xtitle("") saving("$sfig/v17_sat", replace)
 restore
 
 * skew of daily temperature
@@ -391,7 +393,7 @@ preserve
 						xline(720 1440) xmtick(360(720)2160)  ///
 						xlabel(0 "0" 360 "Temperature 1" 720 "720" 1080 "Temperature 2" ///
 						1440 "1,440" 1800 "Temperature 3" 2160 "2,160", alt) ///
-						xtitle("") saving("$xfig/v18_sat", replace)
+						xtitle("") saving("$sfig/v18_sat", replace)
 restore
 
 * growing degree days (gdd)
@@ -408,7 +410,7 @@ preserve
 						xline(720 1440) xmtick(360(720)2160)  ///
 						xlabel(0 "0" 360 "Temperature 1" 720 "720" 1080 "Temperature 2" ///
 						1440 "1,440" 1800 "Temperature 3" 2160 "2,160", alt) ///
-						xtitle("") saving("$xfig/v19_sat", replace)
+						xtitle("") saving("$sfig/v19_sat", replace)
 restore
 
 * deviation in gdd
@@ -425,7 +427,7 @@ preserve
 						xline(720 1440) xmtick(360(720)2160)  ///
 						xlabel(0 "0" 360 "Temperature 1" 720 "720" 1080 "Temperature 2" ///
 						1440 "1,440" 1800 "Temperature 3" 2160 "2,160", alt) ///
-						xtitle("") saving("$xfig/v20_sat", replace)
+						xtitle("") saving("$sfig/v20_sat", replace)
 restore
 
 * z-score of gdd
@@ -442,7 +444,7 @@ preserve
 						xline(720 1440) xmtick(360(720)2160)  ///
 						xlabel(0 "0" 360 "Temperature 1" 720 "720" 1080 "Temperature 2" ///
 						1440 "1,440" 1800 "Temperature 3" 2160 "2,160", alt) ///
-						xtitle("") saving("$xfig/v21_sat", replace)
+						xtitle("") saving("$sfig/v21_sat", replace)
 restore
 
 * max daily temperaturegdd
@@ -459,20 +461,20 @@ preserve
 						xline(720 1440) xmtick(360(720)2160)  ///
 						xlabel(0 "0" 360 "Temperature 1" 720 "720" 1080 "Temperature 2" ///
 						1440 "1,440" 1800 "Temperature 3" 2160 "2,160", alt) ///
-						xtitle("") saving("$xfig/v22_sat", replace)
+						xtitle("") saving("$sfig/v22_sat", replace)
 restore
 
 * combine moments graphs
-	gr combine 		"$xfig/v15_sat.gph" "$xfig/v16_sat.gph" "$xfig/v17_sat.gph" ///
-						"$xfig/v18_sat.gph", col(2) iscale(.5) commonscheme
+	gr combine 		"$sfig/v15_sat.gph" "$sfig/v16_sat.gph" "$sfig/v17_sat.gph" ///
+						"$sfig/v18_sat.gph", col(2) iscale(.5) commonscheme
 						
-	graph export "$xfig\sat_moment_tp.pdf", as(pdf) replace
+	graph export 	"$xfig\sat_moment_tp.png", as(png) replace
 	
 * combine total graphs
-	gr combine 		"$xfig/v19_sat.gph" "$xfig/v20_sat.gph" "$xfig/v21_sat.gph" ///
-						"$xfig/v22_sat.gph", col(2) iscale(.5) commonscheme
+	gr combine 		"$sfig/v19_sat.gph" "$sfig/v20_sat.gph" "$sfig/v21_sat.gph" ///
+						"$sfig/v22_sat.gph", col(2) iscale(.5) commonscheme
 						
-	graph export "$xfig\sat_total_tp.pdf", as(pdf) replace
+	graph export 	"$xfig\sat_total_tp.png", as(png) replace
 	
 	
 * **********************************************************************
@@ -499,7 +501,7 @@ preserve
 						xlabel(0 "0" 360 "Ethiopia" 720 "720" 1080 "Malawi" ///
 						1440 "1,440" 1800 "Niger" 2160 "2,160" 2520 "Nigeria" ///
 						2880 "2,880" 3240 "Tanzania" 3600 "3,600" 3960 "Uganda" ///
-						4320 "4,320", alt) xtitle("") saving("$xfig/v01_cty", replace)
+						4320 "4,320", alt) xtitle("") saving("$sfig/v01_cty", replace)
 restore
 
 * median daily rainfall
@@ -517,7 +519,7 @@ preserve
 						xlabel(0 "0" 360 "Ethiopia" 720 "720" 1080 "Malawi" ///
 						1440 "1440" 1800 "Niger" 2160 "2160" 2520 "Nigeria" ///
 						2880 "2880" 3240 "Tanzania" 3600 "3600" 3960 "Uganda" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v02_cty", replace)
+						4320 "4320", alt) xtitle("") saving("$sfig/v02_cty", replace)
 restore	
 
 * variance of daily rainfall
@@ -535,7 +537,7 @@ preserve
 						xlabel(0 "0" 360 "Ethiopia" 720 "720" 1080 "Malawi" ///
 						1440 "1440" 1800 "Niger" 2160 "2160" 2520 "Nigeria" ///
 						2880 "2880" 3240 "Tanzania" 3600 "3600" 3960 "Uganda" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v03_cty", replace)
+						4320 "4320", alt) xtitle("") saving("$sfig/v03_cty", replace)
 restore
 	
 * skew of daily rainfall
@@ -553,7 +555,7 @@ preserve
 						xlabel(0 "0" 360 "Ethiopia" 720 "720" 1080 "Malawi" ///
 						1440 "1440" 1800 "Niger" 2160 "2160" 2520 "Nigeria" ///
 						2880 "2880" 3240 "Tanzania" 3600 "3600" 3960 "Uganda" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v04_cty", replace)
+						4320 "4320", alt) xtitle("") saving("$sfig/v04_cty", replace)
 restore
 
 * total seasonal rainfall
@@ -571,7 +573,7 @@ preserve
 						xlabel(0 "0" 360 "Ethiopia" 720 "720" 1080 "Malawi" ///
 						1440 "1440" 1800 "Niger" 2160 "2160" 2520 "Nigeria" ///
 						2880 "2880" 3240 "Tanzania" 3600 "3600" 3960 "Uganda" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v05_cty", replace)
+						4320 "4320", alt) xtitle("") saving("$sfig/v05_cty", replace)
 restore
 
 * deviation in total rainfall
@@ -589,7 +591,7 @@ preserve
 						xlabel(0 "0" 360 "Ethiopia" 720 "720" 1080 "Malawi" ///
 						1440 "1440" 1800 "Niger" 2160 "2160" 2520 "Nigeria" ///
 						2880 "2880" 3240 "Tanzania" 3600 "3600" 3960 "Uganda" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v06_cty", replace)
+						4320 "4320", alt) xtitle("") saving("$sfig/v06_cty", replace)
 restore
 
 * z-score of total rainfall
@@ -607,7 +609,7 @@ preserve
 						xlabel(0 "0" 360 "Ethiopia" 720 "720" 1080 "Malawi" ///
 						1440 "1440" 1800 "Niger" 2160 "2160" 2520 "Nigeria" ///
 						2880 "2880" 3240 "Tanzania" 3600 "3600" 3960 "Uganda" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v07_cty", replace)
+						4320 "4320", alt) xtitle("") saving("$sfig/v07_cty", replace)
 restore
 
 * number of days with rain
@@ -625,7 +627,7 @@ preserve
 						xlabel(0 "0" 360 "Ethiopia" 720 "720" 1080 "Malawi" ///
 						1440 "1440" 1800 "Niger" 2160 "2160" 2520 "Nigeria" ///
 						2880 "2880" 3240 "Tanzania" 3600 "3600" 3960 "Uganda" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v08_cty", replace)
+						4320 "4320", alt) xtitle("") saving("$sfig/v08_cty", replace)
 restore
 
 * deviation in rainy days
@@ -643,7 +645,7 @@ preserve
 						xlabel(0 "0" 360 "Ethiopia" 720 "720" 1080 "Malawi" ///
 						1440 "1440" 1800 "Niger" 2160 "2160" 2520 "Nigeria" ///
 						2880 "2880" 3240 "Tanzania" 3600 "3600" 3960 "Uganda" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v09_cty", replace)
+						4320 "4320", alt) xtitle("") saving("$sfig/v09_cty", replace)
 restore
 
 * number of days without rain
@@ -661,7 +663,7 @@ preserve
 						xlabel(0 "0" 360 "Ethiopia" 720 "720" 1080 "Malawi" ///
 						1440 "1440" 1800 "Niger" 2160 "2160" 2520 "Nigeria" ///
 						2880 "2880" 3240 "Tanzania" 3600 "3600" 3960 "Uganda" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v10_cty", replace)
+						4320 "4320", alt) xtitle("") saving("$sfig/v10_cty", replace)
 restore
 
 * deviation in no rain days
@@ -679,7 +681,7 @@ preserve
 						xlabel(0 "0" 360 "Ethiopia" 720 "720" 1080 "Malawi" ///
 						1440 "1440" 1800 "Niger" 2160 "2160" 2520 "Nigeria" ///
 						2880 "2880" 3240 "Tanzania" 3600 "3600" 3960 "Uganda" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v11_cty", replace)
+						4320 "4320", alt) xtitle("") saving("$sfig/v11_cty", replace)
 restore
 
 * Percentage of days with rain
@@ -697,7 +699,7 @@ preserve
 						xlabel(0 "0" 360 "Ethiopia" 720 "720" 1080 "Malawi" ///
 						1440 "1440" 1800 "Niger" 2160 "2160" 2520 "Nigeria" ///
 						2880 "2880" 3240 "Tanzania" 3600 "3600" 3960 "Uganda" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v12_cty", replace)
+						4320 "4320", alt) xtitle("") saving("$sfig/v12_cty", replace)
 restore
 
 * deviation in % rainy days
@@ -715,7 +717,7 @@ preserve
 						xlabel(0 "0" 360 "Ethiopia" 720 "720" 1080 "Malawi" ///
 						1440 "1440" 1800 "Niger" 2160 "2160" 2520 "Nigeria" ///
 						2880 "2880" 3240 "Tanzania" 3600 "3600" 3960 "Uganda" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v13_cty", replace)
+						4320 "4320", alt) xtitle("") saving("$sfig/v13_cty", replace)
 restore
 
 * longest dry spell
@@ -733,32 +735,32 @@ preserve
 						xlabel(0 "0" 360 "Ethiopia" 720 "720" 1080 "Malawi" ///
 						1440 "1440" 1800 "Niger" 2160 "2160" 2520 "Nigeria" ///
 						2880 "2880" 3240 "Tanzania" 3600 "3600" 3960 "Uganda" ///
-						4320 "4320", alt) xtitle("") saving("$xfig/v14_cty", replace)
+						4320 "4320", alt) xtitle("") saving("$sfig/v14_cty", replace)
 restore
 
 * combine moments graphs
-	gr combine 		"$xfig/v01_cty.gph" "$xfig/v02_cty.gph" "$xfig/v03_cty.gph" ///
-						"$xfig/v04_cty.gph", col(2) iscale(.5) commonscheme
+	gr combine 		"$sfig/v01_cty.gph" "$sfig/v02_cty.gph" "$sfig/v03_cty.gph" ///
+						"$sfig/v04_cty.gph", col(2) iscale(.5) commonscheme
 						
-	graph export "$xfig\cty_moment_rf.pdf", as(pdf) replace
+	graph export 	"$xfig\cty_moment_rf.png", as(png) replace
 	
 * combine total graphs
-	gr combine 		"$xfig/v05_cty.gph" "$xfig/v06_cty.gph" "$xfig/v07_cty.gph", ///
+	gr combine 		"$sfig/v05_cty.gph" "$sfig/v06_cty.gph" "$sfig/v07_cty.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export "$xfig\cty_total_rf.pdf", as(pdf) replace
+	graph export 	"$xfig\cty_total_rf.png", as(png) replace
 	
 * combine rainy days
-	gr combine 		"$xfig/v08_cty.gph" "$xfig/v09_cty.gph" "$xfig/v12_cty.gph" ///
-						"$xfig/v13_cty.gph", col(2) iscale(.5) commonscheme
+	gr combine 		"$sfig/v08_cty.gph" "$sfig/v09_cty.gph" "$sfig/v12_cty.gph" ///
+						"$sfig/v13_cty.gph", col(2) iscale(.5) commonscheme
 						
-	graph export "$xfig\cty_rain_rf.pdf", as(pdf) replace
+	graph export 	"$xfig\cty_rain_rf.png", as(png) replace
 	
 * combine total graphs
-	gr combine 		"$xfig/v10_cty.gph" "$xfig/v11_cty.gph" "$xfig/v14_cty.gph", ///
+	gr combine 		"$sfig/v10_cty.gph" "$sfig/v11_cty.gph" "$sfig/v14_cty.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export "$xfig\cty_none_rf.pdf", as(pdf) replace
+	graph export 	"$xfig\cty_none_rf.png", as(png) replace
 	
 
 * **********************************************************************
@@ -780,7 +782,7 @@ preserve
 						xlabel(0 "0" 180 "Ethiopia" 360 "360" 540 "Malawi" ///
 						720 "720" 900 "Niger" 1080 "1080" 1260 "Nigeria" ///
 						1440 "1440" 1620 "Tanzania" 1800 "1800" 1980 "Uganda" ///
-						2160 "2160", alt) xtitle("") saving("$xfig/var15_cty", replace)
+						2160 "2160", alt) xtitle("") saving("$sfig/var15_cty", replace)
 restore
 
 * median daily temperature
@@ -798,7 +800,7 @@ preserve
 						xlabel(0 "0" 180 "Ethiopia" 360 "360" 540 "Malawi" ///
 						720 "720" 900 "Niger" 1080 "1080" 1260 "Nigeria" ///
 						1440 "1440" 1620 "Tanzania" 1800 "1800" 1980 "Uganda" ///
-						2160 "2160", alt) xtitle("") saving("$xfig/var16_cty", replace)
+						2160 "2160", alt) xtitle("") saving("$sfig/var16_cty", replace)
 restore
 
 * variance of daily temperature
@@ -816,7 +818,7 @@ preserve
 						xlabel(0 "0" 180 "Ethiopia" 360 "360" 540 "Malawi" ///
 						720 "720" 900 "Niger" 1080 "1080" 1260 "Nigeria" ///
 						1440 "1440" 1620 "Tanzania" 1800 "1800" 1980 "Uganda" ///
-						2160 "2160", alt) xtitle("") saving("$xfig/var17_cty", replace)
+						2160 "2160", alt) xtitle("") saving("$sfig/var17_cty", replace)
 restore
 
 * skew of daily temperature
@@ -834,7 +836,7 @@ preserve
 						xlabel(0 "0" 180 "Ethiopia" 360 "360" 540 "Malawi" ///
 						720 "720" 900 "Niger" 1080 "1080" 1260 "Nigeria" ///
 						1440 "1440" 1620 "Tanzania" 1800 "1800" 1980 "Uganda" ///
-						2160 "2160", alt) xtitle("") saving("$xfig/var18_cty", replace)
+						2160 "2160", alt) xtitle("") saving("$sfig/var18_cty", replace)
 restore
 
 * growing degree days (gdd)
@@ -852,7 +854,7 @@ preserve
 						xlabel(0 "0" 180 "Ethiopia" 360 "360" 540 "Malawi" ///
 						720 "720" 900 "Niger" 1080 "1080" 1260 "Nigeria" ///
 						1440 "1440" 1620 "Tanzania" 1800 "1800" 1980 "Uganda" ///
-						2160 "2160", alt) xtitle("") saving("$xfig/var19_cty", replace)
+						2160 "2160", alt) xtitle("") saving("$sfig/var19_cty", replace)
 restore
 
 * deviation in gdd
@@ -870,7 +872,7 @@ preserve
 						xlabel(0 "0" 180 "Ethiopia" 360 "360" 540 "Malawi" ///
 						720 "720" 900 "Niger" 1080 "1080" 1260 "Nigeria" ///
 						1440 "1440" 1620 "Tanzania" 1800 "1800" 1980 "Uganda" ///
-						2160 "2160", alt) xtitle("") saving("$xfig/var20_cty", replace)
+						2160 "2160", alt) xtitle("") saving("$sfig/var20_cty", replace)
 restore
 
 * z-score of gdd
@@ -888,7 +890,7 @@ preserve
 						xlabel(0 "0" 180 "Ethiopia" 360 "360" 540 "Malawi" ///
 						720 "720" 900 "Niger" 1080 "1080" 1260 "Nigeria" ///
 						1440 "1440" 1620 "Tanzania" 1800 "1800" 1980 "Uganda" ///
-						2160 "2160", alt) xtitle("") saving("$xfig/var21_cty", replace)
+						2160 "2160", alt) xtitle("") saving("$sfig/var21_cty", replace)
 restore
 
 * max daily temperaturegdd
@@ -906,20 +908,20 @@ preserve
 						xlabel(0 "0" 180 "Ethiopia" 360 "360" 540 "Malawi" ///
 						720 "720" 900 "Niger" 1080 "1080" 1260 "Nigeria" ///
 						1440 "1440" 1620 "Tanzania" 1800 "1800" 1980 "Uganda" ///
-						2160 "2160", alt) xtitle("") saving("$xfig/var22_cty", replace)
+						2160 "2160", alt) xtitle("") saving("$sfig/var22_cty", replace)
 restore
 
 * combine moments graphs
-	gr combine 		"$xfig/var15_cty.gph" "$xfig/var16_cty.gph" "$xfig/var17_cty.gph" ///
-						"$xfig/var18_cty.gph", col(2) iscale(.5) commonscheme
+	gr combine 		"$sfig/var15_cty.gph" "$sfig/var16_cty.gph" "$sfig/var17_cty.gph" ///
+						"$sfig/var18_cty.gph", col(2) iscale(.5) commonscheme
 						
-	graph export "$xfig\cty_moment_tp.pdf", as(pdf) replace
+	graph export 	"$xfig\cty_moment_tp.png", as(png) replace
 	
 * combine total graphs
-	gr combine 		"$xfig/var19_cty.gph" "$xfig/var20_cty.gph" "$xfig/var21_cty.gph" ///
-						"$xfig/var22_cty.gph", col(2) iscale(.5) commonscheme
+	gr combine 		"$sfig/var19_cty.gph" "$sfig/var20_cty.gph" "$sfig/var21_cty.gph" ///
+						"$sfig/var22_cty.gph", col(2) iscale(.5) commonscheme
 						
-	graph export "$xfig\cty_total_tp.pdf", as(pdf) replace
+	graph export 	"$xfig\cty_total_tp.png", as(png) replace
 	
 
 * **********************************************************************
@@ -949,7 +951,7 @@ preserve
 						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
 						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
 						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
-						xtitle("") saving("$xfig/v01_ext", replace)
+						xtitle("") saving("$sfig/v01_ext", replace)
 restore
 
 * median daily rainfall
@@ -970,7 +972,7 @@ preserve
 						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
 						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
 						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
-						xtitle("") saving("$xfig/v02_ext", replace)
+						xtitle("") saving("$sfig/v02_ext", replace)
 restore	
 
 * variance of daily rainfall
@@ -991,7 +993,7 @@ preserve
 						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
 						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
 						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
-						xtitle("") saving("$xfig/v03_ext", replace)
+						xtitle("") saving("$sfig/v03_ext", replace)
 restore
 	
 * skew of daily rainfall
@@ -1012,7 +1014,7 @@ preserve
 						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
 						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
 						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
-						xtitle("") saving("$xfig/v04_ext", replace)
+						xtitle("") saving("$sfig/v04_ext", replace)
 restore
 
 * total seasonal rainfall
@@ -1033,7 +1035,7 @@ preserve
 						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
 						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
 						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
-						xtitle("") saving("$xfig/v05_ext", replace)
+						xtitle("") saving("$sfig/v05_ext", replace)
 restore
 
 * deviation in total rainfall
@@ -1054,7 +1056,7 @@ preserve
 						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
 						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
 						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
-						xtitle("") saving("$xfig/v06_ext", replace)
+						xtitle("") saving("$sfig/v06_ext", replace)
 restore
 
 * z-score of total rainfall
@@ -1075,7 +1077,7 @@ preserve
 						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
 						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
 						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
-						xtitle("") saving("$xfig/v07_ext", replace)
+						xtitle("") saving("$sfig/v07_ext", replace)
 restore
 
 * number of days with rain
@@ -1096,7 +1098,7 @@ preserve
 						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
 						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
 						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
-						xtitle("") saving("$xfig/v08_ext", replace)
+						xtitle("") saving("$sfig/v08_ext", replace)
 restore
 
 * deviation in rainy days
@@ -1117,7 +1119,7 @@ preserve
 						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
 						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
 						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
-						xtitle("") saving("$xfig/v09_ext", replace)
+						xtitle("") saving("$sfig/v09_ext", replace)
 restore
 
 * number of days without rain
@@ -1138,7 +1140,7 @@ preserve
 						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
 						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
 						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
-						xtitle("") saving("$xfig/v10_ext", replace)
+						xtitle("") saving("$sfig/v10_ext", replace)
 restore
 
 * deviation in no rain days
@@ -1159,7 +1161,7 @@ preserve
 						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
 						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
 						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
-						xtitle("") saving("$xfig/v11_ext", replace)
+						xtitle("") saving("$sfig/v11_ext", replace)
 restore
 
 * Percentage of days with rain
@@ -1180,7 +1182,7 @@ preserve
 						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
 						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
 						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
-						xtitle("") saving("$xfig/v12_ext", replace)
+						xtitle("") saving("$sfig/v12_ext", replace)
 restore
 
 * deviation in % rainy days
@@ -1201,7 +1203,7 @@ preserve
 						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
 						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
 						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
-						xtitle("") saving("$xfig/v13_ext", replace)
+						xtitle("") saving("$sfig/v13_ext", replace)
 restore
 
 * longest dry spell
@@ -1222,32 +1224,32 @@ preserve
 						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
 						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
 						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
-						xtitle("") saving("$xfig/v14_ext", replace)
+						xtitle("") saving("$sfig/v14_ext", replace)
 restore
 
 * combine moments graphs
-	gr combine 		"$xfig/v01_ext.gph" "$xfig/v02_ext.gph" "$xfig/v03_ext.gph" ///
-						"$xfig/v04_ext.gph", col(2) iscale(.5) commonscheme
+	gr combine 		"$sfig/v01_ext.gph" "$sfig/v02_ext.gph" "$sfig/v03_ext.gph" ///
+						"$sfig/v04_ext.gph", col(2) iscale(.5) commonscheme
 						
-	graph export "$xfig\ext_moment_rf.pdf", as(pdf) replace
+	graph export 	"$xfig\ext_moment_rf.png", as(png) replace
 	
 * combine total graphs
-	gr combine 		"$xfig/v05_ext.gph" "$xfig/v06_ext.gph" "$xfig/v07_ext.gph", ///
+	gr combine 		"$sfig/v05_ext.gph" "$sfig/v06_ext.gph" "$sfig/v07_ext.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export "$xfig\ext_total_rf.pdf", as(pdf) replace
+	graph export 	"$xfig\ext_total_rf.png", as(png) replace
 	
 * combine rainy days
-	gr combine 		"$xfig/v08_ext.gph" "$xfig/v09_ext.gph" "$xfig/v12_ext.gph" ///
-						"$xfig/v13_ext.gph", col(2) iscale(.5) commonscheme
+	gr combine 		"$sfig/v08_ext.gph" "$sfig/v09_ext.gph" "$sfig/v12_ext.gph" ///
+						"$sfig/v13_ext.gph", col(2) iscale(.5) commonscheme
 						
-	graph export "$xfig\ext_rain_rf.pdf", as(pdf) replace
+	graph export 	"$xfig\ext_rain_rf.png", as(png) replace
 	
 * combine total graphs
-	gr combine 		"$xfig/v10_ext.gph" "$xfig/v11_ext.gph" "$xfig/v14_ext.gph", ///
+	gr combine 		"$sfig/v10_ext.gph" "$sfig/v11_ext.gph" "$sfig/v14_ext.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export "$xfig\ext_none_rf.pdf", as(pdf) replace
+	graph export 	"$xfig/ext_none_rf.png", as(png) replace
 	
 
 * **********************************************************************
@@ -1272,7 +1274,7 @@ preserve
 						1080 "1,080" 1188 "Ext 6" 1296 "1,296" 1404 "Ext 7" ///
 						1512 "1,512" 1620 "Ext 8" 1728 "1,728" 1836 "Ext 9" ///
 						1944 "1,944" 2052 "Ext 10" 2160 "2,160", alt) ///
-						xtitle("") saving("$xfig/var15_ext", replace)
+						xtitle("") saving("$sfig/var15_ext", replace)
 restore
 
 * median daily temperature
@@ -1293,7 +1295,7 @@ preserve
 						1080 "1,080" 1188 "Ext 6" 1296 "1,296" 1404 "Ext 7" ///
 						1512 "1,512" 1620 "Ext 8" 1728 "1,728" 1836 "Ext 9" ///
 						1944 "1,944" 2052 "Ext 10" 2160 "2,160", alt) ///
-						xtitle("") saving("$xfig/var16_ext", replace)
+						xtitle("") saving("$sfig/var16_ext", replace)
 restore
 
 * variance of daily temperature
@@ -1314,7 +1316,7 @@ preserve
 						1080 "1,080" 1188 "Ext 6" 1296 "1,296" 1404 "Ext 7" ///
 						1512 "1,512" 1620 "Ext 8" 1728 "1,728" 1836 "Ext 9" ///
 						1944 "1,944" 2052 "Ext 10" 2160 "2,160", alt) ///
-						xtitle("") saving("$xfig/var17_ext", replace)
+						xtitle("") saving("$sfig/var17_ext", replace)
 restore
 
 * skew of daily temperature
@@ -1335,7 +1337,7 @@ preserve
 						1080 "1,080" 1188 "Ext 6" 1296 "1,296" 1404 "Ext 7" ///
 						1512 "1,512" 1620 "Ext 8" 1728 "1,728" 1836 "Ext 9" ///
 						1944 "1,944" 2052 "Ext 10" 2160 "2,160", alt) ///
-						xtitle("") saving("$xfig/var18_ext", replace)
+						xtitle("") saving("$sfig/var18_ext", replace)
 restore
 
 * growing degree days (gdd)
@@ -1356,7 +1358,7 @@ preserve
 						1080 "1,080" 1188 "Ext 6" 1296 "1,296" 1404 "Ext 7" ///
 						1512 "1,512" 1620 "Ext 8" 1728 "1,728" 1836 "Ext 9" ///
 						1944 "1,944" 2052 "Ext 10" 2160 "2,160", alt) ///
-						xtitle("") saving("$xfig/var19_ext", replace)
+						xtitle("") saving("$sfig/var19_ext", replace)
 restore
 
 * deviation in gdd
@@ -1377,7 +1379,7 @@ preserve
 						1080 "1,080" 1188 "Ext 6" 1296 "1,296" 1404 "Ext 7" ///
 						1512 "1,512" 1620 "Ext 8" 1728 "1,728" 1836 "Ext 9" ///
 						1944 "1,944" 2052 "Ext 10" 2160 "2,160", alt) ///
-						xtitle("") saving("$xfig/var20_ext", replace)
+						xtitle("") saving("$sfig/var20_ext", replace)
 restore
 
 * z-score of gdd
@@ -1398,7 +1400,7 @@ preserve
 						1080 "1,080" 1188 "Ext 6" 1296 "1,296" 1404 "Ext 7" ///
 						1512 "1,512" 1620 "Ext 8" 1728 "1,728" 1836 "Ext 9" ///
 						1944 "1,944" 2052 "Ext 10" 2160 "2,160", alt) ///
-						xtitle("") saving("$xfig/var21_ext", replace)
+						xtitle("") saving("$sfig/var21_ext", replace)
 restore
 
 * max daily temperaturegdd
@@ -1419,20 +1421,20 @@ preserve
 						1080 "1,080" 1188 "Ext 6" 1296 "1,296" 1404 "Ext 7" ///
 						1512 "1,512" 1620 "Ext 8" 1728 "1,728" 1836 "Ext 9" ///
 						1944 "1,944" 2052 "Ext 10" 2160 "2,160", alt) ///
-						xtitle("") saving("$xfig/var22_ext", replace)
+						xtitle("") saving("$sfig/var22_ext", replace)
 restore
 
 * combine moments graphs
-	gr combine 		"$xfig/var15_ext.gph" "$xfig/var16_ext.gph" "$xfig/var17_ext.gph" ///
-						"$xfig/var18_ext.gph", col(2) iscale(.5) commonscheme
+	gr combine 		"$sfig/var15_ext.gph" "$sfig/var16_ext.gph" "$sfig/var17_ext.gph" ///
+						"$sfig/var18_ext.gph", col(2) iscale(.5) commonscheme
 						
-	graph export "$xfig\ext_moment_tp.pdf", as(pdf) replace
+	graph export 	"$xfig\ext_moment_tp.png", as(png) replace
 	
 * combine total graphs
-	gr combine 		"$xfig/var19_ext.gph" "$xfig/var20_ext.gph" "$xfig/var21_ext.gph" ///
-						"$xfig/var22_ext.gph", col(2) iscale(.5) commonscheme
+	gr combine 		"$sfig/var19_ext.gph" "$sfig/var20_ext.gph" "$sfig/var21_ext.gph" ///
+						"$sfig/var22_ext.gph", col(2) iscale(.5) commonscheme
 						
-	graph export "$xfig\ext_total_tp.pdf", as(pdf) replace
+	graph export 	"$xfig/ext_total_tp.png", as(png) replace
 	
 	
 * **********************************************************************

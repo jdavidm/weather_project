@@ -6,7 +6,7 @@
 * Stata v.16.1 
 
 * does
-	* reads in results data set
+	* reads in results data set for linear combos
 	* makes visualziations of results 
 
 * assumes
@@ -15,7 +15,7 @@
 	* grc1leg2.ado
 
 * TO DO:
-	* all of it
+	* complete
 
 	
 * **********************************************************************
@@ -30,7 +30,7 @@
 
 * open log	
 	cap log close
-	log 	using 		"$logout/resultsvis", append
+	log 	using 		"$logout/resultsvis_lc", append
 
 * load data 
 	use 			"$root/lsms_complete_results_lc", clear
@@ -56,7 +56,7 @@ preserve
 						xlabel(0 "0" 1080 "Ethiopia" 2160 "2,160" 3240 "Malawi" ///
 						4320 "4,320" 5400 "Niger" 6480 "6,480" 7560 "Nigeria" ///
 						8640 "8,640" 9720 "Tanzania" 10800 "10,800" 11880 "Uganda" ///
-						12960 "12,960", alt) xtitle("") saving("$xfig/v01_v15_cty", replace)
+						12960 "12,960", alt) xtitle("") saving("$sfig/v01_v15_cty", replace)
 
 	drop			obs
 	sort 			var_rain country beta_temp
@@ -72,14 +72,14 @@ preserve
 						xlabel(0 "0" 1080 "Ethiopia" 2160 "2,160" 3240 "Malawi" ///
 						4320 "4,320" 5400 "Niger" 6480 "6,480" 7560 "Nigeria" ///
 						8640 "8,640" 9720 "Tanzania" 10800 "10,800" 11880 "Uganda" ///
-						12960 "12,960", alt) xtitle("") saving("$xfig/v15_v01_cty", replace)
+						12960 "12,960", alt) xtitle("") saving("$sfig/v15_v01_cty", replace)
 restore
 
 * combine mean graphs
-	gr combine 		"$xfig/v01_v15_cty.gph" "$xfig/v15_v01_cty.gph", ///
+	gr combine 		"$sfig/v01_v15_cty.gph" "$sfig/v15_v01_cty.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export "$xfig\v01_v15_cty.png", as(png) replace
+	graph export 	"$xfig\v01_v15_cty.png", as(png) replace
 	
 
 * combine median rainfall and temperature
@@ -98,7 +98,7 @@ preserve
 						xlabel(0 "0" 540 "Ethiopia" 1080 "1,080" 1620 "Malawi" ///
 						2160 "2,160" 2700 "Niger" 3240 "3,240" 3780 "Nigeria" ///
 						4320 "4,320" 4860 "Tanzania" 5400 "5,400" 5940 "Uganda" ///
-						6480 "6,480", alt) xtitle("") saving("$xfig/v02_v16_cty", replace)
+						6480 "6,480", alt) xtitle("") saving("$sfig/v02_v16_cty", replace)
 
 	drop			obs
 	sort 			var_rain country beta_temp
@@ -114,14 +114,14 @@ preserve
 						xlabel(0 "0" 540 "Ethiopia" 1080 "1,080" 1620 "Malawi" ///
 						2160 "2,160" 2700 "Niger" 3240 "3,240" 3780 "Nigeria" ///
 						4320 "4,320" 4860 "Tanzania" 5400 "5,400" 5940 "Uganda" ///
-						6480 "6,480", alt) xtitle("") saving("$xfig/v16_v02_cty", replace)		
+						6480 "6,480", alt) xtitle("") saving("$sfig/v16_v02_cty", replace)		
 restore	
 
 * combine median graphs
-	gr combine 		"$xfig/v02_v16_cty.gph" "$xfig/v16_v02_cty.gph", ///
+	gr combine 		"$sfig/v02_v16_cty.gph" "$sfig/v16_v02_cty.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export "$xfig\v02_v16_cty.png", as(png) replace
+	graph export 	"$xfig\v02_v16_cty.png", as(png) replace
 	
 	
 * combine total rainfall  and GDD
@@ -140,7 +140,7 @@ preserve
 						xlabel(0 "0" 1080 "Ethiopia" 2160 "2,160" 3240 "Malawi" ///
 						4320 "4,320" 5400 "Niger" 6480 "6,480" 7560 "Nigeria" ///
 						8640 "8,640" 9720 "Tanzania" 10800 "10,800" 11880 "Uganda" ///
-						12960 "12,960", alt) xtitle("") saving("$xfig/v05_v19_cty", replace)
+						12960 "12,960", alt) xtitle("") saving("$sfig/v05_v19_cty", replace)
 
 	drop			obs
 	sort 			var_rain country beta_temp
@@ -156,14 +156,14 @@ preserve
 						xlabel(0 "0" 1080 "Ethiopia" 2160 "2,160" 3240 "Malawi" ///
 						4320 "4,320" 5400 "Niger" 6480 "6,480" 7560 "Nigeria" ///
 						8640 "8,640" 9720 "Tanzania" 10800 "10,800" 11880 "Uganda" ///
-						12960 "12,960", alt) xtitle("") saving("$xfig/v19_v05_cty", replace)		
+						12960 "12,960", alt) xtitle("") saving("$sfig/v19_v05_cty", replace)		
 restore	
 
 * combine totals graphs
-	gr combine 		"$xfig/v05_v19_cty.gph" "$xfig/v19_v05_cty.gph", ///
+	gr combine 		"$sfig/v05_v19_cty.gph" "$sfig/v19_v05_cty.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export "$xfig\v05_v19_cty.png", as(png) replace
+	graph export 	"$xfig\v05_v19_cty.png", as(png) replace
 	
 
 * combine z-score rainfall and temperature
@@ -182,7 +182,7 @@ preserve
 						xlabel(0 "0" 540 "Ethiopia" 1080 "1,080" 1620 "Malawi" ///
 						2160 "2,160" 2700 "Niger" 3240 "3,240" 3780 "Nigeria" ///
 						4320 "4,320" 4860 "Tanzania" 5400 "5,400" 5940 "Uganda" ///
-						6480 "6,480", alt) xtitle("") saving("$xfig/v07_v21_cty", replace)
+						6480 "6,480", alt) xtitle("") saving("$sfig/v07_v21_cty", replace)
 
 	drop			obs
 	sort 			var_rain country beta_temp
@@ -198,22 +198,18 @@ preserve
 						xlabel(0 "0" 540 "Ethiopia" 1080 "1,080" 1620 "Malawi" ///
 						2160 "2,160" 2700 "Niger" 3240 "3,240" 3780 "Nigeria" ///
 						4320 "4,320" 4860 "Tanzania" 5400 "5,400" 5940 "Uganda" ///
-						6480 "6,480", alt) xtitle("") saving("$xfig/v21_v07_cty", replace)		
+						6480 "6,480", alt) xtitle("") saving("$sfig/v21_v07_cty", replace)		
 restore	
 
 * combine median graphs
-	gr combine 		"$xfig/v07_v21_cty.gph" "$xfig/v21_v07_cty.gph", ///
+	gr combine 		"$sfig/v07_v21_cty.gph" "$sfig/v21_v07_cty.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export "$xfig\v07_v21_cty.png", as(png) replace
+	graph export 	"$xfig\v07_v21_cty.png", as(png) replace
 	
-	
-* **********************************************************************
-* 2 - generate serrbar graphs of 4 weather vars by country
-* **********************************************************************
 		
 * **********************************************************************
-* 4 - end matter
+* 2 - end matter
 * **********************************************************************
 
 
