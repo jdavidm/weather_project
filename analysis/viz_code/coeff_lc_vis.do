@@ -24,8 +24,10 @@
 
 * define paths
 	global	root 	= 	"$data/results_data"
-	global	xtab 	= 	"$data/results_data/tables"
-	global 	xfig    =   "$data/results_data/figures"
+	global	stab 	= 	"$data/results_data/tables"
+	global	xtab 	= 	"$data/output/paper/tables"
+	global	sfig	= 	"$data/results_data/figures"	
+	global 	xfig    =   "$data/output/paper/figures"
 	global	logout 	= 	"$data/results_data/logs"
 
 * open log	

@@ -24,8 +24,10 @@
 
 * define paths
 	global	root 	= 	"$data/results_data"
-	global	xtab 	= 	"$data/results_data/tables"
-	global 	xfig    =   "$data/results_data/figures"
+	global	stab 	= 	"$data/results_data/tables"
+	global	xtab 	= 	"$data/output/paper/tables"
+	global	sfig	= 	"$data/results_data/figures"	
+	global 	xfig    =   "$data/output/paper/figures"
 	global	logout 	= 	"$data/results_data/logs"
 
 * open log	
@@ -37,49 +39,83 @@
 
 	
 * **********************************************************************
-* 1 - generate serrbar graphs of 2 weather vars by country
+* 1 - generate serrbar graphs of 4 weather vars by country
 * **********************************************************************
 
-* combine mean rainfall and temperature
+* combine mean and var rainfall and temperature
 preserve
-	keep			if var_rain == 1
-	sort 			var_rain country beta_rain
+	keep			if varrs == .
+	
+* mean daily rainfall
+	sort 			varrm country betarm
 	gen 			obs = _n	
 
-* mean daily rainfall
-	serrbar 		beta_rain se_rain obs, lcolor(edkblue%10) ///
+	serrbar 		betarm serm obs, lcolor(edkblue%10) ///
 						mvopts(recast(scatter) mcolor(edkblue%5) ///
 						mfcolor(edkblue%5) mlcolor(edkblue%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) )  ///
 						ytitle("Coefficient") title("Mean Daily Rainfall") ///
-						xline(2160 4320 6480 8640 10800) xmtick(1080(2160)11880)  ///
-						xlabel(0 "0" 1080 "Ethiopia" 2160 "2,160" 3240 "Malawi" ///
-						4320 "4,320" 5400 "Niger" 6480 "6,480" 7560 "Nigeria" ///
-						8640 "8,640" 9720 "Tanzania" 10800 "10,800" 11880 "Uganda" ///
-						12960 "12,960", alt) xtitle("") saving("$xfig/v01_v15_cty", replace)
+						xline(1080 2160 3240 4320 5400) xmtick(540(1080)5940)  ///
+						xlabel(0 "0" 540 "Ethiopia" 1080 "1,080" 1620 "Malawi" ///
+						2160 "2,160" 2700 "Niger" 3240 "3,240" 3780 "Nigeria" ///
+						4320 "4,320" 4860 "Tanzania" 5400 "5,400" 5940 "Uganda" ///
+						6480 "6,480", alt) xtitle("") saving("$sfig/v01_v03_v15_v17_cty", replace)
 
+* variance daily rainfall
 	drop			obs
-	sort 			var_rain country beta_temp
+	sort 			varrv country betarv
 	gen 			obs = _n	
 
+	serrbar 		betarv serv obs, lcolor(eltblue%10) ///
+						mvopts(recast(scatter) mcolor(eltblue%5) ///
+						mfcolor(eltblue%5) mlcolor(eltblue%5)) ///
+						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) )  ///
+						ytitle("Coefficient") title("Variance of Daily Rainfall") ///
+						xline(1080 2160 3240 4320 5400) xmtick(540(1080)5940)  ///
+						xlabel(0 "0" 540 "Ethiopia" 1080 "1,080" 1620 "Malawi" ///
+						2160 "2,160" 2700 "Niger" 3240 "3,240" 3780 "Nigeria" ///
+						4320 "4,320" 4860 "Tanzania" 5400 "5,400" 5940 "Uganda" ///
+						6480 "6,480", alt) xtitle("") saving("$sfig/v03_v01_v15_v17_cty", replace)						
+											
 * mean daily temperature	
-	serrbar 		beta_temp se_temp obs, lcolor(edkblue%10) ///
+	drop			obs
+	sort 			vartm country betatm
+	gen 			obs = _n	
+
+	serrbar 		betatm setm obs, lcolor(edkblue%10) ///
 						mvopts(recast(scatter) mcolor(edkblue%5) ///
 						mfcolor(edkblue%5) mlcolor(edkblue%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) )  ///
 						ytitle("Coefficient") title("Mean Daily Temperature") ///
-						xline(2160 4320 6480 8640 10800) xmtick(1080(2160)11880)  ///
-						xlabel(0 "0" 1080 "Ethiopia" 2160 "2,160" 3240 "Malawi" ///
-						4320 "4,320" 5400 "Niger" 6480 "6,480" 7560 "Nigeria" ///
-						8640 "8,640" 9720 "Tanzania" 10800 "10,800" 11880 "Uganda" ///
-						12960 "12,960", alt) xtitle("") saving("$xfig/v15_v01_cty", replace)
+						xline(1080 2160 3240 4320 5400) xmtick(540(1080)5940)  ///
+						xlabel(0 "0" 540 "Ethiopia" 1080 "1,080" 1620 "Malawi" ///
+						2160 "2,160" 2700 "Niger" 3240 "3,240" 3780 "Nigeria" ///
+						4320 "4,320" 4860 "Tanzania" 5400 "5,400" 5940 "Uganda" ///
+						6480 "6,480", alt) xtitle("") saving("$sfig/v15_v17_v01_v03_cty", replace)
+
+* variance daily rainfall
+	drop			obs
+	sort 			vartv country betatv
+	gen 			obs = _n	
+
+	serrbar 		betatv setv obs, lcolor(eltblue%10) ///
+						mvopts(recast(scatter) mcolor(eltblue%5) ///
+						mfcolor(eltblue%5) mlcolor(eltblue%5)) ///
+						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) )  ///
+						ytitle("Coefficient") title("Variance of Daily Temperature") ///
+						xline(1080 2160 3240 4320 5400) xmtick(540(1080)5940)  ///
+						xlabel(0 "0" 540 "Ethiopia" 1080 "1,080" 1620 "Malawi" ///
+						2160 "2,160" 2700 "Niger" 3240 "3,240" 3780 "Nigeria" ///
+						4320 "4,320" 4860 "Tanzania" 5400 "5,400" 5940 "Uganda" ///
+						6480 "6,480", alt) xtitle("") saving("$sfig/v17_v15_v01_v03_cty", replace)						
 restore
 
 * combine mean graphs
-	gr combine 		"$xfig/v01_v15_cty.gph" "$xfig/v15_v01_cty.gph", ///
+	gr combine 		"$sfig/v01_v03_v15_v17_cty.gph" "$sfig/v03_v01_v15_v17_cty.gph" ///
+						"$sfig/v15_v17_v01_v03_cty.gph" "$sfig/v17_v15_v01_v03_cty.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export "$xfig\v01_v15_cty.png", as(png) replace
+	graph export "$xfig\v01_v03_v15_v17_cty.png", as(png) replace
 	
 
 * combine median rainfall and temperature
@@ -209,7 +245,7 @@ restore
 	
 	
 * **********************************************************************
-* 2 - generate serrbar graphs of 4 weather vars by country
+* 2 - generate serrbar graphs of 6 weather vars by country
 * **********************************************************************
 		
 * **********************************************************************
