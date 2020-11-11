@@ -222,7 +222,7 @@ restore
 preserve
 	clear			all
 	set obs			1
-	set seed		5203317230
+	set seed		3317230
 	gen double 		u = (10-1)*runiform() + 1
 	gen 			i = round(u)
 	sum		 		u i 
