@@ -81,7 +81,7 @@
 	grc1leg2 		"$sfig/pval_varname_rf.gph" "$sfig/pval_varname_tp.gph", ///
 						col(1) iscale(.5) commonscheme imargin(0 0 0 0)
 						
-	graph export 	"$xfig\pval_varname.png", as(png) replace							
+	graph export 	"$xfig\pval_varname.png", width(1400) replace							
 
 	
 *** satellite ***
@@ -111,7 +111,7 @@
 	grc1leg2 		"$sfig/pval_sat_rf.gph" "$sfig/pval_sat_tp.gph", ///
 						col(1) iscale(.5) commonscheme imargin(0 0 0 0)
 						
-	graph export 	"$xfig\pval_sat.png", as(png) replace							
+	graph export 	"$xfig\pval_sat.png", width(1400) replace							
 
 	
 *** extraction method ***
@@ -140,7 +140,7 @@
 	grc1leg2 		"$sfig/pval_ext_rf.gph" "$sfig/pval_ext_tp.gph", ///
 						col(1) iscale(.5) commonscheme imargin(0 0 0 0)
 						
-	graph export 	"$xfig\pval_ext.png", as(png) replace							
+	graph export 	"$xfig\pval_ext.png", width(1400) replace							
 	
 
 *** dependant variable ***
@@ -169,7 +169,7 @@
 	grc1leg2 		"$sfig/pval_depvar_rf.gph" "$sfig/pval_depvar_tp.gph", ///
 						col(1) iscale(.5) commonscheme imargin(0 0 0 0)
 						
-	graph export 	"$xfig\pval_depvar.png", as(png) replace			
+	graph export 	"$xfig\pval_depvar.png", width(1400) replace			
 	
 
 *** regression specification ***	
@@ -198,7 +198,7 @@
 	grc1leg2 		"$sfig/pval_regname_rf.gph" "$sfig/pval_regname_tp.gph", ///
 						col(1) iscale(.5) commonscheme imargin(0 0 0 0)
 						
-	graph export 	"$xfig\pval_regname.png", as(png) replace							
+	graph export 	"$xfig\pval_regname.png", width(1400) replace							
 
 	
 *** country ***
@@ -227,7 +227,7 @@
 	grc1leg2 		"$sfig/pval_country_rf.gph" "$sfig/pval_country_tp.gph", ///
 						col(1) iscale(.5) commonscheme imargin(0 0 0 0)
 						
-	graph export 	"$xfig\pval_country.png", as(png) replace					
+	graph export 	"$xfig\pval_country.png", width(1400) replace					
 
 	
 * **********************************************************************
@@ -518,7 +518,7 @@
 						"$sfig/tza_pval_ext_rf.gph" "$sfig/uga_pval_ext_rf.gph", ///
 						col(3) iscale(.5) commonscheme imargin(0 0 0 0)
 						
-	graph export 	"$xfig\pval_ext_rf.png", as(png) replace					
+	graph export 	"$xfig\pval_ext_rf.png", width(1400) replace					
 
 * p-value extraction method for temperature
 	grc1leg2 		"$sfig/eth_pval_ext_tp.gph" "$sfig/mwi_pval_ext_tp.gph" ///
@@ -526,7 +526,7 @@
 						"$sfig/tza_pval_ext_tp.gph" "$sfig/uga_pval_ext_tp.gph", ///
 						col(3) iscale(.5) commonscheme imargin(0 0 0 0)
 						
-	graph export 	"$xfig\pval_ext_tp.png", as(png) replace		
+	graph export 	"$xfig\pval_ext_tp.png", width(1400) replace		
 						
 * p-value satellite for rainfall
 	grc1leg2 		"$sfig/eth_pval_sat_rf.gph" "$sfig/mwi_pval_sat_rf.gph" ///
@@ -534,7 +534,7 @@
 						"$sfig/tza_pval_sat_rf.gph" "$sfig/uga_pval_sat_rf.gph", ///
 						col(3) iscale(.5) commonscheme imargin(0 0 0 0)
 						
-	graph export 	"$xfig\pval_sat_rf.png", as(png) replace					
+	graph export 	"$xfig\pval_sat_rf.png", width(1400) replace					
 
 * p-value satellite for temperature
 	grc1leg2 		"$sfig/eth_pval_sat_tp.gph" "$sfig/mwi_pval_sat_tp.gph" ///
@@ -542,7 +542,7 @@
 						"$sfig/tza_pval_sat_tp.gph" "$sfig/uga_pval_sat_tp.gph", ///
 						col(3) iscale(.5) commonscheme imargin(0 0 0 0)
 						
-	graph export 	"$xfig\pval_sat_tp.png", as(png) replace		
+	graph export 	"$xfig\pval_sat_tp.png", width(1400) replace		
 	
 	
 * **********************************************************************

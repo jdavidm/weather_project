@@ -303,25 +303,25 @@ restore
 	gr combine 		"$sfig/v01_sat.gph" "$sfig/v02_sat.gph" "$sfig/v03_sat.gph" ///
 						"$sfig/v04_sat.gph", col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\sat_moment_rf.png", as(png) replace
+	graph export 	"$xfig\sat_moment_rf.png", width(1400) replace
 	
 * combine total graphs
 	gr combine 		"$sfig/v05_sat.gph" "$sfig/v06_sat.gph" "$sfig/v07_sat.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\sat_total_rf.png", as(png) replace
+	graph export 	"$xfig\sat_total_rf.png", width(1400) replace
 	
 * combine rainy days
 	gr combine 		"$sfig/v08_sat.gph" "$sfig/v09_sat.gph" "$sfig/v12_sat.gph" ///
 						"$sfig/v13_sat.gph", col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\sat_rain_rf.png", as(png) replace
+	graph export 	"$xfig\sat_rain_rf.png", width(1400) replace
 	
 * combine total graphs
 	gr combine 		"$sfig/v10_sat.gph" "$sfig/v11_sat.gph" "$sfig/v14_sat.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\sat_none_rf.png", as(png) replace
+	graph export 	"$xfig\sat_none_rf.png", width(1400) replace
 	
 
 * **********************************************************************
@@ -468,13 +468,13 @@ restore
 	gr combine 		"$sfig/v15_sat.gph" "$sfig/v16_sat.gph" "$sfig/v17_sat.gph" ///
 						"$sfig/v18_sat.gph", col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\sat_moment_tp.png", as(png) replace
+	graph export 	"$xfig\sat_moment_tp.png", width(1400) replace
 	
 * combine total graphs
 	gr combine 		"$sfig/v19_sat.gph" "$sfig/v20_sat.gph" "$sfig/v21_sat.gph" ///
 						"$sfig/v22_sat.gph", col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\sat_total_tp.png", as(png) replace
+	graph export 	"$xfig\sat_total_tp.png", width(1400) replace
 	
 	
 * **********************************************************************
@@ -742,25 +742,25 @@ restore
 	gr combine 		"$sfig/v01_cty.gph" "$sfig/v02_cty.gph" "$sfig/v03_cty.gph" ///
 						"$sfig/v04_cty.gph", col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\cty_moment_rf.png", as(png) replace
+	graph export 	"$xfig\cty_moment_rf.png", width(1400) replace
 	
 * combine total graphs
 	gr combine 		"$sfig/v05_cty.gph" "$sfig/v06_cty.gph" "$sfig/v07_cty.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\cty_total_rf.png", as(png) replace
+	graph export 	"$xfig\cty_total_rf.png", width(1400) replace
 	
 * combine rainy days
 	gr combine 		"$sfig/v08_cty.gph" "$sfig/v09_cty.gph" "$sfig/v12_cty.gph" ///
 						"$sfig/v13_cty.gph", col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\cty_rain_rf.png", as(png) replace
+	graph export 	"$xfig\cty_rain_rf.png", width(1400) replace
 	
 * combine total graphs
 	gr combine 		"$sfig/v10_cty.gph" "$sfig/v11_cty.gph" "$sfig/v14_cty.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\cty_none_rf.png", as(png) replace
+	graph export 	"$xfig\cty_none_rf.png", width(1400) replace
 	
 
 * **********************************************************************
@@ -915,13 +915,13 @@ restore
 	gr combine 		"$sfig/var15_cty.gph" "$sfig/var16_cty.gph" "$sfig/var17_cty.gph" ///
 						"$sfig/var18_cty.gph", col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\cty_moment_tp.png", as(png) replace
+	graph export 	"$xfig\cty_moment_tp.png", width(1400) replace
 	
 * combine total graphs
 	gr combine 		"$sfig/var19_cty.gph" "$sfig/var20_cty.gph" "$sfig/var21_cty.gph" ///
 						"$sfig/var22_cty.gph", col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\cty_total_tp.png", as(png) replace
+	graph export 	"$xfig\cty_total_tp.png", width(1400) replace
 	
 
 * **********************************************************************
@@ -1231,25 +1231,25 @@ restore
 	gr combine 		"$sfig/v01_ext.gph" "$sfig/v02_ext.gph" "$sfig/v03_ext.gph" ///
 						"$sfig/v04_ext.gph", col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\ext_moment_rf.png", as(png) replace
+	graph export 	"$xfig\ext_moment_rf.png", width(1400) replace
 	
 * combine total graphs
 	gr combine 		"$sfig/v05_ext.gph" "$sfig/v06_ext.gph" "$sfig/v07_ext.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\ext_total_rf.png", as(png) replace
+	graph export 	"$xfig\ext_total_rf.png", width(1400) replace
 	
 * combine rainy days
 	gr combine 		"$sfig/v08_ext.gph" "$sfig/v09_ext.gph" "$sfig/v12_ext.gph" ///
 						"$sfig/v13_ext.gph", col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\ext_rain_rf.png", as(png) replace
+	graph export 	"$xfig\ext_rain_rf.png", width(1400) replace
 	
 * combine total graphs
 	gr combine 		"$sfig/v10_ext.gph" "$sfig/v11_ext.gph" "$sfig/v14_ext.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig/ext_none_rf.png", as(png) replace
+	graph export 	"$xfig/ext_none_rf.png", width(1400) replace
 	
 
 * **********************************************************************
@@ -1428,13 +1428,13 @@ restore
 	gr combine 		"$sfig/var15_ext.gph" "$sfig/var16_ext.gph" "$sfig/var17_ext.gph" ///
 						"$sfig/var18_ext.gph", col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\ext_moment_tp.png", as(png) replace
+	graph export 	"$xfig\ext_moment_tp.png", width(1400) replace
 	
 * combine total graphs
 	gr combine 		"$sfig/var19_ext.gph" "$sfig/var20_ext.gph" "$sfig/var21_ext.gph" ///
 						"$sfig/var22_ext.gph", col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig/ext_total_tp.png", as(png) replace
+	graph export 	"$xfig/ext_total_tp.png", width(1400) replace
 	
 	
 * **********************************************************************

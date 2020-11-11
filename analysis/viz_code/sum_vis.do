@@ -193,7 +193,7 @@
 						"$sfig/tcsh_density_rf.gph" "$sfig/tch_density_rf.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\density_aez_rf.png", as(png) replace
+	graph export 	"$xfig\density_aez_rf.png", width(1400) replace
 
 	
 * **********************************************************************
@@ -262,7 +262,7 @@
 						"$sfig/tcsh_density_tp.gph" "$sfig/tch_density_tp.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\density_aez_tp.png", as(png) replace
+	graph export 	"$xfig\density_aez_tp.png", width(1400) replace
 	
 
 * **********************************************************************
@@ -353,7 +353,7 @@
 						"$sfig/tcsh_norain_rf.gph" "$sfig/tch_norain_rf.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\norain_aez_rf.png", as(png) replace	
+	graph export 	"$xfig\norain_aez_rf.png", width(1400) replace	
 			
 
 * **********************************************************************
@@ -419,7 +419,7 @@
 						"$sfig/tcsh_gdd_tp.gph" "$sfig/tch_gdd_tp.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\gdd_aez_tp.png", as(png) replace			
+	graph export 	"$xfig\gdd_aez_tp.png", width(1400) replace			
 			
 			
 * **********************************************************************

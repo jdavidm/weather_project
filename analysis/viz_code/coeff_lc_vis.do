@@ -32,7 +32,7 @@
 
 * open log	
 	cap log close
-	log 	using 		"$logout/resultsvis_lc", append
+	log 	using 	"$logout/resultsvis_lc", append
 
 * load data 
 	use 			"$root/lsms_complete_results_lc", clear
@@ -81,7 +81,7 @@ restore
 	gr combine 		"$sfig/v01_v15_cty.gph" "$sfig/v15_v01_cty.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v01_v15_cty.png", as(png) replace
+	graph export 	"$xfig\v01_v15_cty.png", width(1400) replace
 	
 
 * combine median rainfall and temperature
@@ -123,7 +123,7 @@ restore
 	gr combine 		"$sfig/v02_v16_cty.gph" "$sfig/v16_v02_cty.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v02_v16_cty.png", as(png) replace
+	graph export 	"$xfig\v02_v16_cty.png", width(1400) replace
 	
 	
 * combine total rainfall  and GDD
@@ -165,7 +165,7 @@ restore
 	gr combine 		"$sfig/v05_v19_cty.gph" "$sfig/v19_v05_cty.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v05_v19_cty.png", as(png) replace
+	graph export 	"$xfig\v05_v19_cty.png", width(1400) replace
 	
 
 * combine z-score rainfall and temperature
@@ -174,7 +174,7 @@ preserve
 	sort 			var_rain country beta_rain
 	gen 			obs = _n	
 
-* median daily rainfall	
+* z-score seasonal rainfall
 	serrbar 		beta_rain se_rain obs, lcolor(eltgreen%10) ///
 						mvopts(recast(scatter) mcolor(eltgreen%5) ///
 						mfcolor(eltgreen%5) mlcolor(eltgreen%5)) ///
@@ -190,7 +190,7 @@ preserve
 	sort 			var_rain country beta_temp
 	gen 			obs = _n		
 
-* median daily temperature	
+* z-score gdd
 	serrbar 		beta_temp se_temp obs, lcolor(eltgreen%10) ///
 						mvopts(recast(scatter) mcolor(eltgreen%5) ///
 						mfcolor(eltgreen%5) mlcolor(eltgreen%5)) ///
@@ -203,11 +203,11 @@ preserve
 						6480 "6,480", alt) xtitle("") saving("$sfig/v21_v07_cty", replace)		
 restore	
 
-* combine median graphs
+* combine z-score graphs
 	gr combine 		"$sfig/v07_v21_cty.gph" "$sfig/v21_v07_cty.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v07_v21_cty.png", as(png) replace
+	graph export 	"$xfig\v07_v21_cty.png", width(1400) replace
 	
 		
 * **********************************************************************
