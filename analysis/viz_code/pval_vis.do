@@ -42,15 +42,403 @@
 * load data 
 	use 			"$root/lsms_complete_results", clear
 
-*Generate p-values
+* generate p-values
 	gen 			p99 = 1 if pval <= 0.01
 	replace 		p99 = 0 if pval > 0.01
 	gen 			p95 = 1 if pval <= 0.05
 	replace 		p95 = 0 if pval > 0.05
 	gen 			p90 = 1 if pval <= 0.10
 	replace 		p90 = 0 if pval > 0.10
+
+						
+* **********************************************************************
+* 2 - generate p-value graphs by extraction
+* **********************************************************************
 	
+* p-value graph of rainfall by extraction method
+preserve
+	drop			if varname > 14
 	
+	collapse 		(mean) mu99 = p99 mu95 = p95 mu90 = p90 ///
+						(sd) sd99 = p99 sd95 = p95 sd90 = p90 ///
+						(count) n99 = p99 n95 = p95 n90 = p90, by(ext)
+	
+	gen 			hi99 = mu99 + invttail(n99-1,0.025)*(sd99 / sqrt(n99))
+	gen				lo99 = mu99 - invttail(n99-1,0.025)*(sd99 / sqrt(n99))
+	
+	gen 			hi95 = mu95 + invttail(n95-1,0.025)*(sd95 / sqrt(n95))
+	gen				lo95 = mu95 - invttail(n95-1,0.025)*(sd95 / sqrt(n95))
+	
+	gen 			hi90 = mu90 + invttail(n90-1,0.025)*(sd90 / sqrt(n90))
+	gen				lo90 = mu90 - invttail(n90-1,0.025)*(sd90 / sqrt(n90))
+	
+	reshape 		long mu sd n hi lo, i(ext) j(p)	
+	
+	sort 			ext p
+	gen 			obs = _n
+	replace			obs = 1 + obs if obs > 3
+	replace			obs = 1 + obs if obs > 7
+	replace			obs = 1 + obs if obs > 11
+	replace			obs = 1 + obs if obs > 15
+	replace			obs = 1 + obs if obs > 19
+	replace			obs = 1 + obs if obs > 23
+	replace			obs = 1 + obs if obs > 27
+	replace			obs = 1 + obs if obs > 31
+	replace			obs = 1 + obs if obs > 35
+	
+	twoway			(bar mu obs if p == 90, color(emerald*1.5)) || ///
+						(bar mu obs if p == 95, color(eltblue*1.5)) || ///
+						(bar mu obs if p == 99, color(khaki*1.5)) || ///
+						(rcap hi lo obs, yscale(r(0 1)) ///
+						ylab(0 .2 .4 .6 .8 1, labsize(small)) title("Rainfall") ///
+						ytitle("Share of Significant Point Estimates") ///
+						xscale(r(0 40) ex) ///
+						xlabel(2 "Extraction 1 " 6 "Extraction 2 " 10 "Extraction 3 " ///
+						14 "Extraction 4 " 18 "Extraction 5 " 22 "Extraction 6 " ///
+						26 "Extraction 7 " 30 "Extraction 8 " 34 "Extraction 9 " ///
+						38 "Extraction 10 ", angle(45) notick) xtitle("")), ///
+						legend(pos(12) col(5) order(1 2 3 4) label(1 "p>0.90") ///
+						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I."))  ///
+						saving("$sfig/pval_ext_rf", replace)
+restore
+
+* p-value graph of temperature by extraction method
+preserve
+	drop			if varname < 15
+	
+	collapse 		(mean) mu99 = p99 mu95 = p95 mu90 = p90 ///
+						(sd) sd99 = p99 sd95 = p95 sd90 = p90 ///
+						(count) n99 = p99 n95 = p95 n90 = p90, by(ext)
+	
+	gen 			hi99 = mu99 + invttail(n99-1,0.025)*(sd99 / sqrt(n99))
+	gen				lo99 = mu99 - invttail(n99-1,0.025)*(sd99 / sqrt(n99))
+	
+	gen 			hi95 = mu95 + invttail(n95-1,0.025)*(sd95 / sqrt(n95))
+	gen				lo95 = mu95 - invttail(n95-1,0.025)*(sd95 / sqrt(n95))
+	
+	gen 			hi90 = mu90 + invttail(n90-1,0.025)*(sd90 / sqrt(n90))
+	gen				lo90 = mu90 - invttail(n90-1,0.025)*(sd90 / sqrt(n90))
+	
+	reshape 		long mu sd n hi lo, i(ext) j(p)	
+	
+	sort 			ext p
+	gen 			obs = _n
+	replace			obs = 1 + obs if obs > 3
+	replace			obs = 1 + obs if obs > 7
+	replace			obs = 1 + obs if obs > 11
+	replace			obs = 1 + obs if obs > 15
+	replace			obs = 1 + obs if obs > 19
+	replace			obs = 1 + obs if obs > 23
+	replace			obs = 1 + obs if obs > 27
+	replace			obs = 1 + obs if obs > 31
+	replace			obs = 1 + obs if obs > 35
+	
+	twoway			(bar mu obs if p == 90, color(maroon*1.5)) || ///
+						(bar mu obs if p == 95, color(lavender*1.5)) || ///
+						(bar mu obs if p == 99, color(brown*1.5)) || ///
+						(rcap hi lo obs, yscale(r(0 1)) ///
+						ylab(0 .2 .4 .6 .8 1, labsize(small)) title("Temperature") ///
+						ytitle("Share of Significant Point Estimates") ///
+						xscale(r(0 40) ex) ///
+						xlabel(2 "Extraction 1 " 6 "Extraction 2 " 10 "Extraction 3 " ///
+						14 "Extraction 4 " 18 "Extraction 5 " 22 "Extraction 6 " ///
+						26 "Extraction 7 " 30 "Extraction 8 " 34 "Extraction 9 " ///
+						38 "Extraction 10 ", angle(45) notick) xtitle("")), ///
+						legend(pos(12) col(5) order(1 2 3 4) label(1 "p>0.90") ///
+						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I."))  ///
+						saving("$sfig/pval_ext_tp", replace)
+restore
+					
+
+	grc1leg2 		"$sfig/pval_ext_rf.gph" "$sfig/pval_ext_tp.gph", ///
+						col(1) iscale(.5) pos(12) commonscheme imargin(0 0 0 0)
+						
+	graph export 	"$xfig\pval_ext.png", width(1400) replace		
+				
+				
+* **********************************************************************
+* 3 - generate p-value graphs by extraction and country
+* **********************************************************************
+	
+* p-value graph of rainfall by extraction method
+preserve
+	drop			if varname > 14
+	
+	collapse 		(mean) mu99 = p99 mu95 = p95 mu90 = p90 ///
+						(sd) sd99 = p99 sd95 = p95 sd90 = p90 ///
+						(count) n99 = p99 n95 = p95 n90 = p90, by(ext country)
+	
+	gen 			hi99 = mu99 + invttail(n99-1,0.025)*(sd99 / sqrt(n99))
+	gen				lo99 = mu99 - invttail(n99-1,0.025)*(sd99 / sqrt(n99))
+	
+	gen 			hi95 = mu95 + invttail(n95-1,0.025)*(sd95 / sqrt(n95))
+	gen				lo95 = mu95 - invttail(n95-1,0.025)*(sd95 / sqrt(n95))
+	
+	gen 			hi90 = mu90 + invttail(n90-1,0.025)*(sd90 / sqrt(n90))
+	gen				lo90 = mu90 - invttail(n90-1,0.025)*(sd90 / sqrt(n90))
+	
+	reshape 		long mu sd n hi lo, i(country ext) j(p)	
+	
+	sort 			country ext p
+					
+* generate count variable that repeats by country	
+	bys country (ext): gen obs = _n
+
+	replace			obs = 1 + obs if obs > 3
+	replace			obs = 1 + obs if obs > 7
+	replace			obs = 1 + obs if obs > 11
+	replace			obs = 1 + obs if obs > 15
+	replace			obs = 1 + obs if obs > 19
+	replace			obs = 1 + obs if obs > 23
+	replace			obs = 1 + obs if obs > 27
+	replace			obs = 1 + obs if obs > 31
+	replace			obs = 1 + obs if obs > 35
+
+* ethiopia
+	twoway			(bar mu obs if p == 90 & country == 1, color(emerald*1.5)) || ///
+						(bar mu obs if p == 95 & country == 1, color(eltblue*1.5)) || ///
+						(bar mu obs if p == 99 & country == 1, color(khaki*1.5)) || ///
+						(rcap hi lo obs if country == 1, yscale(r(0 1)) ///
+						ylab(0 .2 .4 .6 .8 1, labsize(small)) title("Ethiopia") ///
+						ytitle("Share of Significant Point Estimates") ///
+						xscale(r(0 40) ex) ///
+						xlabel(2 "Extraction 1 " 6 "Extraction 2 " 10 "Extraction 3 " ///
+						14 "Extraction 4 " 18 "Extraction 5 " 22 "Extraction 6 " ///
+						26 "Extraction 7 " 30 "Extraction 8 " 34 "Extraction 9 " ///
+						38 "Extraction 10 ", angle(45) notick) xtitle("")), ///
+						legend(pos(12) col(5) order(1 2 3 4) label(1 "p>0.90") ///
+						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I.")) ///
+						saving("$sfig/eth_pval_ext_rf", replace)
+
+* malawi
+	twoway			(bar mu obs if p == 90 & country == 2, color(emerald*1.5)) || ///
+						(bar mu obs if p == 95 & country == 2, color(eltblue*1.5)) || ///
+						(bar mu obs if p == 99 & country == 2, color(khaki*1.5)) || ///
+						(rcap hi lo obs if country == 2, yscale(r(0 1)) ///
+						ylab(0 .2 .4 .6 .8 1, labsize(small)) title("Malawi") ///
+						ytitle("Share of Significant Point Estimates") ///
+						xscale(r(0 40) ex) ///
+						xlabel(2 "Extraction 1 " 6 "Extraction 2 " 10 "Extraction 3 " ///
+						14 "Extraction 4 " 18 "Extraction 5 " 22 "Extraction 6 " ///
+						26 "Extraction 7 " 30 "Extraction 8 " 34 "Extraction 9 " ///
+						38 "Extraction 10 ", angle(45) notick) xtitle("")), ///
+						legend(pos(12) col(5) order(1 2 3 4) label(1 "p>0.90") ///
+						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I.")) ///
+						saving("$sfig/mwi_pval_ext_rf", replace)
+
+* niger
+	twoway			(bar mu obs if p == 90 & country == 4, color(emerald*1.5)) || ///
+						(bar mu obs if p == 95 & country == 4, color(eltblue*1.5)) || ///
+						(bar mu obs if p == 99 & country == 4, color(khaki*1.5)) || ///
+						(rcap hi lo obs if country == 4, yscale(r(0 1)) ///
+						ylab(0 .2 .4 .6 .8 1, labsize(small)) title("Niger") ///
+						ytitle("Share of Significant Point Estimates") ///
+						xscale(r(0 40) ex) ///
+						xlabel(2 "Extraction 1 " 6 "Extraction 2 " 10 "Extraction 3 " ///
+						14 "Extraction 4 " 18 "Extraction 5 " 22 "Extraction 6 " ///
+						26 "Extraction 7 " 30 "Extraction 8 " 34 "Extraction 9 " ///
+						38 "Extraction 10 ", angle(45) notick) xtitle("")), ///
+						legend(pos(12) col(5) order(1 2 3 4) label(1 "p>0.90") ///
+						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I.")) ///
+						saving("$sfig/ngr_pval_ext_rf", replace)
+
+* nigeria
+	twoway			(bar mu obs if p == 90 & country == 5, color(emerald*1.5)) || ///
+						(bar mu obs if p == 95 & country == 5, color(eltblue*1.5)) || ///
+						(bar mu obs if p == 99 & country == 5, color(khaki*1.5)) || ///
+						(rcap hi lo obs if country == 5, yscale(r(0 1)) ///
+						ylab(0 .2 .4 .6 .8 1, labsize(small)) title("Nigeria") ///
+						ytitle("Share of Significant Point Estimates") ///
+						xscale(r(0 40) ex) ///
+						xlabel(2 "Extraction 1 " 6 "Extraction 2 " 10 "Extraction 3 " ///
+						14 "Extraction 4 " 18 "Extraction 5 " 22 "Extraction 6 " ///
+						26 "Extraction 7 " 30 "Extraction 8 " 34 "Extraction 9 " ///
+						38 "Extraction 10 ", angle(45) notick) xtitle("")), ///
+						legend(pos(12) col(5) order(1 2 3 4) label(1 "p>0.90") ///
+						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I.")) ///
+						saving("$sfig/nga_pval_ext_rf", replace)
+						
+* tanzania
+	twoway			(bar mu obs if p == 90 & country == 6, color(emerald*1.5)) || ///
+						(bar mu obs if p == 95 & country == 6, color(eltblue*1.5)) || ///
+						(bar mu obs if p == 99 & country == 6, color(khaki*1.5)) || ///
+						(rcap hi lo obs if country == 6, yscale(r(0 1)) ///
+						ylab(0 .2 .4 .6 .8 1, labsize(small)) title("Tanzania") ///
+						ytitle("Share of Significant Point Estimates") ///
+						xscale(r(0 40) ex) ///
+						xlabel(2 "Extraction 1 " 6 "Extraction 2 " 10 "Extraction 3 " ///
+						14 "Extraction 4 " 18 "Extraction 5 " 22 "Extraction 6 " ///
+						26 "Extraction 7 " 30 "Extraction 8 " 34 "Extraction 9 " ///
+						38 "Extraction 10 ", angle(45) notick) xtitle("")), ///
+						legend(pos(12) col(5) order(1 2 3 4) label(1 "p>0.90") ///
+						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I.")) ///
+						saving("$sfig/tza_pval_ext_rf", replace)
+						
+* uganda
+	twoway			(bar mu obs if p == 90 & country == 7, color(emerald*1.5)) || ///
+						(bar mu obs if p == 95 & country == 7, color(eltblue*1.5)) || ///
+						(bar mu obs if p == 99 & country == 7, color(khaki*1.5)) || ///
+						(rcap hi lo obs if country == 7, yscale(r(0 1)) ///
+						ylab(0 .2 .4 .6 .8 1, labsize(small)) title("Uganda") ///
+						ytitle("Share of Significant Point Estimates") ///
+						xscale(r(0 40) ex) ///
+						xlabel(2 "Extraction 1 " 6 "Extraction 2 " 10 "Extraction 3 " ///
+						14 "Extraction 4 " 18 "Extraction 5 " 22 "Extraction 6 " ///
+						26 "Extraction 7 " 30 "Extraction 8 " 34 "Extraction 9 " ///
+						38 "Extraction 10 ", angle(45) notick) xtitle("")), ///
+						legend(pos(12) col(5) order(1 2 3 4) label(1 "p>0.90") ///
+						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I.")) ///
+						saving("$sfig/uga_pval_ext_rf", replace)
+restore
+
+
+* p-value graph of temperature by extraction method
+preserve
+	drop			if varname < 15
+	
+	collapse 		(mean) mu99 = p99 mu95 = p95 mu90 = p90 ///
+						(sd) sd99 = p99 sd95 = p95 sd90 = p90 ///
+						(count) n99 = p99 n95 = p95 n90 = p90, by(ext country)
+	
+	gen 			hi99 = mu99 + invttail(n99-1,0.025)*(sd99 / sqrt(n99))
+	gen				lo99 = mu99 - invttail(n99-1,0.025)*(sd99 / sqrt(n99))
+	
+	gen 			hi95 = mu95 + invttail(n95-1,0.025)*(sd95 / sqrt(n95))
+	gen				lo95 = mu95 - invttail(n95-1,0.025)*(sd95 / sqrt(n95))
+	
+	gen 			hi90 = mu90 + invttail(n90-1,0.025)*(sd90 / sqrt(n90))
+	gen				lo90 = mu90 - invttail(n90-1,0.025)*(sd90 / sqrt(n90))
+	
+	reshape 		long mu sd n hi lo, i(country ext) j(p)	
+	
+	sort 			country ext p
+					
+* generate count variable that repeats by country	
+	bys country (ext): gen obs = _n
+
+	replace			obs = 1 + obs if obs > 3
+	replace			obs = 1 + obs if obs > 7
+	replace			obs = 1 + obs if obs > 11
+	replace			obs = 1 + obs if obs > 15
+	replace			obs = 1 + obs if obs > 19
+	replace			obs = 1 + obs if obs > 23
+	replace			obs = 1 + obs if obs > 27
+	replace			obs = 1 + obs if obs > 31
+	replace			obs = 1 + obs if obs > 35
+
+* ethiopia
+	twoway			(bar mu obs if p == 90 & country == 1, color(maroon*1.5)) || ///
+						(bar mu obs if p == 95 & country == 1, color(lavender*1.5)) || ///
+						(bar mu obs if p == 99 & country == 1, color(brown*1.5)) || ///
+						(rcap hi lo obs if country == 1, yscale(r(0 1)) ///
+						ylab(0 .2 .4 .6 .8 1, labsize(small)) title("Ethiopia") ///
+						ytitle("Share of Significant Point Estimates") ///
+						xscale(r(0 40) ex) ///
+						xlabel(2 "Extraction 1 " 6 "Extraction 2 " 10 "Extraction 3 " ///
+						14 "Extraction 4 " 18 "Extraction 5 " 22 "Extraction 6 " ///
+						26 "Extraction 7 " 30 "Extraction 8 " 34 "Extraction 9 " ///
+						38 "Extraction 10 ", angle(45) notick) xtitle("")), ///
+						legend(pos(12) col(5) order(1 2 3 4) label(1 "p>0.90") ///
+						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I.")) ///
+						saving("$sfig/eth_pval_ext_tp", replace)
+
+* malawi
+	twoway			(bar mu obs if p == 90 & country == 2, color(maroon*1.5)) || ///
+						(bar mu obs if p == 95 & country == 2, color(lavender*1.5)) || ///
+						(bar mu obs if p == 99 & country == 2, color(brown*1.5)) || ///
+						(rcap hi lo obs if country == 2, yscale(r(0 1)) ///
+						ylab(0 .2 .4 .6 .8 1, labsize(small)) title("Malawi") ///
+						ytitle("Share of Significant Point Estimates") ///
+						xscale(r(0 40) ex) ///
+						xlabel(2 "Extraction 1 " 6 "Extraction 2 " 10 "Extraction 3 " ///
+						14 "Extraction 4 " 18 "Extraction 5 " 22 "Extraction 6 " ///
+						26 "Extraction 7 " 30 "Extraction 8 " 34 "Extraction 9 " ///
+						38 "Extraction 10 ", angle(45) notick) xtitle("")), ///
+						legend(pos(12) col(5) order(1 2 3 4) label(1 "p>0.90") ///
+						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I.")) ///
+						saving("$sfig/mwi_pval_ext_tp", replace)
+
+* niger
+	twoway			(bar mu obs if p == 90 & country == 4, color(maroon*1.5)) || ///
+						(bar mu obs if p == 95 & country == 4, color(lavender*1.5)) || ///
+						(bar mu obs if p == 99 & country == 4, color(brown*1.5)) || ///
+						(rcap hi lo obs if country == 4, yscale(r(0 1)) ///
+						ylab(0 .2 .4 .6 .8 1, labsize(small)) title("Niger") ///
+						ytitle("Share of Significant Point Estimates") ///
+						xscale(r(0 40) ex) ///
+						xlabel(2 "Extraction 1 " 6 "Extraction 2 " 10 "Extraction 3 " ///
+						14 "Extraction 4 " 18 "Extraction 5 " 22 "Extraction 6 " ///
+						26 "Extraction 7 " 30 "Extraction 8 " 34 "Extraction 9 " ///
+						38 "Extraction 10 ", angle(45) notick) xtitle("")), ///
+						legend(pos(12) col(5) order(1 2 3 4) label(1 "p>0.90") ///
+						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I.")) ///
+						saving("$sfig/ngr_pval_ext_tp", replace)
+
+* nigeria
+	twoway			(bar mu obs if p == 90 & country == 5, color(maroon*1.5)) || ///
+						(bar mu obs if p == 95 & country == 5, color(lavender*1.5)) || ///
+						(bar mu obs if p == 99 & country == 5, color(brown*1.5)) || ///
+						(rcap hi lo obs if country == 5, yscale(r(0 1)) ///
+						ylab(0 .2 .4 .6 .8 1, labsize(small)) title("Nigeria") ///
+						ytitle("Share of Significant Point Estimates") ///
+						xscale(r(0 40) ex) ///
+						xlabel(2 "Extraction 1 " 6 "Extraction 2 " 10 "Extraction 3 " ///
+						14 "Extraction 4 " 18 "Extraction 5 " 22 "Extraction 6 " ///
+						26 "Extraction 7 " 30 "Extraction 8 " 34 "Extraction 9 " ///
+						38 "Extraction 10 ", angle(45) notick) xtitle("")), ///
+						legend(pos(12) col(5) order(1 2 3 4) label(1 "p>0.90") ///
+						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I.")) ///
+						saving("$sfig/nga_pval_ext_tp", replace)
+						
+* tanzania
+	twoway			(bar mu obs if p == 90 & country == 6, color(maroon*1.5)) || ///
+						(bar mu obs if p == 95 & country == 6, color(lavender*1.5)) || ///
+						(bar mu obs if p == 99 & country == 6, color(brown*1.5)) || ///
+						(rcap hi lo obs if country == 6, yscale(r(0 1)) ///
+						ylab(0 .2 .4 .6 .8 1, labsize(small)) title("Tanzania") ///
+						ytitle("Share of Significant Point Estimates") ///
+						xscale(r(0 40) ex) ///
+						xlabel(2 "Extraction 1 " 6 "Extraction 2 " 10 "Extraction 3 " ///
+						14 "Extraction 4 " 18 "Extraction 5 " 22 "Extraction 6 " ///
+						26 "Extraction 7 " 30 "Extraction 8 " 34 "Extraction 9 " ///
+						38 "Extraction 10 ", angle(45) notick) xtitle("")), ///
+						legend(pos(12) col(5) order(1 2 3 4) label(1 "p>0.90") ///
+						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I.")) ///
+						saving("$sfig/tza_pval_ext_tp", replace)
+						
+* uganda
+	twoway			(bar mu obs if p == 90 & country == 7, color(maroon*1.5)) || ///
+						(bar mu obs if p == 95 & country == 7, color(lavender*1.5)) || ///
+						(bar mu obs if p == 99 & country == 7, color(brown*1.5)) || ///
+						(rcap hi lo obs if country == 7, yscale(r(0 1)) ///
+						ylab(0 .2 .4 .6 .8 1, labsize(small)) title("Uganda") ///
+						ytitle("Share of Significant Point Estimates") ///
+						xscale(r(0 40) ex) ///
+						xlabel(2 "Extraction 1 " 6 "Extraction 2 " 10 "Extraction 3 " ///
+						14 "Extraction 4 " 18 "Extraction 5 " 22 "Extraction 6 " ///
+						26 "Extraction 7 " 30 "Extraction 8 " 34 "Extraction 9 " ///
+						38 "Extraction 10 ", angle(45) notick) xtitle("")), ///
+						legend(pos(12) col(5) order(1 2 3 4) label(1 "p>0.90") ///
+						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I.")) ///
+						saving("$sfig/uga_pval_ext_tp", replace)
+restore
+						
+* p-value extraction method for rainfall
+	grc1leg2 		"$sfig/eth_pval_ext_rf.gph" "$sfig/mwi_pval_ext_rf.gph" ///
+						"$sfig/ngr_pval_ext_rf.gph" "$sfig/nga_pval_ext_rf.gph" ///
+						"$sfig/tza_pval_ext_rf.gph" "$sfig/uga_pval_ext_rf.gph", ///
+						col(3) iscale(.5) pos(12) commonscheme imargin(0 0 0 0)
+						
+	graph export 	"$xfig\pval_ext_rf.png", width(1400) replace
+	
+* p-value extraction method for temperature
+	grc1leg2 		"$sfig/eth_pval_ext_tp.gph" "$sfig/mwi_pval_ext_tp.gph" ///
+						"$sfig/ngr_pval_ext_tp.gph" "$sfig/nga_pval_ext_tp.gph" ///
+						"$sfig/tza_pval_ext_tp.gph" "$sfig/uga_pval_ext_tp.gph", ///
+						col(3) iscale(.5) pos(12) commonscheme imargin(0 0 0 0)
+						
+	graph export 	"$xfig\pval_ext_tp.png", width(1400) replace					
+
 * **********************************************************************
 * 2 - generate p-value graphs for all countries
 * **********************************************************************
