@@ -13,6 +13,7 @@
 	* you have results file 
 	* customsave.ado
 	* grc1leg2.ado
+	* tabout.ado
 
 * TO DO:
 	* complete
@@ -42,7 +43,7 @@
 * 1 - generate serrbar graphs by extraction
 * **********************************************************************
 
-	
+
 * **********************************************************************
 * 1a - generate serrbar graphs by rainfall variable and extraction
 * **********************************************************************
@@ -52,7 +53,7 @@ preserve
 	keep			if varname == 1
 	sort 			varname ext beta
 	gen 			obs = _n	
-
+	
 	serrbar 		beta stdrd_err obs, lcolor(edkblue%10) ///
 						mvopts(recast(scatter) mcolor(edkblue%5) ///
 						mfcolor(edkblue%5) mlcolor(edkblue%5)) ///
@@ -582,6 +583,35 @@ restore
 	replace 		b_ns= . if p <= .05
 	lab var 		b_ns "n.s."
 	
+* generate significance dummy
+	gen				sig = 1 if b_sig != .
+	replace			sig = 0 if b_ns != .
+	lab	def			yesno 0 "Not Significant" 1 "Significant"
+	lab val			sig yesno
+	lab var			sig "Weather variable is significant"
+	
+				
+* define loop through levels of the data type variable	
+
+levelsof 	country		, local(lc)
+	levelsof 	varname		, local(lv)
+foreach c of local lc {
+	foreach v of local lv {
+		sum sig if country == `c' & varname == `v'
+		eststo sig`l'_`c', addscalars(avg`l'_`c' r(mean))
+	}
+}
+
+			
+table varname, contents(mean sig) format(%9.2f) by(country)
+esttab  using "$xtab/var_sig.tex", replace
+
+sum sig if country == 1 & varname == 1
+eststo, addscalars(avg r(mean))
+	
+
+esttab est2, cells("mean") noobs
+
 * **********************************************************************
 * 3a - generate serrbar graphs by rainfall variable and satellite
 * **********************************************************************
@@ -1105,12 +1135,12 @@ restore
 	
 	
 * **********************************************************************
-* 2 - generate serrbar graphs by country
+* 3 - generate serrbar graphs by country
 * **********************************************************************
 
 	
 * **********************************************************************
-* 2a - generate serrbar graphs by rainfall variable and country
+* 3a - generate serrbar graphs by rainfall variable and country
 * **********************************************************************
 
 * mean daily rainfall
