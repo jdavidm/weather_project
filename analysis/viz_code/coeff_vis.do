@@ -589,29 +589,8 @@ restore
 	lab	def			yesno 0 "Not Significant" 1 "Significant"
 	lab val			sig yesno
 	lab var			sig "Weather variable is significant"
+
 	
-				
-* define loop through levels of the data type variable	
-
-levelsof 	country		, local(lc)
-	levelsof 	varname		, local(lv)
-foreach c of local lc {
-	foreach v of local lv {
-		sum sig if country == `c' & varname == `v'
-		eststo sig`l'_`c', addscalars(avg`l'_`c' r(mean))
-	}
-}
-
-			
-table varname, contents(mean sig) format(%9.2f) by(country)
-esttab  using "$xtab/var_sig.tex", replace
-
-sum sig if country == 1 & varname == 1
-eststo, addscalars(avg r(mean))
-	
-
-esttab est2, cells("mean") noobs
-
 * **********************************************************************
 * 3a - generate serrbar graphs by rainfall variable and satellite
 * **********************************************************************
@@ -950,7 +929,7 @@ restore
 	
 
 * **********************************************************************
-* 1b - generate serrbar graphs by temperature variable and satellite
+* 3b - generate serrbar graphs by temperature variable and satellite
 * **********************************************************************
 
 * mean daily temperature
@@ -1133,9 +1112,53 @@ restore
 						
 	graph export 	"$xfig\sat_total_tp.png", width(1400) replace
 	
+* **********************************************************************
+* 3c - generate table of significant values
+* **********************************************************************
+
+* redefine var lab for LaTeX
+	lab def		varname 	1 "Mean Daily Rainfall" ///
+							2 "Median Daily Rainfall" ///
+							3 "Variance of Daily Rainfall" ///
+							4 "Skew of Daily Rainfall" ///
+							5 "Total Rainfall" ///
+							6 "Deviation in Total Rainfall" ///
+							7 "Z-Score of Total Rainfall" ///
+							8 "Rainy Days" ///
+							9 "Deviation in Rainy Days" ///
+							10 "No Rain Days" ///
+							11 "Deviation in No Rain Days" ///
+							12 "\% Rainy Days" ///
+							13 "Deviation in \% Rainy Days" ///
+							14 "Longest Dry Spell" ///
+							15 "Mean Daily Temperature" ///
+							16 "Median Daily Temperature" ///
+							17 "Variance of Daily Temperature" ///
+							18 "Skew of Daily Temperature" ///
+							19 "Growing Degree Days (GDD)" ///
+							20 "Deviation in GDD" ///
+							21 "Z-Score of GDD" ///
+							22 "Maximum Daily Temperature", replace
+							
+* define loop through levels of countries	
+	levelsof 	country		, local(lc)
+	foreach c of local lc {
+		estpost 		tabstat sig if country == `c', by(varname) nototal ///
+							statistics(mean) columns(statistics) listwise
+		est 			store sig_`c' 
+	}
+
+* output table
+	esttab 				sig_1 sig_2 sig_4 sig_5 sig_6 sig_7 ///
+							using "$xtab/var_sig.tex", ///
+							main(mean) cells(mean(fmt(2))) label ///
+							mtitle("Ethiopia" "Malawi" "Niger" ///
+							"Nigeria" "Tanzania" "Uganda") ///
+							nonum collabels(none) booktabs f replace
+	
 	
 * **********************************************************************
-* 3 - generate serrbar graphs by country
+* 4 - generate serrbar graphs by country
 * **********************************************************************
 
 	
