@@ -1,5 +1,5 @@
 * Project: WB Weather
-* Created on: September 2020
+* Created on: November 2020
 * Created by: alj
 * Edited by: alj
 * Last edit: 29 November 2020 
@@ -15,7 +15,7 @@
 	* grc1leg2.ado
 
 * TO DO:
-	* complete
+	* everything
 	
 * **********************************************************************
 * 0 - setup
@@ -41,100 +41,59 @@
 * load data 
 	use 			"$root/lsms_panel", clear
 
-* replace missing values as zeros for rainfall variables 1-9
-	forval j = 1/9 {
-	    forval i = 1/6 {
-		    forval k = 0/9 {
-				qui: replace		v0`j'_rf`i'_x`k' = 0 if v0`j'_rf`i'_x`k' == .    
-			}
-		}
-	}
-
-* replace missing values as zeros for rainfall variables 10-14
-	forval j = 10/14 {
-	    forval i = 1/6 {
-		    forval k = 0/9 {
-				qui: replace		v`j'_rf`i'_x`k' = 0 if v`j'_rf`i'_x`k' == .    
-			}
-		}
-	}
-
-* replace missing values as zeros for temperature variables 15-22
-	forval j = 15/22 {
-	    forval i = 1/3 {
-		    forval k = 0/9 {
-				qui: replace		v`j'_tp`i'_x`k' = 0 if v`j'_tp`i'_x`k' == .    
-			}
-		}
-	}
-
-
-* **********************************************************************
-* 2 - generate summary variables
-* **********************************************************************
-
-* generate averages across extractions for rainfall variables 1-9
-	forval j = 1/9 {
-	    forval i = 1/6 {
-				egen 		v0`j'_rf`i' = rowmean(v0`j'_rf`i'_x0 ///
-								v0`j'_rf`i'_x1 v0`j'_rf`i'_x2 v0`j'_rf`i'_x3 ///
-								v0`j'_rf`i'_x4 v0`j'_rf`i'_x5 v0`j'_rf`i'_x6 ///
-								v0`j'_rf`i'_x7 v0`j'_rf`i'_x8 v0`j'_rf`i'_x9)  
-		}
-	}
+* label variables
+	lab var 		tf_hrv	"Total farm production (2010 USD)"
+	lab var 		tf_lnd	"Total farmed area (ha)"
+	lab var 		tf_yld	"Total farm yield (2010 USD/ha)"
+	lab var 		tf_lab	"Total farm labor rate (days/ha)"
+	lab var 		tf_frt	"Total farm fertilizer rate (kg/ha)" 
+	lab var 		tf_pst	"Total farm pesticide use (\%)"
+	lab var 		tf_hrb 	"Total farm herbicide use (\%)"
+	lab var 		tf_irr 	"Total farm irrigation use (\%)"
 	
-* generate averages across extractions for rainfall variables 10-14
-	forval j = 10/14 {
-	    forval i = 1/6 {
-				egen 		v`j'_rf`i' = rowmean(v`j'_rf`i'_x0 ///
-								v`j'_rf`i'_x1 v`j'_rf`i'_x2 v`j'_rf`i'_x3 ///
-								v`j'_rf`i'_x4 v`j'_rf`i'_x5 v`j'_rf`i'_x6 ///
-								v`j'_rf`i'_x7 v`j'_rf`i'_x8 v`j'_rf`i'_x9)  
-		}
+	lab var 		cp_hrv	"Primary crop production (kg)"
+	lab var 		cp_lnd	"Primary crop farmed area (ha)"
+	lab var 		cp_yld	"Primary crop yield (kg/ha)"
+	lab var 		cp_lab	"Primary crop labor rate (days/ha)"
+	lab var 		cp_frt	"Primary crop fertilizer rate (kg/ha)" 
+	lab var 		cp_pst	"Primary crop pesticide use (\%)"
+	lab var 		cp_hrb 	"Primary crop herbicide use (\%)"
+	lab var 		cp_irr 	"Primary crop irrigation use (\%)"	
+				
+* define loop through levels of countries	
+	levelsof 	country		, local(lc)
+	foreach c of local lc {
+		estpost 		tabstat tf* if country == `c', ///
+							statistics(mean sd) columns(statistics) listwise
+		est 			store sig_`c' 
 	}
 
-* generate averages across extractions for temperature variables 15-22
-	forval j = 15/22 {
-	    forval i = 1/3 {
-				egen 		v`j'_tp`i' = rowmean(v`j'_tp`i'_x0 ///
-								v`j'_tp`i'_x1 v`j'_tp`i'_x2 v`j'_tp`i'_x3 ///
-								v`j'_tp`i'_x4 v`j'_tp`i'_x5 v`j'_tp`i'_x6 ///
-								v`j'_tp`i'_x7 v`j'_tp`i'_x8 v`j'_tp`i'_x9)  
-		}
-	}		
+* output table
+	esttab 				sig_1 sig_2 sig_4 sig_5 sig_6 sig_7 ///
+							using "$xtab/var_sum_tf.tex", ///
+							main(mean sd) cells(mean(fmt(3)) sd(fmt(3)par)) label ///
+							mtitle("Ethiopia" "Malawi" "Niger" ///
+							"Nigeria" "Tanzania" "Uganda") ///
+							nonum collabels(none) booktabs f replace	
 
-* **********************************************************************
-* 3 - generate table of summary statistics
-* **********************************************************************
-							
-label var lntf_yld		"Total Farm: Log of Yield"
-label var lntf_lab		"Total Farm: Log of Labor"
-label var lntf_frt		"Total Farm: Log of Fertilizer Use" 
-label var tf_pst		"Total Farm: Pesticide Use"
-label var tf_hrb 		"Total Farm: Herbicide Use"
-label var tf_irr 		"Total Farm: Irrigation Use"
-label var lncp_yld		"Total Crop: Log of Yield"
-label var lncp_lab		"Total Crop: Log of Labor"
-label var lncp_frt		"Total Crop: Log of Fertilizer Use" 
-label var cp_pst		"Total Crop: Pesticide Use"
-label var cp_hrb 		"Total Crop: Herbicide Use"
-label var cp_irr 		"Total Crop: Irrigation Use"
+* define loop through levels of countries	
+	levelsof 	country		, local(lc)
+	foreach c of local lc {
+		estpost 		tabstat cp* if country == `c', ///
+							statistics(mean sd) columns(statistics) listwise
+		est 			store sig_`c' 
+	}
 
-estpost tabstat lntf_yld lntf_lab lntf_frt tf_pst tf_hrb tf_irr lncp_yld lncp_lab lncp_frt cp_pst cp_hrb cp_irr, statistics(mean) by(country) col(statistics)
-matrix anys = e(mean)
-matrix colnames anys = Ethiopia Malawi Niger Nigeria Uganda Tanzania 	
-matrix rownames anys = anys
+* output table
+	esttab 				sig_1 sig_2 sig_4 sig_5 sig_6 sig_7 ///
+							using "$xtab/var_sum_cp.tex", ///
+							main(mean sd) cells(mean(fmt(3)) sd(fmt(3)par)) label ///
+							mtitle("Ethiopia" "Malawi" "Niger" ///
+							"Nigeria" "Tanzania" "Uganda") ///
+							nonum collabels(none) booktabs f replace	
 
-eststo clear
-estpost tabstat lntf_yld lntf_lab lntf_frt tf_pst tf_hrb tf_irr lncp_yld lncp_lab lncp_frt cp_pst cp_hrb cp_irr, statistics(mean sd p50) by(country) col(statistics)
 
-estadd matrix anys
-
-esttab using "$xtab/sumstat.tex", ///
-	cells("mean(fmt(a2) label(Mean)) sd(fmt(a2) label(Std.\ Dev.)) p50(fmt(a2) label(50\%))") ///
-	nostar nonumbers nomtitle label booktabs width(38em) replace
-							
-			
+		
 * **********************************************************************
 * 7 - end matter
 * **********************************************************************
