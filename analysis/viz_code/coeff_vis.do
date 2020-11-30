@@ -1139,24 +1139,145 @@ restore
 							20 "Deviation in GDD" ///
 							21 "Z-Score of GDD" ///
 							22 "Maximum Daily Temperature", replace
-							
+
+* create tables for rainfall
+preserve
+
+	keep if			varname < 15
+	
 * define loop through levels of countries	
 	levelsof 	country		, local(lc)
 	foreach c of local lc {
-		estpost 		tabstat sig if country == `c', by(varname) nototal ///
-							statistics(mean) columns(statistics) listwise
-		est 			store sig_`c' 
+	    
+	* define loop through levels of countries	
+		levelsof 	sat		, local(ls)
+		foreach s of local ls {
+			estpost 		tabstat sig if country == `c' & sat == `s', by(varname) nototal ///
+								statistics(mean) columns(statistics) listwise
+			est 			store sig_`c'_`s'
+		}
 	}
 
-* output table
-	esttab 				sig_1 sig_2 sig_4 sig_5 sig_6 sig_7 ///
-							using "$xtab/var_sig.tex", ///
+			
+* output table - rainfall ethiopia
+	esttab 				sig_1* ///
+							using "$xtab/var_sig_eth_rf.tex", ///
 							main(mean) cells(mean(fmt(2))) label ///
-							mtitle("Ethiopia" "Malawi" "Niger" ///
-							"Nigeria" "Tanzania" "Uganda") ///
+							mtitle("Rainfall 1" "Rainfall 2" "Rainfall 3" ///
+							"Rainfall 4" "Rainfall 5" "Rainfall 6") ///
 							nonum collabels(none) booktabs f replace
+							
+* output table - rainfall malawi
+	esttab 				sig_2* ///
+							using "$xtab/var_sig_mwi_rf.tex", ///
+							main(mean) cells(mean(fmt(2))) label ///
+							mtitle("Rainfall 1" "Rainfall 2" "Rainfall 3" ///
+							"Rainfall 4" "Rainfall 5" "Rainfall 6") ///
+							nonum collabels(none) booktabs f replace
+							
+* output table - rainfall niger
+	esttab 				sig_4* ///
+							using "$xtab/var_sig_ngr_rf.tex", ///
+							main(mean) cells(mean(fmt(2))) label ///
+							mtitle("Rainfall 1" "Rainfall 2" "Rainfall 3" ///
+							"Rainfall 4" "Rainfall 5" "Rainfall 6") ///
+							nonum collabels(none) booktabs f replace
+							
+* output table - rainfall nigeria
+	esttab 				sig_5* ///
+							using "$xtab/var_sig_nga_rf.tex", ///
+							main(mean) cells(mean(fmt(2))) label ///
+							mtitle("Rainfall 1" "Rainfall 2" "Rainfall 3" ///
+							"Rainfall 4" "Rainfall 5" "Rainfall 6") ///
+							nonum collabels(none) booktabs f replace
+							
+* output table - rainfall tanzania
+	esttab 				sig_6* ///
+							using "$xtab/var_sig_tza_rf.tex", ///
+							main(mean) cells(mean(fmt(2))) label ///
+							mtitle("Rainfall 1" "Rainfall 2" "Rainfall 3" ///
+							"Rainfall 4" "Rainfall 5" "Rainfall 6") ///
+							nonum collabels(none) booktabs f replace
+							
+* output table - rainfall uganda
+	esttab 				sig_7* ///
+							using "$xtab/var_sig_uga_rf.tex", ///
+							main(mean) cells(mean(fmt(2))) label ///
+							mtitle("Rainfall 1" "Rainfall 2" "Rainfall 3" ///
+							"Rainfall 4" "Rainfall 5" "Rainfall 6") ///
+							nonum collabels(none) booktabs f replace
+restore
+
+est clear
+
+* create tables for temperature
+preserve
+
+	keep if			varname > 14
 	
-	
+* define loop through levels of countries	
+	levelsof 	country		, local(lc)
+	foreach c of local lc {
+	    
+	* define loop through levels of countries	
+		levelsof 	sat		, local(ls)
+		foreach s of local ls {
+			estpost 		tabstat sig if country == `c' & sat == `s', by(varname) nototal ///
+								statistics(mean) columns(statistics) listwise
+			est 			store sig_`c'_`s'
+		}
+	}
+
+			
+* output table - temperature ethiopia
+	esttab 				sig_1* ///
+							using "$xtab/var_sig_eth_tp.tex", ///
+							main(mean) cells(mean(fmt(2))) label ///
+							mtitle("Temperature 1" "Temperature 2" ///
+							"Temperature 3") nonum collabels(none) ///
+							booktabs f replace
+							
+* output table - temperature malawi
+	esttab 				sig_2* ///
+							using "$xtab/var_sig_mwi_tp.tex", ///
+							main(mean) cells(mean(fmt(2))) label ///
+							mtitle("Temperature 1" "Temperature 2" ///
+							"Temperature 3") nonum collabels(none) ///
+							booktabs f replace
+							
+* output table - temperature niger
+	esttab 				sig_4* ///
+							using "$xtab/var_sig_ngr_tp.tex", ///
+							main(mean) cells(mean(fmt(2))) label ///
+							mtitle("Temperature 1" "Temperature 2" ///
+							"Temperature 3") nonum collabels(none) ///
+							booktabs f replace
+							
+* output table - temperature nigeria
+	esttab 				sig_5* ///
+							using "$xtab/var_sig_nga_tp.tex", ///
+							main(mean) cells(mean(fmt(2))) label ///
+							mtitle("Temperature 1" "Temperature 2" ///
+							"Temperature 3") nonum collabels(none) ///
+							booktabs f replace
+							
+* output table - temperature tanzania
+	esttab 				sig_6* ///
+							using "$xtab/var_sig_tza_tp.tex", ///
+							main(mean) cells(mean(fmt(2))) label ///
+							mtitle("Temperature 1" "Temperature 2" ///
+							"Temperature 3") nonum collabels(none) ///
+							booktabs f replace
+							
+* output table - temperature uganda
+	esttab 				sig_7* ///
+							using "$xtab/var_sig_uga_tp.tex", ///
+							main(mean) cells(mean(fmt(2))) label ///
+							mtitle("Temperature 1" "Temperature 2" ///
+							"Temperature 3") nonum collabels(none) ///
+							booktabs f replace
+restore	
+/*	
 * **********************************************************************
 * 4 - generate serrbar graphs by country
 * **********************************************************************

@@ -2,7 +2,7 @@
 * Created on: November 2020
 * Created by: jdm
 * Edited by: jdm
-* Last edit: 10 November 2020 
+* Last edit: 29 November 2020 
 * Stata v.16.1 
 
 * does
@@ -204,7 +204,7 @@ restore
 						"$sfig/r2_reg3_reg6_ext.gph", col(2) iscale(.5) ///
 						ring(0) pos(5) holes(4) commonscheme
 						
-	graph export 	"$xfig\r2_ext.png", width(1400) replace
+	graph export 	"$xfig\r2_ext.eps", as(eps) replace
 		
 
 * **********************************************************************
@@ -224,7 +224,380 @@ restore
 
 
 * **********************************************************************
-* 3 - generate R^2 specification curves by satellite & model
+* 3a - generate R^2 specification curves by rainfall metric & model
+* **********************************************************************
+
+* load data 
+	use 			"$root/lsms_complete_results", clear
+
+* keep extraction 3	
+	keep			if ext == 3
+	sort 			regname varname 
+
+	collapse 		(mean) r2_mu = adjustedr ///
+						(sd) r2_sd = adjustedr ///
+						(count) n = adjustedr, by(regname varname)
+	
+	gen 			r2_hi = r2_mu + invttail(n-1,0.025) * (r2_sd / sqrt(n))
+	gen				r2_lo = r2_mu - invttail(n-1,0.025) * (r2_sd / sqrt(n))
+
+* weather only and weather squared only
+preserve
+	keep			if regname == 1 | regname == 4
+	keep			if varname < 15
+	sort 			regname r2_mu 
+	gen 			obs = _n	
+
+* stack values of the specification indicators
+	gen 			k1 		= 	regname
+	gen 			k2 		= 	varname + 6 + 2
+	
+	lab				var obs "Specification # - sorted by model & effect size"
+
+	lab 			var k1 "Model"
+	lab 			var k2 "Rainfall Metric"
+
+	sum			 	r2_hi
+	global			bmax = r(max)
+	
+	sum			 	r2_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - 2.5*$brange
+	global			gheight	=	37
+	  
+	di $bmin
+	di $brange
+	di $from_y
+	di $gheight
+		
+	twoway 			scatter k1 k2 obs, xlab(0(4)28) xsize(10) ysize(6) msize(small small small) title("")	  ///
+						ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
+						4 "Weather + Weather^2" 5 "Weather + Weather^2 + FE" /// 
+						6 "Weather + Weather^2 + FE + Inputs" 7 "*{bf:Model}*" ///
+						9 "Mean Daily Rain" 10 "Median Daily Rain" 11 "Variance of Daily Rain" ///
+						12 "Skew of Daily Rain" 13 "Total Seasonal Rain" 14 "Dev. in Total Rain" ///
+						15 "z-Score of Total Rain" 16 "Rainy Days" 17 "Dev. in Rainy Days" ///
+						18 "No Rain Days" 19 "Dev. in No Rain Days" 20 "% Rainy Days" ///
+						21 "Dev. in % Rainy Days" 22 "Longest Dry Spell" ///
+						23 "*{bf:Rainfall Metric}*" 37 " ", angle(0) ///
+						labsize(vsmall) tstyle(notick)) || ///
+						(scatter r2_mu obs, yaxis(2) mcolor(maroon) ///
+						ylab(0(0.01)0.04, axis(2) labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2))) || ///
+						(rbar r2_lo r2_hi obs, barwidth(.2) color(edkblue%40) yaxis(2) ), ///
+						legend(order(3 4 5) cols(1) size(small) rowgap(.5) pos(12) ///
+						label(3 "mean adjusted R{sup:2}") label(4 "95% C.I.") ) ///
+						saving("$sfig/r2_reg1_reg4_rf", replace)	
+restore
+
+
+* weather FE and weather squared FE
+preserve
+	keep			if regname == 2 | regname == 5
+	keep			if varname < 15
+	sort 			regname r2_mu 
+	gen 			obs = _n	
+
+* stack values of the specification indicators
+	gen 			k1 		= 	regname
+	gen 			k2 		= 	varname + 6 + 2
+	
+	lab				var obs "Specification # - sorted by model & effect size"
+
+	lab 			var k1 "Model"
+	lab 			var k2 "Rainfall Metric"
+
+	sum			 	r2_hi
+	global			bmax = r(max)
+	
+	sum			 	r2_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - 2.5*$brange
+	global			gheight	=	37
+	  
+	di $bmin
+	di $brange
+	di $from_y
+	di $gheight
+		
+	twoway 			scatter k1 k2 obs, xlab(0(4)28) xsize(10) ysize(6) msize(small small small) title("")	  ///
+						ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
+						4 "Weather + Weather^2" 5 "Weather + Weather^2 + FE" /// 
+						6 "Weather + Weather^2 + FE + Inputs" 7 "*{bf:Model}*" ///
+						9 "Mean Daily Rain" 10 "Median Daily Rain" 11 "Variance of Daily Rain" ///
+						12 "Skew of Daily Rain" 13 "Total Seasonal Rain" 14 "Dev. in Total Rain" ///
+						15 "z-Score of Total Rain" 16 "Rainy Days" 17 "Dev. in Rainy Days" ///
+						18 "No Rain Days" 19 "Dev. in No Rain Days" 20 "% Rainy Days" ///
+						21 "Dev. in % Rainy Days" 22 "Longest Dry Spell" ///
+						23 "*{bf:Rainfall Metric}*" 37 " ", angle(0) ///
+						labsize(vsmall) tstyle(notick)) || ///
+						(scatter r2_mu obs, yaxis(2) mcolor(maroon) ///
+						ylab(0.07(0.01)0.12, axis(2) labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2))) || ///
+						(rbar r2_lo r2_hi obs, barwidth(.2) color(edkblue%40) yaxis(2) ), ///
+						legend(order(3 4 5) cols(1) size(small) rowgap(.5) pos(12) ///
+						label(3 "mean adjusted R{sup:2}") label(4 "95% C.I.") ) ///
+						saving("$sfig/r2_reg2_reg5_rf", replace)	
+restore
+
+
+* weather FE inputs and weather squared FE inputs
+preserve
+	keep			if regname == 3 | regname == 6
+	keep			if varname < 15
+	sort 			regname r2_mu 
+	gen 			obs = _n	
+
+* stack values of the specification indicators
+	gen 			k1 		= 	regname
+	gen 			k2 		= 	varname + 6 + 2
+	
+	lab				var obs "Specification # - sorted by model & effect size"
+
+	lab 			var k1 "Model"
+	lab 			var k2 "Rainfall Metric"
+
+	sum			 	r2_hi
+	global			bmax = r(max)
+	
+	sum			 	r2_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - 2.5*$brange
+	global			gheight	=	37
+	  
+	di $bmin
+	di $brange
+	di $from_y
+	di $gheight
+		
+	twoway 			scatter k1 k2 obs, xlab(0(4)28) xsize(10) ysize(6) msize(small small small) title("")	  ///
+						ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
+						4 "Weather + Weather^2" 5 "Weather + Weather^2 + FE" /// 
+						6 "Weather + Weather^2 + FE + Inputs" 7 "*{bf:Model}*" ///
+						9 "Mean Daily Rain" 10 "Median Daily Rain" 11 "Variance of Daily Rain" ///
+						12 "Skew of Daily Rain" 13 "Total Seasonal Rain" 14 "Dev. in Total Rain" ///
+						15 "z-Score of Total Rain" 16 "Rainy Days" 17 "Dev. in Rainy Days" ///
+						18 "No Rain Days" 19 "Dev. in No Rain Days" 20 "% Rainy Days" ///
+						21 "Dev. in % Rainy Days" 22 "Longest Dry Spell" ///
+						23 "*{bf:Rainfall Metric}*" 37 " ", angle(0) ///
+						labsize(vsmall) tstyle(notick)) || ///
+						(scatter r2_mu obs, yaxis(2) mcolor(maroon) ///
+						ylab(0.2(0.02)0.26, axis(2) labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2))) || ///
+						(rbar r2_lo r2_hi obs, barwidth(.2) color(edkblue%40) yaxis(2) ), ///
+						legend(order(3 4 5) cols(1) size(small) rowgap(.5) pos(12) ///
+						label(3 "mean adjusted R{sup:2}") label(4 "95% C.I.") ) ///
+						saving("$sfig/r2_reg3_reg6_rf", replace)	
+restore	
+	
+* combine R^2 specification curves for satellite
+	grc1leg2 		"$sfig/r2_reg1_reg4_rf.gph" "$sfig/r2_reg2_reg5_rf.gph"  ///
+						"$sfig/r2_reg3_reg6_rf.gph", col(2) iscale(.5) ///
+						ring(0) pos(5) holes(4) commonscheme
+						
+	graph export 	"$xfig\r2_rf.pdf", as(pdf) replace
+		
+
+* **********************************************************************
+* 3b - generate R^2 specification curves by temperature metric & model
+* **********************************************************************
+
+* load data 
+	use 			"$root/lsms_complete_results", clear
+
+* keep extraction 3	
+	keep			if ext == 3
+	sort 			regname varname 
+
+	collapse 		(mean) r2_mu = adjustedr ///
+						(sd) r2_sd = adjustedr ///
+						(count) n = adjustedr, by(regname varname)
+	
+	gen 			r2_hi = r2_mu + invttail(n-1,0.025) * (r2_sd / sqrt(n))
+	gen				r2_lo = r2_mu - invttail(n-1,0.025) * (r2_sd / sqrt(n))
+
+* weather only and weather squared only
+preserve
+	keep			if regname == 1 | regname == 4
+	keep			if varname > 14
+	sort 			regname r2_mu 
+	gen 			obs = _n	
+
+* stack values of the specification indicators
+	gen 			k1 		= 	regname
+	gen 			k2 		= 	varname + 6 + 2 - 14
+	
+	lab				var obs "Specification # - sorted by model & effect size"
+
+	lab 			var k1 "Model"
+	lab 			var k2 "Temperature Metric"
+
+	sum			 	r2_hi
+	global			bmax = r(max)
+	
+	sum			 	r2_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - 2.5*$brange
+	global			gheight	=	31
+	  
+	di $bmin
+	di $brange
+	di $from_y
+	di $gheight
+		
+	twoway 			scatter k1 k2 obs, xlab(0(4)18) xsize(10) ysize(6) msize(small small small) title("")	  ///
+						ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
+						4 "Weather + Weather^2" 5 "Weather + Weather^2 + FE" /// 
+						6 "Weather + Weather^2 + FE + Inputs" 7 "*{bf:Model}*" ///
+						9 "Mean Daily Temp" 10 "Median Daily Temp" ///
+						11 "Variance of Daily Temp" 12 "Skew of Daily Temp" ///
+						13 "Growing Degree Days" 14 "Dev. in GDD" 15 "z-Score of GDD" ///
+						16 "Max Daily Temp" 17 "*{bf:Temperature Metric}*" 31 " ", ///
+						angle(0) labsize(vsmall) tstyle(notick)) || ///
+						(scatter r2_mu obs, yaxis(2) mcolor(maroon) ///
+						ylab(0(0.02)0.08, axis(2) labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2))) || ///
+						(rbar r2_lo r2_hi obs, barwidth(.2) color(edkblue%40) yaxis(2) ), ///
+						legend(order(3 4 5) cols(1) size(small) rowgap(.5) pos(12) ///
+						label(3 "mean adjusted R{sup:2}") label(4 "95% C.I.") ) ///
+						saving("$sfig/r2_reg1_reg4_tp", replace)	
+restore
+
+
+* weather FE and weather squared FE
+preserve
+	keep			if regname == 2 | regname == 5
+	keep			if varname > 14
+	sort 			regname r2_mu 
+	gen 			obs = _n	
+
+* stack values of the specification indicators
+	gen 			k1 		= 	regname
+	gen 			k2 		= 	varname + 6 + 2 - 14
+	
+	lab				var obs "Specification # - sorted by model & effect size"
+
+	lab 			var k1 "Model"
+	lab 			var k2 "Temperature Metric"
+
+	sum			 	r2_hi
+	global			bmax = r(max)
+	
+	sum			 	r2_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - 2.5*$brange
+	global			gheight	=	37
+	  
+	di $bmin
+	di $brange
+	di $from_y
+	di $gheight
+		
+	twoway 			scatter k1 k2 obs, xlab(0(4)18) xsize(10) ysize(6) msize(small small small) title("")	  ///
+						ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
+						4 "Weather + Weather^2" 5 "Weather + Weather^2 + FE" /// 
+						6 "Weather + Weather^2 + FE + Inputs" 7 "*{bf:Model}*" ///
+						9 "Mean Daily Temp" 10 "Median Daily Temp" ///
+						11 "Variance of Daily Temp" 12 "Skew of Daily Temp" ///
+						13 "Growing Degree Days" 14 "Dev. in GDD" 15 "z-Score of GDD" ///
+						16 "Max Daily Temp" 17 "*{bf:Temperature Metric}*" 31 " ", ///
+						angle(0) labsize(vsmall) tstyle(notick)) || ///
+						(scatter r2_mu obs, yaxis(2) mcolor(maroon) ///
+						ylab(0.06(0.02)0.14, axis(2) labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2))) || ///
+						(rbar r2_lo r2_hi obs, barwidth(.2) color(edkblue%40) yaxis(2) ), ///
+						legend(order(3 4 5) cols(1) size(small) rowgap(.5) pos(12) ///
+						label(3 "mean adjusted R{sup:2}") label(4 "95% C.I.") ) ///
+						saving("$sfig/r2_reg2_reg5_tp", replace)	
+restore
+
+
+* weather FE inputs and weather squared FE inputs
+preserve
+	keep			if regname == 3 | regname == 6
+	keep			if varname > 14
+	sort 			regname r2_mu 
+	gen 			obs = _n	
+
+* stack values of the specification indicators
+	gen 			k1 		= 	regname
+	gen 			k2 		= 	varname + 6 + 2 - 14
+	
+	lab				var obs "Specification # - sorted by model & effect size"
+
+	lab 			var k1 "Model"
+	lab 			var k2 "Temperature Metric"
+
+	sum			 	r2_hi
+	global			bmax = r(max)
+	
+	sum			 	r2_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - 2.5*$brange
+	global			gheight	=	37
+	  
+	di $bmin
+	di $brange
+	di $from_y
+	di $gheight
+		
+	twoway 			scatter k1 k2 obs, xlab(0(4)18) xsize(10) ysize(6) msize(small small small) title("")	  ///
+						ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
+						4 "Weather + Weather^2" 5 "Weather + Weather^2 + FE" /// 
+						6 "Weather + Weather^2 + FE + Inputs" 7 "*{bf:Model}*" ///
+						9 "Mean Daily Temp" 10 "Median Daily Temp" ///
+						11 "Variance of Daily Temp" 12 "Skew of Daily Temp" ///
+						13 "Growing Degree Days" 14 "Dev. in GDD" 15 "z-Score of GDD" ///
+						16 "Max Daily Temp" 17 "*{bf:Temperature Metric}*" 31 " ", ///
+						angle(0) labsize(vsmall) tstyle(notick)) || ///
+						(scatter r2_mu obs, yaxis(2) mcolor(maroon) ///
+						ylab(0.18(0.02)0.28, axis(2) labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2))) || ///
+						(rbar r2_lo r2_hi obs, barwidth(.2) color(edkblue%40) yaxis(2) ), ///
+						legend(order(3 4 5) cols(1) size(small) rowgap(.5) pos(12) ///
+						label(3 "mean adjusted R{sup:2}") label(4 "95% C.I.") ) ///
+						saving("$sfig/r2_reg3_reg6_tp", replace)	
+restore	
+	
+* combine R^2 specification curves for satellite
+	grc1leg2 		"$sfig/r2_reg1_reg4_tp.gph" "$sfig/r2_reg2_reg5_tp.gph"  ///
+						"$sfig/r2_reg3_reg6_tp.gph", col(2) iscale(.5) ///
+						ring(0) pos(5) holes(4) commonscheme
+						
+	graph export 	"$xfig\r2_tp.pdf", as(pdf) replace
+
+
+* **********************************************************************
+* 4 - select weather metrics to investigate
+* **********************************************************************
+
+* based on above analysis we will proceed with following rainfall metrics
+	* mean rainfall
+	* total rainfall
+	* rainy days or % rainy days (choose one of these two)
+	* deviation in total
+
+* based on above analysis we will proceed with following temperature metrics
+	* mean rainfall
+	* total rainfall
+	* rainy days or % rainy days (choose one of these two)
+	* deviation in total	
+	
+
+* **********************************************************************
+* 4 - generate R^2 specification curves by satellite & model
 * **********************************************************************
 
 * load data 

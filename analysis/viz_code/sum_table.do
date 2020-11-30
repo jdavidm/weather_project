@@ -1,7 +1,7 @@
 * Project: WB Weather
 * Created on: November 2020
 * Created by: alj
-* Edited by: alj
+* Edited by: jdm
 * Last edit: 29 November 2020 
 * Stata v.16.1 
 
@@ -15,7 +15,7 @@
 	* grc1leg2.ado
 
 * TO DO:
-	* everything
+	* complete
 	
 * **********************************************************************
 * 0 - setup
@@ -95,7 +95,7 @@
 
 		
 * **********************************************************************
-* 7 - end matter
+* 2 - end matter
 * **********************************************************************
 
 * close the log
