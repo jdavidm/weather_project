@@ -45,7 +45,7 @@
 	loc 	inputscp 	lncp_lab lncp_frt cp_pst cp_hrb cp_irr
 	loc		inputstf 	lntf_lab lntf_frt tf_pst tf_hrb tf_irr
 	loc		weather 	v*
-
+/*
 * create file to post results to
 	tempname 	ea_aez_reg_results
 	postfile 	`ea_aez_reg_results' aez str3 sat str2 depvar str4 ///
@@ -137,7 +137,7 @@ foreach l of local levels {
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
 						(`=e(ll)') (`=e(df_r)') (.) (.) (.) (.) (.)
 		
-	* big regression - value of harvest
+	* big regression - quantity of maize
 		xtreg			lncp_yld c.`v'##i.aez `inputscp' i.year, fe vce(cluster hhid)
 		post 			`ea_aez_reg_results' (0) ("`sat'") ("cp") ("reg4") ///
 						("`varn'") (`=_b[`v']') (`=_se[`v']') (`=e(r2_a)') ///
@@ -316,5 +316,41 @@ sort 	aez depvar sat varname regname
 
 * close the log
 	log	close
+*/
 
+
+* **********************************************************************
+* Alternate approach
+* **********************************************************************
+
+* original linear regression (weather + inputs + fe) by aez	(maize)
+
+* define loop through levels of the data type variable	
+	levelsof 	aez	, local(levels)
+	foreach l of local levels {
+
+	* set panel id so it varies by dtype
+		xtset		hhid
+	
+	* per metric		
+		foreach 	v of varlist `weather' { 
+
+		* weather and inputs and fe
+			xtreg 		lncp_yld `v' `inputscp' i.year i.country if aez == `l', fe vce(cluster hhid)
+			** omitting lots of whole countries due to colinearity
+	}
+	}
+	
+* new approach with full dataset (maize)
+	
+* per metric		
+	foreach 	v of varlist `weather' { 
+	
+	* big regression - quantity of maize
+		xtreg			lncp_yld c.`v'##i.aez `inputscp' i.year, fe vce(cluster hhid)
+		}
+	
+* close the log
+	log	close
+	
 /* END */
