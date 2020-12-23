@@ -23,7 +23,7 @@
 * **********************************************************************
 
 * set $pack to 0 to skip package installation
-	global 			pack 	1
+	global 			pack 	0
 		
 * Specify Stata version in use
     global stataVersion 16.1    // set Stata version
@@ -45,8 +45,8 @@
 		global 		data	"G:/My Drive/weather_project"
     }
 
-    if `"`c(username)'"' == "themacfreezie" {
-        global 		code  	"C:/Users/themacfreezie/git/weather_project"
+    if `"`c(username)'"' == "thema" {
+        global 		code  	"C:/Users/thema/git/weather_project"
 		global 		data	"G:/My Drive/weather_project"
     }
 
