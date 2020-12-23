@@ -26,7 +26,7 @@
 
 * open log	
 	cap log close
-	log 	using 		"`logout'/eawp_regressions", append
+*	log 	using 		"`logout'/eawp_regressions", append
 
 	
 * **********************************************************************
@@ -324,7 +324,7 @@ sort 	aez depvar sat varname regname
 * **********************************************************************
 
 * original linear regression (weather + inputs + fe) by aez	(maize)
-
+/*
 * define loop through levels of the data type variable	
 	levelsof 	aez	, local(levels)
 	foreach l of local levels {
@@ -347,8 +347,25 @@ sort 	aez depvar sat varname regname
 	foreach 	v of varlist `weather' { 
 	
 	* big regression - quantity of maize
+		xtset		hhid
 		xtreg			lncp_yld c.`v'##i.aez `inputscp' i.year, fe vce(cluster hhid)
 		}
+	*/
+* no level terms
+	foreach 	v of varlist `weather' { 
+	
+	* big regression - quantity of maize
+		xtset		hhid
+		xtreg			lncp_yld c.`v'#i.aez `inputscp' i.year, fe vce(cluster hhid)
+		est store	reg_`v'
+		}
+	
+	
+* build table for sat 1
+	estout reg_v01_rf2_x1 reg_v02_rf2_x1 reg_v03_rf2_x1 ///
+				using "$data/regression_data/eawp_sandbox/rf1.tex"
+
+
 	
 * close the log
 	log	close
