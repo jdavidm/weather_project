@@ -26,7 +26,7 @@
 
 * open log	
 	cap log close
-*	log 	using 		"`logout'/eawp_regressions", append
+	log 	using 		"`logout'/eawp_regressions", append
 
 	
 * **********************************************************************
@@ -351,19 +351,25 @@ sort 	aez depvar sat varname regname
 		xtreg			lncp_yld c.`v'##i.aez `inputscp' i.year, fe vce(cluster hhid)
 		}
 	*/
+	
+eststo clear
+	
 * no level terms
 	foreach 	v of varlist `weather' { 
 	
 	* big regression - quantity of maize
 		xtset		hhid
-		xtreg			lncp_yld c.`v'#i.aez `inputscp' i.year, fe vce(cluster hhid)
-		est store	reg_`v'
+		eststo:		xtreg lncp_yld c.`v'#i.aez `inputscp' i.year, fe vce(cluster hhid)
 		}
 	
+	esttab est1 est2 est3, se
 	
 * build table for sat 1
-	estout reg_v01_rf2_x1 reg_v02_rf2_x1 reg_v03_rf2_x1 ///
-				using "$data/regression_data/eawp_sandbox/rf1.tex"
+	esttab 	reg_v01_rf2_x1 reg_v02_rf2_x1 reg_v03_rf2_x1 reg_v04_rf2_x1 ///
+			reg_v05_rf2_x1 reg_v06_rf2_x1 reg_v07_rf2_x1 reg_v08_rf2_x1 ///
+			reg_v09_rf2_x1 reg_v10_rf2_x1 reg_v11_rf2_x1 reg_v12_rf2_x1 ///
+			reg_v13_rf2_x1 reg_v14_rf2_x1 ///
+				using "$data/regression_data/eawp_sandbox/rf2.tex", replace
 
 
 	
