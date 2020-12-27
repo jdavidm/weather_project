@@ -362,16 +362,15 @@ eststo clear
 		eststo:		xtreg lncp_yld c.`v'#i.aez `inputscp' i.year, fe vce(cluster hhid)
 		}
 	
-	esttab est1 est2 est3, se
+	esttab 		est1 est2 est3, se title(Rainfall 1) nonumbers mtitles("Mean Daily Rainfall" ///
+				"Median Daily Rainfall" "Variance of Daily Rainfall") omitting(2015.year)
 	
 * build table for sat 1
-	esttab 	reg_v01_rf2_x1 reg_v02_rf2_x1 reg_v03_rf2_x1 reg_v04_rf2_x1 ///
-			reg_v05_rf2_x1 reg_v06_rf2_x1 reg_v07_rf2_x1 reg_v08_rf2_x1 ///
-			reg_v09_rf2_x1 reg_v10_rf2_x1 reg_v11_rf2_x1 reg_v12_rf2_x1 ///
-			reg_v13_rf2_x1 reg_v14_rf2_x1 ///
-				using "$data/regression_data/eawp_sandbox/rf2.tex", replace
-
-
+*	esttab 	reg_v01_rf2_x1 reg_v02_rf2_x1 reg_v03_rf2_x1 reg_v04_rf2_x1 ///
+*			reg_v05_rf2_x1 reg_v06_rf2_x1 reg_v07_rf2_x1 reg_v08_rf2_x1 ///
+*			reg_v09_rf2_x1 reg_v10_rf2_x1 reg_v11_rf2_x1 reg_v12_rf2_x1 ///
+*			reg_v13_rf2_x1 reg_v14_rf2_x1 ///
+*				using "$data/regression_data/eawp_sandbox/rf2.tex", replace
 	
 * close the log
 	log	close
