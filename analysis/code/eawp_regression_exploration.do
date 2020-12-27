@@ -362,9 +362,126 @@ eststo clear
 		eststo:		xtreg lncp_yld c.`v'#i.aez `inputscp' i.year, fe vce(cluster hhid)
 		}
 	
-	esttab 		est1 est2 est3, se title(Rainfall 1) nonumbers mtitles("Mean Daily Rainfall" ///
-				"Median Daily Rainfall" "Variance of Daily Rainfall") omitting(2015.year)
-	
+	esttab 		est1 est2 est3 est4 est5 est6 est7 est8 est9 est10 est11 est12 est13 est14 ///
+				using "$data/regression_data/eawp_sandbox/rf2.csv", replace ///
+				se title(Rainfall 2) nonumbers ///
+				mtitles("Mean Daily Rainfall" "Median Daily Rainfall" ///
+				"Variance of Daily Rainfall" "Skew of Daily Rainfall" ///
+				"Total Rainfall" "Deviation in Total Rainfall" ///
+				"Z-Score of Total Rainfall" "Rainy Days" "Deviation in Rainy Days" ///
+				"No Rain Days" "Deviation in No Rain Days" "% Rainy Days" ///
+				"Deviation in % Rainy Days" "Longest Dry Spell") ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year) ///
+				label
+
+	esttab 		est15 est16 est17 est18 est19 est20 est21 est22 est23 est24 est25 est26 est27 est28 ///
+				using "$data/regression_data/eawp_sandbox/rf3.csv", replace ///
+				se title(Rainfall 3) nonumbers ///
+				mtitles("Mean Daily Rainfall" "Median Daily Rainfall" ///
+				"Variance of Daily Rainfall" "Skew of Daily Rainfall" ///
+				"Total Rainfall" "Deviation in Total Rainfall" ///
+				"Z-Score of Total Rainfall" "Rainy Days" "Deviation in Rainy Days" ///
+				"No Rain Days" "Deviation in No Rain Days" "% Rainy Days" ///
+				"Deviation in % Rainy Days" "Longest Dry Spell") ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year) ///
+				label
+				
+	esttab 		est29 est30 est31 est32 est33 est34 est35 est36 est37 est38 est39 est40 est41 est42 ///
+				using "$data/regression_data/eawp_sandbox/rf1.csv", replace ///
+				se title(Rainfall 1) nonumbers ///
+				mtitles("Mean Daily Rainfall" "Median Daily Rainfall" ///
+				"Variance of Daily Rainfall" "Skew of Daily Rainfall" ///
+				"Total Rainfall" "Deviation in Total Rainfall" ///
+				"Z-Score of Total Rainfall" "Rainy Days" "Deviation in Rainy Days" ///
+				"No Rain Days" "Deviation in No Rain Days" "% Rainy Days" ///
+				"Deviation in % Rainy Days" "Longest Dry Spell") ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year) ///
+				label
+				
+	esttab 		est43 est44 est45 est46 est47 est48 est49 est50 est51 est52 est53 est54 est55 est56 ///
+				using "$data/regression_data/eawp_sandbox/rf5.csv", replace ///
+				se title(Rainfall 5) nonumbers ///
+				mtitles("Mean Daily Rainfall" "Median Daily Rainfall" ///
+				"Variance of Daily Rainfall" "Skew of Daily Rainfall" ///
+				"Total Rainfall" "Deviation in Total Rainfall" ///
+				"Z-Score of Total Rainfall" "Rainy Days" "Deviation in Rainy Days" ///
+				"No Rain Days" "Deviation in No Rain Days" "% Rainy Days" ///
+				"Deviation in % Rainy Days" "Longest Dry Spell") ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year) ///
+				label
+				
+	esttab 		est57 est58 est59 est60 est61 est62 est63 est64 est65 est66 est67 est68 est69 est70 ///
+				using "$data/regression_data/eawp_sandbox/rf4.csv", replace ///
+				se title(Rainfall 4) nonumbers ///
+				mtitles("Mean Daily Rainfall" "Median Daily Rainfall" ///
+				"Variance of Daily Rainfall" "Skew of Daily Rainfall" ///
+				"Total Rainfall" "Deviation in Total Rainfall" ///
+				"Z-Score of Total Rainfall" "Rainy Days" "Deviation in Rainy Days" ///
+				"No Rain Days" "Deviation in No Rain Days" "% Rainy Days" ///
+				"Deviation in % Rainy Days" "Longest Dry Spell") ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year) ///
+				label
+				
+	esttab 		est71 est72 est73 est74 est75 est76 est77 est78 est79 est80 est81 est82 est83 est84 ///
+				using "$data/regression_data/eawp_sandbox/rf6.csv", replace ///
+				se title(Rainfall 6) nonumbers ///
+				mtitles("Mean Daily Rainfall" "Median Daily Rainfall" ///
+				"Variance of Daily Rainfall" "Skew of Daily Rainfall" ///
+				"Total Rainfall" "Deviation in Total Rainfall" ///
+				"Z-Score of Total Rainfall" "Rainy Days" "Deviation in Rainy Days" ///
+				"No Rain Days" "Deviation in No Rain Days" "% Rainy Days" ///
+				"Deviation in % Rainy Days" "Longest Dry Spell") ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year) ///
+				label
+				
+	esttab 		est85 est86 est87 est88 est89 est90 est91 est92 ///
+				using "$data/regression_data/eawp_sandbox/tp3.csv", replace ///
+				se title(Temperature 3) nonumbers ///
+				mtitles("Mean Daily Temperature" "Median Daily Temperature" ///
+				"Variance of Daily Temperature" "Skew of Daily Temperature" ///
+				"Growing Degree Days (GDD)" "Deviation in GDD" ///
+				"Z-Score of GDD" "Maximum Daily Temperature" ) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year) ///
+				label
+				
+	esttab 		est93 est94 est95 est96 est97 est98 est99 est100 ///
+				using "$data/regression_data/eawp_sandbox/tp1.csv", replace ///
+				se title(Temperature 1) nonumbers ///
+				mtitles("Mean Daily Temperature" "Median Daily Temperature" ///
+				"Variance of Daily Temperature" "Skew of Daily Temperature" ///
+				"Growing Degree Days (GDD)" "Deviation in GDD" ///
+				"Z-Score of GDD" "Maximum Daily Temperature" ) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year) ///
+				label
+				
+	esttab 		est101 est102 est103 est104 est105 est106 est107 est108 ///
+				using "$data/regression_data/eawp_sandbox/tp2.csv", replace ///
+				se title(Temperature 2) nonumbers ///
+				mtitles("Mean Daily Temperature" "Median Daily Temperature" ///
+				"Variance of Daily Temperature" "Skew of Daily Temperature" ///
+				"Growing Degree Days (GDD)" "Deviation in GDD" ///
+				"Z-Score of GDD" "Maximum Daily Temperature" ) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year) ///
+				label
+				
 * build table for sat 1
 *	esttab 	reg_v01_rf2_x1 reg_v02_rf2_x1 reg_v03_rf2_x1 reg_v04_rf2_x1 ///
 *			reg_v05_rf2_x1 reg_v06_rf2_x1 reg_v07_rf2_x1 reg_v08_rf2_x1 ///
