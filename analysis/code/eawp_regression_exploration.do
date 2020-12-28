@@ -359,9 +359,30 @@ eststo clear
 	
 	* big regression - quantity of maize
 		xtset		hhid
-		eststo:		xtreg lncp_yld c.`v'#i.aez `inputscp' i.year, fe vce(cluster hhid)
+		xtreg 		lncp_yld c.`v'#i.aez `inputscp' i.year, fe vce(cluster hhid)
+		eststo		reg_`v'
 		}
-	
+		
+* build table for sat 1
+	esttab 	reg_v01_rf2_x1 reg_v02_rf2_x1 reg_v03_rf2_x1 reg_v04_rf2_x1 ///
+			reg_v05_rf2_x1 reg_v06_rf2_x1 reg_v07_rf2_x1 reg_v08_rf2_x1 ///
+			reg_v09_rf2_x1 reg_v10_rf2_x1 reg_v11_rf2_x1 reg_v12_rf2_x1 ///
+			reg_v13_rf2_x1 reg_v14_rf2_x1 ///
+				using "C:/Users/jdmichler/Dropbox/Apps/Overleaf/East Africa Weather Project/tables/rf1.tex", replace	 ///
+				label booktabs b(3) p(3) alignment(D{.}{.}{-1}) ///
+				title(Rainfall 2) nonumbers ///
+				mtitles("Mean Daily Rainfall" "Median Daily Rainfall" ///
+				"Variance of Daily Rainfall" "Skew of Daily Rainfall" ///
+				"Total Rainfall" "Deviation in Total Rainfall" ///
+				"Z-Score of Total Rainfall" "Rainy Days" "Deviation in Rainy Days" ///
+				"No Rain Days" "Deviation in No Rain Days" "\% Rainy Days" ///
+				"Deviation in \% Rainy Days" "Longest Dry Spell") ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year)
+
+				
+				
 	esttab 		est1 est2 est3 est4 est5 est6 est7 est8 est9 est10 est11 est12 est13 est14 ///
 				using "$data/regression_data/eawp_sandbox/rf2.csv", replace ///
 				se title(Rainfall 2) nonumbers ///
