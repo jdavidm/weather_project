@@ -363,23 +363,37 @@ eststo clear
 		eststo		reg_`v'
 		}
 		
-* build table for sat 1
-	esttab 	reg_v01_rf2_x1 reg_v02_rf2_x1 reg_v03_rf2_x1 reg_v04_rf2_x1 ///
-			reg_v05_rf2_x1 reg_v06_rf2_x1 reg_v07_rf2_x1 reg_v08_rf2_x1 ///
-			reg_v09_rf2_x1 reg_v10_rf2_x1 reg_v11_rf2_x1 reg_v12_rf2_x1 ///
-			reg_v13_rf2_x1 reg_v14_rf2_x1 ///
+		
+* build table for mean rainfall
+	esttab 	reg_v01_rf1_x1 reg_v01_rf2_x1 reg_v01_rf3_x1 reg_v01_rf4_x1 ///
+			reg_v01_rf5_x1 reg_v01_rf6_x1 ///
 				using "C:/Users/jdmichler/Dropbox/Apps/Overleaf/East Africa Weather Project/tables/rf1.tex", replace	 ///
-				label booktabs b(3) p(3) alignment(D{.}{.}{-1}) ///
-				title(Rainfall 2) nonumbers ///
-				mtitles("Mean Daily Rainfall" "Median Daily Rainfall" ///
-				"Variance of Daily Rainfall" "Skew of Daily Rainfall" ///
-				"Total Rainfall" "Deviation in Total Rainfall" ///
-				"Z-Score of Total Rainfall" "Rainy Days" "Deviation in Rainy Days" ///
-				"No Rain Days" "Deviation in No Rain Days" "\% Rainy Days" ///
-				"Deviation in \% Rainy Days" "Longest Dry Spell") ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Mean Daily Rainfall) nonumbers ///
+				mtitles("Rainfall 1" "Rainfall 2" ///
+				"Rainfall 3" "Rainfall 4" "Rainfall 5" "Rainfall 6" ) ///
+				rename(312.aez#c.v01_rf1_x1 312.aez 312.aez#c.v01_rf2_x1 312.aez ///
+				312.aez#c.v01_rf3_x1 312.aez 312.aez#c.v01_rf4_x1 312.aez ///
+				312.aez#c.v01_rf5_x1 312.aez 312.aez#c.v01_rf6_x1 312.aez ///
+				313.aez#c.v01_rf1_x1 313.aez 313.aez#c.v01_rf2_x1 313.aez ///
+				313.aez#c.v01_rf3_x1 313.aez 313.aez#c.v01_rf4_x1 313.aez ///
+				313.aez#c.v01_rf5_x1 313.aez 313.aez#c.v01_rf6_x1 313.aez ///
+				314.aez#c.v01_rf1_x1 314.aez 314.aez#c.v01_rf2_x1 314.aez ///
+				314.aez#c.v01_rf3_x1 314.aez 314.aez#c.v01_rf4_x1 314.aez ///
+				314.aez#c.v01_rf5_x1 314.aez 314.aez#c.v01_rf6_x1 314.aez ///
+				322.aez#c.v01_rf1_x1 322.aez 322.aez#c.v01_rf2_x1 322.aez ///
+				322.aez#c.v01_rf3_x1 322.aez 322.aez#c.v01_rf4_x1 322.aez ///
+				322.aez#c.v01_rf5_x1 322.aez 322.aez#c.v01_rf6_x1 322.aez ///
+				323.aez#c.v01_rf1_x1 323.aez 323.aez#c.v01_rf2_x1 323.aez ///
+				323.aez#c.v01_rf3_x1 323.aez 323.aez#c.v01_rf4_x1 323.aez ///
+				323.aez#c.v01_rf5_x1 323.aez 323.aez#c.v01_rf6_x1 323.aez ///
+				324.aez#c.v01_rf1_x1 324.aez 324.aez#c.v01_rf2_x1 324.aez ///
+				324.aez#c.v01_rf3_x1 324.aez 324.aez#c.v01_rf4_x1 324.aez ///
+				324.aez#c.v01_rf5_x1 324.aez 324.aez#c.v01_rf6_x1 324.aez ) ///
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
-				2013.year 2015.year)
+				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 
 				
 				
