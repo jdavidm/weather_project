@@ -350,7 +350,7 @@ sort 	aez depvar sat varname regname
 		xtset		hhid
 		xtreg			lncp_yld c.`v'##i.aez `inputscp' i.year, fe vce(cluster hhid)
 		}
-	*/
+
 	
 eststo clear
 	
@@ -1109,7 +1109,1642 @@ build table for sat 1
 			reg_v09_rf2_x1 reg_v10_rf2_x1 reg_v11_rf2_x1 reg_v12_rf2_x1 ///
 			reg_v13_rf2_x1 reg_v14_rf2_x1 ///
 				using "$data/regression_data/eawp_sandbox/rf2.tex", replace
-*/	
+*/
+*/
+
+
+* **********************************************************************
+* 3.1 - Aez approach 1 (weather metric and aez interactions)
+* **********************************************************************
+
+eststo clear
+	
+* no level terms
+	foreach 	v of varlist `weather' { 
+	
+	* big regression - quantity of maize
+		xtset		hhid
+		xtreg 		lncp_yld c.`v'##i.aez `inputscp' i.year, fe vce(cluster hhid)
+		eststo		reg_`v'_v1
+		}
+		
+		
+* build table for mean rainfall
+	esttab 	reg_v01_rf1_x1_v1 reg_v01_rf2_x1_v1 reg_v01_rf3_x1_v1 reg_v01_rf4_x1_v1 ///
+			reg_v01_rf5_x1_v1 reg_v01_rf6_x1_v1 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/rf_mean_v1.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Mean Daily Rainfall) nonumbers ///
+				mtitles("Rainfall 1" "Rainfall 2" ///
+				"Rainfall 3" "Rainfall 4" "Rainfall 5" "Rainfall 6" ) ///
+				rename(312.aez#c.v01_rf1_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v01_rf2_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v01_rf3_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v01_rf4_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v01_rf5_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v01_rf6_x1 Tropic-warm/semiarid_metric ///
+				313.aez#c.v01_rf1_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v01_rf2_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v01_rf3_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v01_rf4_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v01_rf5_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v01_rf6_x1 Tropic-warm/subhumid_metric ///
+				314.aez#c.v01_rf1_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v01_rf2_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v01_rf3_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v01_rf4_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v01_rf5_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v01_rf6_x1 Tropic-warm/humid_metric ///
+				322.aez#c.v01_rf1_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v01_rf2_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v01_rf3_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v01_rf4_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v01_rf5_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v01_rf6_x1 Tropic-cool/semiarid_metric ///
+				323.aez#c.v01_rf1_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v01_rf2_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v01_rf3_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v01_rf4_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v01_rf5_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v01_rf6_x1 Tropic-cool/subhumid_metric ///
+				324.aez#c.v01_rf1_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v01_rf2_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v01_rf3_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v01_rf4_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v01_rf5_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v01_rf6_x1 Tropic-cool/humid_metric ///
+				v01_rf1_x1 Metric v01_rf2_x1 Metric v01_rf3_x1 Metric ///
+				v01_rf4_x1 Metric v01_rf5_x1 Metric v01_rf6_x1 Metric ) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year 312.aez Tropic-warm/semiarid_metric) ///
+				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				
+* build table for median rainfall
+	esttab 	reg_v02_rf1_x1_v1 reg_v02_rf2_x1_v1 reg_v02_rf3_x1_v1 reg_v02_rf4_x1_v1 ///
+			reg_v02_rf5_x1_v1 reg_v02_rf6_x1_v1 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/rf_median_v1.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Median Daily Rainfall) nonumbers ///
+				mtitles("Rainfall 1" "Rainfall 2" ///
+				"Rainfall 3" "Rainfall 4" "Rainfall 5" "Rainfall 6" ) ///
+				rename(312.aez#c.v02_rf1_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v02_rf2_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v02_rf3_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v02_rf4_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v02_rf5_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v02_rf6_x1 Tropic-warm/semiarid_metric ///
+				313.aez#c.v02_rf1_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v02_rf2_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v02_rf3_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v02_rf4_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v02_rf5_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v02_rf6_x1 Tropic-warm/subhumid_metric ///
+				314.aez#c.v02_rf1_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v02_rf2_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v02_rf3_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v02_rf4_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v02_rf5_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v02_rf6_x1 Tropic-warm/humid_metric ///
+				322.aez#c.v02_rf1_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v02_rf2_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v02_rf3_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v02_rf4_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v02_rf5_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v02_rf6_x1 Tropic-cool/semiarid_metric ///
+				323.aez#c.v02_rf1_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v02_rf2_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v02_rf3_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v02_rf4_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v02_rf5_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v02_rf6_x1 Tropic-cool/subhumid_metric ///
+				324.aez#c.v02_rf1_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v02_rf2_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v02_rf3_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v02_rf4_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v02_rf5_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v02_rf6_x1 Tropic-cool/humid_metric ///
+				v02_rf1_x1 Metric v02_rf2_x1 Metric v02_rf3_x1 Metric ///
+				v02_rf4_x1 Metric v02_rf5_x1 Metric v02_rf6_x1 Metric ) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year 312.aez Tropic-warm/semiarid_metric) ///
+				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				
+* build table for variance rainfall
+	esttab 	reg_v03_rf1_x1_v1 reg_v03_rf2_x1_v1 reg_v03_rf3_x1_v1 reg_v03_rf4_x1_v1 ///
+			reg_v03_rf5_x1_v1 reg_v03_rf6_x1_v1 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/rf_var_v1.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Variance of Daily Rainfall) nonumbers ///
+				mtitles("Rainfall 1" "Rainfall 2" ///
+				"Rainfall 3" "Rainfall 4" "Rainfall 5" "Rainfall 6" ) ///
+				rename(312.aez#c.v03_rf1_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v03_rf2_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v03_rf3_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v03_rf4_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v03_rf5_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v03_rf6_x1 Tropic-warm/semiarid_metric ///
+				313.aez#c.v03_rf1_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v03_rf2_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v03_rf3_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v03_rf4_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v03_rf5_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v03_rf6_x1 Tropic-warm/subhumid_metric ///
+				314.aez#c.v03_rf1_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v03_rf2_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v03_rf3_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v03_rf4_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v03_rf5_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v03_rf6_x1 Tropic-warm/humid_metric ///
+				322.aez#c.v03_rf1_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v03_rf2_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v03_rf3_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v03_rf4_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v03_rf5_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v03_rf6_x1 Tropic-cool/semiarid_metric ///
+				323.aez#c.v03_rf1_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v03_rf2_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v03_rf3_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v03_rf4_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v03_rf5_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v03_rf6_x1 Tropic-cool/subhumid_metric ///
+				324.aez#c.v03_rf1_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v03_rf2_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v03_rf3_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v03_rf4_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v03_rf5_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v03_rf6_x1 Tropic-cool/humid_metric ///
+				v03_rf1_x1 Metric v03_rf2_x1 Metric v03_rf3_x1 Metric ///
+				v03_rf4_x1 Metric v03_rf5_x1 Metric v03_rf6_x1 Metric ) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year 312.aez Tropic-warm/semiarid_metric) ///
+				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				
+* build table for skew rainfall
+	esttab 	reg_v04_rf1_x1_v1 reg_v04_rf2_x1_v1 reg_v04_rf3_x1_v1 reg_v04_rf4_x1_v1 ///
+			reg_v04_rf5_x1_v1 reg_v04_rf6_x1_v1 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/rf_skew_v1.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Skew of Daily Rainfall) nonumbers ///
+				mtitles("Rainfall 1" "Rainfall 2" ///
+				"Rainfall 3" "Rainfall 4" "Rainfall 5" "Rainfall 6" ) ///
+				rename(312.aez#c.v04_rf1_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v04_rf2_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v04_rf3_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v04_rf4_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v04_rf5_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v04_rf6_x1 Tropic-warm/semiarid_metric ///
+				313.aez#c.v04_rf1_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v04_rf2_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v04_rf3_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v04_rf4_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v04_rf5_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v04_rf6_x1 Tropic-warm/subhumid_metric ///
+				314.aez#c.v04_rf1_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v04_rf2_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v04_rf3_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v04_rf4_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v04_rf5_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v04_rf6_x1 Tropic-warm/humid_metric ///
+				322.aez#c.v04_rf1_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v04_rf2_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v04_rf3_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v04_rf4_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v04_rf5_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v04_rf6_x1 Tropic-cool/semiarid_metric ///
+				323.aez#c.v04_rf1_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v04_rf2_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v04_rf3_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v04_rf4_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v04_rf5_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v04_rf6_x1 Tropic-cool/subhumid_metric ///
+				324.aez#c.v04_rf1_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v04_rf2_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v04_rf3_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v04_rf4_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v04_rf5_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v04_rf6_x1 Tropic-cool/humid_metric ///
+				v04_rf1_x1 Metric v04_rf2_x1 Metric v04_rf3_x1 Metric ///
+				v04_rf4_x1 Metric v04_rf5_x1 Metric v04_rf6_x1 Metric ) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year 312.aez Tropic-warm/semiarid_metric) /// 
+				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+
+* build table for total rainfall
+	esttab 	reg_v05_rf1_x1_v1 reg_v05_rf2_x1_v1 reg_v05_rf3_x1_v1 reg_v05_rf4_x1_v1 ///
+			reg_v05_rf5_x1_v1 reg_v05_rf6_x1_v1 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/rf_total_v1.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Total Rainfall) nonumbers ///
+				mtitles("Rainfall 1" "Rainfall 2" ///
+				"Rainfall 3" "Rainfall 4" "Rainfall 5" "Rainfall 6" ) ///
+				rename(312.aez#c.v05_rf1_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v05_rf2_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v05_rf3_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v05_rf4_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v05_rf5_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v05_rf6_x1 Tropic-warm/semiarid_metric ///
+				313.aez#c.v05_rf1_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v05_rf2_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v05_rf3_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v05_rf4_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v05_rf5_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v05_rf6_x1 Tropic-warm/subhumid_metric ///
+				314.aez#c.v05_rf1_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v05_rf2_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v05_rf3_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v05_rf4_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v05_rf5_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v05_rf6_x1 Tropic-warm/humid_metric ///
+				322.aez#c.v05_rf1_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v05_rf2_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v05_rf3_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v05_rf4_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v05_rf5_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v05_rf6_x1 Tropic-cool/semiarid_metric ///
+				323.aez#c.v05_rf1_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v05_rf2_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v05_rf3_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v05_rf4_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v05_rf5_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v05_rf6_x1 Tropic-cool/subhumid_metric ///
+				324.aez#c.v05_rf1_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v05_rf2_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v05_rf3_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v05_rf4_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v05_rf5_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v05_rf6_x1 Tropic-cool/humid_metric ///
+				v05_rf1_x1 Metric v05_rf2_x1 Metric v05_rf3_x1 Metric ///
+				v05_rf4_x1 Metric v05_rf5_x1 Metric v05_rf6_x1 Metric ) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year 312.aez Tropic-warm/semiarid_metric) ///
+				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				
+* build table for deviation in total rainfall
+	esttab 	reg_v06_rf1_x1_v1 reg_v06_rf2_x1_v1 reg_v06_rf3_x1_v1 reg_v06_rf4_x1_v1 ///
+			reg_v06_rf5_x1_v1 reg_v06_rf6_x1_v1 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/rf_totaldev_v1.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Deviation in Total Rainfall) nonumbers ///
+				mtitles("Rainfall 1" "Rainfall 2" ///
+				"Rainfall 3" "Rainfall 4" "Rainfall 5" "Rainfall 6" ) ///
+				rename(312.aez#c.v06_rf1_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v06_rf2_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v06_rf3_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v06_rf4_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v06_rf5_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v06_rf6_x1 Tropic-warm/semiarid_metric ///
+				313.aez#c.v06_rf1_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v06_rf2_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v06_rf3_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v06_rf4_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v06_rf5_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v06_rf6_x1 Tropic-warm/subhumid_metric ///
+				314.aez#c.v06_rf1_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v06_rf2_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v06_rf3_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v06_rf4_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v06_rf5_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v06_rf6_x1 Tropic-warm/humid_metric ///
+				322.aez#c.v06_rf1_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v06_rf2_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v06_rf3_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v06_rf4_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v06_rf5_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v06_rf6_x1 Tropic-cool/semiarid_metric ///
+				323.aez#c.v06_rf1_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v06_rf2_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v06_rf3_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v06_rf4_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v06_rf5_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v06_rf6_x1 Tropic-cool/subhumid_metric ///
+				324.aez#c.v06_rf1_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v06_rf2_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v06_rf3_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v06_rf4_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v06_rf5_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v06_rf6_x1 Tropic-cool/humid_metric ///
+				v06_rf1_x1 Metric v06_rf2_x1 Metric v06_rf3_x1 Metric ///
+				v06_rf4_x1 Metric v06_rf5_x1 Metric v06_rf6_x1 Metric ) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year 312.aez Tropic-warm/semiarid_metric) ///
+				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				
+* build table for z-score total rainfall
+	esttab 	reg_v07_rf1_x1_v1 reg_v07_rf2_x1_v1 reg_v07_rf3_x1_v1 reg_v07_rf4_x1_v1 ///
+			reg_v07_rf5_x1_v1 reg_v07_rf6_x1_v1 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/rf_totalz_v1.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Z-Score of Total Rain) nonumbers ///
+				mtitles("Rainfall 1" "Rainfall 2" ///
+				"Rainfall 3" "Rainfall 4" "Rainfall 5" "Rainfall 6" ) ///
+				rename(312.aez#c.v07_rf1_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v07_rf2_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v07_rf3_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v07_rf4_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v07_rf5_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v07_rf6_x1 Tropic-warm/semiarid_metric ///
+				313.aez#c.v07_rf1_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v07_rf2_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v07_rf3_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v07_rf4_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v07_rf5_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v07_rf6_x1 Tropic-warm/subhumid_metric ///
+				314.aez#c.v07_rf1_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v07_rf2_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v07_rf3_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v07_rf4_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v07_rf5_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v07_rf6_x1 Tropic-warm/humid_metric ///
+				322.aez#c.v07_rf1_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v07_rf2_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v07_rf3_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v07_rf4_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v07_rf5_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v07_rf6_x1 Tropic-cool/semiarid_metric ///
+				323.aez#c.v07_rf1_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v07_rf2_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v07_rf3_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v07_rf4_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v07_rf5_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v07_rf6_x1 Tropic-cool/subhumid_metric ///
+				324.aez#c.v07_rf1_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v07_rf2_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v07_rf3_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v07_rf4_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v07_rf5_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v07_rf6_x1 Tropic-cool/humid_metric ///
+				v07_rf1_x1 Metric v07_rf2_x1 Metric v07_rf3_x1 Metric ///
+				v07_rf4_x1 Metric v07_rf5_x1 Metric v07_rf6_x1 Metric ) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year 312.aez Tropic-warm/semiarid_metric) ///
+				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				
+* build table for rain days rainfall
+	esttab 	reg_v08_rf1_x1_v1 reg_v08_rf2_x1_v1 reg_v08_rf3_x1_v1 reg_v08_rf4_x1_v1 ///
+			reg_v08_rf5_x1_v1 reg_v08_rf6_x1_v1 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/rf_raindays_v1.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Rain Days) nonumbers ///
+				mtitles("Rainfall 1" "Rainfall 2" ///
+				"Rainfall 3" "Rainfall 4" "Rainfall 5" "Rainfall 6" ) ///
+				rename(312.aez#c.v08_rf1_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v08_rf2_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v08_rf3_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v08_rf4_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v08_rf5_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v08_rf6_x1 Tropic-warm/semiarid_metric ///
+				313.aez#c.v08_rf1_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v08_rf2_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v08_rf3_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v08_rf4_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v08_rf5_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v08_rf6_x1 Tropic-warm/subhumid_metric ///
+				314.aez#c.v08_rf1_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v08_rf2_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v08_rf3_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v08_rf4_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v08_rf5_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v08_rf6_x1 Tropic-warm/humid_metric ///
+				322.aez#c.v08_rf1_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v08_rf2_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v08_rf3_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v08_rf4_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v08_rf5_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v08_rf6_x1 Tropic-cool/semiarid_metric ///
+				323.aez#c.v08_rf1_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v08_rf2_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v08_rf3_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v08_rf4_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v08_rf5_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v08_rf6_x1 Tropic-cool/subhumid_metric ///
+				324.aez#c.v08_rf1_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v08_rf2_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v08_rf3_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v08_rf4_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v08_rf5_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v08_rf6_x1 Tropic-cool/humid_metric ///
+				v08_rf1_x1 Metric v08_rf2_x1 Metric v08_rf3_x1 Metric ///
+				v08_rf4_x1 Metric v08_rf5_x1 Metric v08_rf6_x1 Metric ) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year 312.aez Tropic-warm/semiarid_metric) ///
+				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				
+* build table for deviation in rain days
+	esttab 	reg_v09_rf1_x1_v1 reg_v09_rf2_x1_v1 reg_v09_rf3_x1_v1 reg_v09_rf4_x1_v1 ///
+			reg_v09_rf5_x1_v1 reg_v09_rf6_x1_v1 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/rf_raindaysdev_v1.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Deviation in Rain Days) nonumbers ///
+				mtitles("Rainfall 1" "Rainfall 2" ///
+				"Rainfall 3" "Rainfall 4" "Rainfall 5" "Rainfall 6" ) ///
+								rename(312.aez#c.v09_rf1_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v09_rf2_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v09_rf3_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v09_rf4_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v09_rf5_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v09_rf6_x1 Tropic-warm/semiarid_metric ///
+				313.aez#c.v09_rf1_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v09_rf2_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v09_rf3_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v09_rf4_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v09_rf5_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v09_rf6_x1 Tropic-warm/subhumid_metric ///
+				314.aez#c.v09_rf1_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v09_rf2_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v09_rf3_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v09_rf4_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v09_rf5_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v09_rf6_x1 Tropic-warm/humid_metric ///
+				322.aez#c.v09_rf1_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v09_rf2_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v09_rf3_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v09_rf4_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v09_rf5_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v09_rf6_x1 Tropic-cool/semiarid_metric ///
+				323.aez#c.v09_rf1_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v09_rf2_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v09_rf3_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v09_rf4_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v09_rf5_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v09_rf6_x1 Tropic-cool/subhumid_metric ///
+				324.aez#c.v09_rf1_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v09_rf2_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v09_rf3_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v09_rf4_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v09_rf5_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v09_rf6_x1 Tropic-cool/humid_metric ///
+				v09_rf1_x1 Metric v09_rf2_x1 Metric v09_rf3_x1 Metric ///
+				v09_rf4_x1 Metric v09_rf5_x1 Metric v09_rf6_x1 Metric ) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year 312.aez Tropic-warm/semiarid_metric) ///
+				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				
+* build table for no rain days
+	esttab 	reg_v10_rf1_x1_v1 reg_v10_rf2_x1_v1 reg_v10_rf3_x1_v1 reg_v10_rf4_x1_v1 ///
+			reg_v10_rf5_x1_v1 reg_v10_rf6_x1_v1 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/rf_norain_v1.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(No-Rain Days) nonumbers ///
+				mtitles("Rainfall 1" "Rainfall 2" ///
+				"Rainfall 3" "Rainfall 4" "Rainfall 5" "Rainfall 6" ) ///
+				rename(312.aez#c.v10_rf1_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v10_rf2_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v10_rf3_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v10_rf4_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v10_rf5_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v10_rf6_x1 Tropic-warm/semiarid_metric ///
+				313.aez#c.v10_rf1_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v10_rf2_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v10_rf3_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v10_rf4_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v10_rf5_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v10_rf6_x1 Tropic-warm/subhumid_metric ///
+				314.aez#c.v10_rf1_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v10_rf2_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v10_rf3_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v10_rf4_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v10_rf5_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v10_rf6_x1 Tropic-warm/humid_metric ///
+				322.aez#c.v10_rf1_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v10_rf2_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v10_rf3_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v10_rf4_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v10_rf5_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v10_rf6_x1 Tropic-cool/semiarid_metric ///
+				323.aez#c.v10_rf1_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v10_rf2_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v10_rf3_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v10_rf4_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v10_rf5_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v10_rf6_x1 Tropic-cool/subhumid_metric ///
+				324.aez#c.v10_rf1_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v10_rf2_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v10_rf3_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v10_rf4_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v10_rf5_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v10_rf6_x1 Tropic-cool/humid_metric ///
+				v10_rf1_x1 Metric v10_rf2_x1 Metric v10_rf3_x1 Metric ///
+				v10_rf4_x1 Metric v10_rf5_x1 Metric v10_rf6_x1 Metric ) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year 312.aez Tropic-warm/semiarid_metric) ///
+				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				
+* build table for deviation in no rain days
+	esttab 	reg_v11_rf1_x1_v1 reg_v11_rf2_x1_v1 reg_v11_rf3_x1_v1 reg_v11_rf4_x1_v1 ///
+			reg_v11_rf5_x1_v1 reg_v11_rf6_x1_v1 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/rf_noraindev_v1.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Deviation in No-Rain Days) nonumbers ///
+				mtitles("Rainfall 1" "Rainfall 2" ///
+				"Rainfall 3" "Rainfall 4" "Rainfall 5" "Rainfall 6" ) ///
+				rename(312.aez#c.v11_rf1_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v11_rf2_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v11_rf3_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v11_rf4_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v11_rf5_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v11_rf6_x1 Tropic-warm/semiarid_metric ///
+				313.aez#c.v11_rf1_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v11_rf2_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v11_rf3_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v11_rf4_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v11_rf5_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v11_rf6_x1 Tropic-warm/subhumid_metric ///
+				314.aez#c.v11_rf1_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v11_rf2_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v11_rf3_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v11_rf4_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v11_rf5_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v11_rf6_x1 Tropic-warm/humid_metric ///
+				322.aez#c.v11_rf1_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v11_rf2_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v11_rf3_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v11_rf4_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v11_rf5_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v11_rf6_x1 Tropic-cool/semiarid_metric ///
+				323.aez#c.v11_rf1_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v11_rf2_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v11_rf3_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v11_rf4_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v11_rf5_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v11_rf6_x1 Tropic-cool/subhumid_metric ///
+				324.aez#c.v11_rf1_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v11_rf2_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v11_rf3_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v11_rf4_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v11_rf5_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v11_rf6_x1 Tropic-cool/humid_metric ///
+				v11_rf1_x1 Metric v11_rf2_x1 Metric v11_rf3_x1 Metric ///
+				v11_rf4_x1 Metric v11_rf5_x1 Metric v11_rf6_x1 Metric ) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year 312.aez Tropic-warm/semiarid_metric) ///
+				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				
+* build table for rain days percent
+	esttab 	reg_v12_rf1_x1_v1 reg_v12_rf2_x1_v1 reg_v12_rf3_x1_v1 reg_v12_rf4_x1_v1 ///
+			reg_v12_rf5_x1_v1 reg_v12_rf6_x1_v1 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/rf_percentraindays_v1.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Percentage of Rain Days) nonumbers ///
+				mtitles("Rainfall 1" "Rainfall 2" ///
+				"Rainfall 3" "Rainfall 4" "Rainfall 5" "Rainfall 6" ) ///
+				rename(312.aez#c.v12_rf1_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v12_rf2_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v12_rf3_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v12_rf4_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v12_rf5_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v12_rf6_x1 Tropic-warm/semiarid_metric ///
+				313.aez#c.v12_rf1_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v12_rf2_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v12_rf3_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v12_rf4_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v12_rf5_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v12_rf6_x1 Tropic-warm/subhumid_metric ///
+				314.aez#c.v12_rf1_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v12_rf2_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v12_rf3_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v12_rf4_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v12_rf5_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v12_rf6_x1 Tropic-warm/humid_metric ///
+				322.aez#c.v12_rf1_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v12_rf2_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v12_rf3_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v12_rf4_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v12_rf5_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v12_rf6_x1 Tropic-cool/semiarid_metric ///
+				323.aez#c.v12_rf1_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v12_rf2_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v12_rf3_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v12_rf4_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v12_rf5_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v12_rf6_x1 Tropic-cool/subhumid_metric ///
+				324.aez#c.v12_rf1_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v12_rf2_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v12_rf3_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v12_rf4_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v12_rf5_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v12_rf6_x1 Tropic-cool/humid_metric ///
+				v12_rf1_x1 Metric v12_rf2_x1 Metric v12_rf3_x1 Metric ///
+				v12_rf4_x1 Metric v12_rf5_x1 Metric v12_rf6_x1 Metric ) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year 312.aez Tropic-warm/semiarid_metric) ///
+				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+
+* build table for deviation in raindays percent
+	esttab 	reg_v13_rf1_x1_v1 reg_v13_rf2_x1_v1 reg_v13_rf3_x1_v1 reg_v13_rf4_x1_v1 ///
+			reg_v13_rf5_x1_v1 reg_v13_rf6_x1_v1 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/rf_percentraindaysdev_v1.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Deviation in Percent Rain Days) nonumbers ///
+				mtitles("Rainfall 1" "Rainfall 2" ///
+				"Rainfall 3" "Rainfall 4" "Rainfall 5" "Rainfall 6" ) ///
+				rename(312.aez#c.v13_rf1_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v13_rf2_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v13_rf3_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v13_rf4_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v13_rf5_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v13_rf6_x1 Tropic-warm/semiarid_metric ///
+				313.aez#c.v13_rf1_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v13_rf2_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v13_rf3_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v13_rf4_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v13_rf5_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v13_rf6_x1 Tropic-warm/subhumid_metric ///
+				314.aez#c.v13_rf1_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v13_rf2_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v13_rf3_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v13_rf4_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v13_rf5_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v13_rf6_x1 Tropic-warm/humid_metric ///
+				322.aez#c.v13_rf1_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v13_rf2_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v13_rf3_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v13_rf4_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v13_rf5_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v13_rf6_x1 Tropic-cool/semiarid_metric ///
+				323.aez#c.v13_rf1_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v13_rf2_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v13_rf3_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v13_rf4_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v13_rf5_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v13_rf6_x1 Tropic-cool/subhumid_metric ///
+				324.aez#c.v13_rf1_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v13_rf2_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v13_rf3_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v13_rf4_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v13_rf5_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v13_rf6_x1 Tropic-cool/humid_metric ///
+				v13_rf1_x1 Metric v13_rf2_x1 Metric v13_rf3_x1 Metric ///
+				v13_rf4_x1 Metric v13_rf5_x1 Metric v13_rf6_x1 Metric ) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year 312.aez Tropic-warm/semiarid_metric) ///
+				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				
+* build table for longest dry spell
+	esttab 	reg_v14_rf1_x1_v1 reg_v14_rf2_x1_v1 reg_v14_rf3_x1_v1 reg_v14_rf4_x1_v1 ///
+			reg_v14_rf5_x1_v1 reg_v14_rf6_x1_v1 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/rf_dry_v1.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Longest Dry Spell) nonumbers ///
+				mtitles("Rainfall 1" "Rainfall 2" ///
+				"Rainfall 3" "Rainfall 4" "Rainfall 5" "Rainfall 6" ) ///
+				rename(312.aez#c.v14_rf1_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v14_rf2_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v14_rf3_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v14_rf4_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v14_rf5_x1 Tropic-warm/semiarid_metric ///
+				312.aez#c.v14_rf6_x1 Tropic-warm/semiarid_metric ///
+				313.aez#c.v14_rf1_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v14_rf2_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v14_rf3_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v14_rf4_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v14_rf5_x1 Tropic-warm/subhumid_metric ///
+				313.aez#c.v14_rf6_x1 Tropic-warm/subhumid_metric ///
+				314.aez#c.v14_rf1_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v14_rf2_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v14_rf3_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v14_rf4_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v14_rf5_x1 Tropic-warm/humid_metric ///
+				314.aez#c.v14_rf6_x1 Tropic-warm/humid_metric ///
+				322.aez#c.v14_rf1_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v14_rf2_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v14_rf3_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v14_rf4_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v14_rf5_x1 Tropic-cool/semiarid_metric ///
+				322.aez#c.v14_rf6_x1 Tropic-cool/semiarid_metric ///
+				323.aez#c.v14_rf1_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v14_rf2_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v14_rf3_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v14_rf4_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v14_rf5_x1 Tropic-cool/subhumid_metric ///
+				323.aez#c.v14_rf6_x1 Tropic-cool/subhumid_metric ///
+				324.aez#c.v14_rf1_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v14_rf2_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v14_rf3_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v14_rf4_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v14_rf5_x1 Tropic-cool/humid_metric ///
+				324.aez#c.v14_rf6_x1 Tropic-cool/humid_metric ///
+				v14_rf1_x1 Metric v14_rf2_x1 Metric v14_rf3_x1 Metric ///
+				v14_rf4_x1 Metric v14_rf5_x1 Metric v14_rf6_x1 Metric ) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year 312.aez Tropic-warm/semiarid_metric) ///
+				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				
+* build table for temperature mean
+	esttab 	reg_v15_tp1_x1_v1 reg_v15_tp2_x1_v1 reg_v15_tp3_x1_v1 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/tp_mean_v1.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Mean Daily Temperature) nonumbers ///
+				mtitles("Temperature 1" "Temperature 2" "Temperature 3") ///
+				rename(312.aez#c.v15_tp1_x1 Tropic_warm/semiarid_metric ///
+				312.aez#c.v15_tp2_x1 Tropic_warm/semiarid_metric ///
+				312.aez#c.v15_tp3_x1 Tropic_warm/semiarid_metric ///
+				313.aez#c.v15_tp1_x1 Tropic_warm/subhumid_metric ///
+				313.aez#c.v15_tp2_x1 Tropic_warm/subhumid_metric ///
+				313.aez#c.v15_tp3_x1 Tropic_warm/subhumid_metric ///
+				314.aez#c.v15_tp1_x1 Tropic_warm/humid_metric ///
+				314.aez#c.v15_tp2_x1 Tropic_warm/humid_metric ///
+				314.aez#c.v15_tp3_x1 Tropic_warm/humid_metric ///
+				322.aez#c.v15_tp1_x1 Tropic_cool/semiarid_metric ///
+				322.aez#c.v15_tp2_x1 Tropic_cool/semiarid_metric ///
+				322.aez#c.v15_tp3_x1 Tropic_cool/semiarid_metric ///
+				323.aez#c.v15_tp1_x1 Tropic_cool/subhumid_metric ///
+				323.aez#c.v15_tp2_x1 Tropic_cool/subhumid_metric ///
+				323.aez#c.v15_tp3_x1 Tropic_cool/subhumid_metric ///
+				324.aez#c.v15_tp1_x1 Tropic_cool/humid_metric ///
+				324.aez#c.v15_tp2_x1 Tropic_cool/humid_metric ///
+				324.aez#c.v15_tp3_x1 Tropic_cool/humid_metric ///
+				v15_tp1_x1 Metric v15_tp2_x1 Metric v15_tp3_x1 Metric) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year 312.aez Tropic_warm/semiarid_metric) ///
+				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+
+* build table for temperature median
+	esttab 	reg_v16_tp1_x1_v1 reg_v16_tp2_x1_v1 reg_v16_tp3_x1_v1 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/tp_median_v1.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Median Daily Temperature) nonumbers ///
+				mtitles("Temperature 1" "Temperature 2" "Temperature 3") ///
+				rename(312.aez#c.v16_tp1_x1 Tropic_warm/semiarid_metric ///
+				312.aez#c.v16_tp2_x1 Tropic_warm/semiarid_metric ///
+				312.aez#c.v16_tp3_x1 Tropic_warm/semiarid_metric ///
+				313.aez#c.v16_tp1_x1 Tropic_warm/subhumid_metric ///
+				313.aez#c.v16_tp2_x1 Tropic_warm/subhumid_metric ///
+				313.aez#c.v16_tp3_x1 Tropic_warm/subhumid_metric ///
+				314.aez#c.v16_tp1_x1 Tropic_warm/humid_metric ///
+				314.aez#c.v16_tp2_x1 Tropic_warm/humid_metric ///
+				314.aez#c.v16_tp3_x1 Tropic_warm/humid_metric ///
+				322.aez#c.v16_tp1_x1 Tropic_cool/semiarid_metric ///
+				322.aez#c.v16_tp2_x1 Tropic_cool/semiarid_metric ///
+				322.aez#c.v16_tp3_x1 Tropic_cool/semiarid_metric ///
+				323.aez#c.v16_tp1_x1 Tropic_cool/subhumid_metric ///
+				323.aez#c.v16_tp2_x1 Tropic_cool/subhumid_metric ///
+				323.aez#c.v16_tp3_x1 Tropic_cool/subhumid_metric ///
+				324.aez#c.v16_tp1_x1 Tropic_cool/humid_metric ///
+				324.aez#c.v16_tp2_x1 Tropic_cool/humid_metric ///
+				324.aez#c.v16_tp3_x1 Tropic_cool/humid_metric ///
+				v16_tp1_x1 Metric v16_tp2_x1 Metric v16_tp3_x1 Metric) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year 312.aez Tropic_warm/semiarid_metric) ///
+				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+
+* build table for variance of daily temperature
+	esttab 	reg_v17_tp1_x1_v1 reg_v17_tp2_x1_v1 reg_v17_tp3_x1_v1 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/tp_variance_v1.tex", replace ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Variance of Daily Temperature) nonumbers ///
+				mtitles("Temperature 1" "Temperature 2" "Temperature 3") ///
+				rename(312.aez#c.v16_tp1_x1 Tropic_warm/semiarid_metric ///
+				312.aez#c.v17_tp2_x1 Tropic_warm/semiarid_metric ///
+				312.aez#c.v17_tp3_x1 Tropic_warm/semiarid_metric ///
+				313.aez#c.v17_tp1_x1 Tropic_warm/subhumid_metric ///
+				313.aez#c.v17_tp2_x1 Tropic_warm/subhumid_metric ///
+				313.aez#c.v17_tp3_x1 Tropic_warm/subhumid_metric ///
+				314.aez#c.v17_tp1_x1 Tropic_warm/humid_metric ///
+				314.aez#c.v17_tp2_x1 Tropic_warm/humid_metric ///
+				314.aez#c.v17_tp3_x1 Tropic_warm/humid_metric ///
+				322.aez#c.v17_tp1_x1 Tropic_cool/semiarid_metric ///
+				322.aez#c.v17_tp2_x1 Tropic_cool/semiarid_metric ///
+				322.aez#c.v17_tp3_x1 Tropic_cool/semiarid_metric ///
+				323.aez#c.v17_tp1_x1 Tropic_cool/subhumid_metric ///
+				323.aez#c.v17_tp2_x1 Tropic_cool/subhumid_metric ///
+				323.aez#c.v17_tp3_x1 Tropic_cool/subhumid_metric ///
+				324.aez#c.v17_tp1_x1 Tropic_cool/humid_metric ///
+				324.aez#c.v17_tp2_x1 Tropic_cool/humid_metric ///
+				324.aez#c.v17_tp3_x1 Tropic_cool/humid_metric ///
+				v17_tp1_x1 Metric v17_tp2_x1 Metric v17_tp3_x1 Metric) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year 312.aez Tropic_warm/semiarid_metric) ///
+				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+
+* build table for temperature skew
+	esttab 	reg_v18_tp1_x1_v1 reg_v18_tp2_x1_v1 reg_v18_tp3_x1_v1 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/tp_skew_v1.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Skew of Daily Temperature) nonumbers ///
+				mtitles("Temperature 1" "Temperature 2" "Temperature 3") ///
+				rename(312.aez#c.v18_tp1_x1 Tropic_warm/semiarid_metric ///
+				312.aez#c.v18_tp2_x1 Tropic_warm/semiarid_metric ///
+				312.aez#c.v18_tp3_x1 Tropic_warm/semiarid_metric ///
+				313.aez#c.v18_tp1_x1 Tropic_warm/subhumid_metric ///
+				313.aez#c.v18_tp2_x1 Tropic_warm/subhumid_metric ///
+				313.aez#c.v18_tp3_x1 Tropic_warm/subhumid_metric ///
+				314.aez#c.v18_tp1_x1 Tropic_warm/humid_metric ///
+				314.aez#c.v18_tp2_x1 Tropic_warm/humid_metric ///
+				314.aez#c.v18_tp3_x1 Tropic_warm/humid_metric ///
+				322.aez#c.v18_tp1_x1 Tropic_cool/semiarid_metric ///
+				322.aez#c.v18_tp2_x1 Tropic_cool/semiarid_metric ///
+				322.aez#c.v18_tp3_x1 Tropic_cool/semiarid_metric ///
+				323.aez#c.v18_tp1_x1 Tropic_cool/subhumid_metric ///
+				323.aez#c.v18_tp2_x1 Tropic_cool/subhumid_metric ///
+				323.aez#c.v18_tp3_x1 Tropic_cool/subhumid_metric ///
+				324.aez#c.v18_tp1_x1 Tropic_cool/humid_metric ///
+				324.aez#c.v18_tp2_x1 Tropic_cool/humid_metric ///
+				324.aez#c.v18_tp3_x1 Tropic_cool/humid_metric ///
+				v18_tp1_x1 Metric v18_tp2_x1 Metric v18_tp3_x1 Metric) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year 312.aez Tropic_warm/semiarid_metric) ///
+				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+
+* build table for growing degree days
+	esttab 	reg_v19_tp1_x1_v1 reg_v19_tp2_x1_v1 reg_v19_tp3_x1_v1 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/tp_gdd_v1.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Growing Degree Days) nonumbers ///
+				mtitles("Temperature 1" "Temperature 2" "Temperature 3") ///
+				rename(312.aez#c.v19_tp1_x1 Tropic_warm/semiarid_metric ///
+				312.aez#c.v19_tp2_x1 Tropic_warm/semiarid_metric ///
+				312.aez#c.v19_tp3_x1 Tropic_warm/semiarid_metric ///
+				313.aez#c.v19_tp1_x1 Tropic_warm/subhumid_metric ///
+				313.aez#c.v19_tp2_x1 Tropic_warm/subhumid_metric ///
+				313.aez#c.v19_tp3_x1 Tropic_warm/subhumid_metric ///
+				314.aez#c.v19_tp1_x1 Tropic_warm/humid_metric ///
+				314.aez#c.v19_tp2_x1 Tropic_warm/humid_metric ///
+				314.aez#c.v19_tp3_x1 Tropic_warm/humid_metric ///
+				322.aez#c.v19_tp1_x1 Tropic_cool/semiarid_metric ///
+				322.aez#c.v19_tp2_x1 Tropic_cool/semiarid_metric ///
+				322.aez#c.v19_tp3_x1 Tropic_cool/semiarid_metric ///
+				323.aez#c.v19_tp1_x1 Tropic_cool/subhumid_metric ///
+				323.aez#c.v19_tp2_x1 Tropic_cool/subhumid_metric ///
+				323.aez#c.v19_tp3_x1 Tropic_cool/subhumid_metric ///
+				324.aez#c.v19_tp1_x1 Tropic_cool/humid_metric ///
+				324.aez#c.v19_tp2_x1 Tropic_cool/humid_metric ///
+				324.aez#c.v19_tp3_x1 Tropic_cool/humid_metric ///
+				v19_tp1_x1 Metric v19_tp2_x1 Metric v19_tp3_x1 Metric) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year 312.aez Tropic_warm/semiarid_metric) ///
+				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+
+* build table for deviation in gdd
+	esttab 	reg_v20_tp1_x1_v1 reg_v20_tp2_x1_v1 reg_v20_tp3_x1_v1 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/tp_gdddev_v1.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Deviation in GDD) nonumbers ///
+				mtitles("Temperature 1" "Temperature 2" "Temperature 3") ///
+				rename(312.aez#c.v20_tp1_x1 Tropic_warm/semiarid_metric ///
+				312.aez#c.v20_tp2_x1 Tropic_warm/semiarid_metric ///
+				312.aez#c.v20_tp3_x1 Tropic_warm/semiarid_metric ///
+				313.aez#c.v20_tp1_x1 Tropic_warm/subhumid_metric ///
+				313.aez#c.v20_tp2_x1 Tropic_warm/subhumid_metric ///
+				313.aez#c.v20_tp3_x1 Tropic_warm/subhumid_metric ///
+				314.aez#c.v20_tp1_x1 Tropic_warm/humid_metric ///
+				314.aez#c.v20_tp2_x1 Tropic_warm/humid_metric ///
+				314.aez#c.v20_tp3_x1 Tropic_warm/humid_metric ///
+				322.aez#c.v20_tp1_x1 Tropic_cool/semiarid_metric ///
+				322.aez#c.v20_tp2_x1 Tropic_cool/semiarid_metric ///
+				322.aez#c.v20_tp3_x1 Tropic_cool/semiarid_metric ///
+				323.aez#c.v20_tp1_x1 Tropic_cool/subhumid_metric ///
+				323.aez#c.v20_tp2_x1 Tropic_cool/subhumid_metric ///
+				323.aez#c.v20_tp3_x1 Tropic_cool/subhumid_metric ///
+				324.aez#c.v20_tp1_x1 Tropic_cool/humid_metric ///
+				324.aez#c.v20_tp2_x1 Tropic_cool/humid_metric ///
+				324.aez#c.v20_tp3_x1 Tropic_cool/humid_metric ///
+				v20_tp1_x1 Metric v20_tp2_x1 Metric v20_tp3_x1 Metric) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year 312.aez Tropic_warm/semiarid_metric) ///
+				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+
+* build table for z-score of gdd
+	esttab 	reg_v21_tp1_x1_v1 reg_v21_tp2_x1_v1 reg_v21_tp3_x1_v1 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/tp_gddz_v1.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Z-Score of GDD) nonumbers ///
+				mtitles("Temperature 1" "Temperature 2" "Temperature 3") ///
+				rename(312.aez#c.v21_tp1_x1 Tropic_warm/semiarid_metric ///
+				312.aez#c.v21_tp2_x1 Tropic_warm/semiarid_metric ///
+				312.aez#c.v21_tp3_x1 Tropic_warm/semiarid_metric ///
+				313.aez#c.v21_tp1_x1 Tropic_warm/subhumid_metric ///
+				313.aez#c.v21_tp2_x1 Tropic_warm/subhumid_metric ///
+				313.aez#c.v21_tp3_x1 Tropic_warm/subhumid_metric ///
+				314.aez#c.v21_tp1_x1 Tropic_warm/humid_metric ///
+				314.aez#c.v21_tp2_x1 Tropic_warm/humid_metric ///
+				314.aez#c.v21_tp3_x1 Tropic_warm/humid_metric ///
+				322.aez#c.v21_tp1_x1 Tropic_cool/semiarid_metric ///
+				322.aez#c.v21_tp2_x1 Tropic_cool/semiarid_metric ///
+				322.aez#c.v21_tp3_x1 Tropic_cool/semiarid_metric ///
+				323.aez#c.v21_tp1_x1 Tropic_cool/subhumid_metric ///
+				323.aez#c.v21_tp2_x1 Tropic_cool/subhumid_metric ///
+				323.aez#c.v21_tp3_x1 Tropic_cool/subhumid_metric ///
+				324.aez#c.v21_tp1_x1 Tropic_cool/humid_metric ///
+				324.aez#c.v21_tp2_x1 Tropic_cool/humid_metric ///
+				324.aez#c.v21_tp3_x1 Tropic_cool/humid_metric ///
+				v21_tp1_x1 Metric v21_tp2_x1 Metric v21_tp3_x1 Metric) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year 312.aez Tropic_warm/semiarid_metric) ///
+				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+
+* build table for temperature max
+	esttab 	reg_v22_tp1_x1_v1 reg_v22_tp2_x1_v1 reg_v22_tp3_x1_v1 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/tp_max_v1.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Maximum Daily Temperature) nonumbers ///
+				mtitles("Temperature 1" "Temperature 2" "Temperature 3") ///
+				rename(312.aez#c.v22_tp1_x1 Tropic_warm/semiarid_metric ///
+				312.aez#c.v22_tp2_x1 Tropic_warm/semiarid_metric ///
+				312.aez#c.v22_tp3_x1 Tropic_warm/semiarid_metric ///
+				313.aez#c.v22_tp1_x1 Tropic_warm/subhumid_metric ///
+				313.aez#c.v22_tp2_x1 Tropic_warm/subhumid_metric ///
+				313.aez#c.v22_tp3_x1 Tropic_warm/subhumid_metric ///
+				314.aez#c.v22_tp1_x1 Tropic_warm/humid_metric ///
+				314.aez#c.v22_tp2_x1 Tropic_warm/humid_metric ///
+				314.aez#c.v22_tp3_x1 Tropic_warm/humid_metric ///
+				322.aez#c.v22_tp1_x1 Tropic_cool/semiarid_metric ///
+				322.aez#c.v22_tp2_x1 Tropic_cool/semiarid_metric ///
+				322.aez#c.v22_tp3_x1 Tropic_cool/semiarid_metric ///
+				323.aez#c.v22_tp1_x1 Tropic_cool/subhumid_metric ///
+				323.aez#c.v22_tp2_x1 Tropic_cool/subhumid_metric ///
+				323.aez#c.v22_tp3_x1 Tropic_cool/subhumid_metric ///
+				324.aez#c.v22_tp1_x1 Tropic_cool/humid_metric ///
+				324.aez#c.v22_tp2_x1 Tropic_cool/humid_metric ///
+				324.aez#c.v22_tp3_x1 Tropic_cool/humid_metric ///
+				v22_tp1_x1 Metric v22_tp2_x1 Metric v22_tp3_x1 Metric) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year 312.aez Tropic_warm/semiarid_metric) ///
+				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))	
+
+				
+* **********************************************************************
+* 3.2 - Aez approach 2 (only aez interactions)
+* **********************************************************************
+
+eststo clear
+	
+* no level terms
+	foreach 	v of varlist `weather' { 
+	
+	* big regression - quantity of maize
+		xtset		hhid
+		xtreg 		lncp_yld c.`v'#i.aez `inputscp' i.year, fe vce(cluster hhid)
+		eststo		reg_`v'_v2
+		}
+		
+		
+* build table for mean rainfall
+	esttab 	reg_v01_rf1_x1_v2 reg_v01_rf2_x1_v2 reg_v01_rf3_x1_v2 reg_v01_rf4_x1_v2 ///
+			reg_v01_rf5_x1_v2 reg_v01_rf6_x1_v2 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/rf_mean_v2.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Mean Daily Rainfall) nonumbers ///
+				mtitles("Rainfall 1" "Rainfall 2" ///
+				"Rainfall 3" "Rainfall 4" "Rainfall 5" "Rainfall 6" ) ///
+				rename(312.aez#c.v01_rf1_x1 312.aez 312.aez#c.v01_rf2_x1 312.aez ///
+				312.aez#c.v01_rf3_x1 312.aez 312.aez#c.v01_rf4_x1 312.aez ///
+				312.aez#c.v01_rf5_x1 312.aez 312.aez#c.v01_rf6_x1 312.aez ///
+				313.aez#c.v01_rf1_x1 313.aez 313.aez#c.v01_rf2_x1 313.aez ///
+				313.aez#c.v01_rf3_x1 313.aez 313.aez#c.v01_rf4_x1 313.aez ///
+				313.aez#c.v01_rf5_x1 313.aez 313.aez#c.v01_rf6_x1 313.aez ///
+				314.aez#c.v01_rf1_x1 314.aez 314.aez#c.v01_rf2_x1 314.aez ///
+				314.aez#c.v01_rf3_x1 314.aez 314.aez#c.v01_rf4_x1 314.aez ///
+				314.aez#c.v01_rf5_x1 314.aez 314.aez#c.v01_rf6_x1 314.aez ///
+				322.aez#c.v01_rf1_x1 322.aez 322.aez#c.v01_rf2_x1 322.aez ///
+				322.aez#c.v01_rf3_x1 322.aez 322.aez#c.v01_rf4_x1 322.aez ///
+				322.aez#c.v01_rf5_x1 322.aez 322.aez#c.v01_rf6_x1 322.aez ///
+				323.aez#c.v01_rf1_x1 323.aez 323.aez#c.v01_rf2_x1 323.aez ///
+				323.aez#c.v01_rf3_x1 323.aez 323.aez#c.v01_rf4_x1 323.aez ///
+				323.aez#c.v01_rf5_x1 323.aez 323.aez#c.v01_rf6_x1 323.aez ///
+				324.aez#c.v01_rf1_x1 324.aez 324.aez#c.v01_rf2_x1 324.aez ///
+				324.aez#c.v01_rf3_x1 324.aez 324.aez#c.v01_rf4_x1 324.aez ///
+				324.aez#c.v01_rf5_x1 324.aez 324.aez#c.v01_rf6_x1 324.aez ) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				
+* build table for median rainfall
+	esttab 	reg_v02_rf1_x1_v2 reg_v02_rf2_x1_v2 reg_v02_rf3_x1_v2 reg_v02_rf4_x1_v2 ///
+			reg_v02_rf5_x1_v2 reg_v02_rf6_x1_v2 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/rf_median_v2.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Median Daily Rainfall) nonumbers ///
+				mtitles("Rainfall 1" "Rainfall 2" ///
+				"Rainfall 3" "Rainfall 4" "Rainfall 5" "Rainfall 6" ) ///
+				rename(312.aez#c.v02_rf1_x1 312.aez 312.aez#c.v02_rf2_x1 312.aez ///
+				312.aez#c.v02_rf3_x1 312.aez 312.aez#c.v02_rf4_x1 312.aez ///
+				312.aez#c.v02_rf5_x1 312.aez 312.aez#c.v02_rf6_x1 312.aez ///
+				313.aez#c.v02_rf1_x1 313.aez 313.aez#c.v02_rf2_x1 313.aez ///
+				313.aez#c.v02_rf3_x1 313.aez 313.aez#c.v02_rf4_x1 313.aez ///
+				313.aez#c.v02_rf5_x1 313.aez 313.aez#c.v02_rf6_x1 313.aez ///
+				314.aez#c.v02_rf1_x1 314.aez 314.aez#c.v02_rf2_x1 314.aez ///
+				314.aez#c.v02_rf3_x1 314.aez 314.aez#c.v02_rf4_x1 314.aez ///
+				314.aez#c.v02_rf5_x1 314.aez 314.aez#c.v02_rf6_x1 314.aez ///
+				322.aez#c.v02_rf1_x1 322.aez 322.aez#c.v02_rf2_x1 322.aez ///
+				322.aez#c.v02_rf3_x1 322.aez 322.aez#c.v02_rf4_x1 322.aez ///
+				322.aez#c.v02_rf5_x1 322.aez 322.aez#c.v02_rf6_x1 322.aez ///
+				323.aez#c.v02_rf1_x1 323.aez 323.aez#c.v02_rf2_x1 323.aez ///
+				323.aez#c.v02_rf3_x1 323.aez 323.aez#c.v02_rf4_x1 323.aez ///
+				323.aez#c.v02_rf5_x1 323.aez 323.aez#c.v02_rf6_x1 323.aez ///
+				324.aez#c.v02_rf1_x1 324.aez 324.aez#c.v02_rf2_x1 324.aez ///
+				324.aez#c.v02_rf3_x1 324.aez 324.aez#c.v02_rf4_x1 324.aez ///
+				324.aez#c.v02_rf5_x1 324.aez 324.aez#c.v02_rf6_x1 324.aez ) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				
+* build table for variance rainfall
+	esttab 	reg_v03_rf1_x1_v2 reg_v03_rf2_x1_v2 reg_v03_rf3_x1_v2 reg_v03_rf4_x1_v2 ///
+			reg_v03_rf5_x1_v2 reg_v03_rf6_x1_v2 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/rf_var_v2.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Variance of Daily Rainfall) nonumbers ///
+				mtitles("Rainfall 1" "Rainfall 2" ///
+				"Rainfall 3" "Rainfall 4" "Rainfall 5" "Rainfall 6" ) ///
+				rename(312.aez#c.v03_rf1_x1 312.aez 312.aez#c.v03_rf2_x1 312.aez ///
+				312.aez#c.v03_rf3_x1 312.aez 312.aez#c.v03_rf4_x1 312.aez ///
+				312.aez#c.v03_rf5_x1 312.aez 312.aez#c.v03_rf6_x1 312.aez ///
+				313.aez#c.v03_rf1_x1 313.aez 313.aez#c.v03_rf2_x1 313.aez ///
+				313.aez#c.v03_rf3_x1 313.aez 313.aez#c.v03_rf4_x1 313.aez ///
+				313.aez#c.v03_rf5_x1 313.aez 313.aez#c.v03_rf6_x1 313.aez ///
+				314.aez#c.v03_rf1_x1 314.aez 314.aez#c.v03_rf2_x1 314.aez ///
+				314.aez#c.v03_rf3_x1 314.aez 314.aez#c.v03_rf4_x1 314.aez ///
+				314.aez#c.v03_rf5_x1 314.aez 314.aez#c.v03_rf6_x1 314.aez ///
+				322.aez#c.v03_rf1_x1 322.aez 322.aez#c.v03_rf2_x1 322.aez ///
+				322.aez#c.v03_rf3_x1 322.aez 322.aez#c.v03_rf4_x1 322.aez ///
+				322.aez#c.v03_rf5_x1 322.aez 322.aez#c.v03_rf6_x1 322.aez ///
+				323.aez#c.v03_rf1_x1 323.aez 323.aez#c.v03_rf2_x1 323.aez ///
+				323.aez#c.v03_rf3_x1 323.aez 323.aez#c.v03_rf4_x1 323.aez ///
+				323.aez#c.v03_rf5_x1 323.aez 323.aez#c.v03_rf6_x1 323.aez ///
+				324.aez#c.v03_rf1_x1 324.aez 324.aez#c.v03_rf2_x1 324.aez ///
+				324.aez#c.v03_rf3_x1 324.aez 324.aez#c.v03_rf4_x1 324.aez ///
+				324.aez#c.v03_rf5_x1 324.aez 324.aez#c.v03_rf6_x1 324.aez ) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				
+* build table for skew rainfall
+	esttab 	reg_v04_rf1_x1_v2 reg_v04_rf2_x1_v2 reg_v04_rf3_x1_v2 reg_v04_rf4_x1_v2 ///
+			reg_v04_rf5_x1_v2 reg_v04_rf6_x1_v2 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/rf_skew_v2.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Skew of Daily Rainfall) nonumbers ///
+				mtitles("Rainfall 1" "Rainfall 2" ///
+				"Rainfall 3" "Rainfall 4" "Rainfall 5" "Rainfall 6" ) ///
+				rename(312.aez#c.v04_rf1_x1 312.aez 312.aez#c.v04_rf2_x1 312.aez ///
+				312.aez#c.v04_rf3_x1 312.aez 312.aez#c.v04_rf4_x1 312.aez ///
+				312.aez#c.v04_rf5_x1 312.aez 312.aez#c.v04_rf6_x1 312.aez ///
+				313.aez#c.v04_rf1_x1 313.aez 313.aez#c.v04_rf2_x1 313.aez ///
+				313.aez#c.v04_rf3_x1 313.aez 313.aez#c.v04_rf4_x1 313.aez ///
+				313.aez#c.v04_rf5_x1 313.aez 313.aez#c.v04_rf6_x1 313.aez ///
+				314.aez#c.v04_rf1_x1 314.aez 314.aez#c.v04_rf2_x1 314.aez ///
+				314.aez#c.v04_rf3_x1 314.aez 314.aez#c.v04_rf4_x1 314.aez ///
+				314.aez#c.v04_rf5_x1 314.aez 314.aez#c.v04_rf6_x1 314.aez ///
+				322.aez#c.v04_rf1_x1 322.aez 322.aez#c.v04_rf2_x1 322.aez ///
+				322.aez#c.v04_rf3_x1 322.aez 322.aez#c.v04_rf4_x1 322.aez ///
+				322.aez#c.v04_rf5_x1 322.aez 322.aez#c.v04_rf6_x1 322.aez ///
+				323.aez#c.v04_rf1_x1 323.aez 323.aez#c.v04_rf2_x1 323.aez ///
+				323.aez#c.v04_rf3_x1 323.aez 323.aez#c.v04_rf4_x1 323.aez ///
+				323.aez#c.v04_rf5_x1 323.aez 323.aez#c.v04_rf6_x1 323.aez ///
+				324.aez#c.v04_rf1_x1 324.aez 324.aez#c.v04_rf2_x1 324.aez ///
+				324.aez#c.v04_rf3_x1 324.aez 324.aez#c.v04_rf4_x1 324.aez ///
+				324.aez#c.v04_rf5_x1 324.aez 324.aez#c.v04_rf6_x1 324.aez ) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+
+* build table for total rainfall
+	esttab 	reg_v05_rf1_x1_v2 reg_v05_rf2_x1_v2 reg_v05_rf3_x1_v2 reg_v05_rf4_x1_v2 ///
+			reg_v05_rf5_x1_v2 reg_v05_rf6_x1_v2 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/rf_total_v2.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Total Rainfall) nonumbers ///
+				mtitles("Rainfall 1" "Rainfall 2" ///
+				"Rainfall 3" "Rainfall 4" "Rainfall 5" "Rainfall 6" ) ///
+				rename(312.aez#c.v05_rf1_x1 312.aez 312.aez#c.v05_rf2_x1 312.aez ///
+				312.aez#c.v05_rf3_x1 312.aez 312.aez#c.v05_rf4_x1 312.aez ///
+				312.aez#c.v05_rf5_x1 312.aez 312.aez#c.v05_rf6_x1 312.aez ///
+				313.aez#c.v05_rf1_x1 313.aez 313.aez#c.v05_rf2_x1 313.aez ///
+				313.aez#c.v05_rf3_x1 313.aez 313.aez#c.v05_rf4_x1 313.aez ///
+				313.aez#c.v05_rf5_x1 313.aez 313.aez#c.v05_rf6_x1 313.aez ///
+				314.aez#c.v05_rf1_x1 314.aez 314.aez#c.v05_rf2_x1 314.aez ///
+				314.aez#c.v05_rf3_x1 314.aez 314.aez#c.v05_rf4_x1 314.aez ///
+				314.aez#c.v05_rf5_x1 314.aez 314.aez#c.v05_rf6_x1 314.aez ///
+				322.aez#c.v05_rf1_x1 322.aez 322.aez#c.v05_rf2_x1 322.aez ///
+				322.aez#c.v05_rf3_x1 322.aez 322.aez#c.v05_rf4_x1 322.aez ///
+				322.aez#c.v05_rf5_x1 322.aez 322.aez#c.v05_rf6_x1 322.aez ///
+				323.aez#c.v05_rf1_x1 323.aez 323.aez#c.v05_rf2_x1 323.aez ///
+				323.aez#c.v05_rf3_x1 323.aez 323.aez#c.v05_rf4_x1 323.aez ///
+				323.aez#c.v05_rf5_x1 323.aez 323.aez#c.v05_rf6_x1 323.aez ///
+				324.aez#c.v05_rf1_x1 324.aez 324.aez#c.v05_rf2_x1 324.aez ///
+				324.aez#c.v05_rf3_x1 324.aez 324.aez#c.v05_rf4_x1 324.aez ///
+				324.aez#c.v05_rf5_x1 324.aez 324.aez#c.v05_rf6_x1 324.aez ) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				
+* build table for deviation in total rainfall
+	esttab 	reg_v06_rf1_x1_v2 reg_v06_rf2_x1_v2 reg_v06_rf3_x1_v2 reg_v06_rf4_x1_v2 ///
+			reg_v06_rf5_x1_v2 reg_v06_rf6_x1_v2 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/rf_totaldev_v2.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Deviation in Total Rainfall) nonumbers ///
+				mtitles("Rainfall 1" "Rainfall 2" ///
+				"Rainfall 3" "Rainfall 4" "Rainfall 5" "Rainfall 6" ) ///
+				rename(312.aez#c.v06_rf1_x1 312.aez 312.aez#c.v06_rf2_x1 312.aez ///
+				312.aez#c.v06_rf3_x1 312.aez 312.aez#c.v06_rf4_x1 312.aez ///
+				312.aez#c.v06_rf5_x1 312.aez 312.aez#c.v06_rf6_x1 312.aez ///
+				313.aez#c.v06_rf1_x1 313.aez 313.aez#c.v06_rf2_x1 313.aez ///
+				313.aez#c.v06_rf3_x1 313.aez 313.aez#c.v06_rf4_x1 313.aez ///
+				313.aez#c.v06_rf5_x1 313.aez 313.aez#c.v06_rf6_x1 313.aez ///
+				314.aez#c.v06_rf1_x1 314.aez 314.aez#c.v06_rf2_x1 314.aez ///
+				314.aez#c.v06_rf3_x1 314.aez 314.aez#c.v06_rf4_x1 314.aez ///
+				314.aez#c.v06_rf5_x1 314.aez 314.aez#c.v06_rf6_x1 314.aez ///
+				322.aez#c.v06_rf1_x1 322.aez 322.aez#c.v06_rf2_x1 322.aez ///
+				322.aez#c.v06_rf3_x1 322.aez 322.aez#c.v06_rf4_x1 322.aez ///
+				322.aez#c.v06_rf5_x1 322.aez 322.aez#c.v06_rf6_x1 322.aez ///
+				323.aez#c.v06_rf1_x1 323.aez 323.aez#c.v06_rf2_x1 323.aez ///
+				323.aez#c.v06_rf3_x1 323.aez 323.aez#c.v06_rf4_x1 323.aez ///
+				323.aez#c.v06_rf5_x1 323.aez 323.aez#c.v06_rf6_x1 323.aez ///
+				324.aez#c.v06_rf1_x1 324.aez 324.aez#c.v06_rf2_x1 324.aez ///
+				324.aez#c.v06_rf3_x1 324.aez 324.aez#c.v06_rf4_x1 324.aez ///
+				324.aez#c.v06_rf5_x1 324.aez 324.aez#c.v06_rf6_x1 324.aez ) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				
+* build table for z-score total rainfall
+	esttab 	reg_v07_rf1_x1_v2 reg_v07_rf2_x1_v2 reg_v07_rf3_x1_v2 reg_v07_rf4_x1_v2 ///
+			reg_v07_rf5_x1_v2 reg_v07_rf6_x1_v2 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/rf_totalz_v2.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Z-Score of Total Rain) nonumbers ///
+				mtitles("Rainfall 1" "Rainfall 2" ///
+				"Rainfall 3" "Rainfall 4" "Rainfall 5" "Rainfall 6" ) ///
+				rename(312.aez#c.v07_rf1_x1 312.aez 312.aez#c.v07_rf2_x1 312.aez ///
+				312.aez#c.v07_rf3_x1 312.aez 312.aez#c.v07_rf4_x1 312.aez ///
+				312.aez#c.v07_rf5_x1 312.aez 312.aez#c.v07_rf6_x1 312.aez ///
+				313.aez#c.v07_rf1_x1 313.aez 313.aez#c.v07_rf2_x1 313.aez ///
+				313.aez#c.v07_rf3_x1 313.aez 313.aez#c.v07_rf4_x1 313.aez ///
+				313.aez#c.v07_rf5_x1 313.aez 313.aez#c.v07_rf6_x1 313.aez ///
+				314.aez#c.v07_rf1_x1 314.aez 314.aez#c.v07_rf2_x1 314.aez ///
+				314.aez#c.v07_rf3_x1 314.aez 314.aez#c.v07_rf4_x1 314.aez ///
+				314.aez#c.v07_rf5_x1 314.aez 314.aez#c.v07_rf6_x1 314.aez ///
+				322.aez#c.v07_rf1_x1 322.aez 322.aez#c.v07_rf2_x1 322.aez ///
+				322.aez#c.v07_rf3_x1 322.aez 322.aez#c.v07_rf4_x1 322.aez ///
+				322.aez#c.v07_rf5_x1 322.aez 322.aez#c.v07_rf6_x1 322.aez ///
+				323.aez#c.v07_rf1_x1 323.aez 323.aez#c.v07_rf2_x1 323.aez ///
+				323.aez#c.v07_rf3_x1 323.aez 323.aez#c.v07_rf4_x1 323.aez ///
+				323.aez#c.v07_rf5_x1 323.aez 323.aez#c.v07_rf6_x1 323.aez ///
+				324.aez#c.v07_rf1_x1 324.aez 324.aez#c.v07_rf2_x1 324.aez ///
+				324.aez#c.v07_rf3_x1 324.aez 324.aez#c.v07_rf4_x1 324.aez ///
+				324.aez#c.v07_rf5_x1 324.aez 324.aez#c.v07_rf6_x1 324.aez ) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				
+* build table for rain days rainfall
+	esttab 	reg_v08_rf1_x1_v2 reg_v08_rf2_x1_v2 reg_v08_rf3_x1_v2 reg_v08_rf4_x1_v2 ///
+			reg_v08_rf5_x1_v2 reg_v08_rf6_x1_v2 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/rf_raindays_v2.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Rain Days) nonumbers ///
+				mtitles("Rainfall 1" "Rainfall 2" ///
+				"Rainfall 3" "Rainfall 4" "Rainfall 5" "Rainfall 6" ) ///
+				rename(312.aez#c.v08_rf1_x1 312.aez 312.aez#c.v08_rf2_x1 312.aez ///
+				312.aez#c.v08_rf3_x1 312.aez 312.aez#c.v08_rf4_x1 312.aez ///
+				312.aez#c.v08_rf5_x1 312.aez 312.aez#c.v08_rf6_x1 312.aez ///
+				313.aez#c.v08_rf1_x1 313.aez 313.aez#c.v08_rf2_x1 313.aez ///
+				313.aez#c.v08_rf3_x1 313.aez 313.aez#c.v08_rf4_x1 313.aez ///
+				313.aez#c.v08_rf5_x1 313.aez 313.aez#c.v08_rf6_x1 313.aez ///
+				314.aez#c.v08_rf1_x1 314.aez 314.aez#c.v08_rf2_x1 314.aez ///
+				314.aez#c.v08_rf3_x1 314.aez 314.aez#c.v08_rf4_x1 314.aez ///
+				314.aez#c.v08_rf5_x1 314.aez 314.aez#c.v08_rf6_x1 314.aez ///
+				322.aez#c.v08_rf1_x1 322.aez 322.aez#c.v08_rf2_x1 322.aez ///
+				322.aez#c.v08_rf3_x1 322.aez 322.aez#c.v08_rf4_x1 322.aez ///
+				322.aez#c.v08_rf5_x1 322.aez 322.aez#c.v08_rf6_x1 322.aez ///
+				323.aez#c.v08_rf1_x1 323.aez 323.aez#c.v08_rf2_x1 323.aez ///
+				323.aez#c.v08_rf3_x1 323.aez 323.aez#c.v08_rf4_x1 323.aez ///
+				323.aez#c.v08_rf5_x1 323.aez 323.aez#c.v08_rf6_x1 323.aez ///
+				324.aez#c.v08_rf1_x1 324.aez 324.aez#c.v08_rf2_x1 324.aez ///
+				324.aez#c.v08_rf3_x1 324.aez 324.aez#c.v08_rf4_x1 324.aez ///
+				324.aez#c.v08_rf5_x1 324.aez 324.aez#c.v08_rf6_x1 324.aez ) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				
+* build table for deviation in rain days
+	esttab 	reg_v09_rf1_x1_v2 reg_v09_rf2_x1_v2 reg_v09_rf3_x1_v2 reg_v09_rf4_x1_v2 ///
+			reg_v09_rf5_x1_v2 reg_v09_rf6_x1_v2 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/rf_raindaysdev_v2.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Deviation in Rain Days) nonumbers ///
+				mtitles("Rainfall 1" "Rainfall 2" ///
+				"Rainfall 3" "Rainfall 4" "Rainfall 5" "Rainfall 6" ) ///
+				rename(312.aez#c.v09_rf1_x1 312.aez 312.aez#c.v09_rf2_x1 312.aez ///
+				312.aez#c.v09_rf3_x1 312.aez 312.aez#c.v09_rf4_x1 312.aez ///
+				312.aez#c.v09_rf5_x1 312.aez 312.aez#c.v09_rf6_x1 312.aez ///
+				313.aez#c.v09_rf1_x1 313.aez 313.aez#c.v09_rf2_x1 313.aez ///
+				313.aez#c.v09_rf3_x1 313.aez 313.aez#c.v09_rf4_x1 313.aez ///
+				313.aez#c.v09_rf5_x1 313.aez 313.aez#c.v09_rf6_x1 313.aez ///
+				314.aez#c.v09_rf1_x1 314.aez 314.aez#c.v09_rf2_x1 314.aez ///
+				314.aez#c.v09_rf3_x1 314.aez 314.aez#c.v09_rf4_x1 314.aez ///
+				314.aez#c.v09_rf5_x1 314.aez 314.aez#c.v09_rf6_x1 314.aez ///
+				322.aez#c.v09_rf1_x1 322.aez 322.aez#c.v09_rf2_x1 322.aez ///
+				322.aez#c.v09_rf3_x1 322.aez 322.aez#c.v09_rf4_x1 322.aez ///
+				322.aez#c.v09_rf5_x1 322.aez 322.aez#c.v09_rf6_x1 322.aez ///
+				323.aez#c.v09_rf1_x1 323.aez 323.aez#c.v09_rf2_x1 323.aez ///
+				323.aez#c.v09_rf3_x1 323.aez 323.aez#c.v09_rf4_x1 323.aez ///
+				323.aez#c.v09_rf5_x1 323.aez 323.aez#c.v09_rf6_x1 323.aez ///
+				324.aez#c.v09_rf1_x1 324.aez 324.aez#c.v09_rf2_x1 324.aez ///
+				324.aez#c.v09_rf3_x1 324.aez 324.aez#c.v09_rf4_x1 324.aez ///
+				324.aez#c.v09_rf5_x1 324.aez 324.aez#c.v09_rf6_x1 324.aez ) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				
+* build table for no rain days
+	esttab 	reg_v10_rf1_x1_v2 reg_v10_rf2_x1_v2 reg_v10_rf3_x1_v2 reg_v10_rf4_x1_v2 ///
+			reg_v10_rf5_x1_v2 reg_v10_rf6_x1_v2 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/rf_norain_v2.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(No-Rain Days) nonumbers ///
+				mtitles("Rainfall 1" "Rainfall 2" ///
+				"Rainfall 3" "Rainfall 4" "Rainfall 5" "Rainfall 6" ) ///
+				rename(312.aez#c.v10_rf1_x1 312.aez 312.aez#c.v10_rf2_x1 312.aez ///
+				312.aez#c.v10_rf3_x1 312.aez 312.aez#c.v10_rf4_x1 312.aez ///
+				312.aez#c.v10_rf5_x1 312.aez 312.aez#c.v10_rf6_x1 312.aez ///
+				313.aez#c.v10_rf1_x1 313.aez 313.aez#c.v10_rf2_x1 313.aez ///
+				313.aez#c.v10_rf3_x1 313.aez 313.aez#c.v10_rf4_x1 313.aez ///
+				313.aez#c.v10_rf5_x1 313.aez 313.aez#c.v10_rf6_x1 313.aez ///
+				314.aez#c.v10_rf1_x1 314.aez 314.aez#c.v10_rf2_x1 314.aez ///
+				314.aez#c.v10_rf3_x1 314.aez 314.aez#c.v10_rf4_x1 314.aez ///
+				314.aez#c.v10_rf5_x1 314.aez 314.aez#c.v10_rf6_x1 314.aez ///
+				322.aez#c.v10_rf1_x1 322.aez 322.aez#c.v10_rf2_x1 322.aez ///
+				322.aez#c.v10_rf3_x1 322.aez 322.aez#c.v10_rf4_x1 322.aez ///
+				322.aez#c.v10_rf5_x1 322.aez 322.aez#c.v10_rf6_x1 322.aez ///
+				323.aez#c.v10_rf1_x1 323.aez 323.aez#c.v10_rf2_x1 323.aez ///
+				323.aez#c.v10_rf3_x1 323.aez 323.aez#c.v10_rf4_x1 323.aez ///
+				323.aez#c.v10_rf5_x1 323.aez 323.aez#c.v10_rf6_x1 323.aez ///
+				324.aez#c.v10_rf1_x1 324.aez 324.aez#c.v10_rf2_x1 324.aez ///
+				324.aez#c.v10_rf3_x1 324.aez 324.aez#c.v10_rf4_x1 324.aez ///
+				324.aez#c.v10_rf5_x1 324.aez 324.aez#c.v10_rf6_x1 324.aez ) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				
+* build table for deviation in no rain days
+	esttab 	reg_v11_rf1_x1_v2 reg_v11_rf2_x1_v2 reg_v11_rf3_x1_v2 reg_v11_rf4_x1_v2 ///
+			reg_v11_rf5_x1_v2 reg_v11_rf6_x1_v2 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/rf_noraindev_v2.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Deviation in No-Rain Days) nonumbers ///
+				mtitles("Rainfall 1" "Rainfall 2" ///
+				"Rainfall 3" "Rainfall 4" "Rainfall 5" "Rainfall 6" ) ///
+				rename(312.aez#c.v11_rf1_x1 312.aez 312.aez#c.v11_rf2_x1 312.aez ///
+				312.aez#c.v11_rf3_x1 312.aez 312.aez#c.v11_rf4_x1 312.aez ///
+				312.aez#c.v11_rf5_x1 312.aez 312.aez#c.v11_rf6_x1 312.aez ///
+				313.aez#c.v11_rf1_x1 313.aez 313.aez#c.v11_rf2_x1 313.aez ///
+				313.aez#c.v11_rf3_x1 313.aez 313.aez#c.v11_rf4_x1 313.aez ///
+				313.aez#c.v11_rf5_x1 313.aez 313.aez#c.v11_rf6_x1 313.aez ///
+				314.aez#c.v11_rf1_x1 314.aez 314.aez#c.v11_rf2_x1 314.aez ///
+				314.aez#c.v11_rf3_x1 314.aez 314.aez#c.v11_rf4_x1 314.aez ///
+				314.aez#c.v11_rf5_x1 314.aez 314.aez#c.v11_rf6_x1 314.aez ///
+				322.aez#c.v11_rf1_x1 322.aez 322.aez#c.v11_rf2_x1 322.aez ///
+				322.aez#c.v11_rf3_x1 322.aez 322.aez#c.v11_rf4_x1 322.aez ///
+				322.aez#c.v11_rf5_x1 322.aez 322.aez#c.v11_rf6_x1 322.aez ///
+				323.aez#c.v11_rf1_x1 323.aez 323.aez#c.v11_rf2_x1 323.aez ///
+				323.aez#c.v11_rf3_x1 323.aez 323.aez#c.v11_rf4_x1 323.aez ///
+				323.aez#c.v11_rf5_x1 323.aez 323.aez#c.v11_rf6_x1 323.aez ///
+				324.aez#c.v11_rf1_x1 324.aez 324.aez#c.v11_rf2_x1 324.aez ///
+				324.aez#c.v11_rf3_x1 324.aez 324.aez#c.v11_rf4_x1 324.aez ///
+				324.aez#c.v11_rf5_x1 324.aez 324.aez#c.v11_rf6_x1 324.aez ) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				
+* build table for rain days percent
+	esttab 	reg_v12_rf1_x1_v2 reg_v12_rf2_x1_v2 reg_v12_rf3_x1_v2 reg_v12_rf4_x1_v2 ///
+			reg_v12_rf5_x1_v2 reg_v12_rf6_x1_v2 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/rf_percentraindays_v2.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Percentage of Rain Days) nonumbers ///
+				mtitles("Rainfall 1" "Rainfall 2" ///
+				"Rainfall 3" "Rainfall 4" "Rainfall 5" "Rainfall 6" ) ///
+				rename(312.aez#c.v12_rf1_x1 312.aez 312.aez#c.v12_rf2_x1 312.aez ///
+				312.aez#c.v12_rf3_x1 312.aez 312.aez#c.v12_rf4_x1 312.aez ///
+				312.aez#c.v12_rf5_x1 312.aez 312.aez#c.v12_rf6_x1 312.aez ///
+				313.aez#c.v12_rf1_x1 313.aez 313.aez#c.v12_rf2_x1 313.aez ///
+				313.aez#c.v12_rf3_x1 313.aez 313.aez#c.v12_rf4_x1 313.aez ///
+				313.aez#c.v12_rf5_x1 313.aez 313.aez#c.v12_rf6_x1 313.aez ///
+				314.aez#c.v12_rf1_x1 314.aez 314.aez#c.v12_rf2_x1 314.aez ///
+				314.aez#c.v12_rf3_x1 314.aez 314.aez#c.v12_rf4_x1 314.aez ///
+				314.aez#c.v12_rf5_x1 314.aez 314.aez#c.v12_rf6_x1 314.aez ///
+				322.aez#c.v12_rf1_x1 322.aez 322.aez#c.v12_rf2_x1 322.aez ///
+				322.aez#c.v12_rf3_x1 322.aez 322.aez#c.v12_rf4_x1 322.aez ///
+				322.aez#c.v12_rf5_x1 322.aez 322.aez#c.v12_rf6_x1 322.aez ///
+				323.aez#c.v12_rf1_x1 323.aez 323.aez#c.v12_rf2_x1 323.aez ///
+				323.aez#c.v12_rf3_x1 323.aez 323.aez#c.v12_rf4_x1 323.aez ///
+				323.aez#c.v12_rf5_x1 323.aez 323.aez#c.v12_rf6_x1 323.aez ///
+				324.aez#c.v12_rf1_x1 324.aez 324.aez#c.v12_rf2_x1 324.aez ///
+				324.aez#c.v12_rf3_x1 324.aez 324.aez#c.v12_rf4_x1 324.aez ///
+				324.aez#c.v12_rf5_x1 324.aez 324.aez#c.v12_rf6_x1 324.aez ) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+
+* build table for deviation in raindays percent
+	esttab 	reg_v13_rf1_x1_v2 reg_v13_rf2_x1_v2 reg_v13_rf3_x1_v2 reg_v13_rf4_x1_v2 ///
+			reg_v13_rf5_x1_v2 reg_v13_rf6_x1_v2 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/rf_percentraindaysdev_v2.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Deviation in Percent Rain Days) nonumbers ///
+				mtitles("Rainfall 1" "Rainfall 2" ///
+				"Rainfall 3" "Rainfall 4" "Rainfall 5" "Rainfall 6" ) ///
+				rename(312.aez#c.v13_rf1_x1 312.aez 312.aez#c.v13_rf2_x1 312.aez ///
+				312.aez#c.v13_rf3_x1 312.aez 312.aez#c.v13_rf4_x1 312.aez ///
+				312.aez#c.v13_rf5_x1 312.aez 312.aez#c.v13_rf6_x1 312.aez ///
+				313.aez#c.v13_rf1_x1 313.aez 313.aez#c.v13_rf2_x1 313.aez ///
+				313.aez#c.v13_rf3_x1 313.aez 313.aez#c.v13_rf4_x1 313.aez ///
+				313.aez#c.v13_rf5_x1 313.aez 313.aez#c.v13_rf6_x1 313.aez ///
+				314.aez#c.v13_rf1_x1 314.aez 314.aez#c.v13_rf2_x1 314.aez ///
+				314.aez#c.v13_rf3_x1 314.aez 314.aez#c.v13_rf4_x1 314.aez ///
+				314.aez#c.v13_rf5_x1 314.aez 314.aez#c.v13_rf6_x1 314.aez ///
+				322.aez#c.v13_rf1_x1 322.aez 322.aez#c.v13_rf2_x1 322.aez ///
+				322.aez#c.v13_rf3_x1 322.aez 322.aez#c.v13_rf4_x1 322.aez ///
+				322.aez#c.v13_rf5_x1 322.aez 322.aez#c.v13_rf6_x1 322.aez ///
+				323.aez#c.v13_rf1_x1 323.aez 323.aez#c.v13_rf2_x1 323.aez ///
+				323.aez#c.v13_rf3_x1 323.aez 323.aez#c.v13_rf4_x1 323.aez ///
+				323.aez#c.v13_rf5_x1 323.aez 323.aez#c.v13_rf6_x1 323.aez ///
+				324.aez#c.v13_rf1_x1 324.aez 324.aez#c.v13_rf2_x1 324.aez ///
+				324.aez#c.v13_rf3_x1 324.aez 324.aez#c.v13_rf4_x1 324.aez ///
+				324.aez#c.v13_rf5_x1 324.aez 324.aez#c.v13_rf6_x1 324.aez ) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				
+* build table for longest dry spell
+	esttab 	reg_v14_rf1_x1_v2 reg_v14_rf2_x1_v2 reg_v14_rf3_x1_v2 reg_v14_rf4_x1_v2 ///
+			reg_v14_rf5_x1_v2 reg_v14_rf6_x1_v2 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/rf_dry_v2.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Longest Dry Spell) nonumbers ///
+				mtitles("Rainfall 1" "Rainfall 2" ///
+				"Rainfall 3" "Rainfall 4" "Rainfall 5" "Rainfall 6" ) ///
+				rename(312.aez#c.v14_rf1_x1 312.aez 312.aez#c.v14_rf2_x1 312.aez ///
+				312.aez#c.v14_rf3_x1 312.aez 312.aez#c.v14_rf4_x1 312.aez ///
+				312.aez#c.v14_rf5_x1 312.aez 312.aez#c.v14_rf6_x1 312.aez ///
+				313.aez#c.v14_rf1_x1 313.aez 313.aez#c.v14_rf2_x1 313.aez ///
+				313.aez#c.v14_rf3_x1 313.aez 313.aez#c.v14_rf4_x1 313.aez ///
+				313.aez#c.v14_rf5_x1 313.aez 313.aez#c.v14_rf6_x1 313.aez ///
+				314.aez#c.v14_rf1_x1 314.aez 314.aez#c.v14_rf2_x1 314.aez ///
+				314.aez#c.v14_rf3_x1 314.aez 314.aez#c.v14_rf4_x1 314.aez ///
+				314.aez#c.v14_rf5_x1 314.aez 314.aez#c.v14_rf6_x1 314.aez ///
+				322.aez#c.v14_rf1_x1 322.aez 322.aez#c.v14_rf2_x1 322.aez ///
+				322.aez#c.v14_rf3_x1 322.aez 322.aez#c.v14_rf4_x1 322.aez ///
+				322.aez#c.v14_rf5_x1 322.aez 322.aez#c.v14_rf6_x1 322.aez ///
+				323.aez#c.v14_rf1_x1 323.aez 323.aez#c.v14_rf2_x1 323.aez ///
+				323.aez#c.v14_rf3_x1 323.aez 323.aez#c.v14_rf4_x1 323.aez ///
+				323.aez#c.v14_rf5_x1 323.aez 323.aez#c.v14_rf6_x1 323.aez ///
+				324.aez#c.v14_rf1_x1 324.aez 324.aez#c.v14_rf2_x1 324.aez ///
+				324.aez#c.v14_rf3_x1 324.aez 324.aez#c.v14_rf4_x1 324.aez ///
+				324.aez#c.v14_rf5_x1 324.aez 324.aez#c.v14_rf6_x1 324.aez ) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				
+* build table for temperature mean
+	esttab 	reg_v15_tp1_x1_v2 reg_v15_tp2_x1_v2 reg_v15_tp3_x1_v2 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/tp_mean_v2.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Mean Daily Temperature) nonumbers ///
+				mtitles("Temperature 1" "Temperature 2" "Temperature 3") ///
+				rename(312.aez#c.v15_tp1_x1 312.aez 312.aez#c.v15_tp2_x1 312.aez ///
+				312.aez#c.v15_tp3_x1 312.aez ///
+				313.aez#c.v15_tp1_x1 313.aez 313.aez#c.v15_tp2_x1 313.aez ///
+				313.aez#c.v15_tp3_x1 313.aez ///
+				314.aez#c.v15_tp1_x1 314.aez 314.aez#c.v15_tp2_x1 314.aez ///
+				314.aez#c.v15_tp3_x1 314.aez ///
+				322.aez#c.v15_tp1_x1 322.aez 322.aez#c.v15_tp2_x1 322.aez ///
+				322.aez#c.v15_tp3_x1 322.aez ///
+				323.aez#c.v15_tp1_x1 323.aez 323.aez#c.v15_tp2_x1 323.aez ///
+				323.aez#c.v15_tp3_x1 323.aez ///
+				324.aez#c.v15_tp1_x1 324.aez 324.aez#c.v15_tp2_x1 324.aez ///
+				324.aez#c.v15_tp3_x1 324.aez) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+
+* build table for temperature median
+	esttab 	reg_v16_tp1_x1_v2 reg_v16_tp2_x1_v2 reg_v16_tp3_x1_v2 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/tp_median_v2.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Median Daily Temperature) nonumbers ///
+				mtitles("Temperature 1" "Temperature 2" "Temperature 3") ///
+				rename(312.aez#c.v16_tp1_x1 312.aez 312.aez#c.v16_tp2_x1 312.aez ///
+				312.aez#c.v16_tp3_x1 312.aez ///
+				313.aez#c.v16_tp1_x1 313.aez 313.aez#c.v16_tp2_x1 313.aez ///
+				313.aez#c.v16_tp3_x1 313.aez ///
+				314.aez#c.v16_tp1_x1 314.aez 314.aez#c.v16_tp2_x1 314.aez ///
+				314.aez#c.v16_tp3_x1 314.aez ///
+				322.aez#c.v16_tp1_x1 322.aez 322.aez#c.v16_tp2_x1 322.aez ///
+				322.aez#c.v16_tp3_x1 322.aez ///
+				323.aez#c.v16_tp1_x1 323.aez 323.aez#c.v16_tp2_x1 323.aez ///
+				323.aez#c.v16_tp3_x1 323.aez ///
+				324.aez#c.v16_tp1_x1 324.aez 324.aez#c.v16_tp2_x1 324.aez ///
+				324.aez#c.v16_tp3_x1 324.aez) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+
+* build table for variance of daily temperature
+	esttab 	reg_v17_tp1_x1_v2 reg_v17_tp2_x1_v2 reg_v17_tp3_x1_v2 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/tp_variance_v2.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Variance of Daily Temperature) nonumbers ///
+				mtitles("Temperature 1" "Temperature 2" "Temperature 3") ///
+				rename(312.aez#c.v17_tp1_x1 312.aez 312.aez#c.v17_tp2_x1 312.aez ///
+				312.aez#c.v17_tp3_x1 312.aez ///
+				313.aez#c.v17_tp1_x1 313.aez 313.aez#c.v17_tp2_x1 313.aez ///
+				313.aez#c.v17_tp3_x1 313.aez ///
+				314.aez#c.v17_tp1_x1 314.aez 314.aez#c.v17_tp2_x1 314.aez ///
+				314.aez#c.v17_tp3_x1 314.aez ///
+				322.aez#c.v17_tp1_x1 322.aez 322.aez#c.v17_tp2_x1 322.aez ///
+				322.aez#c.v17_tp3_x1 322.aez ///
+				323.aez#c.v17_tp1_x1 323.aez 323.aez#c.v17_tp2_x1 323.aez ///
+				323.aez#c.v17_tp3_x1 323.aez ///
+				324.aez#c.v17_tp1_x1 324.aez 324.aez#c.v17_tp2_x1 324.aez ///
+				324.aez#c.v17_tp3_x1 324.aez) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+
+* build table for temperature skew
+	esttab 	reg_v18_tp1_x1_v2 reg_v18_tp2_x1_v2 reg_v18_tp3_x1_v2 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/tp_skew_v2.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Skew of Daily Temperature) nonumbers ///
+				mtitles("Temperature 1" "Temperature 2" "Temperature 3") ///
+				rename(312.aez#c.v18_tp1_x1 312.aez 312.aez#c.v18_tp2_x1 312.aez ///
+				312.aez#c.v18_tp3_x1 312.aez ///
+				313.aez#c.v18_tp1_x1 313.aez 313.aez#c.v18_tp2_x1 313.aez ///
+				313.aez#c.v18_tp3_x1 313.aez ///
+				314.aez#c.v18_tp1_x1 314.aez 314.aez#c.v18_tp2_x1 314.aez ///
+				314.aez#c.v18_tp3_x1 314.aez ///
+				322.aez#c.v18_tp1_x1 322.aez 322.aez#c.v18_tp2_x1 322.aez ///
+				322.aez#c.v18_tp3_x1 322.aez ///
+				323.aez#c.v18_tp1_x1 323.aez 323.aez#c.v18_tp2_x1 323.aez ///
+				323.aez#c.v18_tp3_x1 323.aez ///
+				324.aez#c.v18_tp1_x1 324.aez 324.aez#c.v18_tp2_x1 324.aez ///
+				324.aez#c.v18_tp3_x1 324.aez) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+
+* build table for growing degree days
+	esttab 	reg_v19_tp1_x1_v2 reg_v19_tp2_x1_v2 reg_v19_tp3_x1_v2 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/tp_gdd_v2.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Growing Degree Days) nonumbers ///
+				mtitles("Temperature 1" "Temperature 2" "Temperature 3") ///
+				rename(312.aez#c.v19_tp1_x1 312.aez 312.aez#c.v19_tp2_x1 312.aez ///
+				312.aez#c.v19_tp3_x1 312.aez ///
+				313.aez#c.v19_tp1_x1 313.aez 313.aez#c.v19_tp2_x1 313.aez ///
+				313.aez#c.v19_tp3_x1 313.aez ///
+				314.aez#c.v19_tp1_x1 314.aez 314.aez#c.v19_tp2_x1 314.aez ///
+				314.aez#c.v19_tp3_x1 314.aez ///
+				322.aez#c.v19_tp1_x1 322.aez 322.aez#c.v19_tp2_x1 322.aez ///
+				322.aez#c.v19_tp3_x1 322.aez ///
+				323.aez#c.v19_tp1_x1 323.aez 323.aez#c.v19_tp2_x1 323.aez ///
+				323.aez#c.v19_tp3_x1 323.aez ///
+				324.aez#c.v19_tp1_x1 324.aez 324.aez#c.v19_tp2_x1 324.aez ///
+				324.aez#c.v19_tp3_x1 324.aez) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+
+* build table for deviation in gdd
+	esttab 	reg_v20_tp1_x1_v2 reg_v20_tp2_x1_v2 reg_v20_tp3_x1_v2 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/tp_gdddev_v2.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Deviation in GDD) nonumbers ///
+				mtitles("Temperature 1" "Temperature 2" "Temperature 3") ///
+				rename(312.aez#c.v20_tp1_x1 312.aez 312.aez#c.v20_tp2_x1 312.aez ///
+				312.aez#c.v20_tp3_x1 312.aez ///
+				313.aez#c.v20_tp1_x1 313.aez 313.aez#c.v20_tp2_x1 313.aez ///
+				313.aez#c.v20_tp3_x1 313.aez ///
+				314.aez#c.v20_tp1_x1 314.aez 314.aez#c.v20_tp2_x1 314.aez ///
+				314.aez#c.v20_tp3_x1 314.aez ///
+				322.aez#c.v20_tp1_x1 322.aez 322.aez#c.v20_tp2_x1 322.aez ///
+				322.aez#c.v20_tp3_x1 322.aez ///
+				323.aez#c.v20_tp1_x1 323.aez 323.aez#c.v20_tp2_x1 323.aez ///
+				323.aez#c.v20_tp3_x1 323.aez ///
+				324.aez#c.v20_tp1_x1 324.aez 324.aez#c.v20_tp2_x1 324.aez ///
+				324.aez#c.v20_tp3_x1 324.aez) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+
+* build table for z-score of gdd
+	esttab 	reg_v21_tp1_x1_v2 reg_v21_tp2_x1_v2 reg_v21_tp3_x1_v2 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/tp_gddz_v2.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Z-Score of GDD) nonumbers ///
+				mtitles("Temperature 1" "Temperature 2" "Temperature 3") ///
+				rename(312.aez#c.v21_tp1_x1 312.aez 312.aez#c.v21_tp2_x1 312.aez ///
+				312.aez#c.v21_tp3_x1 312.aez ///
+				313.aez#c.v21_tp1_x1 313.aez 313.aez#c.v21_tp2_x1 313.aez ///
+				313.aez#c.v21_tp3_x1 313.aez ///
+				314.aez#c.v21_tp1_x1 314.aez 314.aez#c.v21_tp2_x1 314.aez ///
+				314.aez#c.v21_tp3_x1 314.aez ///
+				322.aez#c.v21_tp1_x1 322.aez 322.aez#c.v21_tp2_x1 322.aez ///
+				322.aez#c.v21_tp3_x1 322.aez ///
+				323.aez#c.v21_tp1_x1 323.aez 323.aez#c.v21_tp2_x1 323.aez ///
+				323.aez#c.v21_tp3_x1 323.aez ///
+				324.aez#c.v21_tp1_x1 324.aez 324.aez#c.v21_tp2_x1 324.aez ///
+				324.aez#c.v21_tp3_x1 324.aez) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+
+* build table for temperature max
+	esttab 	reg_v22_tp1_x1_v2 reg_v22_tp2_x1_v2 reg_v22_tp3_x1_v2 ///
+				using "G:/My Drive/weather_project/regression_data/eawp_sandbox/tp_max_v2.tex", replace	 ///
+				label booktabs b(3) se(3) alignment(D{.}{.}{-1}) ///
+				title(Maximum Daily Temperature) nonumbers ///
+				mtitles("Temperature 1" "Temperature 2" "Temperature 3") ///
+				rename(312.aez#c.v22_tp1_x1 312.aez 312.aez#c.v22_tp2_x1 312.aez ///
+				312.aez#c.v22_tp3_x1 312.aez ///
+				313.aez#c.v22_tp1_x1 313.aez 313.aez#c.v22_tp2_x1 313.aez ///
+				313.aez#c.v22_tp3_x1 313.aez ///
+				314.aez#c.v22_tp1_x1 314.aez 314.aez#c.v22_tp2_x1 314.aez ///
+				314.aez#c.v22_tp3_x1 314.aez ///
+				322.aez#c.v22_tp1_x1 322.aez 322.aez#c.v22_tp2_x1 322.aez ///
+				322.aez#c.v22_tp3_x1 322.aez ///
+				323.aez#c.v22_tp1_x1 323.aez 323.aez#c.v22_tp2_x1 323.aez ///
+				323.aez#c.v22_tp3_x1 323.aez ///
+				324.aez#c.v22_tp1_x1 324.aez 324.aez#c.v22_tp2_x1 324.aez ///
+				324.aez#c.v22_tp3_x1 324.aez) ///
+				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+				2008.year 2009.year 2010.year 2011.year 2012.year ///
+				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				
+				
+* **********************************************************************
+* 4 - end matter
+* **********************************************************************
+				
 * close the log
 	log	close
 	
