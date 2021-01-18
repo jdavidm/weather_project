@@ -1124,10 +1124,11 @@ eststo clear
 	
 	* big regression - quantity of maize
 		xtset		hhid
-		xtreg 		lncp_yld c.`v'##i.aez `inputscp' i.year, fe vce(cluster hhid)
+		xtreg 		lncp_yld c.`v'##i.aez `inputscp' i.year i.country$, fe vce(cluster hhid)
 		eststo		reg_`v'_v1
 		}
-		
+	
+	** what's with the countries? still not sure
 		
 * build table for mean rainfall
 	esttab 	reg_v01_rf1_x1_v1 reg_v01_rf2_x1_v1 reg_v01_rf3_x1_v1 reg_v01_rf4_x1_v1 ///
