@@ -1124,7 +1124,7 @@ eststo clear
 	
 	* big regression - quantity of maize
 		xtset		hhid
-		xtreg 		lncp_yld c.`v'##i.aez `inputscp' i.year i.country, fe vce(cluster hhid)
+		xtreg 		lncp_yld c.`v'#i.aez `inputscp' i.year, fe vce(cluster hhid)
 		eststo		reg_`v'_v1
 		}
 	
