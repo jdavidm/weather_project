@@ -1110,7 +1110,7 @@ build table for sat 1
 			reg_v13_rf2_x1 reg_v14_rf2_x1 ///
 				using "$data/regression_data/eawp_sandbox/rf2.tex", replace
 */
-*/
+
 
 
 * **********************************************************************
@@ -1124,7 +1124,7 @@ eststo clear
 	
 	* big regression - quantity of maize
 		xtset		hhid
-		xtreg 		lncp_yld c.`v'#i.aez `inputscp' i.year, fe vce(cluster hhid)
+		xtreg 		lncp_yld c.`v'##i.aez `inputscp' i.year, fe vce(cluster hhid)
 		eststo		reg_`v'_v1
 		}
 	
@@ -2106,7 +2106,7 @@ eststo clear
 				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
 				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))	
 
-				
+*/				
 * **********************************************************************
 * 3.2 - Aez approach 2 (only aez interactions)
 * **********************************************************************
