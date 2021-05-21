@@ -393,7 +393,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 				
 * build table for median rainfall
 	esttab 	reg_v02_rf1_x1 reg_v02_rf2_x1 reg_v02_rf3_x1 reg_v02_rf4_x1 ///
@@ -424,7 +424,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 				
 * build table for variance rainfall
 	esttab 	reg_v03_rf1_x1 reg_v03_rf2_x1 reg_v03_rf3_x1 reg_v03_rf4_x1 ///
@@ -455,7 +455,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 				
 * build table for skew rainfall
 	esttab 	reg_v04_rf1_x1 reg_v04_rf2_x1 reg_v04_rf3_x1 reg_v04_rf4_x1 ///
@@ -486,7 +486,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 
 * build table for total rainfall
 	esttab 	reg_v05_rf1_x1 reg_v05_rf2_x1 reg_v05_rf3_x1 reg_v05_rf4_x1 ///
@@ -517,7 +517,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 				
 * build table for deviation in total rainfall
 	esttab 	reg_v06_rf1_x1 reg_v06_rf2_x1 reg_v06_rf3_x1 reg_v06_rf4_x1 ///
@@ -548,7 +548,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 				
 * build table for z-score total rainfall
 	esttab 	reg_v07_rf1_x1 reg_v07_rf2_x1 reg_v07_rf3_x1 reg_v07_rf4_x1 ///
@@ -579,7 +579,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 				
 * build table for rain days rainfall
 	esttab 	reg_v08_rf1_x1 reg_v08_rf2_x1 reg_v08_rf3_x1 reg_v08_rf4_x1 ///
@@ -610,7 +610,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 				
 * build table for deviation in rain days
 	esttab 	reg_v09_rf1_x1 reg_v09_rf2_x1 reg_v09_rf3_x1 reg_v09_rf4_x1 ///
@@ -641,7 +641,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 				
 * build table for no rain days
 	esttab 	reg_v10_rf1_x1 reg_v10_rf2_x1 reg_v10_rf3_x1 reg_v10_rf4_x1 ///
@@ -672,7 +672,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 				
 * build table for deviation in no rain days
 	esttab 	reg_v11_rf1_x1 reg_v11_rf2_x1 reg_v11_rf3_x1 reg_v11_rf4_x1 ///
@@ -703,7 +703,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 				
 * build table for rain days percent
 	esttab 	reg_v12_rf1_x1 reg_v12_rf2_x1 reg_v12_rf3_x1 reg_v12_rf4_x1 ///
@@ -734,7 +734,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 
 * build table for deviation in raindays percent
 	esttab 	reg_v13_rf1_x1 reg_v13_rf2_x1 reg_v13_rf3_x1 reg_v13_rf4_x1 ///
@@ -765,7 +765,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 				
 * build table for longest dry spell
 	esttab 	reg_v14_rf1_x1 reg_v14_rf2_x1 reg_v14_rf3_x1 reg_v14_rf4_x1 ///
@@ -796,7 +796,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 				
 * build table for temperature mean
 	esttab 	reg_v15_tp1_x1 reg_v15_tp2_x1 reg_v15_tp3_x1 ///
@@ -819,7 +819,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 
 * build table for temperature median
 	esttab 	reg_v16_tp1_x1 reg_v16_tp2_x1 reg_v16_tp3_x1 ///
@@ -842,7 +842,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 
 * build table for variance of daily temperature
 	esttab 	reg_v17_tp1_x1 reg_v17_tp2_x1 reg_v17_tp3_x1 ///
@@ -865,7 +865,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 
 * build table for temperature skew
 	esttab 	reg_v18_tp1_x1 reg_v18_tp2_x1 reg_v18_tp3_x1 ///
@@ -888,7 +888,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 
 * build table for growing degree days
 	esttab 	reg_v19_tp1_x1 reg_v19_tp2_x1 reg_v19_tp3_x1 ///
@@ -911,7 +911,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 
 * build table for deviation in gdd
 	esttab 	reg_v20_tp1_x1 reg_v20_tp2_x1 reg_v20_tp3_x1 ///
@@ -934,7 +934,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 
 * build table for z-score of gdd
 	esttab 	reg_v21_tp1_x1 reg_v21_tp2_x1 reg_v21_tp3_x1 ///
@@ -957,7 +957,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 
 * build table for temperature max
 	esttab 	reg_v22_tp1_x1 reg_v22_tp2_x1 reg_v22_tp3_x1 ///
@@ -980,7 +980,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))				
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))				
 				
 /*				
 	esttab 		est1 est2 est3 est4 est5 est6 est7 est8 est9 est10 est11 est12 est13 est14 ///
@@ -1180,7 +1180,7 @@ eststo clear
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year 312.aez Tropic-warm/semiarid_metric) ///
 				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 				
 * build table for median rainfall
 	esttab 	reg_v02_rf1_x1_v1 reg_v02_rf2_x1_v1 reg_v02_rf3_x1_v1 reg_v02_rf4_x1_v1 ///
@@ -1232,7 +1232,7 @@ eststo clear
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year 312.aez Tropic-warm/semiarid_metric) ///
 				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 				
 * build table for variance rainfall
 	esttab 	reg_v03_rf1_x1_v1 reg_v03_rf2_x1_v1 reg_v03_rf3_x1_v1 reg_v03_rf4_x1_v1 ///
@@ -1284,7 +1284,7 @@ eststo clear
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year 312.aez Tropic-warm/semiarid_metric) ///
 				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 				
 * build table for skew rainfall
 	esttab 	reg_v04_rf1_x1_v1 reg_v04_rf2_x1_v1 reg_v04_rf3_x1_v1 reg_v04_rf4_x1_v1 ///
@@ -1336,7 +1336,7 @@ eststo clear
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year 312.aez Tropic-warm/semiarid_metric) /// 
 				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 
 * build table for total rainfall
 	esttab 	reg_v05_rf1_x1_v1 reg_v05_rf2_x1_v1 reg_v05_rf3_x1_v1 reg_v05_rf4_x1_v1 ///
@@ -1388,7 +1388,7 @@ eststo clear
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year 312.aez Tropic-warm/semiarid_metric) ///
 				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 				
 * build table for deviation in total rainfall
 	esttab 	reg_v06_rf1_x1_v1 reg_v06_rf2_x1_v1 reg_v06_rf3_x1_v1 reg_v06_rf4_x1_v1 ///
@@ -1440,7 +1440,7 @@ eststo clear
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year 312.aez Tropic-warm/semiarid_metric) ///
 				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 				
 * build table for z-score total rainfall
 	esttab 	reg_v07_rf1_x1_v1 reg_v07_rf2_x1_v1 reg_v07_rf3_x1_v1 reg_v07_rf4_x1_v1 ///
@@ -1492,7 +1492,7 @@ eststo clear
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year 312.aez Tropic-warm/semiarid_metric) ///
 				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 				
 * build table for rain days rainfall
 	esttab 	reg_v08_rf1_x1_v1 reg_v08_rf2_x1_v1 reg_v08_rf3_x1_v1 reg_v08_rf4_x1_v1 ///
@@ -1544,7 +1544,7 @@ eststo clear
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year 312.aez Tropic-warm/semiarid_metric) ///
 				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 				
 * build table for deviation in rain days
 	esttab 	reg_v09_rf1_x1_v1 reg_v09_rf2_x1_v1 reg_v09_rf3_x1_v1 reg_v09_rf4_x1_v1 ///
@@ -1596,7 +1596,7 @@ eststo clear
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year 312.aez Tropic-warm/semiarid_metric) ///
 				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 				
 * build table for no rain days
 	esttab 	reg_v10_rf1_x1_v1 reg_v10_rf2_x1_v1 reg_v10_rf3_x1_v1 reg_v10_rf4_x1_v1 ///
@@ -1648,7 +1648,7 @@ eststo clear
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year 312.aez Tropic-warm/semiarid_metric) ///
 				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 				
 * build table for deviation in no rain days
 	esttab 	reg_v11_rf1_x1_v1 reg_v11_rf2_x1_v1 reg_v11_rf3_x1_v1 reg_v11_rf4_x1_v1 ///
@@ -1700,7 +1700,7 @@ eststo clear
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year 312.aez Tropic-warm/semiarid_metric) ///
 				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 				
 * build table for rain days percent
 	esttab 	reg_v12_rf1_x1_v1 reg_v12_rf2_x1_v1 reg_v12_rf3_x1_v1 reg_v12_rf4_x1_v1 ///
@@ -1752,7 +1752,7 @@ eststo clear
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year 312.aez Tropic-warm/semiarid_metric) ///
 				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 
 * build table for deviation in raindays percent
 	esttab 	reg_v13_rf1_x1_v1 reg_v13_rf2_x1_v1 reg_v13_rf3_x1_v1 reg_v13_rf4_x1_v1 ///
@@ -1804,7 +1804,7 @@ eststo clear
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year 312.aez Tropic-warm/semiarid_metric) ///
 				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 				
 * build table for longest dry spell
 	esttab 	reg_v14_rf1_x1_v1 reg_v14_rf2_x1_v1 reg_v14_rf3_x1_v1 reg_v14_rf4_x1_v1 ///
@@ -1856,7 +1856,7 @@ eststo clear
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year 312.aez Tropic-warm/semiarid_metric) ///
 				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 				
 * build table for temperature mean
 	esttab 	reg_v15_tp1_x1_v1 reg_v15_tp2_x1_v1 reg_v15_tp3_x1_v1 ///
@@ -1887,7 +1887,7 @@ eststo clear
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year 312.aez Tropic_warm/semiarid_metric) ///
 				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 
 * build table for temperature median
 	esttab 	reg_v16_tp1_x1_v1 reg_v16_tp2_x1_v1 reg_v16_tp3_x1_v1 ///
@@ -1918,7 +1918,7 @@ eststo clear
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year 312.aez Tropic_warm/semiarid_metric) ///
 				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 
 * build table for variance of daily temperature
 	esttab 	reg_v17_tp1_x1_v1 reg_v17_tp2_x1_v1 reg_v17_tp3_x1_v1 ///
@@ -1949,7 +1949,7 @@ eststo clear
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year 312.aez Tropic_warm/semiarid_metric) ///
 				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 
 * build table for temperature skew
 	esttab 	reg_v18_tp1_x1_v1 reg_v18_tp2_x1_v1 reg_v18_tp3_x1_v1 ///
@@ -1980,7 +1980,7 @@ eststo clear
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year 312.aez Tropic_warm/semiarid_metric) ///
 				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 
 * build table for growing degree days
 	esttab 	reg_v19_tp1_x1_v1 reg_v19_tp2_x1_v1 reg_v19_tp3_x1_v1 ///
@@ -2011,7 +2011,7 @@ eststo clear
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year 312.aez Tropic_warm/semiarid_metric) ///
 				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 
 * build table for deviation in gdd
 	esttab 	reg_v20_tp1_x1_v1 reg_v20_tp2_x1_v1 reg_v20_tp3_x1_v1 ///
@@ -2042,7 +2042,7 @@ eststo clear
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year 312.aez Tropic_warm/semiarid_metric) ///
 				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 
 * build table for z-score of gdd
 	esttab 	reg_v21_tp1_x1_v1 reg_v21_tp2_x1_v1 reg_v21_tp3_x1_v1 ///
@@ -2073,7 +2073,7 @@ eststo clear
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year 312.aez Tropic_warm/semiarid_metric) ///
 				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 
 * build table for temperature max
 	esttab 	reg_v22_tp1_x1_v1 reg_v22_tp2_x1_v1 reg_v22_tp3_x1_v1 ///
@@ -2104,7 +2104,7 @@ eststo clear
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year 312.aez Tropic_warm/semiarid_metric) ///
 				stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))	
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))	
 
 */				
 * **********************************************************************
@@ -2152,7 +2152,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 				
 * build table for median rainfall
 	esttab 	reg_v02_rf1_x1_v2 reg_v02_rf2_x1_v2 reg_v02_rf3_x1_v2 reg_v02_rf4_x1_v2 ///
@@ -2183,7 +2183,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 				
 * build table for variance rainfall
 	esttab 	reg_v03_rf1_x1_v2 reg_v03_rf2_x1_v2 reg_v03_rf3_x1_v2 reg_v03_rf4_x1_v2 ///
@@ -2214,7 +2214,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 				
 * build table for skew rainfall
 	esttab 	reg_v04_rf1_x1_v2 reg_v04_rf2_x1_v2 reg_v04_rf3_x1_v2 reg_v04_rf4_x1_v2 ///
@@ -2245,7 +2245,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 
 * build table for total rainfall
 	esttab 	reg_v05_rf1_x1_v2 reg_v05_rf2_x1_v2 reg_v05_rf3_x1_v2 reg_v05_rf4_x1_v2 ///
@@ -2276,7 +2276,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 				
 * build table for deviation in total rainfall
 	esttab 	reg_v06_rf1_x1_v2 reg_v06_rf2_x1_v2 reg_v06_rf3_x1_v2 reg_v06_rf4_x1_v2 ///
@@ -2307,7 +2307,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 				
 * build table for z-score total rainfall
 	esttab 	reg_v07_rf1_x1_v2 reg_v07_rf2_x1_v2 reg_v07_rf3_x1_v2 reg_v07_rf4_x1_v2 ///
@@ -2338,7 +2338,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 				
 * build table for rain days rainfall
 	esttab 	reg_v08_rf1_x1_v2 reg_v08_rf2_x1_v2 reg_v08_rf3_x1_v2 reg_v08_rf4_x1_v2 ///
@@ -2369,7 +2369,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 				
 * build table for deviation in rain days
 	esttab 	reg_v09_rf1_x1_v2 reg_v09_rf2_x1_v2 reg_v09_rf3_x1_v2 reg_v09_rf4_x1_v2 ///
@@ -2400,7 +2400,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 				
 * build table for no rain days
 	esttab 	reg_v10_rf1_x1_v2 reg_v10_rf2_x1_v2 reg_v10_rf3_x1_v2 reg_v10_rf4_x1_v2 ///
@@ -2431,7 +2431,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 				
 * build table for deviation in no rain days
 	esttab 	reg_v11_rf1_x1_v2 reg_v11_rf2_x1_v2 reg_v11_rf3_x1_v2 reg_v11_rf4_x1_v2 ///
@@ -2462,7 +2462,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 				
 * build table for rain days percent
 	esttab 	reg_v12_rf1_x1_v2 reg_v12_rf2_x1_v2 reg_v12_rf3_x1_v2 reg_v12_rf4_x1_v2 ///
@@ -2493,7 +2493,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 
 * build table for deviation in raindays percent
 	esttab 	reg_v13_rf1_x1_v2 reg_v13_rf2_x1_v2 reg_v13_rf3_x1_v2 reg_v13_rf4_x1_v2 ///
@@ -2524,7 +2524,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 				
 * build table for longest dry spell
 	esttab 	reg_v14_rf1_x1_v2 reg_v14_rf2_x1_v2 reg_v14_rf3_x1_v2 reg_v14_rf4_x1_v2 ///
@@ -2555,7 +2555,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 				
 * build table for temperature mean
 	esttab 	reg_v15_tp1_x1_v2 reg_v15_tp2_x1_v2 reg_v15_tp3_x1_v2 ///
@@ -2578,7 +2578,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 
 * build table for temperature median
 	esttab 	reg_v16_tp1_x1_v2 reg_v16_tp2_x1_v2 reg_v16_tp3_x1_v2 ///
@@ -2601,7 +2601,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 
 * build table for variance of daily temperature
 	esttab 	reg_v17_tp1_x1_v2 reg_v17_tp2_x1_v2 reg_v17_tp3_x1_v2 ///
@@ -2624,7 +2624,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 
 * build table for temperature skew
 	esttab 	reg_v18_tp1_x1_v2 reg_v18_tp2_x1_v2 reg_v18_tp3_x1_v2 ///
@@ -2647,7 +2647,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 
 * build table for growing degree days
 	esttab 	reg_v19_tp1_x1_v2 reg_v19_tp2_x1_v2 reg_v19_tp3_x1_v2 ///
@@ -2670,7 +2670,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 
 * build table for deviation in gdd
 	esttab 	reg_v20_tp1_x1_v2 reg_v20_tp2_x1_v2 reg_v20_tp3_x1_v2 ///
@@ -2693,7 +2693,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 
 * build table for z-score of gdd
 	esttab 	reg_v21_tp1_x1_v2 reg_v21_tp2_x1_v2 reg_v21_tp3_x1_v2 ///
@@ -2716,7 +2716,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 
 * build table for temperature max
 	esttab 	reg_v22_tp1_x1_v2 reg_v22_tp2_x1_v2 reg_v22_tp3_x1_v2 ///
@@ -2739,7 +2739,7 @@ eststo clear
 				drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
 				2008.year 2009.year 2010.year 2011.year 2012.year ///
 				2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
-				"\multicolumn{1}{S}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
 				
 				
 * **********************************************************************
