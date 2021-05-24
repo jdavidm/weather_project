@@ -3,11 +3,11 @@
 * Stata v.17
 
 * does
-	* reads in qgis zonal statistics datasets on cotton and alfalfa cropping by ID
+	* reads in qgis zonal statistics datasets on AEZs by country
 	* combines individual data set into one master dataset
 
 * assumes
-	* qgis zonal stats datasetes present in "groundwater project\data\crop_acres" folder
+	* qgis zonal stats datasetes present in "results_data/gis_data" folder
 
 * TO DO:
 	* done
@@ -17,12 +17,13 @@
 * **********************************************************************
 
 * define paths
-	loc logout = "C:\Users\thema\OneDrive\Documents\EAWP\gis\code"	
-	loc dofile = "C:\Users\thema\OneDrive\Documents\EAWP\gis\data"
+	loc		source	= 	"$data/results_data/gis_data"
+	loc		results = 	"$data/results_data/gis_data"
+	loc		logout 	= 	"$data/results_data/logs"
 	
 * open log
 	cap log close
-	log using "`logout'/aez_area", append
+	log 	using 		"`logout'/aez_area", append
 	
 	
 * **********************************************************************
@@ -30,14 +31,14 @@
 * **********************************************************************
 
 * establish for-loops -
-	loc 	fileList : dir "`dofile'" files "*xlsx"
+	loc 	fileList : dir "`source'" files "*xlsx"
 	
 	* loop through each file in the above local
 		foreach file in `fileList' {
 			
 			clear all
 						
-			import excel "`dofile'/`file'", firstrow
+			import excel "`source'/`file'", firstrow
 			
 				* define locals to govern variable naming
 				loc temp = substr("`file'", 1, 4)
@@ -77,7 +78,7 @@
 				drop if 	keeper != 1
 				drop		keeper
 				
-				save 		"`dofile'/`temp'`wet'.dta", replace
+				save 		"`results'/`temp'`wet'.dta", replace
 
 		}
 		
@@ -88,15 +89,15 @@
 * 2 - append and clean datasets
 * **********************************************************************
 
-	use 	"`dofile'\cool_humid.dta"
+	use 	"`source'\cool_humid.dta"
 
 * establish for-loops
-	loc 	fileList : dir "`dofile'" files "*.dta"
+	loc 	fileList : dir "`source'" files "*.dta"
 
 		* loop through each file in the above local
 		foreach file in `fileList' {
 		    
-			append		using "`dofile'/`file'"
+			append		using "`source'/`file'"
 		    
 		}
 		
@@ -132,4 +133,4 @@
 * 3 - save output
 * **********************************************************************	
 
-	save	"C:\Users\thema\OneDrive\Documents\EAWP\gis\aez_bycountry.dta", replace
+	save	"`results'\aez_bycountry.dta", replace
