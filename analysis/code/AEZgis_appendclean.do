@@ -62,7 +62,7 @@
 				gen			arid = .
 				
 				replace		semiarid = 1 if substr("`file'", 6,5) == "sarid"
-				replace		subhumid = 1 if substr("`file'", 6,5) == "subhu"
+				replace		subhumid = 1 if substr("`file'", 6,5) == "subhd"
 				replace		humid = 1 if substr("`file'", 6,5) == "humid"
 				replace 	arid = 1 if substr("`file'", 6,5) == "aridd"
 				
@@ -92,7 +92,7 @@
 	use 	"`source'\cool_humid.dta"
 
 * establish for-loops
-	loc 	fileList : dir "`source'" files "*.dta"
+	loc 	fileList : dir "`source'" files "*d.dta"
 
 		* loop through each file in the above local
 		foreach file in `fileList' {
@@ -128,9 +128,45 @@
 	gen		chu_pct = chu_area/country_area
 	gen		car_pct = car_area/country_area
 	
+* total area (as a check)
+	gen 	total_area = wsa_area + wsh_area + whu_area + war_area + csa_area ///
+			+ csh_area + chu_area + car_area
+			
+	gen		total_pct = total_area/country_area
+	
+
+* **********************************************************************
+* 3 - labels and things
+* **********************************************************************		
+	
+	rename	NAME country
+	label	variable country "Country"
+	label	variable country_area "Pixel Area of Country"
+	
+	label 	variable wsa_area "Pixel Area of Tropic-Warm/Semiarid AEZ"
+	label 	variable wsh_area "Pixel Area of Tropic-Warm/Subhumid AEZ"
+	label 	variable whu_area "Pixel Area of Tropic-Warm/Humid AEZ"
+	label 	variable war_area "Pixel Area of Tropic-Warm/Arid AEZ"
+	label 	variable csa_area "Pixel Area of Tropic-Cool/Semiarid AEZ"
+	label 	variable csh_area "Pixel Area of Tropic-Cool/Subhumid AEZ"
+	label 	variable chu_area "Pixel Area of Tropic-Cool/Humid AEZ"
+	label 	variable car_area "Pixel Area of Tropic-Cool/Arid AEZ"
+	
+	label 	variable wsa_pct "Percent of Country in Tropic-Warm/Semiarid AEZ"
+	label 	variable wsh_pct "Percent of Country in Tropic-Warm/Subhumid AEZ"
+	label 	variable whu_pct "Percent of Country in Tropic-Warm/Humid AEZ"
+	label 	variable war_pct "Percent of Country in Tropic-Warm/Arid AEZ"
+	label 	variable csa_pct "Percent of Country in Tropic-Cool/Semiarid AEZ"
+	label 	variable csh_pct "Percent of Country in Tropic-Cool/Subhumid AEZ"
+	label 	variable chu_pct "Percent of Country in Tropic-Cool/Humid AEZ"
+	label 	variable car_pct "Percent of Country in Tropic-Cool/Arid AEZ"
+	
+	label	variable total_area "Total AEZ Pixel Area"
+	label 	variable total_pct "Percent of Country in Any Tropic AEZ"
+	
 	
 * **********************************************************************
-* 3 - save output
+* 4 - save output
 * **********************************************************************	
 
 	save	"`results'\aez_bycountry.dta", replace
