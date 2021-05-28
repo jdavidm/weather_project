@@ -399,7 +399,7 @@
 			(kdensity v15_tp2 if aez == 323, color(vermillion%30) recast(area)) ///
 			(kdensity v15_tp3 if aez == 323, color(sea%30) recast(area) ///
 			xtitle("Mean Seasonal Temperature (C)") xscale(r(10(5)30)) ///
-			title("Tropic-warm/subhumid (n = 5,886)") ///
+			title("Tropic-cool/subhumid (n = 5,886)") ///
 			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "Temperature 1") label(2 "Temperature 2") ///
 			label(3 "Temperature 3")) saving("$xfig/tcsh_density_tp", replace)
@@ -409,7 +409,7 @@
 			(kdensity v15_tp2 if aez == 324, color(vermillion%30) recast(area)) ///
 			(kdensity v15_tp3 if aez == 324, color(sea%30) recast(area) ///
 			xtitle("Mean Seasonal Temperature (C)") xscale(r(16(2)26)) ///
-			title("Tropic-warm/humid (n = 2,960)") ///
+			title("Tropic-cool/humid (n = 2,960)") ///
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "Temperature 1") label(2 "Temperature 2") ///
 			label(3 "Temperature 3")) saving("$xfig/tch_density_tp", replace)				
