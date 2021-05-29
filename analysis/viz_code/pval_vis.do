@@ -90,9 +90,9 @@ preserve
 	replace			obs = 1 + obs if obs > 31
 	replace			obs = 1 + obs if obs > 35
 	
-	twoway			(bar mu obs if p == 90, color(emerald*1.5)) || ///
-						(bar mu obs if p == 95, color(eltblue*1.5)) || ///
-						(bar mu obs if p == 99, color(khaki*1.5)) || ///
+	twoway			(bar mu obs if p == 90, color(emerald*1.5%60)) || ///
+						(bar mu obs if p == 95, color(eltblue*1.5%60)) || ///
+						(bar mu obs if p == 99, color(khaki*1.5%60)) || ///
 						(rcap hi lo obs, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Rainfall") ///
 						ytitle("Share of Significant Point Estimates") ///
@@ -137,9 +137,9 @@ preserve
 	replace			obs = 1 + obs if obs > 31
 	replace			obs = 1 + obs if obs > 35
 	
-	twoway			(bar mu obs if p == 90, color(maroon*1.5)) || ///
-						(bar mu obs if p == 95, color(lavender*1.5)) || ///
-						(bar mu obs if p == 99, color(brown*1.5)) || ///
+	twoway			(bar mu obs if p == 90, color(maroon*1.5%60)) || ///
+						(bar mu obs if p == 95, color(lavender*1.5%60)) || ///
+						(bar mu obs if p == 99, color(brown*1.5%60)) || ///
 						(rcap hi lo obs, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Temperature") ///
 						ytitle("Share of Significant Point Estimates") ///
@@ -157,7 +157,7 @@ restore
 	grc1leg2 		"$sfig/pval_ext_rf.gph" "$sfig/pval_ext_tp.gph", ///
 						col(1) iscale(.5) pos(12) commonscheme imargin(0 0 0 0)
 						
-	graph export 	"$xfig\pval_ext.png", width(1400) replace		
+	graph export 	"$xfig/pval_ext.png", width(1400) replace		
 			
 				
 * **********************************************************************
@@ -199,17 +199,17 @@ preserve
 	replace			obs = 1 + obs if obs > 35
 */
 * ethiopia
-	sum			 	hi if country == 1 & p == 95 & ext == 3
+	sum			 	hi if country == 1 & p == 95 & ext == 1
 	global			bmax = r(max)
 	
-	sum			 	lo if country == 1 & p == 95 & ext == 3
+	sum			 	lo if country == 1 & p == 95 & ext == 1
 	global			bmin = r(min)
 
-	twoway			(bar mu obs if p == 95 & country == 1, color(eltblue*1.5)) || ///
+	twoway			(bar mu obs if p == 95 & country == 1, color(eltblue*1.5%60)) || ///
 						(rcap hi lo obs if country == 1 & p == 95, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Ethiopia") ///
 						ytitle("Share of Significant Point Estimates") ///
-						xscale(r(0 30) ex) ///
+						lcolor(black) xscale(r(0 30) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
 						xlabel(2 "Extraction 1 " 5 "Extraction 2 " 8 "Extraction 3 " ///
@@ -221,16 +221,16 @@ preserve
 						saving("$sfig/eth_pval_ext_rf", replace)
 
 * malawi
-	sum			 	hi if country == 2 & p == 95 & ext == 3
+	sum			 	hi if country == 2 & p == 95 & ext == 1
 	global			bmax = r(max)
 	
-	sum			 	lo if country == 2 & p == 95 & ext == 3
+	sum			 	lo if country == 2 & p == 95 & ext == 1
 	global			bmin = r(min)
 	
-	twoway			(bar mu obs if p == 95 & country == 2, color(eltblue*1.5)) || ///
+	twoway			(bar mu obs if p == 95 & country == 2, color(eltblue*1.5%60)) || ///
 						(rcap hi lo obs if country == 2 & p == 95, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Malawi") ///
-						xscale(r(0 30) ex) ///
+						lcolor(black) xscale(r(0 30) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
 						xlabel(2 "Extraction 1 " 5 "Extraction 2 " 8 "Extraction 3 " ///
@@ -242,16 +242,16 @@ preserve
 						saving("$sfig/mwi_pval_ext_rf", replace)
 
 * niger
-	sum			 	hi if country == 4 & p == 95 & ext == 3
+	sum			 	hi if country == 4 & p == 95 & ext == 1
 	global			bmax = r(max)
 	
-	sum			 	lo if country == 4 & p == 95 & ext == 3
+	sum			 	lo if country == 4 & p == 95 & ext == 1
 	global			bmin = r(min)
 	
-	twoway			(bar mu obs if p == 95 & country == 4, color(eltblue*1.5)) || ///
+	twoway			(bar mu obs if p == 95 & country == 4, color(eltblue*1.5%60)) || ///
 						(rcap hi lo obs if country == 4 & p == 95, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Niger") ///
-						xscale(r(0 30) ex) ///
+						lcolor(black) xscale(r(0 30) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
 						xlabel(2 "Extraction 1 " 5 "Extraction 2 " 8 "Extraction 3 " ///
@@ -263,17 +263,17 @@ preserve
 						saving("$sfig/ngr_pval_ext_rf", replace)
 
 * nigeria
-	sum			 	hi if country == 5 & p == 95 & ext == 3
+	sum			 	hi if country == 5 & p == 95 & ext == 1
 	global			bmax = r(max)
 	
-	sum			 	lo if country == 5 & p == 95 & ext == 3
+	sum			 	lo if country == 5 & p == 95 & ext == 1
 	global			bmin = r(min)
 	
-	twoway			(bar mu obs if p == 95 & country == 5, color(eltblue*1.5)) || ///
+	twoway			(bar mu obs if p == 95 & country == 5, color(eltblue*1.5%60)) || ///
 						(rcap hi lo obs if country == 5 & p == 95, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Nigeria") ///
 						ytitle("Share of Significant Point Estimates") ///
-						xscale(r(0 30) ex) ///
+						lcolor(black) xscale(r(0 30) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
 						xlabel(2 "Extraction 1 " 5 "Extraction 2 " 8 "Extraction 3 " ///
@@ -285,16 +285,16 @@ preserve
 						saving("$sfig/nga_pval_ext_rf", replace)
 						
 * tanzania
-	sum			 	hi if country == 6 & p == 95 & ext == 3
+	sum			 	hi if country == 6 & p == 95 & ext == 1
 	global			bmax = r(max)
 	
-	sum			 	lo if country == 6 & p == 95 & ext == 3
+	sum			 	lo if country == 6 & p == 95 & ext == 1
 	global			bmin = r(min)
 	
-	twoway			(bar mu obs if p == 95 & country == 6, color(eltblue*1.5)) || ///
+	twoway			(bar mu obs if p == 95 & country == 6, color(eltblue*1.5%60)) || ///
 						(rcap hi lo obs if country == 6 & p == 95, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Tanzania") ///
-						xscale(r(0 30) ex) ///
+						lcolor(black) xscale(r(0 30) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
 						xlabel(2 "Extraction 1 " 5 "Extraction 2 " 8 "Extraction 3 " ///
@@ -306,16 +306,16 @@ preserve
 						saving("$sfig/tza_pval_ext_rf", replace)
 						
 * uganda
-	sum			 	hi if country == 7 & p == 95 & ext == 3
+	sum			 	hi if country == 7 & p == 95 & ext == 1
 	global			bmax = r(max)
 	
-	sum			 	lo if country == 7 & p == 95 & ext == 3
+	sum			 	lo if country == 7 & p == 95 & ext == 1
 	global			bmin = r(min)
 	
-	twoway			(bar mu obs if p == 95 & country == 7, color(eltblue*1.5)) || ///
+	twoway			(bar mu obs if p == 95 & country == 7, color(eltblue*1.5%60)) || ///
 						(rcap hi lo obs if country == 7 & p == 95, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Uganda") ///
-						xscale(r(0 30) ex) ///
+						lcolor(black) xscale(r(0 30) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
 						xlabel(2 "Extraction 1 " 5 "Extraction 2 " 8 "Extraction 3 " ///
@@ -363,17 +363,17 @@ preserve
 	replace			obs = 1 + obs if obs > 35
 */
 * ethiopia
-	sum			 	hi if country == 1 & p == 95 & ext == 3
+	sum			 	hi if country == 1 & p == 95 & ext == 1
 	global			bmax = r(max)
 	
-	sum			 	lo if country == 1 & p == 95 & ext == 3
+	sum			 	lo if country == 1 & p == 95 & ext == 1
 	global			bmin = r(min)
 	
-	twoway			(bar mu obs if p == 95 & country == 1, color(lavender*1.5)) || ///
+	twoway			(bar mu obs if p == 95 & country == 1, color(lavender*1.5%60)) || ///
 						(rcap hi lo obs if country == 1 & p == 95, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Ethiopia") ///
 						ytitle("Share of Significant Point Estimates") ///
-						xscale(r(0 30) ex) ///
+						lcolor(black) xscale(r(0 30) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
 						xlabel(2 "Extraction 1 " 5 "Extraction 2 " 8 "Extraction 3 " ///
@@ -385,16 +385,16 @@ preserve
 						saving("$sfig/eth_pval_ext_tp", replace)
 
 * malawi
-	sum			 	hi if country == 2 & p == 95 & ext == 3
+	sum			 	hi if country == 2 & p == 95 & ext == 1
 	global			bmax = r(max)
 	
-	sum			 	lo if country == 2 & p == 95 & ext == 3
+	sum			 	lo if country == 2 & p == 95 & ext == 1
 	global			bmin = r(min)
 	
-	twoway			(bar mu obs if p == 95 & country == 2, color(lavender*1.5)) || ///
+	twoway			(bar mu obs if p == 95 & country == 2, color(lavender*1.5%60)) || ///
 						(rcap hi lo obs if country == 2 & p == 95, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Malawi") ///
-						xscale(r(0 30) ex) ///
+						lcolor(black) xscale(r(0 30) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
 						xlabel(2 "Extraction 1 " 5 "Extraction 2 " 8 "Extraction 3 " ///
@@ -406,16 +406,16 @@ preserve
 						saving("$sfig/mwi_pval_ext_tp", replace)
 
 * niger
-	sum			 	hi if country == 4 & p == 95 & ext == 3
+	sum			 	hi if country == 4 & p == 95 & ext == 1
 	global			bmax = r(max)
 	
-	sum			 	lo if country == 4 & p == 95 & ext == 3
+	sum			 	lo if country == 4 & p == 95 & ext == 1
 	global			bmin = r(min)
 	
-	twoway			(bar mu obs if p == 95 & country == 4, color(lavender*1.5)) || ///
+	twoway			(bar mu obs if p == 95 & country == 4, color(lavender*1.5%60)) || ///
 						(rcap hi lo obs if country == 4 & p == 95, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Niger") ///
-						xscale(r(0 30) ex) ///
+						lcolor(black) xscale(r(0 30) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
 						xlabel(2 "Extraction 1 " 5 "Extraction 2 " 8 "Extraction 3 " ///
@@ -427,17 +427,17 @@ preserve
 						saving("$sfig/ngr_pval_ext_tp", replace)
 
 * nigeria
-	sum			 	hi if country == 5 & p == 95 & ext == 3
+	sum			 	hi if country == 5 & p == 95 & ext == 1
 	global			bmax = r(max)
 	
-	sum			 	lo if country == 5 & p == 95 & ext == 3
+	sum			 	lo if country == 5 & p == 95 & ext == 1
 	global			bmin = r(min)
 	
-	twoway			(bar mu obs if p == 95 & country == 5, color(lavender*1.5)) || ///
+	twoway			(bar mu obs if p == 95 & country == 5, color(lavender*1.5%60)) || ///
 						(rcap hi lo obs if country == 5 & p == 95, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Nigeria") ///
 						ytitle("Share of Significant Point Estimates") ///
-						xscale(r(0 30) ex) ///
+						lcolor(black) xscale(r(0 30) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
 						xlabel(2 "Extraction 1 " 5 "Extraction 2 " 8 "Extraction 3 " ///
@@ -449,16 +449,16 @@ preserve
 						saving("$sfig/nga_pval_ext_tp", replace)
 						
 * tanzania
-	sum			 	hi if country == 6 & p == 95 & ext == 3
+	sum			 	hi if country == 6 & p == 95 & ext == 1
 	global			bmax = r(max)
 	
-	sum			 	lo if country == 6 & p == 95 & ext == 3
+	sum			 	lo if country == 6 & p == 95 & ext == 1
 	global			bmin = r(min)
 	
-	twoway			(bar mu obs if p == 95 & country == 6, color(lavender*1.5)) || ///
+	twoway			(bar mu obs if p == 95 & country == 6, color(lavender*1.5%60)) || ///
 						(rcap hi lo obs if country == 6 & p == 95, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Tanzania") ///
-						xscale(r(0 30) ex) ///
+						lcolor(black) xscale(r(0 30) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
 						xlabel(2 "Extraction 1 " 5 "Extraction 2 " 8 "Extraction 3 " ///
@@ -470,16 +470,16 @@ preserve
 						saving("$sfig/tza_pval_ext_tp", replace)
 						
 * uganda
-	sum			 	hi if country == 7 & p == 95 & ext == 3
+	sum			 	hi if country == 7 & p == 95 & ext == 1
 	global			bmax = r(max)
 	
-	sum			 	lo if country == 7 & p == 95 & ext == 3
+	sum			 	lo if country == 7 & p == 95 & ext == 1
 	global			bmin = r(min)
 	
-	twoway			(bar mu obs if p == 95 & country == 7, color(lavender*1.5)) || ///
+	twoway			(bar mu obs if p == 95 & country == 7, color(lavender*1.5%60)) || ///
 						(rcap hi lo obs if country == 7 & p == 95, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Uganda") ///
-						xscale(r(0 30) ex) ///
+						lcolor(black) xscale(r(0 30) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
 						xlabel(2 "Extraction 1 " 5 "Extraction 2 " 8 "Extraction 3 " ///
@@ -520,7 +520,7 @@ preserve
 	set seed		3317230
 	gen double 		u = (10-1) * runiform() + 1
 	gen 			i = round(u)
-	sum		 		u i 
+	sum		 		u i
 restore	
 *** random number was 3, so we proceed with extraction method 3
 
@@ -571,9 +571,9 @@ preserve
 	replace			obs = 1 + obs if obs > 47
 	replace			obs = 1 + obs if obs > 51
 	
-	twoway			(bar mu obs if p == 90, color(emerald*1.5)) || ///
-						(bar mu obs if p == 95, color(eltblue*1.5)) || ///
-						(bar mu obs if p == 99, color(khaki*1.5)) || ///
+	twoway			(bar mu obs if p == 90, color(emerald*1.5%60)) || ///
+						(bar mu obs if p == 95, color(eltblue*1.5%60)) || ///
+						(bar mu obs if p == 99, color(khaki*1.5%60)) || ///
 						(rcap hi lo obs, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Rainfall") ///
 						ytitle("Share of Significant Point Estimates") ///
@@ -622,9 +622,9 @@ preserve
 	replace			obs = 1 + obs if obs > 23
 	replace			obs = 1 + obs if obs > 27
 	
-	twoway			(bar mu obs if p == 90, color(maroon*1.5)) || ///
-						(bar mu obs if p == 95, color(lavender*1.5)) || ///
-						(bar mu obs if p == 99, color(brown*1.5)) || ///
+	twoway			(bar mu obs if p == 90, color(maroon*1.5%60)) || ///
+						(bar mu obs if p == 95, color(lavender*1.5%60)) || ///
+						(bar mu obs if p == 99, color(brown*1.5%60)) || ///
 						(rcap hi lo obs, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Temperature") ///
 						ytitle("Share of Significant Point Estimates") ///
@@ -695,13 +695,13 @@ preserve
 	sum			 	lo if p == 95 & varname == 1
 	global			bmin = r(min)
 	
-	twoway			(bar mu obs if p == 95, color(eltblue*1.5)) || ///
+	twoway			(bar mu obs if p == 95, color(eltblue*1.5%60)) || ///
 						(rcap hi lo obs if p == 95, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Ethiopia") ///
 						ytitle("Share of Significant Point Estimates") ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xscale(r(0 42) ex) ///
+						lcolor(black) xscale(r(0 42) ex) ///
 						xlabel(2 "Mean Daily Rain " 5 "Median Daily Rain " ///
 						8 "Variance of Daily Rain " 11 "Skew of Daily Rain " ///
 						14 "Total Seasonal Rain " 17 "Dev. in Total Rain " ///
@@ -761,12 +761,12 @@ preserve
 	sum			 	lo if p == 95 & varname == 1
 	global			bmin = r(min)
 	
-	twoway			(bar mu obs if p == 95, color(eltblue*1.5)) || ///
+	twoway			(bar mu obs if p == 95, color(eltblue*1.5%60)) || ///
 						(rcap hi lo obs if p == 95, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Malawi") ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xscale(r(0 42) ex) ///
+						lcolor(black) xscale(r(0 42) ex) ///
 						xlabel(2 "Mean Daily Rain " 5 "Median Daily Rain " ///
 						8 "Variance of Daily Rain " 11 "Skew of Daily Rain " ///
 						14 "Total Seasonal Rain " 17 "Dev. in Total Rain " ///
@@ -826,12 +826,12 @@ preserve
 	sum			 	lo if p == 95 & varname == 1
 	global			bmin = r(min)
 	
-	twoway			(bar mu obs if p == 95, color(eltblue*1.5)) || ///
+	twoway			(bar mu obs if p == 95, color(eltblue*1.5%60)) || ///
 						(rcap hi lo obs if p == 95, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Niger") ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xscale(r(0 42) ex) ///
+						lcolor(black) xscale(r(0 42) ex) ///
 						xlabel(2 "Mean Daily Rain " 5 "Median Daily Rain " ///
 						8 "Variance of Daily Rain " 11 "Skew of Daily Rain " ///
 						14 "Total Seasonal Rain " 17 "Dev. in Total Rain " ///
@@ -891,13 +891,13 @@ preserve
 	sum			 	lo if p == 95 & varname == 1
 	global			bmin = r(min)
 	
-	twoway			(bar mu obs if p == 95, color(eltblue*1.5)) || ///
+	twoway			(bar mu obs if p == 95, color(eltblue*1.5%60)) || ///
 						(rcap hi lo obs if p == 95, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Nigeria") ///
 						ytitle("Share of Significant Point Estimates") ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xscale(r(0 42) ex) ///
+						lcolor(black) xscale(r(0 42) ex) ///
 						xlabel(2 "Mean Daily Rain " 5 "Median Daily Rain " ///
 						8 "Variance of Daily Rain " 11 "Skew of Daily Rain " ///
 						14 "Total Seasonal Rain " 17 "Dev. in Total Rain " ///
@@ -957,12 +957,12 @@ preserve
 	sum			 	lo if p == 95 & varname == 1
 	global			bmin = r(min)
 	
-	twoway			(bar mu obs if p == 95, color(eltblue*1.5)) || ///
+	twoway			(bar mu obs if p == 95, color(eltblue*1.5%60)) || ///
 						(rcap hi lo obs if p == 95, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Tanzania") ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xscale(r(0 42) ex) ///
+						lcolor(black) xscale(r(0 42) ex) ///
 						xlabel(2 "Mean Daily Rain " 5 "Median Daily Rain " ///
 						8 "Variance of Daily Rain " 11 "Skew of Daily Rain " ///
 						14 "Total Seasonal Rain " 17 "Dev. in Total Rain " ///
@@ -1022,12 +1022,12 @@ preserve
 	sum			 	lo if p == 95 & varname == 1
 	global			bmin = r(min)
 	
-	twoway			(bar mu obs if p == 95, color(eltblue*1.5)) || ///
+	twoway			(bar mu obs if p == 95, color(eltblue*1.5%60)) || ///
 						(rcap hi lo obs if p == 95, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Uganda") ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xscale(r(0 42) ex) ///
+						lcolor(black) xscale(r(0 42) ex) ///
 						xlabel(2 "Mean Daily Rain " 5 "Median Daily Rain " ///
 						8 "Variance of Daily Rain " 11 "Skew of Daily Rain " ///
 						14 "Total Seasonal Rain " 17 "Dev. in Total Rain " ///
@@ -1094,7 +1094,7 @@ preserve
 	sum			 	lo if p == 95 & varname == 15
 	global			bmin = r(min)
 	
-	twoway			(bar mu obs if p == 95, color(lavender*1.5)) || ///
+	twoway			(bar mu obs if p == 95, color(lavender*1.5%60)) || ///
 						(rcap hi lo obs if p == 95, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Ethiopia") ///
 						ytitle("Share of Significant Point Estimates") ///
@@ -1151,12 +1151,12 @@ preserve
 	sum			 	lo if p == 95 & varname == 15
 	global			bmin = r(min)
 	
-	twoway			(bar mu obs if p == 95, color(lavender*1.5)) || ///
+	twoway			(bar mu obs if p == 95, color(lavender*1.5%60)) || ///
 						(rcap hi lo obs if p == 95, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Malawi") ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xscale(r(0 24) ex) ///
+						lcolor(black) xscale(r(0 24) ex) ///
 						xlabel(2 "Mean Daily Temp " 5 "Median Daily Temp " ///
 						8 "Variance of Daily Temp " 11 "Skew of Daily Temp " ///
 						14 "Growing Degree Days " 17 "Dev. in GDD " ///
@@ -1207,12 +1207,12 @@ preserve
 	sum			 	lo if p == 95 & varname == 15
 	global			bmin = r(min)
 	
-	twoway			(bar mu obs if p == 95, color(lavender*1.5)) || ///
+	twoway			(bar mu obs if p == 95, color(lavender*1.5%60)) || ///
 						(rcap hi lo obs if p == 95, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Niger") ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xscale(r(0 24) ex) ///
+						lcolor(black) xscale(r(0 24) ex) ///
 						xlabel(2 "Mean Daily Temp " 5 "Median Daily Temp " ///
 						8 "Variance of Daily Temp " 11 "Skew of Daily Temp " ///
 						14 "Growing Degree Days " 17 "Dev. in GDD " ///
@@ -1263,13 +1263,13 @@ preserve
 	sum			 	lo if p == 95 & varname == 15
 	global			bmin = r(min)
 	
-	twoway			(bar mu obs if p == 95, color(lavender*1.5)) || ///
+	twoway			(bar mu obs if p == 95, color(lavender*1.5%60)) || ///
 						(rcap hi lo obs if p == 95, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Nigeria") ///
 						ytitle("Share of Significant Point Estimates") ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xscale(r(0 24) ex) ///
+						lcolor(black) xscale(r(0 24) ex) ///
 						xlabel(2 "Mean Daily Temp " 5 "Median Daily Temp " ///
 						8 "Variance of Daily Temp " 11 "Skew of Daily Temp " ///
 						14 "Growing Degree Days " 17 "Dev. in GDD " ///
@@ -1320,12 +1320,12 @@ preserve
 	sum			 	lo if p == 95 & varname == 15
 	global			bmin = r(min)
 	
-	twoway			(bar mu obs if p == 95, color(lavender*1.5)) || ///
+	twoway			(bar mu obs if p == 95, color(lavender*1.5%60)) || ///
 						(rcap hi lo obs if p == 95, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Tanzania") ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xscale(r(0 24) ex) ///
+						lcolor(black) xscale(r(0 24) ex) ///
 						xlabel(2 "Mean Daily Temp " 5 "Median Daily Temp " ///
 						8 "Variance of Daily Temp " 11 "Skew of Daily Temp " ///
 						14 "Growing Degree Days " 17 "Dev. in GDD " ///
@@ -1376,12 +1376,12 @@ preserve
 	sum			 	lo if p == 95 & varname == 15
 	global			bmin = r(min)
 	
-	twoway			(bar mu obs if p == 95, color(lavender*1.5)) || ///
+	twoway			(bar mu obs if p == 95, color(lavender*1.5%60)) || ///
 						(rcap hi lo obs if p == 95, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Uganda") ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xscale(r(0 24) ex) ///
+						lcolor(black) xscale(r(0 24) ex) ///
 						xlabel(2 "Mean Daily Temp " 5 "Median Daily Temp " ///
 						8 "Variance of Daily Temp " 11 "Skew of Daily Temp " ///
 						14 "Growing Degree Days " 17 "Dev. in GDD " ///
@@ -1449,9 +1449,9 @@ preserve
 	replace			obs = 1 + obs if obs > 15
 	replace			obs = 1 + obs if obs > 19
 	
-	twoway			(bar mu obs if p == 90, color(emerald*1.5)) || ///
-						(bar mu obs if p == 95, color(eltblue*1.5)) || ///
-						(bar mu obs if p == 99, color(khaki*1.5)) || ///
+	twoway			(bar mu obs if p == 90, color(emerald*1.5%60)) || ///
+						(bar mu obs if p == 95, color(eltblue*1.5%60)) || ///
+						(bar mu obs if p == 99, color(khaki*1.5%60)) || ///
 						(rcap hi lo obs, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Mean Daily Rainfall") ///
 						ytitle("Share of Significant Point Estimates") ///
@@ -1492,9 +1492,9 @@ preserve
 	replace			obs = 1 + obs if obs > 15
 	replace			obs = 1 + obs if obs > 19
 	
-	twoway			(bar mu obs if p == 90, color(emerald*1.5)) || ///
-						(bar mu obs if p == 95, color(eltblue*1.5)) || ///
-						(bar mu obs if p == 99, color(khaki*1.5)) || ///
+	twoway			(bar mu obs if p == 90, color(emerald*1.5%60)) || ///
+						(bar mu obs if p == 95, color(eltblue*1.5%60)) || ///
+						(bar mu obs if p == 99, color(khaki*1.5%60)) || ///
 						(rcap hi lo obs, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Total Seasonal Rainfall") ///
 						ytitle("Share of Significant Point Estimates") ///
@@ -1535,9 +1535,9 @@ preserve
 	replace			obs = 1 + obs if obs > 15
 	replace			obs = 1 + obs if obs > 19
 	
-	twoway			(bar mu obs if p == 90, color(emerald*1.5)) || ///
-						(bar mu obs if p == 95, color(eltblue*1.5)) || ///
-						(bar mu obs if p == 99, color(khaki*1.5)) || ///
+	twoway			(bar mu obs if p == 90, color(emerald*1.5%60)) || ///
+						(bar mu obs if p == 95, color(eltblue*1.5%60)) || ///
+						(bar mu obs if p == 99, color(khaki*1.5%60)) || ///
 						(rcap hi lo obs, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Number of Rainy Days") ///
 						ytitle("Share of Significant Point Estimates") ///
@@ -1584,9 +1584,9 @@ preserve
 	replace			obs = 1 + obs if obs > 7
 	replace			obs = 1 + obs if obs > 11
 	
-	twoway			(bar mu obs if p == 90, color(maroon*1.5)) || ///
-						(bar mu obs if p == 95, color(lavender*1.5)) || ///
-						(bar mu obs if p == 99, color(brown*1.5)) || ///
+	twoway			(bar mu obs if p == 90, color(maroon*1.5%60)) || ///
+						(bar mu obs if p == 95, color(lavender*1.5%60)) || ///
+						(bar mu obs if p == 99, color(brown*1.5%60)) || ///
 						(rcap hi lo obs, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Mean Daily Temperature") ///
 						ytitle("Share of Significant Point Estimates") ///
@@ -1623,9 +1623,9 @@ preserve
 	replace			obs = 1 + obs if obs > 7
 	replace			obs = 1 + obs if obs > 11
 	
-	twoway			(bar mu obs if p == 90, color(maroon*1.5)) || ///
-						(bar mu obs if p == 95, color(lavender*1.5)) || ///
-						(bar mu obs if p == 99, color(brown*1.5)) || ///
+	twoway			(bar mu obs if p == 90, color(maroon*1.5%60)) || ///
+						(bar mu obs if p == 95, color(lavender*1.5%60)) || ///
+						(bar mu obs if p == 99, color(brown*1.5%60)) || ///
 						(rcap hi lo obs, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Median Daily Temperature") ///
 						ytitle("Share of Significant Point Estimates") ///
