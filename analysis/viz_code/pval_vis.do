@@ -1100,7 +1100,7 @@ preserve
 						ytitle("Share of Significant Point Estimates") ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xscale(r(0 24) ex) ///
+						lcolor(black) xscale(r(0 24) ex) ///
 						xlabel(2 "Mean Daily Temp " 5 "Median Daily Temp " ///
 						8 "Variance of Daily Temp " 11 "Skew of Daily Temp " ///
 						14 "Growing Degree Days " 17 "Dev. in GDD " ///

@@ -47,7 +47,7 @@
 * **********************************************************************
 * 1a - generate serrbar graphs by rainfall variable and extraction
 * **********************************************************************
-/*
+
 * mean daily rainfall
 preserve
 	keep			if varname == 1
@@ -551,7 +551,7 @@ restore
 						
 	graph export 	"$xfig/ext_total_tp.png", width(1400) replace
 	
-*/
+
 * **********************************************************************
 * 2 - generate random number to select extraction method
 * **********************************************************************
@@ -571,7 +571,7 @@ restore
 	keep			if ext == 3
 		
 * **********************************************************************
-* 3 - generate serrbar graphs by satellite
+* 3 - generate serrbar graphs by metric
 * **********************************************************************
 
 *generate different betas based on signficance
@@ -589,12 +589,1093 @@ restore
 	lab	def			yesno 0 "Not Significant" 1 "Significant"
 	lab val			sig yesno
 	lab var			sig "Weather variable is significant"
-
+	
 	
 * **********************************************************************
-* 3a - generate serrbar graphs by rainfall variable and satellite
+* 3a - generate serrbar graphs by rainfall variable and country
 * **********************************************************************
-/*
+
+*** mean daily rainfall ***
+
+* ethiopia
+preserve
+	keep			if country == 1 & varname == 1
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(edkblue%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(edkblue%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Ethiopia") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v01_eth", replace)
+restore
+
+* malawi
+preserve
+	keep			if country == 2 & varname == 1
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(edkblue%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(edkblue%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Malawi") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v01_mwi", replace)
+restore
+
+* niger
+preserve
+	keep			if country == 4 & varname == 1
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(edkblue%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(edkblue%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Niger") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v01_ngr", replace)
+restore
+
+* nigeria
+preserve
+	keep			if country == 5 & varname == 1
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(edkblue%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(edkblue%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Nigeria") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v01_nga", replace)
+restore
+
+* tanzania
+preserve
+	keep			if country == 6 & varname == 1
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(edkblue%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(edkblue%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Tanzania") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v01_tza", replace)
+restore
+
+* uganda
+preserve
+	keep			if country == 7 & varname == 1
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(edkblue%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(edkblue%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Uganda") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v01_uga", replace)
+restore
+
+	
+* combine mean daily rain
+	gr combine 		"$sfig/v01_eth.gph" "$sfig/v01_mwi.gph" "$sfig/v01_ngr.gph" ///
+						"$sfig/v01_nga.gph" "$sfig/v01_tza.gph" "$sfig/v01_uga.gph", ///
+						col(2) iscale(.5) commonscheme title("Mean Daily Rainfall")
+						
+	graph export 	"$xfig\v01_cty.png", as(png) replace
+
+	
+*** median daily rainfall ***
+
+* ethiopia
+preserve
+	keep			if country == 1 & varname == 2
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(emidblue%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(emidblue%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Ethiopia") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v02_eth", replace)
+restore
+
+* malawi
+preserve
+	keep			if country == 2 & varname == 2
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(emidblue%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(emidblue%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Malawi") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v02_mwi", replace)
+restore
+
+* niger
+preserve
+	keep			if country == 4 & varname == 2
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(emidblue%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(emidblue%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Niger") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v02_ngr", replace)
+restore
+
+* nigeria
+preserve
+	keep			if country == 5 & varname == 2
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(emidblue%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(emidblue%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Nigeria") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v02_nga", replace)
+restore
+
+* tanzania
+preserve
+	keep			if country == 6 & varname == 2
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(emidblue%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(emidblue%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Tanzania") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v02_tza", replace)
+restore
+
+* uganda
+preserve
+	keep			if country == 7 & varname == 2
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(emidblue%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(emidblue%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Uganda") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v02_uga", replace)
+restore
+
+	
+* combine median daily rain
+	gr combine 		"$sfig/v02_eth.gph" "$sfig/v02_mwi.gph" "$sfig/v02_ngr.gph" ///
+						"$sfig/v02_nga.gph" "$sfig/v02_tza.gph" "$sfig/v02_uga.gph", ///
+						col(2) iscale(.5) commonscheme title("Median Daily Rainfall")
+						
+	graph export 	"$xfig\v02_cty.png", as(png) replace
+
+	
+*** variance daily rainfall ***
+
+* ethiopia
+preserve
+	keep			if country == 1 & varname == 3
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(eltblue%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(eltblue%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Ethiopia") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v03_eth", replace)
+restore
+
+* malawi
+preserve
+	keep			if country == 2 & varname == 3
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(eltblue%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(eltblue%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Malawi") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v03_mwi", replace)
+restore
+
+* niger
+preserve
+	keep			if country == 4 & varname == 3
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(eltblue%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(eltblue%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Niger") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v03_ngr", replace)
+restore
+
+* nigeria
+preserve
+	keep			if country == 5 & varname == 3
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(eltblue%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(eltblue%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Nigeria") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v03_nga", replace)
+restore
+
+* tanzania
+preserve
+	keep			if country == 6 & varname == 3
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(eltblue%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(eltblue%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Tanzania") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v03_tza", replace)
+restore
+
+* uganda
+preserve
+	keep			if country == 7 & varname == 3
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(eltblue%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(eltblue%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Uganda") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v03_uga", replace)
+restore
+
+	
+* combine variance daily rain
+	gr combine 		"$sfig/v03_eth.gph" "$sfig/v03_mwi.gph" "$sfig/v03_ngr.gph" ///
+						"$sfig/v03_nga.gph" "$sfig/v03_tza.gph" "$sfig/v03_uga.gph", ///
+						col(2) iscale(.5) commonscheme title("Variance of Daily Rainfall")
+						
+	graph export 	"$xfig\v03_cty.png", as(png) replace
+		
+	
+*** skew daily rainfall ***
+
+* ethiopia
+preserve
+	keep			if country == 1 & varname == 4
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(emerald%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(emerald%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Ethiopia") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v04_eth", replace)
+restore
+
+* malawi
+preserve
+	keep			if country == 2 & varname == 4
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(emerald%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(emerald%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Malawi") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v04_mwi", replace)
+restore
+
+* niger
+preserve
+	keep			if country == 4 & varname == 4
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(emerald%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(emerald%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Niger") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v04_ngr", replace)
+restore
+
+* nigeria
+preserve
+	keep			if country == 5 & varname == 4
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(emerald%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(emerald%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Nigeria") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v04_nga", replace)
+restore
+
+* tanzania
+preserve
+	keep			if country == 6 & varname == 4
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(emerald%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(emerald%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Tanzania") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v04_tza", replace)
+restore
+
+* uganda
+preserve
+	keep			if country == 7 & varname == 4
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(emerald%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(emerald%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Uganda") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v04_uga", replace)
+restore
+
+	
+* combine skew daily rain
+	gr combine 		"$sfig/v04_eth.gph" "$sfig/v04_mwi.gph" "$sfig/v04_ngr.gph" ///
+						"$sfig/v04_nga.gph" "$sfig/v04_tza.gph" "$sfig/v04_uga.gph", ///
+						col(2) iscale(.5) commonscheme title("Skew of Daily Rainfall")
+						
+	graph export 	"$xfig\v04_cty.png", as(png) replace
+			
+		
+*** total seasonal rainfall ***
+
+* ethiopia
+preserve
+	keep			if country == 1 & varname == 5
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(erose%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(erose%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Ethiopia") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v05_eth", replace)
+restore
+
+* malawi
+preserve
+	keep			if country == 2 & varname == 5
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(erose%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(erose%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Malawi") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v05_mwi", replace)
+restore
+
+* niger
+preserve
+	keep			if country == 4 & varname == 5
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(erose%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(erose%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Niger") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v05_ngr", replace)
+restore
+
+* nigeria
+preserve
+	keep			if country == 5 & varname == 5
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(erose%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(erose%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Nigeria") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v05_nga", replace)
+restore
+
+* tanzania
+preserve
+	keep			if country == 6 & varname == 5
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(erose%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(erose%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Tanzania") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v05_tza", replace)
+restore
+
+* uganda
+preserve
+	keep			if country == 7 & varname == 5
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(erose%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(erose%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Uganda") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v05_uga", replace)
+restore
+
+	
+* combine total seasonal rain
+	gr combine 		"$sfig/v05_eth.gph" "$sfig/v05_mwi.gph" "$sfig/v05_ngr.gph" ///
+						"$sfig/v05_nga.gph" "$sfig/v05_tza.gph" "$sfig/v05_uga.gph", ///
+						col(2) iscale(.5) commonscheme title("Total Seasonal Rainfall")
+						
+	graph export 	"$xfig\v05_cty.png", as(png) replace
+			
+		
+*** deviation in total seasonal rainfall ***
+
+* ethiopia
+preserve
+	keep			if country == 1 & varname == 6
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(ebblue%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(ebblue%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Ethiopia") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v06_eth", replace)
+restore
+
+* malawi
+preserve
+	keep			if country == 2 & varname == 6
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(ebblue%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(ebblue%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Malawi") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v06_mwi", replace)
+restore
+
+* niger
+preserve
+	keep			if country == 4 & varname == 6
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(ebblue%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(ebblue%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Niger") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v06_ngr", replace)
+restore
+
+* nigeria
+preserve
+	keep			if country == 5 & varname == 6
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(ebblue%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(ebblue%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Nigeria") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v06_nga", replace)
+restore
+
+* tanzania
+preserve
+	keep			if country == 6 & varname == 6
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(ebblue%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(ebblue%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Tanzania") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v06_tza", replace)
+restore
+
+* uganda
+preserve
+	keep			if country == 7 & varname == 6
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(ebblue%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(ebblue%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Uganda") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v06_uga", replace)
+restore
+
+	
+* combine deviation in total seasonal rain
+	gr combine 		"$sfig/v06_eth.gph" "$sfig/v06_mwi.gph" "$sfig/v06_ngr.gph" ///
+						"$sfig/v06_nga.gph" "$sfig/v06_tza.gph" "$sfig/v06_uga.gph", ///
+						col(2) iscale(.5) commonscheme title("Deviation in Total Seasonal Rainfall")
+						
+	graph export 	"$xfig\v06_cty.png", as(png) replace
+		
+			
+*** z-score total seasonal rainfall ***
+
+* ethiopia
+preserve
+	keep			if country == 1 & varname == 7
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(eltgreen%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(eltgreen%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Ethiopia") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v07_eth", replace)
+restore
+
+* malawi
+preserve
+	keep			if country == 2 & varname == 7
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(eltgreen%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(eltgreen%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Malawi") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v07_mwi", replace)
+restore
+
+* niger
+preserve
+	keep			if country == 4 & varname == 7
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(eltgreen%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(eltgreen%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Niger") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v07_ngr", replace)
+restore
+
+* nigeria
+preserve
+	keep			if country == 5 & varname == 7
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(eltgreen%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(eltgreen%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Nigeria") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v07_nga", replace)
+restore
+
+* tanzania
+preserve
+	keep			if country == 6 & varname == 7
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(eltgreen%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(eltgreen%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Tanzania") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v07_tza", replace)
+restore
+
+* uganda
+preserve
+	keep			if country == 7 & varname == 7
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(eltgreen%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(eltgreen%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Uganda") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v07_uga", replace)
+restore
+
+	
+* combine z-score of total seasonal rain
+	gr combine 		"$sfig/v07_eth.gph" "$sfig/v07_mwi.gph" "$sfig/v07_ngr.gph" ///
+						"$sfig/v07_nga.gph" "$sfig/v07_tza.gph" "$sfig/v07_uga.gph", ///
+						col(2) iscale(.5) commonscheme title("z-Score of Total Seasonal Rainfall")
+						
+	graph export 	"$xfig\v07_cty.png", as(png) replace
+
+			
+*** number of days with rain ***
+
+* ethiopia
+preserve
+	keep			if country == 1 & varname == 8
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(stone%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(stone%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Ethiopia") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v08_eth", replace)
+restore
+
+* malawi
+preserve
+	keep			if country == 2 & varname == 8
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(stone%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(stone%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Malawi") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v08_mwi", replace)
+restore
+
+* niger
+preserve
+	keep			if country == 4 & varname == 8
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(stone%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(stone%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Niger") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v08_ngr", replace)
+restore
+
+* nigeria
+preserve
+	keep			if country == 5 & varname == 8
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(stone%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(stone%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Nigeria") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v08_nga", replace)
+restore
+
+* tanzania
+preserve
+	keep			if country == 6 & varname == 8
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(stone%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(stone%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Tanzania") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v08_tza", replace)
+restore
+
+* uganda
+preserve
+	keep			if country == 7 & varname == 8
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(stone%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(stone%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Uganda") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v08_uga", replace)
+restore
+
+	
+* combine number of days with rain
+	gr combine 		"$sfig/v08_eth.gph" "$sfig/v08_mwi.gph" "$sfig/v08_ngr.gph" ///
+						"$sfig/v08_nga.gph" "$sfig/v08_tza.gph" "$sfig/v08_uga.gph", ///
+						col(2) iscale(.5) commonscheme title("Number of Days with Rain")
+						
+	graph export 	"$xfig\v08_cty.png", as(png) replace
+		
+		
+*** deviation in number of days with rain ***
+
+* ethiopia
+preserve
+	keep			if country == 1 & varname == 9
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(navy%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(navy%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Ethiopia") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v09_eth", replace)
+restore
+
+* malawi
+preserve
+	keep			if country == 2 & varname == 9
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(navy%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(navy%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Malawi") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v09_mwi", replace)
+restore
+
+* niger
+preserve
+	keep			if country == 4 & varname == 9
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(navy%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(navy%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Niger") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v09_ngr", replace)
+restore
+
+* nigeria
+preserve
+	keep			if country == 5 & varname == 9
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(navy%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(navy%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Nigeria") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v09_nga", replace)
+restore
+
+* tanzania
+preserve
+	keep			if country == 6 & varname == 9
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(navy%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(navy%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Tanzania") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v09_tza", replace)
+restore
+
+* uganda
+preserve
+	keep			if country == 7 & varname == 9
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(navy%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(navy%50) xscale(r(0 72)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
+						ytitle("Coefficient") title("Uganda") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v09_uga", replace)
+restore
+
+	
+* combine deviation in number of days with rain
+	gr combine 		"$sfig/v09_eth.gph" "$sfig/v09_mwi.gph" "$sfig/v09_ngr.gph" ///
+						"$sfig/v09_nga.gph" "$sfig/v09_tza.gph" "$sfig/v09_uga.gph", ///
+						col(2) iscale(.5) commonscheme title("Deviation in Number of Days with Rain")
+						
+	graph export 	"$xfig\v09_cty.png", as(png) replace
+		
+			
+		
+* **********************************************************************
+* 4 - generate serrbar graphs by satellite
+* **********************************************************************
+
+
+* **********************************************************************
+* 4a - generate serrbar graphs by rainfall variable and satellite
+* **********************************************************************
+
 * mean daily rainfall
 preserve
 	keep			if varname == 1
@@ -929,7 +2010,7 @@ restore
 	
 
 * **********************************************************************
-* 3b - generate serrbar graphs by temperature variable and satellite
+* 4b - generate serrbar graphs by temperature variable and satellite
 * **********************************************************************
 
 * mean daily temperature
@@ -1113,7 +2194,7 @@ restore
 	graph export 	"$xfig\sat_total_tp.pdf", as(pdf) replace
 	
 * **********************************************************************
-* 3c - generate table of significant values
+* 4c - generate table of significant values
 * **********************************************************************
 
 * redefine var lab for LaTeX
@@ -1278,10 +2359,9 @@ preserve
 							booktabs f replace
 restore	
 
-*/
 
 * **********************************************************************
-* 4 - select weather metrics to investigate
+* 5 - select weather metrics to investigate
 * **********************************************************************
 
 * based on above analysis we will proceed with following rainfall metrics
@@ -1295,7 +2375,7 @@ restore
 
 
 * **********************************************************************
-* 3a - specification curves for ethiopia
+* 5a - specification curves for ethiopia
 * **********************************************************************
 
 * mean daily rainfall
@@ -1475,7 +2555,7 @@ restore
 
 
 * **********************************************************************
-* 3b - specification curves for malawi
+* 5b - specification curves for malawi
 * **********************************************************************
 
 * mean daily rainfall
@@ -1655,7 +2735,7 @@ restore
 
 
 * **********************************************************************
-* 3c - specification curves for niger
+* 5c - specification curves for niger
 * **********************************************************************
 
 * mean daily rainfall
@@ -1835,7 +2915,7 @@ restore
 
 	
 * **********************************************************************
-* 3d - specification curves for nigeria
+* 5d - specification curves for nigeria
 * **********************************************************************
 
 * mean daily rainfall
@@ -2015,7 +3095,7 @@ restore
 
 	
 * **********************************************************************
-* 3e - specification curves for tanzania
+* 5e - specification curves for tanzania
 * **********************************************************************
 
 * mean daily rainfall
@@ -2195,7 +3275,7 @@ restore
 
 	
 * **********************************************************************
-* 3f - specification curves for uganda
+* 5f - specification curves for uganda
 * **********************************************************************
 
 * mean daily rainfall
@@ -2375,7 +3455,7 @@ restore
 						
 		
 * **********************************************************************
-* 4 - end matter
+* 6 - end matter
 * **********************************************************************
 
 
