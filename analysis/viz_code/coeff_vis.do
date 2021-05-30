@@ -709,7 +709,7 @@ restore
 * combine mean daily rain
 	gr combine 		"$sfig/v01_eth.gph" "$sfig/v01_mwi.gph" "$sfig/v01_ngr.gph" ///
 						"$sfig/v01_nga.gph" "$sfig/v01_tza.gph" "$sfig/v01_uga.gph", ///
-						col(2) iscale(.5) commonscheme title("Mean Daily Rainfall")
+						col(2) iscale(.5) commonscheme
 						
 	graph export 	"$xfig\v01_cty.png", as(png) replace
 
@@ -828,7 +828,7 @@ restore
 * combine median daily rain
 	gr combine 		"$sfig/v02_eth.gph" "$sfig/v02_mwi.gph" "$sfig/v02_ngr.gph" ///
 						"$sfig/v02_nga.gph" "$sfig/v02_tza.gph" "$sfig/v02_uga.gph", ///
-						col(2) iscale(.5) commonscheme title("Median Daily Rainfall")
+						col(2) iscale(.5) commonscheme
 						
 	graph export 	"$xfig\v02_cty.png", as(png) replace
 
@@ -947,7 +947,7 @@ restore
 * combine variance daily rain
 	gr combine 		"$sfig/v03_eth.gph" "$sfig/v03_mwi.gph" "$sfig/v03_ngr.gph" ///
 						"$sfig/v03_nga.gph" "$sfig/v03_tza.gph" "$sfig/v03_uga.gph", ///
-						col(2) iscale(.5) commonscheme title("Variance of Daily Rainfall")
+						col(2) iscale(.5) commonscheme
 						
 	graph export 	"$xfig\v03_cty.png", as(png) replace
 		
@@ -1066,7 +1066,7 @@ restore
 * combine skew daily rain
 	gr combine 		"$sfig/v04_eth.gph" "$sfig/v04_mwi.gph" "$sfig/v04_ngr.gph" ///
 						"$sfig/v04_nga.gph" "$sfig/v04_tza.gph" "$sfig/v04_uga.gph", ///
-						col(2) iscale(.5) commonscheme title("Skew of Daily Rainfall")
+						col(2) iscale(.5) commonscheme
 						
 	graph export 	"$xfig\v04_cty.png", as(png) replace
 			
@@ -1185,7 +1185,7 @@ restore
 * combine total seasonal rain
 	gr combine 		"$sfig/v05_eth.gph" "$sfig/v05_mwi.gph" "$sfig/v05_ngr.gph" ///
 						"$sfig/v05_nga.gph" "$sfig/v05_tza.gph" "$sfig/v05_uga.gph", ///
-						col(2) iscale(.5) commonscheme title("Total Seasonal Rainfall")
+						col(2) iscale(.5) commonscheme
 						
 	graph export 	"$xfig\v05_cty.png", as(png) replace
 			
@@ -1304,7 +1304,7 @@ restore
 * combine deviation in total seasonal rain
 	gr combine 		"$sfig/v06_eth.gph" "$sfig/v06_mwi.gph" "$sfig/v06_ngr.gph" ///
 						"$sfig/v06_nga.gph" "$sfig/v06_tza.gph" "$sfig/v06_uga.gph", ///
-						col(2) iscale(.5) commonscheme title("Deviation in Total Seasonal Rainfall")
+						col(2) iscale(.5) commonscheme
 						
 	graph export 	"$xfig\v06_cty.png", as(png) replace
 		
@@ -1423,7 +1423,7 @@ restore
 * combine z-score of total seasonal rain
 	gr combine 		"$sfig/v07_eth.gph" "$sfig/v07_mwi.gph" "$sfig/v07_ngr.gph" ///
 						"$sfig/v07_nga.gph" "$sfig/v07_tza.gph" "$sfig/v07_uga.gph", ///
-						col(2) iscale(.5) commonscheme title("z-Score of Total Seasonal Rainfall")
+						col(2) iscale(.5) commonscheme
 						
 	graph export 	"$xfig\v07_cty.png", as(png) replace
 
@@ -1542,7 +1542,7 @@ restore
 * combine number of days with rain
 	gr combine 		"$sfig/v08_eth.gph" "$sfig/v08_mwi.gph" "$sfig/v08_ngr.gph" ///
 						"$sfig/v08_nga.gph" "$sfig/v08_tza.gph" "$sfig/v08_uga.gph", ///
-						col(2) iscale(.5) commonscheme title("Number of Days with Rain")
+						col(2) iscale(.5) commonscheme
 						
 	graph export 	"$xfig\v08_cty.png", as(png) replace
 		
@@ -1661,7 +1661,7 @@ restore
 * combine deviation in number of days with rain
 	gr combine 		"$sfig/v09_eth.gph" "$sfig/v09_mwi.gph" "$sfig/v09_ngr.gph" ///
 						"$sfig/v09_nga.gph" "$sfig/v09_tza.gph" "$sfig/v09_uga.gph", ///
-						col(2) iscale(.5) commonscheme title("Deviation in Number of Days with Rain")
+						col(2) iscale(.5) commonscheme
 						
 	graph export 	"$xfig\v09_cty.png", as(png) replace
 
@@ -1780,7 +1780,7 @@ restore
 * combine number of days without rain
 	gr combine 		"$sfig/v10_eth.gph" "$sfig/v10_mwi.gph" "$sfig/v10_ngr.gph" ///
 						"$sfig/v10_nga.gph" "$sfig/v10_tza.gph" "$sfig/v10_uga.gph", ///
-						col(2) iscale(.5) commonscheme title("Number of Days without Rain")
+						col(2) iscale(.5) commonscheme
 						
 	graph export 	"$xfig\v10_cty.png", as(png) replace
 
@@ -1899,7 +1899,7 @@ restore
 * combine deviation in no rain days
 	gr combine 		"$sfig/v11_eth.gph" "$sfig/v11_mwi.gph" "$sfig/v11_ngr.gph" ///
 						"$sfig/v11_nga.gph" "$sfig/v11_tza.gph" "$sfig/v11_uga.gph", ///
-						col(2) iscale(.5) commonscheme title("Deviation in No Rain Days")
+						col(2) iscale(.5) commonscheme
 						
 	graph export 	"$xfig\v11_cty.png", as(png) replace
 				
@@ -2018,7 +2018,7 @@ restore
 * combine percentage of days with rain
 	gr combine 		"$sfig/v12_eth.gph" "$sfig/v12_mwi.gph" "$sfig/v12_ngr.gph" ///
 						"$sfig/v12_nga.gph" "$sfig/v12_tza.gph" "$sfig/v12_uga.gph", ///
-						col(2) iscale(.5) commonscheme title("Percentage of Days with Rain")
+						col(2) iscale(.5) commonscheme
 						
 	graph export 	"$xfig\v12_cty.png", as(png) replace
 				
@@ -2137,7 +2137,7 @@ restore
 * combine deviation in percentage of days with rain
 	gr combine 		"$sfig/v13_eth.gph" "$sfig/v13_mwi.gph" "$sfig/v13_ngr.gph" ///
 						"$sfig/v13_nga.gph" "$sfig/v13_tza.gph" "$sfig/v13_uga.gph", ///
-						col(2) iscale(.5) commonscheme title("Deviation in Percentage of Days with Rain")
+						col(2) iscale(.5) commonscheme
 						
 	graph export 	"$xfig\v13_cty.png", as(png) replace
 				
@@ -2256,7 +2256,7 @@ restore
 * combine longest dry spell
 	gr combine 		"$sfig/v14_eth.gph" "$sfig/v14_mwi.gph" "$sfig/v14_ngr.gph" ///
 						"$sfig/v14_nga.gph" "$sfig/v14_tza.gph" "$sfig/v14_uga.gph", ///
-						col(2) iscale(.5) commonscheme title("Longest Dry Spell")
+						col(2) iscale(.5) commonscheme
 						
 	graph export 	"$xfig\v14_cty.png", as(png) replace
 	
@@ -2379,7 +2379,7 @@ restore
 * combine mean daily temperature
 	gr combine 		"$sfig/v15_eth.gph" "$sfig/v15_mwi.gph" "$sfig/v15_ngr.gph" ///
 						"$sfig/v15_nga.gph" "$sfig/v15_tza.gph" "$sfig/v15_uga.gph", ///
-						col(2) iscale(.5) commonscheme title("Mean Daily Temperature")
+						col(2) iscale(.5) commonscheme
 						
 	graph export 	"$xfig\v15_cty.png", as(png) replace
 
@@ -2498,7 +2498,7 @@ restore
 * combine median daily temperature
 	gr combine 		"$sfig/v16_eth.gph" "$sfig/v16_mwi.gph" "$sfig/v16_ngr.gph" ///
 						"$sfig/v16_nga.gph" "$sfig/v16_tza.gph" "$sfig/v16_uga.gph", ///
-						col(2) iscale(.5) commonscheme title("Median Daily Temperature")
+						col(2) iscale(.5) commonscheme
 						
 	graph export 	"$xfig\v16_cty.png", as(png) replace
 	
@@ -2617,7 +2617,7 @@ restore
 * combine variance of daily temperature
 	gr combine 		"$sfig/v17_eth.gph" "$sfig/v17_mwi.gph" "$sfig/v17_ngr.gph" ///
 						"$sfig/v17_nga.gph" "$sfig/v17_tza.gph" "$sfig/v17_uga.gph", ///
-						col(2) iscale(.5) commonscheme title("Variance of Daily Temperature")
+						col(2) iscale(.5) commonscheme
 						
 	graph export 	"$xfig\v17_cty.png", as(png) replace
 	
@@ -2736,7 +2736,7 @@ restore
 * combine skew of daily temperature
 	gr combine 		"$sfig/v18_eth.gph" "$sfig/v18_mwi.gph" "$sfig/v18_ngr.gph" ///
 						"$sfig/v18_nga.gph" "$sfig/v18_tza.gph" "$sfig/v18_uga.gph", ///
-						col(2) iscale(.5) commonscheme title("Skew of Daily Temperature")
+						col(2) iscale(.5) commonscheme
 						
 	graph export 	"$xfig\v18_cty.png", as(png) replace
 
@@ -2855,7 +2855,7 @@ restore
 * combine growing degree days (gdd)
 	gr combine 		"$sfig/v19_eth.gph" "$sfig/v19_mwi.gph" "$sfig/v19_ngr.gph" ///
 						"$sfig/v19_nga.gph" "$sfig/v19_tza.gph" "$sfig/v19_uga.gph", ///
-						col(2) iscale(.5) commonscheme title("Growing Degree Days (GDD)")
+						col(2) iscale(.5) commonscheme
 						
 	graph export 	"$xfig\v19_cty.png", as(png) replace
 
@@ -2974,11 +2974,249 @@ restore
 * combine deviation in growing degree days (gdd)
 	gr combine 		"$sfig/v20_eth.gph" "$sfig/v20_mwi.gph" "$sfig/v20_ngr.gph" ///
 						"$sfig/v20_nga.gph" "$sfig/v20_tza.gph" "$sfig/v20_uga.gph", ///
-						col(2) iscale(.5) commonscheme title("Deviation in Growing Degree Days (GDD)")
+						col(2) iscale(.5) commonscheme
 						
 	graph export 	"$xfig\v20_cty.png", as(png) replace
+
+	
+*** z-score of growing degree days (gdd) ***		
+
+* ethiopia
+preserve
+	keep			if country == 1 & varname == 21
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(eltgreen%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(eltgreen%50) xscale(r(0 36)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(6)36) ///
+						ytitle("Coefficient") title("Ethiopia") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v21_eth", replace)
+restore
+
+* malawi
+preserve
+	keep			if country == 2 & varname == 21
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(eltgreen%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(eltgreen%50) xscale(r(0 36)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(6)36) ///
+						ytitle("Coefficient") title("Malawi") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v21_mwi", replace)
+restore
+
+* niger
+preserve
+	keep			if country == 4 & varname == 21
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(eltgreen%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(eltgreen%50) xscale(r(0 36)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(6)36) ///
+						ytitle("Coefficient") title("Niger") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v21_ngr", replace)
+restore
+
+* nigeria
+preserve
+	keep			if country == 5 & varname == 21
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(eltgreen%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(eltgreen%50) xscale(r(0 36)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(6)36) ///
+						ytitle("Coefficient") title("Nigeria") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v21_nga", replace)
+restore
+
+* tanzania
+preserve
+	keep			if country == 6 & varname == 21
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(eltgreen%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(eltgreen%50) xscale(r(0 36)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(6)36) ///
+						ytitle("Coefficient") title("Tanzania") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v21_tza", replace)
+restore
+
+* uganda
+preserve
+	keep			if country == 7 & varname == 21
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(eltgreen%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(eltgreen%50) xscale(r(0 36)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(6)36) ///
+						ytitle("Coefficient") title("Uganda") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v21_uga", replace)
+restore
+
+	
+* combine z-score of growing degree days (gdd)
+	gr combine 		"$sfig/v21_eth.gph" "$sfig/v21_mwi.gph" "$sfig/v21_ngr.gph" ///
+						"$sfig/v21_nga.gph" "$sfig/v21_tza.gph" "$sfig/v21_uga.gph", ///
+						col(2) iscale(.5) commonscheme
 						
-		
+	graph export 	"$xfig\v21_cty.png", as(png) replace
+						
+	
+*** max daily temp ***		
+
+* ethiopia
+preserve
+	keep			if country == 1 & varname == 22
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(stone%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(stone%50) xscale(r(0 36)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(6)36) ///
+						ytitle("Coefficient") title("Ethiopia") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v22_eth", replace)
+restore
+
+* malawi
+preserve
+	keep			if country == 2 & varname == 22
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(stone%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(stone%50) xscale(r(0 36)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(6)36) ///
+						ytitle("Coefficient") title("Malawi") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v22_mwi", replace)
+restore
+
+* niger
+preserve
+	keep			if country == 4 & varname == 22
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(stone%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(stone%50) xscale(r(0 36)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(6)36) ///
+						ytitle("Coefficient") title("Niger") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v22_ngr", replace)
+restore
+
+* nigeria
+preserve
+	keep			if country == 5 & varname == 22
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(stone%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(stone%50) xscale(r(0 36)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(6)36) ///
+						ytitle("Coefficient") title("Nigeria") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v22_nga", replace)
+restore
+
+* tanzania
+preserve
+	keep			if country == 6 & varname == 22
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(stone%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(stone%50) xscale(r(0 36)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(6)36) ///
+						ytitle("Coefficient") title("Tanzania") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v22_tza", replace)
+restore
+
+* uganda
+preserve
+	keep			if country == 7 & varname == 22
+	sort 			country beta
+	gen 			obs = _n
+
+	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
+						(scatter b_sig obs, mcolor(stone%75) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(stone%50) xscale(r(0 36)) ///
+						yline(0, lcolor(maroon) ) xlabel(0(6)36) ///
+						ytitle("Coefficient") title("Uganda") ///
+						xtitle("") ), legend(pos(12) col(2) ///
+						order(1 2)) saving("$sfig/v22_uga", replace)
+restore
+
+	
+* combine max daily temp
+	gr combine 		"$sfig/v22_eth.gph" "$sfig/v22_mwi.gph" "$sfig/v22_ngr.gph" ///
+						"$sfig/v22_nga.gph" "$sfig/v22_tza.gph" "$sfig/v22_uga.gph", ///
+						col(2) iscale(.5) commonscheme
+						
+	graph export 	"$xfig\v22_cty.png", as(png) replace
+						
+						
 * **********************************************************************
 * 4 - generate serrbar graphs by satellite
 * **********************************************************************
