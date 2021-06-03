@@ -590,6 +590,12 @@ restore
 	lab val			sig yesno
 	lab var			sig "Weather variable is significant"
 	
+* generate sign dummy
+	gen 			b_sign = 1 if b_sig > 0 & b_sig != .
+	replace 		b_sign = 0 if b_sig < 0 & b_sig != .
+	lab	def			posneg 0 "Negative" 1 "Positive"
+	lab val			b_sign psoneg
+	lab var			b_sig "Sign on weather variable"
 	
 * **********************************************************************
 * 3a - generate serrbar graphs by rainfall variable and country
