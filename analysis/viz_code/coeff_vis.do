@@ -595,7 +595,7 @@ restore
 	replace 		b_sign = 0 if b_sig < 0 & b_sig != .
 	lab	def			posneg 0 "Negative" 1 "Positive"
 	lab val			b_sign psoneg
-	lab var			b_sig "Sign on weather variable"
+	lab var			b_sign "Sign on weather variable"
 	
 * **********************************************************************
 * 3a - generate serrbar graphs by rainfall variable and country
@@ -3946,7 +3946,7 @@ preserve
 	gen				k3		=	sat + 6 + 2 + 2 + 2
 	
 * label new variables	
-	lab				var obs "Specification # - sorted by model & effect size"
+	lab				var obs "Specification # - sorted by effect size"
 
 	lab 			var k1 "Model"
 	lab 			var k2 "Dependant Variable"
@@ -3968,7 +3968,7 @@ preserve
 	di $gheight
 			
 	twoway 			scatter k1 k2 k3 obs, xlab(0(4)72) xsize(10) ysize(6) msize(small small small)  ///
-						title("Mean Daily Rainfall") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						title("Ethiopia") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
 						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
@@ -3987,7 +3987,10 @@ preserve
 						barwidth(.2) color(edkblue%50) yaxis(2)  ///
 						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
-						saving("$sfig/eth_v01_sat", replace)						
+						saving("$sfig/eth_v01_sat", replace)
+						
+	graph export 	"$xfig\eth_v01_sat.png", width(1400) replace
+	
 restore
 	
 * total seasonal rainfall
@@ -4002,7 +4005,7 @@ preserve
 	gen				k3		=	sat + 6 + 2 + 2 + 2
 	
 * label new variables	
-	lab				var obs "Specification # - sorted by model & effect size"
+	lab				var obs "Specification # - sorted by effect size"
 
 	lab 			var k1 "Model"
 	lab 			var k2 "Dependant Variable"
@@ -4024,7 +4027,7 @@ preserve
 	di $gheight
 			
 	twoway 			scatter k1 k2 k3 obs, xlab(0(4)72) xsize(10) ysize(6) msize(small small small)  ///
-						title("Total Seasonal Rainfall") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						title("Ethiopia") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
 						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
@@ -4035,18 +4038,21 @@ preserve
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
 						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
-						(scatter b_sig obs, yaxis(2) mcolor(edkblue%75) ylab(, axis(2) ///
+						(scatter b_sig obs, yaxis(2) mcolor(erose%75) ylab(, axis(2) ///
 						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
 						(rbar ci_lo ci_up obs if b_sig == ., ///
 						barwidth(.2) color(black%50) yaxis(2) ) || ///
 						(rbar ci_lo ci_up obs if b_sig != ., ///
-						barwidth(.2) color(edkblue%50) yaxis(2)  ///
+						barwidth(.2) color(erose%50) yaxis(2)  ///
 						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
-						saving("$sfig/eth_v05_sat", replace)						
+						saving("$sfig/eth_v05_sat", replace)
+						
+	graph export 	"$xfig\eth_v05_sat.png", width(1400) replace
+	
 restore
 
-* rainy days rainfall
+* rainy days
 preserve
 	keep			if varname == 8 & country == 1
 	sort 			beta
@@ -4058,7 +4064,7 @@ preserve
 	gen				k3		=	sat + 6 + 2 + 2 + 2
 	
 * label new variables	
-	lab				var obs "Specification # - sorted by model & effect size"
+	lab				var obs "Specification # - sorted by effect size"
 
 	lab 			var k1 "Model"
 	lab 			var k2 "Dependant Variable"
@@ -4080,7 +4086,7 @@ preserve
 	di $gheight
 			
 	twoway 			scatter k1 k2 k3 obs, xlab(0(4)72) xsize(10) ysize(6) msize(small small small)  ///
-						title("Number of Rainy Days") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						title("Ethiopia") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
 						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
@@ -4088,6 +4094,128 @@ preserve
 						13 "Rainfall 1" 14 "Rainfall 2" 15 "Rainfall 3" ///
 						16 "Rainfall 4" 17 "Rainfall 5" 18 "Rainfall 6" ///
 						19 "*{bf:Rainfall Product}*" 28 " ", angle(0) ///
+						labsize(vsmall) tstyle(notick)) || ///
+						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(scatter b_sig obs, yaxis(2) mcolor(stone%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) yaxis(2) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(stone%50) yaxis(2)  ///
+						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
+						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
+						saving("$sfig/eth_v08_sat", replace)	
+						
+	graph export 	"$xfig\eth_v08_sat.png", width(1400) replace
+						
+restore	
+
+* percent rainy days
+preserve
+	keep			if varname == 12 & country == 1
+	sort 			beta
+	gen 			obs = _n
+
+* stack values of the specification indicators
+	gen 			k1 		= 	regname
+	gen 			k2 		= 	depvar + 6 + 2
+	gen				k3		=	sat + 6 + 2 + 2 + 2
+	
+* label new variables	
+	lab				var obs "Specification # - sorted by effect size"
+
+	lab 			var k1 "Model"
+	lab 			var k2 "Dependant Variable"
+	lab 			var k3 "Weather Product"
+
+	sum			 	ci_up
+	global			bmax = r(max)
+	
+	sum			 	ci_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - 2.5*$brange
+	global			gheight	=	28
+	  
+	di $bmin
+	di $brange
+	di $from_y
+	di $gheight
+			
+	twoway 			scatter k1 k2 k3 obs, xlab(0(4)72) xsize(10) ysize(6) msize(small small small)  ///
+						title("Ethiopia") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
+						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
+						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
+						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
+						13 "Rainfall 1" 14 "Rainfall 2" 15 "Rainfall 3" ///
+						16 "Rainfall 4" 17 "Rainfall 5" 18 "Rainfall 6" ///
+						19 "*{bf:Rainfall Product}*" 28 " ", angle(0) ///
+						labsize(vsmall) tstyle(notick)) || ///
+						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(scatter b_sig obs, yaxis(2) mcolor(teal%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) yaxis(2) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(teal%50) yaxis(2)  ///
+						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
+						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
+						saving("$sfig/eth_v12_sat", replace)
+						
+	graph export 	"$xfig\eth_v12_sat.png", width(1400) replace
+							
+restore	
+
+* mean daily temperature
+preserve
+	keep			if varname == 15 & country == 1
+	sort 			beta
+	gen 			obs = _n
+
+* stack values of the specification indicators
+	gen 			k1 		= 	regname
+	gen 			k2 		= 	depvar + 6 + 2
+	gen				k3		=	sat + 6 + 2 + 2 + 2
+	
+* subtract values of off k3 because of varname numbering
+		replace			k3		=	13 if k3 == 19
+		replace			k3		=	14 if k3 == 20
+		replace			k3		=	15 if k3 == 21
+	
+* label new variables	
+	lab				var obs "Specification # - sorted by effect size"
+
+	lab 			var k1 "Model"
+	lab 			var k2 "Dependant Variable"
+	lab 			var k3 "Weather Product"
+
+	sum			 	ci_up
+	global			bmax = r(max)
+	
+	sum			 	ci_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - 2.5*$brange
+	global			gheight	=	25
+	  
+	di $bmin
+	di $brange
+	di $from_y
+	di $gheight
+			
+	twoway 			scatter k1 k2 k3 obs, xlab(0(2)36) xsize(10) ysize(6) msize(small small small)  ///
+						title("Ethiopia") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
+						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
+						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
+						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
+						13 "Temperature 1" 14 "Temperature 2" 15 "Temperature 3" ///
+						16 "*{bf:Temperature Product}*" 25 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
 						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
@@ -4099,17 +4227,139 @@ preserve
 						barwidth(.2) color(edkblue%50) yaxis(2)  ///
 						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
-						saving("$sfig/eth_v08_sat", replace)						
-restore	
-
-* combine varname specification curves
-	grc1leg2 		"$sfig/eth_v01_sat.gph" "$sfig/eth_v05_sat.gph"  ///
-						"$sfig/eth_v08_sat.gph", col(2) iscale(.5) ///
-						ring(0) pos(5) holes(4) commonscheme
+						saving("$sfig/eth_v15_sat", replace)
 						
-	graph export 	"$xfig\eth_rain_sat.pdf", as(pdf) replace
+	graph export 	"$xfig\eth_v15_sat.png", width(1400) replace
+	
+restore
 
+* median daily temperature
+preserve
+	keep			if varname == 16 & country == 1
+	sort 			beta
+	gen 			obs = _n
 
+* stack values of the specification indicators
+	gen 			k1 		= 	regname
+	gen 			k2 		= 	depvar + 6 + 2
+	gen				k3		=	sat + 6 + 2 + 2 + 2
+	
+* subtract values of off k3 because of varname numbering
+		replace			k3		=	13 if k3 == 19
+		replace			k3		=	14 if k3 == 20
+		replace			k3		=	15 if k3 == 21
+	
+* label new variables	
+	lab				var obs "Specification # - sorted by effect size"
+
+	lab 			var k1 "Model"
+	lab 			var k2 "Dependant Variable"
+	lab 			var k3 "Weather Product"
+
+	sum			 	ci_up
+	global			bmax = r(max)
+	
+	sum			 	ci_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - 2.5*$brange
+	global			gheight	=	25
+	  
+	di $bmin
+	di $brange
+	di $from_y
+	di $gheight
+			
+	twoway 			scatter k1 k2 k3 obs, xlab(0(2)36) xsize(10) ysize(6) msize(small small small)  ///
+						title("Ethiopia") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
+						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
+						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
+						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
+						13 "Temperature 1" 14 "Temperature 2" 15 "Temperature 3" ///
+						16 "*{bf:Temperature Product}*" 25 " ", angle(0) ///
+						labsize(vsmall) tstyle(notick)) || ///
+						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(scatter b_sig obs, yaxis(2) mcolor(emidblue%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) yaxis(2) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(emidblue%50) yaxis(2)  ///
+						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
+						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
+						saving("$sfig/eth_v16_sat", replace)
+						
+	graph export 	"$xfig\eth_v16_sat.png", width(1400) replace
+	
+restore
+
+* variance daily temperature
+preserve
+	keep			if varname == 17 & country == 1
+	sort 			beta
+	gen 			obs = _n
+
+* stack values of the specification indicators
+	gen 			k1 		= 	regname
+	gen 			k2 		= 	depvar + 6 + 2
+	gen				k3		=	sat + 6 + 2 + 2 + 2
+	
+* subtract values of off k3 because of varname numbering
+		replace			k3		=	13 if k3 == 19
+		replace			k3		=	14 if k3 == 20
+		replace			k3		=	15 if k3 == 21
+	
+* label new variables	
+	lab				var obs "Specification # - sorted by effect size"
+
+	lab 			var k1 "Model"
+	lab 			var k2 "Dependant Variable"
+	lab 			var k3 "Weather Product"
+
+	sum			 	ci_up
+	global			bmax = r(max)
+	
+	sum			 	ci_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - 2.5*$brange
+	global			gheight	=	25
+	  
+	di $bmin
+	di $brange
+	di $from_y
+	di $gheight
+			
+	twoway 			scatter k1 k2 k3 obs, xlab(0(2)36) xsize(10) ysize(6) msize(small small small)  ///
+						title("Ethiopia") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
+						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
+						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
+						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
+						13 "Temperature 1" 14 "Temperature 2" 15 "Temperature 3" ///
+						16 "*{bf:Temperature Product}*" 25 " ", angle(0) ///
+						labsize(vsmall) tstyle(notick)) || ///
+						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(scatter b_sig obs, yaxis(2) mcolor(eltblue%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) yaxis(2) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(eltblue%50) yaxis(2)  ///
+						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
+						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
+						saving("$sfig/eth_v17_sat", replace)
+						
+	graph export 	"$xfig\eth_v17_sat.png", width(1400) replace
+	
+restore
+	
+	
 * **********************************************************************
 * 5b - specification curves for malawi
 * **********************************************************************
@@ -4126,7 +4376,7 @@ preserve
 	gen				k3		=	sat + 6 + 2 + 2 + 2
 	
 * label new variables	
-	lab				var obs "Specification # - sorted by model & effect size"
+	lab				var obs "Specification # - sorted by effect size"
 
 	lab 			var k1 "Model"
 	lab 			var k2 "Dependant Variable"
@@ -4148,7 +4398,7 @@ preserve
 	di $gheight
 			
 	twoway 			scatter k1 k2 k3 obs, xlab(0(4)72) xsize(10) ysize(6) msize(small small small)  ///
-						title("Mean Daily Rainfall") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						title("Malawi") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
 						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
@@ -4167,7 +4417,10 @@ preserve
 						barwidth(.2) color(edkblue%50) yaxis(2)  ///
 						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
-						saving("$sfig/mwi_v01_sat", replace)						
+						saving("$sfig/mwi_v01_sat", replace)
+						
+	graph export 	"$xfig\mwi_v01_sat.png", width(1400) replace
+							
 restore
 	
 * total seasonal rainfall
@@ -4182,7 +4435,7 @@ preserve
 	gen				k3		=	sat + 6 + 2 + 2 + 2
 	
 * label new variables	
-	lab				var obs "Specification # - sorted by model & effect size"
+	lab				var obs "Specification # - sorted by effect size"
 
 	lab 			var k1 "Model"
 	lab 			var k2 "Dependant Variable"
@@ -4204,7 +4457,7 @@ preserve
 	di $gheight
 			
 	twoway 			scatter k1 k2 k3 obs, xlab(0(4)72) xsize(10) ysize(6) msize(small small small)  ///
-						title("Total Seasonal Rainfall") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						title("Malawi") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
 						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
@@ -4215,18 +4468,21 @@ preserve
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
 						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
-						(scatter b_sig obs, yaxis(2) mcolor(edkblue%75) ylab(, axis(2) ///
+						(scatter b_sig obs, yaxis(2) mcolor(erose%75) ylab(, axis(2) ///
 						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
 						(rbar ci_lo ci_up obs if b_sig == ., ///
 						barwidth(.2) color(black%50) yaxis(2) ) || ///
 						(rbar ci_lo ci_up obs if b_sig != ., ///
-						barwidth(.2) color(edkblue%50) yaxis(2)  ///
+						barwidth(.2) color(erose%50) yaxis(2)  ///
 						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
-						saving("$sfig/mwi_v05_sat", replace)						
+						saving("$sfig/mwi_v05_sat", replace)
+						
+	graph export 	"$xfig\mwi_v05_sat.png", width(1400) replace
+													
 restore
 
-* rainy days rainfall
+* rainy days
 preserve
 	keep			if varname == 8 & country == 2
 	sort 			beta
@@ -4238,7 +4494,7 @@ preserve
 	gen				k3		=	sat + 6 + 2 + 2 + 2
 	
 * label new variables	
-	lab				var obs "Specification # - sorted by model & effect size"
+	lab				var obs "Specification # - sorted by effect size"
 
 	lab 			var k1 "Model"
 	lab 			var k2 "Dependant Variable"
@@ -4260,7 +4516,7 @@ preserve
 	di $gheight	
 		
 	twoway 			scatter k1 k2 k3 obs, xlab(0(4)72) xsize(10) ysize(6) msize(small small small)  ///
-						title("Number of Rainy Days") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						title("Malawi") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
 						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
@@ -4268,6 +4524,128 @@ preserve
 						13 "Rainfall 1" 14 "Rainfall 2" 15 "Rainfall 3" ///
 						16 "Rainfall 4" 17 "Rainfall 5" 18 "Rainfall 6" ///
 						19 "*{bf:Rainfall Product}*" 28 " ", angle(0) ///
+						labsize(vsmall) tstyle(notick)) || ///
+						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(scatter b_sig obs, yaxis(2) mcolor(stone%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) yaxis(2) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(stone%50) yaxis(2)  ///
+						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
+						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
+						saving("$sfig/mwi_v08_sat", replace)	
+						
+	graph export 	"$xfig\mwi_v08_sat.png", width(1400) replace
+												
+restore
+
+* percent rainy days
+preserve
+	keep			if varname == 12 & country == 2
+	sort 			beta
+	gen 			obs = _n
+
+* stack values of the specification indicators
+	gen 			k1 		= 	regname
+	gen 			k2 		= 	depvar + 6 + 2
+	gen				k3		=	sat + 6 + 2 + 2 + 2
+	
+* label new variables	
+	lab				var obs "Specification # - sorted by effect size"
+
+	lab 			var k1 "Model"
+	lab 			var k2 "Dependant Variable"
+	lab 			var k3 "Weather Product"
+
+	sum			 	ci_up
+	global			bmax = r(max)
+	
+	sum			 	ci_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - 2.5*$brange
+	global			gheight	=	28
+	  
+	di $bmin
+	di $brange
+	di $from_y
+	di $gheight	
+		
+	twoway 			scatter k1 k2 k3 obs, xlab(0(4)72) xsize(10) ysize(6) msize(small small small)  ///
+						title("Malawi") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
+						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
+						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
+						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
+						13 "Rainfall 1" 14 "Rainfall 2" 15 "Rainfall 3" ///
+						16 "Rainfall 4" 17 "Rainfall 5" 18 "Rainfall 6" ///
+						19 "*{bf:Rainfall Product}*" 28 " ", angle(0) ///
+						labsize(vsmall) tstyle(notick)) || ///
+						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(scatter b_sig obs, yaxis(2) mcolor(teal%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) yaxis(2) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(teal%50) yaxis(2)  ///
+						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
+						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
+						saving("$sfig/mwi_v12_sat", replace)	
+						
+	graph export 	"$xfig\mwi_v12_sat.png", width(1400) replace
+												
+restore
+
+* mean daily temperature
+preserve
+	keep			if varname == 15 & country == 2
+	sort 			beta
+	gen 			obs = _n
+
+* stack values of the specification indicators
+	gen 			k1 		= 	regname
+	gen 			k2 		= 	depvar + 6 + 2
+	gen				k3		=	sat + 6 + 2 + 2 + 2
+	
+* subtract values of off k3 because of varname numbering
+		replace			k3		=	13 if k3 == 19
+		replace			k3		=	14 if k3 == 20
+		replace			k3		=	15 if k3 == 21
+	
+* label new variables	
+	lab				var obs "Specification # - sorted by effect size"
+
+	lab 			var k1 "Model"
+	lab 			var k2 "Dependant Variable"
+	lab 			var k3 "Weather Product"
+
+	sum			 	ci_up
+	global			bmax = r(max)
+	
+	sum			 	ci_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - 2.5*$brange
+	global			gheight	=	25
+	  
+	di $bmin
+	di $brange
+	di $from_y
+	di $gheight
+			
+	twoway 			scatter k1 k2 k3 obs, xlab(0(2)36) xsize(10) ysize(6) msize(small small small)  ///
+						title("Malawi") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
+						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
+						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
+						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
+						13 "Temperature 1" 14 "Temperature 2" 15 "Temperature 3" ///
+						16 "*{bf:Temperature Product}*" 25 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
 						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
@@ -4279,15 +4657,137 @@ preserve
 						barwidth(.2) color(edkblue%50) yaxis(2)  ///
 						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
-						saving("$sfig/mwi_v08_sat", replace)						
-restore
-	
-* combine varname specification curves
-	grc1leg2 		"$sfig/mwi_v01_sat.gph" "$sfig/mwi_v05_sat.gph"  ///
-						"$sfig/mwi_v08_sat.gph", col(2) iscale(.5) ///
-						ring(0) pos(5) holes(4) commonscheme
+						saving("$sfig/mwi_v15_sat", replace)
 						
-	graph export 	"$xfig\mwi_rain_sat.pdf", as(pdf) replace
+	graph export 	"$xfig\mwi_v15_sat.png", width(1400) replace
+	
+restore
+
+* median daily temperature
+preserve
+	keep			if varname == 16 & country == 2
+	sort 			beta
+	gen 			obs = _n
+
+* stack values of the specification indicators
+	gen 			k1 		= 	regname
+	gen 			k2 		= 	depvar + 6 + 2
+	gen				k3		=	sat + 6 + 2 + 2 + 2
+	
+* subtract values of off k3 because of varname numbering
+		replace			k3		=	13 if k3 == 19
+		replace			k3		=	14 if k3 == 20
+		replace			k3		=	15 if k3 == 21
+	
+* label new variables	
+	lab				var obs "Specification # - sorted by effect size"
+
+	lab 			var k1 "Model"
+	lab 			var k2 "Dependant Variable"
+	lab 			var k3 "Weather Product"
+
+	sum			 	ci_up
+	global			bmax = r(max)
+	
+	sum			 	ci_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - 2.5*$brange
+	global			gheight	=	25
+	  
+	di $bmin
+	di $brange
+	di $from_y
+	di $gheight
+			
+	twoway 			scatter k1 k2 k3 obs, xlab(0(2)36) xsize(10) ysize(6) msize(small small small)  ///
+						title("Malawi") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
+						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
+						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
+						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
+						13 "Temperature 1" 14 "Temperature 2" 15 "Temperature 3" ///
+						16 "*{bf:Temperature Product}*" 25 " ", angle(0) ///
+						labsize(vsmall) tstyle(notick)) || ///
+						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(scatter b_sig obs, yaxis(2) mcolor(emidblue%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) yaxis(2) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(emidblue%50) yaxis(2)  ///
+						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
+						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
+						saving("$sfig/mwi_v16_sat", replace)
+						
+	graph export 	"$xfig\mwi_v16_sat.png", width(1400) replace
+	
+restore
+
+* variance daily temperature
+preserve
+	keep			if varname == 17 & country == 2
+	sort 			beta
+	gen 			obs = _n
+
+* stack values of the specification indicators
+	gen 			k1 		= 	regname
+	gen 			k2 		= 	depvar + 6 + 2
+	gen				k3		=	sat + 6 + 2 + 2 + 2
+	
+* subtract values of off k3 because of varname numbering
+		replace			k3		=	13 if k3 == 19
+		replace			k3		=	14 if k3 == 20
+		replace			k3		=	15 if k3 == 21
+	
+* label new variables	
+	lab				var obs "Specification # - sorted by effect size"
+
+	lab 			var k1 "Model"
+	lab 			var k2 "Dependant Variable"
+	lab 			var k3 "Weather Product"
+
+	sum			 	ci_up
+	global			bmax = r(max)
+	
+	sum			 	ci_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - 2.5*$brange
+	global			gheight	=	25
+	  
+	di $bmin
+	di $brange
+	di $from_y
+	di $gheight
+			
+	twoway 			scatter k1 k2 k3 obs, xlab(0(2)36) xsize(10) ysize(6) msize(small small small)  ///
+						title("Malawi") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
+						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
+						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
+						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
+						13 "Temperature 1" 14 "Temperature 2" 15 "Temperature 3" ///
+						16 "*{bf:Temperature Product}*" 25 " ", angle(0) ///
+						labsize(vsmall) tstyle(notick)) || ///
+						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(scatter b_sig obs, yaxis(2) mcolor(eltblue%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) yaxis(2) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(eltblue%50) yaxis(2)  ///
+						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
+						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
+						saving("$sfig/mwi_v17_sat", replace)
+						
+	graph export 	"$xfig\mwi_v17_sat.png", width(1400) replace
+	
+restore
 
 
 * **********************************************************************
@@ -4306,7 +4806,7 @@ preserve
 	gen				k3		=	sat + 6 + 2 + 2 + 2
 	
 * label new variables	
-	lab				var obs "Specification # - sorted by model & effect size"
+	lab				var obs "Specification # - sorted by effect size"
 
 	lab 			var k1 "Model"
 	lab 			var k2 "Dependant Variable"
@@ -4328,7 +4828,7 @@ preserve
 	di $gheight
 			
 	twoway 			scatter k1 k2 k3 obs, xlab(0(4)72) xsize(10) ysize(6) msize(small small small)  ///
-						title("Mean Daily Rainfall") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						title("Niger") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
 						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
@@ -4347,7 +4847,10 @@ preserve
 						barwidth(.2) color(edkblue%50) yaxis(2)  ///
 						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
-						saving("$sfig/ngr_v01_sat", replace)						
+						saving("$sfig/ngr_v01_sat", replace)
+						
+	graph export 	"$xfig\ngr_v01_sat.png", width(1400) replace
+													
 restore
 	
 * total seasonal rainfall
@@ -4362,7 +4865,7 @@ preserve
 	gen				k3		=	sat + 6 + 2 + 2 + 2
 	
 * label new variables	
-	lab				var obs "Specification # - sorted by model & effect size"
+	lab				var obs "Specification # - sorted by effect size"
 
 	lab 			var k1 "Model"
 	lab 			var k2 "Dependant Variable"
@@ -4384,7 +4887,7 @@ preserve
 	di $gheight	
 		
 	twoway 			scatter k1 k2 k3 obs, xlab(0(4)72) xsize(10) ysize(6) msize(small small small)  ///
-						title("Total Seasonal Rainfall") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						title("Niger") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
 						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
@@ -4395,18 +4898,21 @@ preserve
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
 						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
-						(scatter b_sig obs, yaxis(2) mcolor(edkblue%75) ylab(, axis(2) ///
+						(scatter b_sig obs, yaxis(2) mcolor(erose%75) ylab(, axis(2) ///
 						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
 						(rbar ci_lo ci_up obs if b_sig == ., ///
 						barwidth(.2) color(black%50) yaxis(2) ) || ///
 						(rbar ci_lo ci_up obs if b_sig != ., ///
-						barwidth(.2) color(edkblue%50) yaxis(2)  ///
+						barwidth(.2) color(erose%50) yaxis(2)  ///
 						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
-						saving("$sfig/ngr_v05_sat", replace)						
+						saving("$sfig/ngr_v05_sat", replace)
+						
+	graph export 	"$xfig\ngr_v05_sat.png", width(1400) replace
+																			
 restore
 
-* rainy days rainfall
+* rainy days
 preserve
 	keep			if varname == 8 & country == 4
 	sort 			beta
@@ -4418,7 +4924,7 @@ preserve
 	gen				k3		=	sat + 6 + 2 + 2 + 2
 	
 * label new variables	
-	lab				var obs "Specification # - sorted by model & effect size"
+	lab				var obs "Specification # - sorted by effect size"
 
 	lab 			var k1 "Model"
 	lab 			var k2 "Dependant Variable"
@@ -4440,7 +4946,7 @@ preserve
 	di $gheight	
 		
 	twoway 			scatter k1 k2 k3 obs, xlab(0(4)72) xsize(10) ysize(6) msize(small small small)  ///
-						title("Number of Rainy Days") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						title("Niger") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
 						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
@@ -4448,6 +4954,128 @@ preserve
 						13 "Rainfall 1" 14 "Rainfall 2" 15 "Rainfall 3" ///
 						16 "Rainfall 4" 17 "Rainfall 5" 18 "Rainfall 6" ///
 						19 "*{bf:Rainfall Product}*" 28 " ", angle(0) ///
+						labsize(vsmall) tstyle(notick)) || ///
+						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(scatter b_sig obs, yaxis(2) mcolor(stone%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) yaxis(2) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(stone%50) yaxis(2)  ///
+						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
+						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
+						saving("$sfig/ngr_v08_sat", replace)	
+						
+	graph export 	"$xfig\ngr_v08_sat.png", width(1400) replace
+																		
+restore
+
+* percent rainy days
+preserve
+	keep			if varname == 12 & country == 4
+	sort 			beta
+	gen 			obs = _n
+
+* stack values of the specification indicators
+	gen 			k1 		= 	regname
+	gen 			k2 		= 	depvar + 6 + 2
+	gen				k3		=	sat + 6 + 2 + 2 + 2
+	
+* label new variables	
+	lab				var obs "Specification # - sorted by effect size"
+
+	lab 			var k1 "Model"
+	lab 			var k2 "Dependant Variable"
+	lab 			var k3 "Weather Product"
+
+	sum			 	ci_up
+	global			bmax = r(max)
+	
+	sum			 	ci_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - 2.5*$brange
+	global			gheight	=	28
+	  
+	di $bmin
+	di $brange
+	di $from_y
+	di $gheight	
+		
+	twoway 			scatter k1 k2 k3 obs, xlab(0(4)72) xsize(10) ysize(6) msize(small small small)  ///
+						title("Niger") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
+						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
+						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
+						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
+						13 "Rainfall 1" 14 "Rainfall 2" 15 "Rainfall 3" ///
+						16 "Rainfall 4" 17 "Rainfall 5" 18 "Rainfall 6" ///
+						19 "*{bf:Rainfall Product}*" 28 " ", angle(0) ///
+						labsize(vsmall) tstyle(notick)) || ///
+						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(scatter b_sig obs, yaxis(2) mcolor(teal%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) yaxis(2) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(teal%50) yaxis(2)  ///
+						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
+						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
+						saving("$sfig/ngr_v12_sat", replace)	
+						
+	graph export 	"$xfig\ngr_v12_sat.png", width(1400) replace
+																		
+restore
+
+* mean daily temperature
+preserve
+	keep			if varname == 15 & country == 4
+	sort 			beta
+	gen 			obs = _n
+
+* stack values of the specification indicators
+	gen 			k1 		= 	regname
+	gen 			k2 		= 	depvar + 6 + 2
+	gen				k3		=	sat + 6 + 2 + 2 + 2
+	
+* subtract values of off k3 because of varname numbering
+		replace			k3		=	13 if k3 == 19
+		replace			k3		=	14 if k3 == 20
+		replace			k3		=	15 if k3 == 21
+	
+* label new variables	
+	lab				var obs "Specification # - sorted by effect size"
+
+	lab 			var k1 "Model"
+	lab 			var k2 "Dependant Variable"
+	lab 			var k3 "Weather Product"
+
+	sum			 	ci_up
+	global			bmax = r(max)
+	
+	sum			 	ci_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - 2.5*$brange
+	global			gheight	=	25
+	  
+	di $bmin
+	di $brange
+	di $from_y
+	di $gheight
+			
+	twoway 			scatter k1 k2 k3 obs, xlab(0(2)36) xsize(10) ysize(6) msize(small small small)  ///
+						title("Niger") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
+						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
+						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
+						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
+						13 "Temperature 1" 14 "Temperature 2" 15 "Temperature 3" ///
+						16 "*{bf:Temperature Product}*" 25 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
 						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
@@ -4459,15 +5087,137 @@ preserve
 						barwidth(.2) color(edkblue%50) yaxis(2)  ///
 						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
-						saving("$sfig/ngr_v08_sat", replace)						
-restore
-	
-* combine varname specification curves
-	grc1leg2 		"$sfig/ngr_v01_sat.gph" "$sfig/ngr_v05_sat.gph"  ///
-						"$sfig/ngr_v08_sat.gph", col(2) iscale(.5) ///
-						ring(0) pos(5) holes(4) commonscheme
+						saving("$sfig/ngr_v15_sat", replace)
 						
-	graph export 	"$xfig\ngr_rain_sat.pdf", as(pdf) replace
+	graph export 	"$xfig\ngr_v15_sat.png", width(1400) replace
+	
+restore
+
+* median daily temperature
+preserve
+	keep			if varname == 16 & country == 4
+	sort 			beta
+	gen 			obs = _n
+
+* stack values of the specification indicators
+	gen 			k1 		= 	regname
+	gen 			k2 		= 	depvar + 6 + 2
+	gen				k3		=	sat + 6 + 2 + 2 + 2
+	
+* subtract values of off k3 because of varname numbering
+		replace			k3		=	13 if k3 == 19
+		replace			k3		=	14 if k3 == 20
+		replace			k3		=	15 if k3 == 21
+	
+* label new variables	
+	lab				var obs "Specification # - sorted by effect size"
+
+	lab 			var k1 "Model"
+	lab 			var k2 "Dependant Variable"
+	lab 			var k3 "Weather Product"
+
+	sum			 	ci_up
+	global			bmax = r(max)
+	
+	sum			 	ci_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - 2.5*$brange
+	global			gheight	=	25
+	  
+	di $bmin
+	di $brange
+	di $from_y
+	di $gheight
+			
+	twoway 			scatter k1 k2 k3 obs, xlab(0(2)36) xsize(10) ysize(6) msize(small small small)  ///
+						title("Niger") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
+						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
+						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
+						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
+						13 "Temperature 1" 14 "Temperature 2" 15 "Temperature 3" ///
+						16 "*{bf:Temperature Product}*" 25 " ", angle(0) ///
+						labsize(vsmall) tstyle(notick)) || ///
+						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(scatter b_sig obs, yaxis(2) mcolor(emidblue%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) yaxis(2) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(emidblue%50) yaxis(2)  ///
+						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
+						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
+						saving("$sfig/ngr_v16_sat", replace)
+						
+	graph export 	"$xfig\ngr_v16_sat.png", width(1400) replace
+	
+restore
+
+* variance daily temperature
+preserve
+	keep			if varname == 17 & country == 4
+	sort 			beta
+	gen 			obs = _n
+
+* stack values of the specification indicators
+	gen 			k1 		= 	regname
+	gen 			k2 		= 	depvar + 6 + 2
+	gen				k3		=	sat + 6 + 2 + 2 + 2
+	
+* subtract values of off k3 because of varname numbering
+		replace			k3		=	13 if k3 == 19
+		replace			k3		=	14 if k3 == 20
+		replace			k3		=	15 if k3 == 21
+	
+* label new variables	
+	lab				var obs "Specification # - sorted by effect size"
+
+	lab 			var k1 "Model"
+	lab 			var k2 "Dependant Variable"
+	lab 			var k3 "Weather Product"
+
+	sum			 	ci_up
+	global			bmax = r(max)
+	
+	sum			 	ci_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - 2.5*$brange
+	global			gheight	=	25
+	  
+	di $bmin
+	di $brange
+	di $from_y
+	di $gheight
+			
+	twoway 			scatter k1 k2 k3 obs, xlab(0(2)36) xsize(10) ysize(6) msize(small small small)  ///
+						title("Niger") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
+						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
+						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
+						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
+						13 "Temperature 1" 14 "Temperature 2" 15 "Temperature 3" ///
+						16 "*{bf:Temperature Product}*" 25 " ", angle(0) ///
+						labsize(vsmall) tstyle(notick)) || ///
+						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(scatter b_sig obs, yaxis(2) mcolor(eltblue%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) yaxis(2) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(eltblue%50) yaxis(2)  ///
+						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
+						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
+						saving("$sfig/ngr_v17_sat", replace)
+						
+	graph export 	"$xfig\ngr_v17_sat.png", width(1400) replace
+	
+restore
 
 	
 * **********************************************************************
@@ -4486,7 +5236,7 @@ preserve
 	gen				k3		=	sat + 6 + 2 + 2 + 2
 	
 * label new variables	
-	lab				var obs "Specification # - sorted by model & effect size"
+	lab				var obs "Specification # - sorted by effect size"
 
 	lab 			var k1 "Model"
 	lab 			var k2 "Dependant Variable"
@@ -4508,7 +5258,7 @@ preserve
 	di $gheight
 
 	twoway 			scatter k1 k2 k3 obs, xlab(0(4)72) xsize(10) ysize(6) msize(small small small)  ///
-						title("Mean Daily Rainfall") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						title("Nigeria") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
 						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
@@ -4527,7 +5277,10 @@ preserve
 						barwidth(.2) color(edkblue%50) yaxis(2)  ///
 						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
-						saving("$sfig/nga_v01_sat", replace)						
+						saving("$sfig/nga_v01_sat", replace)
+						
+	graph export 	"$xfig\nga_v01_sat.png", width(1400) replace
+																			
 restore
 	
 * total seasonal rainfall
@@ -4542,7 +5295,7 @@ preserve
 	gen				k3		=	sat + 6 + 2 + 2 + 2
 	
 * label new variables	
-	lab				var obs "Specification # - sorted by model & effect size"
+	lab				var obs "Specification # - sorted by effect size"
 
 	lab 			var k1 "Model"
 	lab 			var k2 "Dependant Variable"
@@ -4564,7 +5317,7 @@ preserve
 	di $gheight	
 		
 	twoway 			scatter k1 k2 k3 obs, xlab(0(4)72) xsize(10) ysize(6) msize(small small small)  ///
-						title("Total Seasonal Rainfall") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						title("Nigeria") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
 						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
@@ -4575,18 +5328,21 @@ preserve
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
 						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
-						(scatter b_sig obs, yaxis(2) mcolor(edkblue%75) ylab(, axis(2) ///
+						(scatter b_sig obs, yaxis(2) mcolor(erose%75) ylab(, axis(2) ///
 						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
 						(rbar ci_lo ci_up obs if b_sig == ., ///
 						barwidth(.2) color(black%50) yaxis(2) ) || ///
 						(rbar ci_lo ci_up obs if b_sig != ., ///
-						barwidth(.2) color(edkblue%50) yaxis(2)  ///
+						barwidth(.2) color(erose%50) yaxis(2)  ///
 						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
-						saving("$sfig/nga_v05_sat", replace)						
+						saving("$sfig/nga_v05_sat", replace)	
+						
+	graph export 	"$xfig\nga_v05_sat.png", width(1400) replace
+																						
 restore
 
-* rainy days rainfall
+* rainy days
 preserve
 	keep			if varname == 8 & country == 5
 	sort 			beta
@@ -4598,7 +5354,7 @@ preserve
 	gen				k3		=	sat + 6 + 2 + 2 + 2
 	
 * label new variables	
-	lab				var obs "Specification # - sorted by model & effect size"
+	lab				var obs "Specification # - sorted by effect size"
 
 	lab 			var k1 "Model"
 	lab 			var k2 "Dependant Variable"
@@ -4620,7 +5376,7 @@ preserve
 	di $gheight
 		
 	twoway 			scatter k1 k2 k3 obs, xlab(0(4)72) xsize(10) ysize(6) msize(small small small)  ///
-						title("Number of Rainy Days") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						title("Nigeria") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
 						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
@@ -4628,6 +5384,128 @@ preserve
 						13 "Rainfall 1" 14 "Rainfall 2" 15 "Rainfall 3" ///
 						16 "Rainfall 4" 17 "Rainfall 5" 18 "Rainfall 6" ///
 						19 "*{bf:Rainfall Product}*" 28 " ", angle(0) ///
+						labsize(vsmall) tstyle(notick)) || ///
+						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(scatter b_sig obs, yaxis(2) mcolor(stone%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) yaxis(2) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(stone%50) yaxis(2)  ///
+						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
+						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
+						saving("$sfig/nga_v08_sat", replace)
+						
+	graph export 	"$xfig\nga_v08_sat.png", width(1400) replace
+																							
+restore
+
+* percent rainy days
+preserve
+	keep			if varname == 12 & country == 5
+	sort 			beta
+	gen 			obs = _n
+
+* stack values of the specification indicators
+	gen 			k1 		= 	regname
+	gen 			k2 		= 	depvar + 6 + 2
+	gen				k3		=	sat + 6 + 2 + 2 + 2
+	
+* label new variables	
+	lab				var obs "Specification # - sorted by effect size"
+
+	lab 			var k1 "Model"
+	lab 			var k2 "Dependant Variable"
+	lab 			var k3 "Weather Product"
+
+	sum			 	ci_up
+	global			bmax = r(max)
+	
+	sum			 	ci_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - 2.5*$brange
+	global			gheight	=	28
+	  
+	di $bmin
+	di $brange
+	di $from_y
+	di $gheight
+		
+	twoway 			scatter k1 k2 k3 obs, xlab(0(4)72) xsize(10) ysize(6) msize(small small small)  ///
+						title("Nigeria") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
+						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
+						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
+						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
+						13 "Rainfall 1" 14 "Rainfall 2" 15 "Rainfall 3" ///
+						16 "Rainfall 4" 17 "Rainfall 5" 18 "Rainfall 6" ///
+						19 "*{bf:Rainfall Product}*" 28 " ", angle(0) ///
+						labsize(vsmall) tstyle(notick)) || ///
+						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(scatter b_sig obs, yaxis(2) mcolor(teal%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) yaxis(2) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(teal%50) yaxis(2)  ///
+						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
+						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
+						saving("$sfig/nga_v12_sat", replace)
+						
+	graph export 	"$xfig\nga_v12_sat.png", width(1400) replace
+																							
+restore
+
+* mean daily temperature
+preserve
+	keep			if varname == 15 & country == 5
+	sort 			beta
+	gen 			obs = _n
+
+* stack values of the specification indicators
+	gen 			k1 		= 	regname
+	gen 			k2 		= 	depvar + 6 + 2
+	gen				k3		=	sat + 6 + 2 + 2 + 2
+	
+* subtract values of off k3 because of varname numbering
+		replace			k3		=	13 if k3 == 19
+		replace			k3		=	14 if k3 == 20
+		replace			k3		=	15 if k3 == 21
+	
+* label new variables	
+	lab				var obs "Specification # - sorted by effect size"
+
+	lab 			var k1 "Model"
+	lab 			var k2 "Dependant Variable"
+	lab 			var k3 "Weather Product"
+
+	sum			 	ci_up
+	global			bmax = r(max)
+	
+	sum			 	ci_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - 2.5*$brange
+	global			gheight	=	25
+	  
+	di $bmin
+	di $brange
+	di $from_y
+	di $gheight
+			
+	twoway 			scatter k1 k2 k3 obs, xlab(0(2)36) xsize(10) ysize(6) msize(small small small)  ///
+						title("Nigeria") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
+						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
+						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
+						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
+						13 "Temperature 1" 14 "Temperature 2" 15 "Temperature 3" ///
+						16 "*{bf:Temperature Product}*" 25 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
 						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
@@ -4639,15 +5517,137 @@ preserve
 						barwidth(.2) color(edkblue%50) yaxis(2)  ///
 						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
-						saving("$sfig/nga_v08_sat", replace)						
+						saving("$sfig/nga_v15_sat", replace)
+						
+	graph export 	"$xfig\nga_v15_sat.png", width(1400) replace
+	
 restore
 
-* combine varname specification curves
-	grc1leg2 		"$sfig/nga_v01_sat.gph" "$sfig/nga_v05_sat.gph"  ///
-						"$sfig/nga_v08_sat.gph", col(2) iscale(.5) ///
-						ring(0) pos(5) holes(4) commonscheme
+* median daily temperature
+preserve
+	keep			if varname == 16 & country == 5
+	sort 			beta
+	gen 			obs = _n
+
+* stack values of the specification indicators
+	gen 			k1 		= 	regname
+	gen 			k2 		= 	depvar + 6 + 2
+	gen				k3		=	sat + 6 + 2 + 2 + 2
+	
+* subtract values of off k3 because of varname numbering
+		replace			k3		=	13 if k3 == 19
+		replace			k3		=	14 if k3 == 20
+		replace			k3		=	15 if k3 == 21
+	
+* label new variables	
+	lab				var obs "Specification # - sorted by effect size"
+
+	lab 			var k1 "Model"
+	lab 			var k2 "Dependant Variable"
+	lab 			var k3 "Weather Product"
+
+	sum			 	ci_up
+	global			bmax = r(max)
+	
+	sum			 	ci_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - 2.5*$brange
+	global			gheight	=	25
+	  
+	di $bmin
+	di $brange
+	di $from_y
+	di $gheight
+			
+	twoway 			scatter k1 k2 k3 obs, xlab(0(2)36) xsize(10) ysize(6) msize(small small small)  ///
+						title("Nigeria") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
+						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
+						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
+						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
+						13 "Temperature 1" 14 "Temperature 2" 15 "Temperature 3" ///
+						16 "*{bf:Temperature Product}*" 25 " ", angle(0) ///
+						labsize(vsmall) tstyle(notick)) || ///
+						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(scatter b_sig obs, yaxis(2) mcolor(emidblue%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) yaxis(2) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(emidblue%50) yaxis(2)  ///
+						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
+						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
+						saving("$sfig/nga_v16_sat", replace)
 						
-	graph export 	"$xfig\nga_rain_sat.pdf", as(pdf) replace
+	graph export 	"$xfig\nga_v16_sat.png", width(1400) replace
+	
+restore
+
+* variance daily temperature
+preserve
+	keep			if varname == 17 & country == 5
+	sort 			beta
+	gen 			obs = _n
+
+* stack values of the specification indicators
+	gen 			k1 		= 	regname
+	gen 			k2 		= 	depvar + 6 + 2
+	gen				k3		=	sat + 6 + 2 + 2 + 2
+	
+* subtract values of off k3 because of varname numbering
+		replace			k3		=	13 if k3 == 19
+		replace			k3		=	14 if k3 == 20
+		replace			k3		=	15 if k3 == 21
+	
+* label new variables	
+	lab				var obs "Specification # - sorted by effect size"
+
+	lab 			var k1 "Model"
+	lab 			var k2 "Dependant Variable"
+	lab 			var k3 "Weather Product"
+
+	sum			 	ci_up
+	global			bmax = r(max)
+	
+	sum			 	ci_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - 2.5*$brange
+	global			gheight	=	25
+	  
+	di $bmin
+	di $brange
+	di $from_y
+	di $gheight
+			
+	twoway 			scatter k1 k2 k3 obs, xlab(0(2)36) xsize(10) ysize(6) msize(small small small)  ///
+						title("Nigeria") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
+						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
+						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
+						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
+						13 "Temperature 1" 14 "Temperature 2" 15 "Temperature 3" ///
+						16 "*{bf:Temperature Product}*" 25 " ", angle(0) ///
+						labsize(vsmall) tstyle(notick)) || ///
+						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(scatter b_sig obs, yaxis(2) mcolor(eltblue%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) yaxis(2) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(eltblue%50) yaxis(2)  ///
+						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
+						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
+						saving("$sfig/nga_v17_sat", replace)
+						
+	graph export 	"$xfig\nga_v17_sat.png", width(1400) replace
+	
+restore
 
 	
 * **********************************************************************
@@ -4666,7 +5666,7 @@ preserve
 	gen				k3		=	sat + 6 + 2 + 2 + 2
 	
 * label new variables	
-	lab				var obs "Specification # - sorted by model & effect size"
+	lab				var obs "Specification # - sorted by effect size"
 
 	lab 			var k1 "Model"
 	lab 			var k2 "Dependant Variable"
@@ -4688,7 +5688,7 @@ preserve
 	di $gheight
 			
 	twoway 			scatter k1 k2 k3 obs, xlab(0(4)72) xsize(10) ysize(6) msize(small small small)  ///
-						title("Mean Daily Rainfall") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						title("Tanzania") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
 						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
@@ -4707,7 +5707,10 @@ preserve
 						barwidth(.2) color(edkblue%50) yaxis(2)  ///
 						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
-						saving("$sfig/tza_v01_sat", replace)						
+						saving("$sfig/tza_v01_sat", replace)	
+						
+	graph export 	"$xfig\tza_v01_sat.png", width(1400) replace
+																						
 restore
 	
 * total seasonal rainfall
@@ -4722,7 +5725,7 @@ preserve
 	gen				k3		=	sat + 6 + 2 + 2 + 2
 	
 * label new variables	
-	lab				var obs "Specification # - sorted by model & effect size"
+	lab				var obs "Specification # - sorted by effect size"
 
 	lab 			var k1 "Model"
 	lab 			var k2 "Dependant Variable"
@@ -4744,7 +5747,7 @@ preserve
 	di $gheight
 			
 	twoway 			scatter k1 k2 k3 obs, xlab(0(4)72) xsize(10) ysize(6) msize(small small small)  ///
-						title("Total Seasonal Rainfall") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						title("Tanzania") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
 						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
@@ -4755,18 +5758,21 @@ preserve
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
 						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
-						(scatter b_sig obs, yaxis(2) mcolor(edkblue%75) ylab(, axis(2) ///
+						(scatter b_sig obs, yaxis(2) mcolor(erose%75) ylab(, axis(2) ///
 						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
 						(rbar ci_lo ci_up obs if b_sig == ., ///
 						barwidth(.2) color(black%50) yaxis(2) ) || ///
 						(rbar ci_lo ci_up obs if b_sig != ., ///
-						barwidth(.2) color(edkblue%50) yaxis(2)  ///
+						barwidth(.2) color(erose%50) yaxis(2)  ///
 						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
-						saving("$sfig/tza_v05_sat", replace)						
+						saving("$sfig/tza_v05_sat", replace)
+						
+	graph export 	"$xfig\tza_v05_sat.png", width(1400) replace
+																							
 restore
 
-* rainy days rainfall
+* rainy days
 preserve
 	keep			if varname == 8 & country == 6
 	sort 			beta
@@ -4778,7 +5784,7 @@ preserve
 	gen				k3		=	sat + 6 + 2 + 2 + 2
 	
 * label new variables	
-	lab				var obs "Specification # - sorted by model & effect size"
+	lab				var obs "Specification # - sorted by effect size"
 
 	lab 			var k1 "Model"
 	lab 			var k2 "Dependant Variable"
@@ -4800,7 +5806,7 @@ preserve
 	di $gheight
 			
 	twoway 			scatter k1 k2 k3 obs, xlab(0(4)72) xsize(10) ysize(6) msize(small small small)  ///
-						title("Number of Rainy Days") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						title("Tanzania") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
 						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
@@ -4808,6 +5814,128 @@ preserve
 						13 "Rainfall 1" 14 "Rainfall 2" 15 "Rainfall 3" ///
 						16 "Rainfall 4" 17 "Rainfall 5" 18 "Rainfall 6" ///
 						19 "*{bf:Rainfall Product}*" 28 " ", angle(0) ///
+						labsize(vsmall) tstyle(notick)) || ///
+						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(scatter b_sig obs, yaxis(2) mcolor(stone%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) yaxis(2) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(stone%50) yaxis(2)  ///
+						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
+						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
+						saving("$sfig/tza_v08_sat", replace)	
+						
+	graph export 	"$xfig\tza_v08_sat.png", width(1400) replace
+																						
+restore
+
+* percent rainy days
+preserve
+	keep			if varname == 12 & country == 6
+	sort 			beta
+	gen 			obs = _n
+
+* stack values of the specification indicators
+	gen 			k1 		= 	regname
+	gen 			k2 		= 	depvar + 6 + 2
+	gen				k3		=	sat + 6 + 2 + 2 + 2
+	
+* label new variables	
+	lab				var obs "Specification # - sorted by effect size"
+
+	lab 			var k1 "Model"
+	lab 			var k2 "Dependant Variable"
+	lab 			var k3 "Weather Product"
+
+	sum			 	ci_up
+	global			bmax = r(max)
+	
+	sum			 	ci_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - 2.5*$brange
+	global			gheight	=	28
+	  
+	di $bmin
+	di $brange
+	di $from_y
+	di $gheight
+			
+	twoway 			scatter k1 k2 k3 obs, xlab(0(4)72) xsize(10) ysize(6) msize(small small small)  ///
+						title("Tanzania") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
+						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
+						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
+						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
+						13 "Rainfall 1" 14 "Rainfall 2" 15 "Rainfall 3" ///
+						16 "Rainfall 4" 17 "Rainfall 5" 18 "Rainfall 6" ///
+						19 "*{bf:Rainfall Product}*" 28 " ", angle(0) ///
+						labsize(vsmall) tstyle(notick)) || ///
+						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(scatter b_sig obs, yaxis(2) mcolor(teal%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) yaxis(2) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(teal%50) yaxis(2)  ///
+						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
+						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
+						saving("$sfig/tza_v12_sat", replace)
+						
+	graph export 	"$xfig\tza_v12_sat.png", width(1400) replace
+																							
+restore
+
+* mean daily temperature
+preserve
+	keep			if varname == 15 & country == 6
+	sort 			beta
+	gen 			obs = _n
+
+* stack values of the specification indicators
+	gen 			k1 		= 	regname
+	gen 			k2 		= 	depvar + 6 + 2
+	gen				k3		=	sat + 6 + 2 + 2 + 2
+	
+* subtract values of off k3 because of varname numbering
+		replace			k3		=	13 if k3 == 19
+		replace			k3		=	14 if k3 == 20
+		replace			k3		=	15 if k3 == 21
+	
+* label new variables	
+	lab				var obs "Specification # - sorted by effect size"
+
+	lab 			var k1 "Model"
+	lab 			var k2 "Dependant Variable"
+	lab 			var k3 "Weather Product"
+
+	sum			 	ci_up
+	global			bmax = r(max)
+	
+	sum			 	ci_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - 2.5*$brange
+	global			gheight	=	25
+	  
+	di $bmin
+	di $brange
+	di $from_y
+	di $gheight
+			
+	twoway 			scatter k1 k2 k3 obs, xlab(0(2)36) xsize(10) ysize(6) msize(small small small)  ///
+						title("Tanzania") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
+						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
+						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
+						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
+						13 "Temperature 1" 14 "Temperature 2" 15 "Temperature 3" ///
+						16 "*{bf:Temperature Product}*" 25 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
 						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
@@ -4819,15 +5947,137 @@ preserve
 						barwidth(.2) color(edkblue%50) yaxis(2)  ///
 						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
-						saving("$sfig/tza_v08_sat", replace)						
-restore
-	
-* combine varname specification curves
-	grc1leg2 		"$sfig/tza_v01_sat.gph" "$sfig/tza_v05_sat.gph"  ///
-						"$sfig/tza_v08_sat.gph", col(2) iscale(.5) ///
-						ring(0) pos(5) holes(4) commonscheme
+						saving("$sfig/tza_v15_sat", replace)
 						
-	graph export 	"$xfig\tza_rain_sat.pdf", as(pdf) replace			
+	graph export 	"$xfig\tza_v15_sat.png", width(1400) replace
+	
+restore
+
+* median daily temperature
+preserve
+	keep			if varname == 16 & country == 6
+	sort 			beta
+	gen 			obs = _n
+
+* stack values of the specification indicators
+	gen 			k1 		= 	regname
+	gen 			k2 		= 	depvar + 6 + 2
+	gen				k3		=	sat + 6 + 2 + 2 + 2
+	
+* subtract values of off k3 because of varname numbering
+		replace			k3		=	13 if k3 == 19
+		replace			k3		=	14 if k3 == 20
+		replace			k3		=	15 if k3 == 21
+	
+* label new variables	
+	lab				var obs "Specification # - sorted by effect size"
+
+	lab 			var k1 "Model"
+	lab 			var k2 "Dependant Variable"
+	lab 			var k3 "Weather Product"
+
+	sum			 	ci_up
+	global			bmax = r(max)
+	
+	sum			 	ci_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - 2.5*$brange
+	global			gheight	=	25
+	  
+	di $bmin
+	di $brange
+	di $from_y
+	di $gheight
+			
+	twoway 			scatter k1 k2 k3 obs, xlab(0(2)36) xsize(10) ysize(6) msize(small small small)  ///
+						title("Tanzania") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
+						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
+						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
+						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
+						13 "Temperature 1" 14 "Temperature 2" 15 "Temperature 3" ///
+						16 "*{bf:Temperature Product}*" 25 " ", angle(0) ///
+						labsize(vsmall) tstyle(notick)) || ///
+						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(scatter b_sig obs, yaxis(2) mcolor(emidblue%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) yaxis(2) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(emidblue%50) yaxis(2)  ///
+						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
+						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
+						saving("$sfig/tza_v16_sat", replace)
+						
+	graph export 	"$xfig\tza_v16_sat.png", width(1400) replace
+	
+restore
+
+* variance daily temperature
+preserve
+	keep			if varname == 17 & country == 6
+	sort 			beta
+	gen 			obs = _n
+
+* stack values of the specification indicators
+	gen 			k1 		= 	regname
+	gen 			k2 		= 	depvar + 6 + 2
+	gen				k3		=	sat + 6 + 2 + 2 + 2
+	
+* subtract values of off k3 because of varname numbering
+		replace			k3		=	13 if k3 == 19
+		replace			k3		=	14 if k3 == 20
+		replace			k3		=	15 if k3 == 21
+	
+* label new variables	
+	lab				var obs "Specification # - sorted by effect size"
+
+	lab 			var k1 "Model"
+	lab 			var k2 "Dependant Variable"
+	lab 			var k3 "Weather Product"
+
+	sum			 	ci_up
+	global			bmax = r(max)
+	
+	sum			 	ci_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - 2.5*$brange
+	global			gheight	=	25
+	  
+	di $bmin
+	di $brange
+	di $from_y
+	di $gheight
+			
+	twoway 			scatter k1 k2 k3 obs, xlab(0(2)36) xsize(10) ysize(6) msize(small small small)  ///
+						title("Tanzania") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
+						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
+						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
+						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
+						13 "Temperature 1" 14 "Temperature 2" 15 "Temperature 3" ///
+						16 "*{bf:Temperature Product}*" 25 " ", angle(0) ///
+						labsize(vsmall) tstyle(notick)) || ///
+						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(scatter b_sig obs, yaxis(2) mcolor(eltblue%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) yaxis(2) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(eltblue%50) yaxis(2)  ///
+						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
+						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
+						saving("$sfig/tza_v17_sat", replace)
+						
+	graph export 	"$xfig\tza_v17_sat.png", width(1400) replace
+	
+restore
 
 	
 * **********************************************************************
@@ -4846,7 +6096,7 @@ preserve
 	gen				k3		=	sat + 6 + 2 + 2 + 2
 	
 * label new variables	
-	lab				var obs "Specification # - sorted by model & effect size"
+	lab				var obs "Specification # - sorted by effect size"
 
 	lab 			var k1 "Model"
 	lab 			var k2 "Dependant Variable"
@@ -4868,7 +6118,7 @@ preserve
 	di $gheight
 		
 	twoway 			scatter k1 k2 k3 obs, xlab(0(4)72) xsize(10) ysize(6) msize(small small small)  ///
-						title("Mean Daily Rainfall") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						title("Uganda") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
 						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
@@ -4887,7 +6137,10 @@ preserve
 						barwidth(.2) color(edkblue%50) yaxis(2)  ///
 						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
-						saving("$sfig/uga_v01_sat", replace)						
+						saving("$sfig/uga_v01_sat", replace)		
+						
+	graph export 	"$xfig\uga_v01_sat.png", width(1400) replace
+																					
 restore
 	
 * total seasonal rainfall
@@ -4902,7 +6155,7 @@ preserve
 	gen				k3		=	sat + 6 + 2 + 2 + 2
 	
 * label new variables	
-	lab				var obs "Specification # - sorted by model & effect size"
+	lab				var obs "Specification # - sorted by effect size"
 
 	lab 			var k1 "Model"
 	lab 			var k2 "Dependant Variable"
@@ -4924,7 +6177,7 @@ preserve
 	di $gheight
 		
 	twoway 			scatter k1 k2 k3 obs, xlab(0(4)72) xsize(10) ysize(6) msize(small small small)  ///
-						title("Total Seasonal Rainfall") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						title("Uganda") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
 						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
@@ -4935,18 +6188,21 @@ preserve
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
 						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
-						(scatter b_sig obs, yaxis(2) mcolor(edkblue%75) ylab(, axis(2) ///
+						(scatter b_sig obs, yaxis(2) mcolor(erose%75) ylab(, axis(2) ///
 						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
 						(rbar ci_lo ci_up obs if b_sig == ., ///
 						barwidth(.2) color(black%50) yaxis(2) ) || ///
 						(rbar ci_lo ci_up obs if b_sig != ., ///
-						barwidth(.2) color(edkblue%50) yaxis(2)  ///
+						barwidth(.2) color(erose%50) yaxis(2)  ///
 						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
-						saving("$sfig/uga_v05_sat", replace)						
+						saving("$sfig/uga_v05_sat", replace)	
+						
+	graph export 	"$xfig\uga_v05_sat.png", width(1400) replace
+																							
 restore
 
-* rainy days rainfall
+* rainy days
 preserve
 	keep			if varname == 8 & country == 7
 	sort 			beta
@@ -4958,7 +6214,7 @@ preserve
 	gen				k3		=	sat + 6 + 2 + 2 + 2
 	
 * label new variables	
-	lab				var obs "Specification # - sorted by model & effect size"
+	lab				var obs "Specification # - sorted by effect size"
 
 	lab 			var k1 "Model"
 	lab 			var k2 "Dependant Variable"
@@ -4980,7 +6236,7 @@ preserve
 	di $gheight
 			
 	twoway 			scatter k1 k2 k3 obs, xlab(0(4)72) xsize(10) ysize(6) msize(small small small)  ///
-						title("Number of Rainy Days") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						title("Uganda") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
 						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
@@ -4988,6 +6244,128 @@ preserve
 						13 "Rainfall 1" 14 "Rainfall 2" 15 "Rainfall 3" ///
 						16 "Rainfall 4" 17 "Rainfall 5" 18 "Rainfall 6" ///
 						19 "*{bf:Rainfall Product}*" 28 " ", angle(0) ///
+						labsize(vsmall) tstyle(notick)) || ///
+						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(scatter b_sig obs, yaxis(2) mcolor(stone%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) yaxis(2) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(stone%50) yaxis(2)  ///
+						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
+						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
+						saving("$sfig/uga_v08_sat", replace)	
+						
+	graph export 	"$xfig\uga_v08_sat.png", width(1400) replace
+																							
+restore
+
+* percent rainy days
+preserve
+	keep			if varname == 12 & country == 7
+	sort 			beta
+	gen 			obs = _n
+
+* stack values of the specification indicators
+	gen 			k1 		= 	regname
+	gen 			k2 		= 	depvar + 6 + 2
+	gen				k3		=	sat + 6 + 2 + 2 + 2
+	
+* label new variables	
+	lab				var obs "Specification # - sorted by effect size"
+
+	lab 			var k1 "Model"
+	lab 			var k2 "Dependant Variable"
+	lab 			var k3 "Weather Product"
+
+	sum			 	ci_up
+	global			bmax = r(max)
+	
+	sum			 	ci_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - 2.5*$brange
+	global			gheight	=	28
+	  
+	di $bmin
+	di $brange
+	di $from_y
+	di $gheight
+			
+	twoway 			scatter k1 k2 k3 obs, xlab(0(4)72) xsize(10) ysize(6) msize(small small small)  ///
+						title("Uganda") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
+						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
+						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
+						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
+						13 "Rainfall 1" 14 "Rainfall 2" 15 "Rainfall 3" ///
+						16 "Rainfall 4" 17 "Rainfall 5" 18 "Rainfall 6" ///
+						19 "*{bf:Rainfall Product}*" 28 " ", angle(0) ///
+						labsize(vsmall) tstyle(notick)) || ///
+						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(scatter b_sig obs, yaxis(2) mcolor(teal%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) yaxis(2) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(teal%50) yaxis(2)  ///
+						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
+						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
+						saving("$sfig/uga_v12_sat", replace)	
+						
+	graph export 	"$xfig\uga_v12_sat.png", width(1400) replace
+																							
+restore
+
+* mean daily temperature
+preserve
+	keep			if varname == 15 & country == 7
+	sort 			beta
+	gen 			obs = _n
+
+* stack values of the specification indicators
+	gen 			k1 		= 	regname
+	gen 			k2 		= 	depvar + 6 + 2
+	gen				k3		=	sat + 6 + 2 + 2 + 2
+	
+* subtract values of off k3 because of varname numbering
+		replace			k3		=	13 if k3 == 19
+		replace			k3		=	14 if k3 == 20
+		replace			k3		=	15 if k3 == 21
+	
+* label new variables	
+	lab				var obs "Specification # - sorted by effect size"
+
+	lab 			var k1 "Model"
+	lab 			var k2 "Dependant Variable"
+	lab 			var k3 "Weather Product"
+
+	sum			 	ci_up
+	global			bmax = r(max)
+	
+	sum			 	ci_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - 2.5*$brange
+	global			gheight	=	25
+	  
+	di $bmin
+	di $brange
+	di $from_y
+	di $gheight
+			
+	twoway 			scatter k1 k2 k3 obs, xlab(0(2)36) xsize(10) ysize(6) msize(small small small)  ///
+						title("Uganda") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
+						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
+						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
+						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
+						13 "Temperature 1" 14 "Temperature 2" 15 "Temperature 3" ///
+						16 "*{bf:Temperature Product}*" 25 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
 						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
@@ -4999,17 +6377,185 @@ preserve
 						barwidth(.2) color(edkblue%50) yaxis(2)  ///
 						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
-						saving("$sfig/uga_v08_sat", replace)						
+						saving("$sfig/uga_v15_sat", replace)
+						
+	graph export 	"$xfig\uga_v15_sat.png", width(1400) replace
+	
 restore
 
-* combine varname specification curves
+* median daily temperature
+preserve
+	keep			if varname == 16 & country == 7
+	sort 			beta
+	gen 			obs = _n
+
+* stack values of the specification indicators
+	gen 			k1 		= 	regname
+	gen 			k2 		= 	depvar + 6 + 2
+	gen				k3		=	sat + 6 + 2 + 2 + 2
+	
+* subtract values of off k3 because of varname numbering
+		replace			k3		=	13 if k3 == 19
+		replace			k3		=	14 if k3 == 20
+		replace			k3		=	15 if k3 == 21
+	
+* label new variables	
+	lab				var obs "Specification # - sorted by effect size"
+
+	lab 			var k1 "Model"
+	lab 			var k2 "Dependant Variable"
+	lab 			var k3 "Weather Product"
+
+	sum			 	ci_up
+	global			bmax = r(max)
+	
+	sum			 	ci_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - 2.5*$brange
+	global			gheight	=	25
+	  
+	di $bmin
+	di $brange
+	di $from_y
+	di $gheight
+			
+	twoway 			scatter k1 k2 k3 obs, xlab(0(2)36) xsize(10) ysize(6) msize(small small small)  ///
+						title("Uganda") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
+						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
+						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
+						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
+						13 "Temperature 1" 14 "Temperature 2" 15 "Temperature 3" ///
+						16 "*{bf:Temperature Product}*" 25 " ", angle(0) ///
+						labsize(vsmall) tstyle(notick)) || ///
+						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(scatter b_sig obs, yaxis(2) mcolor(emidblue%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) yaxis(2) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(emidblue%50) yaxis(2)  ///
+						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
+						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
+						saving("$sfig/uga_v16_sat", replace)
+						
+	graph export 	"$xfig\uga_v16_sat.png", width(1400) replace
+	
+restore
+
+* variance daily temperature
+preserve
+	keep			if varname == 17 & country == 7
+	sort 			beta
+	gen 			obs = _n
+
+* stack values of the specification indicators
+	gen 			k1 		= 	regname
+	gen 			k2 		= 	depvar + 6 + 2
+	gen				k3		=	sat + 6 + 2 + 2 + 2
+	
+* subtract values of off k3 because of varname numbering
+		replace			k3		=	13 if k3 == 19
+		replace			k3		=	14 if k3 == 20
+		replace			k3		=	15 if k3 == 21
+	
+* label new variables	
+	lab				var obs "Specification # - sorted by effect size"
+
+	lab 			var k1 "Model"
+	lab 			var k2 "Dependant Variable"
+	lab 			var k3 "Weather Product"
+
+	sum			 	ci_up
+	global			bmax = r(max)
+	
+	sum			 	ci_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - 2.5*$brange
+	global			gheight	=	25
+	  
+	di $bmin
+	di $brange
+	di $from_y
+	di $gheight
+			
+	twoway 			scatter k1 k2 k3 obs, xlab(0(2)36) xsize(10) ysize(6) msize(small small small)  ///
+						title("Uganda") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
+						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
+						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
+						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
+						13 "Temperature 1" 14 "Temperature 2" 15 "Temperature 3" ///
+						16 "*{bf:Temperature Product}*" 25 " ", angle(0) ///
+						labsize(vsmall) tstyle(notick)) || ///
+						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(scatter b_sig obs, yaxis(2) mcolor(eltblue%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) yaxis(2) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(eltblue%50) yaxis(2)  ///
+						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
+						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
+						saving("$sfig/uga_v17_sat", replace)
+						
+	graph export 	"$xfig\uga_v17_sat.png", width(1400) replace
+	
+restore
+
+	
+* **********************************************************************
+* 5g - combine specification curves by country
+* **********************************************************************
+
+* combine varname specification curves ethiopia rainfall
+	grc1leg2 		"$sfig/eth_v01_sat.gph" "$sfig/eth_v05_sat.gph"  ///
+						"$sfig/eth_v08_sat.gph" "$sfig/eth_v12_sat.gph", ///
+						col(2) iscale(.5) pos(12) commonscheme
+						
+	graph export 	"$xfig\eth_rain_sat.pdf", as(pdf) replace
+	
+* combine varname specification curves malawi rainfall
+	grc1leg2 		"$sfig/mwi_v01_sat.gph" "$sfig/mwi_v05_sat.gph"  ///
+						"$sfig/mwi_v08_sat.gph" "$sfig/mwi_v12_sat.gph", ///
+						col(2) iscale(.5) pos(12) commonscheme
+						
+	graph export 	"$xfig\mwi_rain_sat.pdf", as(pdf) replace
+	
+* combine varname specification curves niger rainfall
+	grc1leg2 		"$sfig/ngr_v01_sat.gph" "$sfig/ngr_v05_sat.gph"  ///
+						"$sfig/ngr_v08_sat.gph" "$sfig/ngr_v12_sat.gph", ///
+						col(2) iscale(.5) pos(12) commonscheme
+						
+	graph export 	"$xfig\ngr_rain_sat.pdf", as(pdf) replace
+
+* combine varname specification curves nigeria rainfall
+	grc1leg2 		"$sfig/nga_v01_sat.gph" "$sfig/nga_v05_sat.gph"  ///
+						"$sfig/nga_v08_sat.gph" "$sfig/nga_v12_sat.gph", ///
+						col(2) iscale(.5) pos(12) commonscheme
+						
+	graph export 	"$xfig\nga_rain_sat.pdf", as(pdf) replace		
+	
+* combine varname specification curves tanzania rainfall
+	grc1leg2 		"$sfig/tza_v01_sat.gph" "$sfig/tza_v05_sat.gph"  ///
+						"$sfig/tza_v08_sat.gph" "$sfig/tza_v12_sat.gph", ///
+						col(2) iscale(.5) pos(12) commonscheme
+						
+	graph export 	"$xfig\tza_rain_sat.pdf", as(pdf) replace			
+
+* combine varname specification curves uganda rainfall
 	grc1leg2 		"$sfig/uga_v01_sat.gph" "$sfig/uga_v05_sat.gph"  ///
-						"$sfig/uga_v08_sat.gph", col(2) iscale(.5) ///
-						ring(0) pos(5) holes(4) commonscheme
+						"$sfig/uga_v08_sat.gph" "$sfig/uga_v12_sat.gph", ///
+						col(2) iscale(.5) pos(12) commonscheme
 						
 	graph export 	"$xfig\uga_rain_sat.pdf", as(pdf) replace
-						
-		
+				
 * **********************************************************************
 * 6 - end matter
 * **********************************************************************

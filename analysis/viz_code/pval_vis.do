@@ -1411,17 +1411,113 @@ restore
 * based on above analysis we will proceed with following rainfall metrics
 	* mean rainfall (varname == 1)
 	* total rainfall (varname == 5)
-	* rainy days or % rainy days (choose one of these two) (varname == 8)
+	* rainy days (varname == 8)
+	* % rainy days (varname == 12)
 
 * based on above analysis we will proceed with following temperature metrics
 	* mean temperature (varname == 15)
-	* median temperature (varname == 16)	
+	* median temperature (varname == 16)
+	* variance temperature  (varname == 17)
 
 	
 * **********************************************************************
-* 5a - generate p-value graphs by satellite across countries
+* 5a - generate p-value graphs by satellite
 * **********************************************************************
-								
+				
+* p-value graph of rainfall
+preserve
+	keep			if varname == 1 | varname == 5 | varname == 8 | ///
+						varname == 12
+	
+	collapse 		(mean) mu99 = p99 mu95 = p95 mu90 = p90 ///
+						(sd) sd99 = p99 sd95 = p95 sd90 = p90 ///
+						(count) n99 = p99 n95 = p95 n90 = p90, by(sat)
+	
+	gen 			hi99 = mu99 + invttail(n99-1,0.025)*(sd99 / sqrt(n99))
+	gen				lo99 = mu99 - invttail(n99-1,0.025)*(sd99 / sqrt(n99))
+	
+	gen 			hi95 = mu95 + invttail(n95-1,0.025)*(sd95 / sqrt(n95))
+	gen				lo95 = mu95 - invttail(n95-1,0.025)*(sd95 / sqrt(n95))
+	
+	gen 			hi90 = mu90 + invttail(n90-1,0.025)*(sd90 / sqrt(n90))
+	gen				lo90 = mu90 - invttail(n90-1,0.025)*(sd90 / sqrt(n90))
+	
+	reshape 		long mu sd n hi lo, i(sat) j(p)	
+	
+	sort 			sat p
+	gen 			obs = _n
+	replace			obs = 1 + obs if obs > 3
+	replace			obs = 1 + obs if obs > 7
+	replace			obs = 1 + obs if obs > 11
+	replace			obs = 1 + obs if obs > 15
+	replace			obs = 1 + obs if obs > 19
+	
+	twoway			(bar mu obs if p == 90, color(emerald*1.5%60)) || ///
+						(bar mu obs if p == 95, color(eltblue*1.5%60)) || ///
+						(bar mu obs if p == 99, color(khaki*1.5%60)) || ///
+						(rcap hi lo obs, yscale(r(0 1)) ///
+						ylab(0(.1)1, labsize(small)) title("Rainfall") ///
+						ytitle("Share of Significant Point Estimates") ///
+						xscale(r(0 24) ex) ///
+						xlabel(2 "Rainfall 1 " 6 "Rainfall 2 " ///
+						10 "Rainfall 3 " 14 "Rainfall 4 " ///
+						18 "Rainfall 5 " 22 "Rainfall 6 ", ///
+						angle(45) notick) xtitle("")), ///
+						legend(pos(12) col(4) order(1 2 3 4) label(1 "p>0.90") ///
+						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I.")) ///
+						saving("$sfig/pval_rf", replace)
+restore
+		
+			
+* p-value graph of temperature
+preserve
+	keep			if varname == 16 | varname == 16 | varname == 17
+	
+	collapse 		(mean) mu99 = p99 mu95 = p95 mu90 = p90 ///
+						(sd) sd99 = p99 sd95 = p95 sd90 = p90 ///
+						(count) n99 = p99 n95 = p95 n90 = p90, by(sat)
+	
+	gen 			hi99 = mu99 + invttail(n99-1,0.025)*(sd99 / sqrt(n99))
+	gen				lo99 = mu99 - invttail(n99-1,0.025)*(sd99 / sqrt(n99))
+	
+	gen 			hi95 = mu95 + invttail(n95-1,0.025)*(sd95 / sqrt(n95))
+	gen				lo95 = mu95 - invttail(n95-1,0.025)*(sd95 / sqrt(n95))
+	
+	gen 			hi90 = mu90 + invttail(n90-1,0.025)*(sd90 / sqrt(n90))
+	gen				lo90 = mu90 - invttail(n90-1,0.025)*(sd90 / sqrt(n90))
+	
+	reshape 		long mu sd n hi lo, i(sat) j(p)	
+	
+	sort 			sat p
+	gen 			obs = _n
+	replace			obs = 1 + obs if obs > 3
+	replace			obs = 1 + obs if obs > 7
+	replace			obs = 1 + obs if obs > 11
+	replace			obs = 1 + obs if obs > 15
+	replace			obs = 1 + obs if obs > 19
+	
+	twoway			(bar mu obs if p == 90, color(maroon*1.5%60)) || ///
+						(bar mu obs if p == 95, color(lavender*1.5%60)) || ///
+						(bar mu obs if p == 99, color(brown*1.5%60)) || ///
+						(rcap hi lo obs, yscale(r(0 1)) ///
+						ylab(0(.1)1, labsize(small)) title("Temperature") ///
+						ytitle("Share of Significant Point Estimates") ///
+						xscale(r(0 12) ex) xlabel(2 "Temperature 1 " ///
+						6 "Temperature 2 " 10 "Temperature 3 " , ///
+						angle(45) notick) xtitle("")), ///
+						legend(pos(12) col(4) order(1 2 3 4) label(1 "p>0.90") ///
+						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I.")) ///
+						saving("$sfig/pval_tp", replace)
+restore
+			
+
+* combine varname p-value graphs
+	grc1leg2 		"$sfig/pval_rf.gph" "$sfig/pval_tp.gph", ///
+						col(2) iscale(.5) pos(12) commonscheme
+						
+	graph export 	"$xfig\pval_sat.png", width(1400) replace
+
+	
 * p-value graph of mean daily rainfall
 preserve
 	keep			if varname == 1
@@ -1460,7 +1556,7 @@ preserve
 						10 "Rainfall 3 " 14 "Rainfall 4 " ///
 						18 "Rainfall 5 " 22 "Rainfall 6 ", ///
 						angle(45) notick) xtitle("")), ///
-						legend(pos(12) col(2) order(1 2 3 4) label(1 "p>0.90") ///
+						legend(pos(12) col(4) order(1 2 3 4) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I."))  ///
 						saving("$sfig/pval_v01", replace)
 restore
@@ -1503,7 +1599,7 @@ preserve
 						10 "Rainfall 3 " 14 "Rainfall 4 " ///
 						18 "Rainfall 5 " 22 "Rainfall 6 ", ///
 						angle(45) notick) xtitle("")), ///
-						legend(pos(12) col(2) order(1 2 3 4) label(1 "p>0.90") ///
+						legend(pos(12) col(4) order(1 2 3 4) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I."))  ///
 						saving("$sfig/pval_v05", replace)
 restore
@@ -1546,17 +1642,60 @@ preserve
 						10 "Rainfall 3 " 14 "Rainfall 4 " ///
 						18 "Rainfall 5 " 22 "Rainfall 6 ", ///
 						angle(45) notick) xtitle("")), ///
-						legend(pos(12) col(2) order(1 2 3 4) label(1 "p>0.90") ///
+						legend(pos(12) col(4) order(1 2 3 4) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I."))  ///
 						saving("$sfig/pval_v08", replace)
+restore
+						
+* p-value graph of % of rainy days
+preserve
+	keep			if varname == 12
+	
+	collapse 		(mean) mu99 = p99 mu95 = p95 mu90 = p90 ///
+						(sd) sd99 = p99 sd95 = p95 sd90 = p90 ///
+						(count) n99 = p99 n95 = p95 n90 = p90, by(sat)
+	
+	gen 			hi99 = mu99 + invttail(n99-1,0.025)*(sd99 / sqrt(n99))
+	gen				lo99 = mu99 - invttail(n99-1,0.025)*(sd99 / sqrt(n99))
+	
+	gen 			hi95 = mu95 + invttail(n95-1,0.025)*(sd95 / sqrt(n95))
+	gen				lo95 = mu95 - invttail(n95-1,0.025)*(sd95 / sqrt(n95))
+	
+	gen 			hi90 = mu90 + invttail(n90-1,0.025)*(sd90 / sqrt(n90))
+	gen				lo90 = mu90 - invttail(n90-1,0.025)*(sd90 / sqrt(n90))
+	
+	reshape 		long mu sd n hi lo, i(sat) j(p)	
+	
+	sort 			sat p
+	gen 			obs = _n
+	replace			obs = 1 + obs if obs > 3
+	replace			obs = 1 + obs if obs > 7
+	replace			obs = 1 + obs if obs > 11
+	replace			obs = 1 + obs if obs > 15
+	replace			obs = 1 + obs if obs > 19
+	
+	twoway			(bar mu obs if p == 90, color(emerald*1.5%60)) || ///
+						(bar mu obs if p == 95, color(eltblue*1.5%60)) || ///
+						(bar mu obs if p == 99, color(khaki*1.5%60)) || ///
+						(rcap hi lo obs, yscale(r(0 1)) ///
+						ylab(0(.1)1, labsize(small)) title("% Rainy Days") ///
+						ytitle("Share of Significant Point Estimates") ///
+						xscale(r(0 24) ex) ///
+						xlabel(2 "Rainfall 1 " 6 "Rainfall 2 " ///
+						10 "Rainfall 3 " 14 "Rainfall 4 " ///
+						18 "Rainfall 5 " 22 "Rainfall 6 ", ///
+						angle(45) notick) xtitle("")), ///
+						legend(pos(12) col(4) order(1 2 3 4) label(1 "p>0.90") ///
+						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I."))  ///
+						saving("$sfig/pval_v12", replace)
 restore
 
 * combine varname p-value graphs
 	grc1leg2 		"$sfig/pval_v01.gph" "$sfig/pval_v05.gph"  ///
-						"$sfig/pval_v08.gph", col(2) iscale(.5) ///
-						ring(0) pos(5) holes(4) commonscheme
+						"$sfig/pval_v08.gph" "$sfig/pval_v12.gph", ///
+						col(2) iscale(.5) pos(12) commonscheme
 						
-	graph export 	"$xfig\pval_rf.png", width(1400) replace
+	graph export 	"$xfig\pval_v_rf.png", width(1400) replace
 
 						
 * p-value graph of mean daily temp
@@ -1593,7 +1732,7 @@ preserve
 						xscale(r(0 12) ex) xlabel(2 "Temperature 1 " ///
 						6 "Temperature 2 " 10 "Temperature 3 " , ///
 						angle(45) notick) xtitle("")), ///
-						legend(pos(12) col(4) order(1 2 3 4) label(1 "p>0.90") ///
+						legend(pos(12) col(2) order(1 2 3 4) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I."))  ///
 						saving("$sfig/pval_v15", replace)
 restore
@@ -1632,16 +1771,56 @@ preserve
 						xscale(r(0 12) ex) xlabel(2 "Temperature 1 " ///
 						6 "Temperature 2 " 10 "Temperature 3 " , ///
 						angle(45) notick) xtitle("")), ///
-						legend(pos(12) col(4) order(1 2 3 4) label(1 "p>0.90") ///
+						legend(pos(12) col(2) order(1 2 3 4) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I."))  ///
 						saving("$sfig/pval_v16", replace)
 restore
+ 		
+* p-value graph of variance daily temperature
+preserve
+	keep			if varname == 17
+	
+	collapse 		(mean) mu99 = p99 mu95 = p95 mu90 = p90 ///
+						(sd) sd99 = p99 sd95 = p95 sd90 = p90 ///
+						(count) n99 = p99 n95 = p95 n90 = p90, by(sat)
+	
+	gen 			hi99 = mu99 + invttail(n99-1,0.025)*(sd99 / sqrt(n99))
+	gen				lo99 = mu99 - invttail(n99-1,0.025)*(sd99 / sqrt(n99))
+	
+	gen 			hi95 = mu95 + invttail(n95-1,0.025)*(sd95 / sqrt(n95))
+	gen				lo95 = mu95 - invttail(n95-1,0.025)*(sd95 / sqrt(n95))
+	
+	gen 			hi90 = mu90 + invttail(n90-1,0.025)*(sd90 / sqrt(n90))
+	gen				lo90 = mu90 - invttail(n90-1,0.025)*(sd90 / sqrt(n90))
+	
+	reshape 		long mu sd n hi lo, i(sat) j(p)	
+	
+	sort 			sat p
+	gen 			obs = _n
+	replace			obs = 1 + obs if obs > 3
+	replace			obs = 1 + obs if obs > 7
+	replace			obs = 1 + obs if obs > 11
+	
+	twoway			(bar mu obs if p == 90, color(maroon*1.5%60)) || ///
+						(bar mu obs if p == 95, color(lavender*1.5%60)) || ///
+						(bar mu obs if p == 99, color(brown*1.5%60)) || ///
+						(rcap hi lo obs, yscale(r(0 1)) ///
+						ylab(0(.1)1, labsize(small)) title("Variance of Daily Temperature") ///
+						ytitle("Share of Significant Point Estimates") ///
+						xscale(r(0 12) ex) xlabel(2 "Temperature 1 " ///
+						6 "Temperature 2 " 10 "Temperature 3 " , ///
+						angle(45) notick) xtitle("")), ///
+						legend(pos(12) col(2) order(1 2 3 4) label(1 "p>0.90") ///
+						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I."))  ///
+						saving("$sfig/pval_v17", replace)
+restore
 
 * combine varname p-value graphs
-	grc1leg2 		"$sfig/pval_v15.gph" "$sfig/pval_v16.gph",  ///
-						col(2) iscale(.5) pos(12) commonscheme
+	grc1leg2 		"$sfig/pval_v15.gph" "$sfig/pval_v16.gph" ///
+						"$sfig/pval_v17.gph",  col(2) iscale(.5) ///
+						ring(0) pos(5) holes(4) commonscheme
 						
-	graph export 	"$xfig\pval_tp.png", width(1400) replace
+	graph export 	"$xfig\pval_v_tp.png", width(1400) replace
 					
 					
 * **********************************************************************
