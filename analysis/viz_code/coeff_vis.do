@@ -1,8 +1,8 @@
 * Project: WB Weather
 * Created on: September 2019
 * Created by: jdm
-* Edited by: jdm
-* Last edit: 2 June 2021
+* Edited by: alj
+* Last edit: 13 November 2020 
 * Stata v.16.1 
 
 * does
@@ -6555,7 +6555,8 @@ restore
 						col(2) iscale(.5) pos(12) commonscheme
 						
 	graph export 	"$xfig\uga_rain_sat.pdf", as(pdf) replace
-				
+
+
 * **********************************************************************
 * 6 - end matter
 * **********************************************************************
