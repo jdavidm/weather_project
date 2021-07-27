@@ -2120,6 +2120,9 @@ eststo clear
 		xtset		hhid
 		xtreg 		lncp_yld c.`v'#i.aez `inputscp' i.year, fe vce(cluster hhid)
 		eststo		reg_`v'_v2
+		
+		xtreg		lncp_yld c.`v'#i.country `inputscp' i.year, fe vce(cluster hhid)
+		eststo		reg_`v'_v3
 		}
 		
 		
