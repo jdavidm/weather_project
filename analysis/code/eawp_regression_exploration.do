@@ -12,8 +12,7 @@
 	* dropped obs from nigeria and niger, no arid aez, one extraction method
 
 * TO DO:
-	* not sure how to get the coefficients for the interaction vars posted - ask j & m 
-	* i think a second postfile is necessary for the big regression results
+	* nothing at this time
 	
 * **********************************************************************
 * 0 - setup
