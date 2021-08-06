@@ -61,6 +61,15 @@
     
 * 0 - TEST FOR AEZ v. FE
 
+/*
+
+	** hhids are perfectly colinear w/ country, highly colinear w/ aez
+	** 102 hh w/ differing aezs (of 9,260)
+	** will not include hhFE in future regressions
+	
+	by hhid (aez), sort: gen diff = aez[1] != aez[_N]
+	list hhid aez if diff
+
 	* set panel id so it varies by dtype
 		xtset		hhid
 		
@@ -70,21 +79,21 @@
 		* define locals for naming conventions
 			loc 	sat = 	substr("`v'", 5, 3)
 			loc 	varn = 	substr("`v'", 1, 3)
-			
+
 		* AEZ, no hhFE
 			reg 		lncp_yld `v' i.aez `inputscp' i.year
 			
 		* hhFE, no AEZ
-			xtreg 		lncp_yld c.`v'##i.aez `inputscp' i.year, fe
+			xtreg 		lncp_yld `v' `inputscp' i.year, fe
 			
 		* both AEZ & hhFE
-			xtreg 		lncp_yld c.`v'##i.aez `inputscp' i.year, fe
+			xtreg 		lncp_yld `v' i.aez `inputscp' i.year, fe
+			*/
 }	
 	
 * 1 - HETEROGENEITY OF WEATHER EFFECT BY AEZ WITHOUT REGARD TO COUNTRY	
 
-	* set panel id so it varies by dtype
-		xtset		hhid
+	loc 		inputscp 	lncp_lab lncp_frt cp_pst cp_hrb cp_irr
 		
 	* weather metrics			
 		foreach 	v of varlist `weather' { 
@@ -94,14 +103,13 @@
 			loc 	varn = 	substr("`v'", 1, 3)
 			
 		* Y = \beta AEZ + \omega W + \theta (W x AEZ) + \pi X + \alpha_{h} + \gamma_{t} + u_{ht}
-			xtreg 		lncp_yld c.`v'##i.aez `inputscp' i.year, fe vce(cluster hhid)
+			reg 	lncp_yld c.`v'##i.aez `inputscp' i.year, vce(cluster hhid)
 }
 		
 
 * 2 - HETEROGENEITY OF WEATHER EFFECT BY COUNTRY WITHOUT REGARD TO AEZ		
 
-	* set panel id so it varies by dtype
-		xtset		hhid
+	loc 		inputscp 	lncp_lab lncp_frt cp_pst cp_hrb cp_irr
 		
 	* weather metrics			
 		foreach 	v of varlist `weather' { 
@@ -111,15 +119,13 @@
 			loc 	varn = 	substr("`v'", 1, 3)
 
 		* Y = \beta country + \omega W + \theta (W x country) + \pi X + \alpha_{h} + \gamma_{t} + u_{ht}
-			xtreg 		lncp_yld c.`v'##i.country `inputscp' i.year, fe vce(cluster hhid)
+			reg 	lncp_yld c.`v'##i.country `inputscp' i.year, vce(cluster hhid)
 }
-	** country effects are omitted due to colinearity (probably with the intercept?)
 
 	
 * 3 - EFFECT OF WEATHER BY COUNTRY WITHOUT REGARD TO AEZ		
 
-	* set panel id so it varies by dtype
-		xtset		hhid
+loc 		inputscp 	lncp_lab lncp_frt cp_pst cp_hrb cp_irr
 
 levelsof 	country, local(levels)
 foreach l of local levels {	
@@ -136,7 +142,7 @@ foreach l of local levels {
 			loc 	varn = 	substr("`v'", 1, 3)
 			
 		* Y = \omega W + \pi X + \alpha_{h} + \gamma_{t} + u_{ht}
-			xtreg 		lncp_yld `v' `inputscp' i.year, fe vce(cluster hhid)
+			reg 		lncp_yld `v' `inputscp' i.year, vce(cluster hhid)
 			
 }			
 		restore
@@ -144,10 +150,9 @@ foreach l of local levels {
 
 
 * 4 - EFFECT OF WEATHER AND AEZ IN DIFFERENT COUNTRIES	
-
-	* set panel id so it varies by dtype
-		xtset		hhid
-		
+	
+loc 		inputscp 	lncp_lab lncp_frt cp_pst cp_hrb cp_irr	
+	
 levelsof 	country, local(levels)
 foreach l of local levels {	
 	
@@ -163,7 +168,7 @@ foreach l of local levels {
 			loc 	varn = 	substr("`v'", 1, 3)
 			
 		* Y = \omega W + \beta AEZ + \pi X + \alpha_{h} + \gamma_{t} + u_{ht}
-			xtreg 		lncp_yld `v' i.aez `inputscp' i.year, fe vce(cluster hhid)
+			reg 		lncp_yld `v' i.aez `inputscp' i.year, vce(cluster hhid)
 			
 }			
 		restore
@@ -172,8 +177,7 @@ foreach l of local levels {
 
 * 5 - HETEROGENEITY OF WEATHER EFFECT BY AEZ WITHOUT IN DIFFERENT COUNTRIES	
 
-	* set panel id so it varies by dtype
-		xtset		hhid
+loc 		inputscp 	lncp_lab lncp_frt cp_pst cp_hrb cp_irr
 		
 levelsof 	country, local(levels)
 foreach l of local levels {	
@@ -191,7 +195,7 @@ foreach l of local levels {
 			
 		* EFFECT OF AEZ WITHOUT REGARD TO COUNTRY	
 		* Y = \omega W + \beta AEZ + \theta (W x country) + \pi X + \alpha_{h} + \gamma_{t} + u_{ht}
-			xtreg 		lncp_yld c.`v'##i.aez `inputscp' i.year, fe vce(cluster hhid)
+			reg 		lncp_yld c.`v'##i.aez `inputscp' i.year, vce(cluster hhid)
 			
 }			
 		restore
