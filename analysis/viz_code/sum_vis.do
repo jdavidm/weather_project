@@ -120,6 +120,8 @@
 			legend(pos(6) col(3) label(1 "Rainfall 1") label(2 "Rainfall 2") ///
 			label(3 "Rainfall 3") label(4 "Rainfall 4") label(5 "Rainfall 5") ///
 			label(6 "Rainfall 6")) saving("$sfig/twsa_density_rf", replace)
+			
+	graph export 	"$xfig\twsa_density_rf.png", width(1400) replace
 
 * total season rainfall - Tropic-warm/subhumid		
 	twoway  (kdensity v05_rf1 if aez == 313, color(gray%30) recast(area)) ///
@@ -133,6 +135,8 @@
 			legend(pos(6) col(3) label(1 "Rainfall 1") label(2 "Rainfall 2") ///
 			label(3 "Rainfall 3") label(4 "Rainfall 4") label(5 "Rainfall 5") ///
 			label(6 "Rainfall 6")) saving("$sfig/twsh_density_rf", replace)
+			
+	graph export 	"$xfig\twsh_density_rf.png", width(1400) replace
 
 * total season rainfall - Tropic-warm/humid		
 	twoway  (kdensity v05_rf1 if aez == 314, color(gray%30) recast(area)) ///
@@ -146,6 +150,8 @@
 			legend(pos(6) col(3) label(1 "Rainfall 1") label(2 "Rainfall 2") ///
 			label(3 "Rainfall 3") label(4 "Rainfall 4") label(5 "Rainfall 5") ///
 			label(6 "Rainfall 6")) saving("$sfig/twh_density_rf", replace)
+			
+	graph export 	"$xfig\twh_density_rf.png", width(1400) replace
 
 * total season rainfall - Tropic-cool/semiarid	
 	twoway  (kdensity v05_rf1 if aez == 322, color(gray%30) recast(area)) ///
@@ -159,6 +165,8 @@
 			legend(pos(6) col(3) label(1 "Rainfall 1") label(2 "Rainfall 2") ///
 			label(3 "Rainfall 3") label(4 "Rainfall 4") label(5 "Rainfall 5") ///
 			label(6 "Rainfall 6")) saving("$sfig/tcsa_density_rf", replace)
+			
+	graph export 	"$xfig\tcsa_density_rf.png", width(1400) replace
 
 * total season rainfall - Tropic-cool/subhumid		
 	twoway  (kdensity v05_rf1 if aez == 323, color(gray%30) recast(area)) ///
@@ -173,6 +181,8 @@
 			legend(pos(6) col(3) label(1 "Rainfall 1") label(2 "Rainfall 2") ///
 			label(3 "Rainfall 3") label(4 "Rainfall 4") label(5 "Rainfall 5") ///
 			label(6 "Rainfall 6")) saving("$sfig/tcsh_density_rf", replace)
+			
+	graph export 	"$xfig\tcsh_density_rf.png", width(1400) replace
 
 * total season rainfall - Tropic-cool/humid		
 	twoway  (kdensity v05_rf1 if aez == 324, color(gray%30) recast(area)) ///
@@ -186,7 +196,9 @@
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "Rainfall 1") label(2 "Rainfall 2") ///
 			label(3 "Rainfall 3") label(4 "Rainfall 4") label(5 "Rainfall 5") ///
-			label(6 "Rainfall 6")) saving("$sfig/tch_density_rf", replace)			
+			label(6 "Rainfall 6")) saving("$sfig/tch_density_rf", replace)	
+			
+	graph export 	"$xfig\tch_density_rf.png", width(1400) replace		
 			
 	grc1leg2 		"$sfig/twsa_density_rf.gph" "$sfig/twsh_density_rf.gph" ///
 						"$sfig/twh_density_rf.gph" "$sfig/tcsa_density_rf.gph" ///
@@ -208,6 +220,8 @@
 			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "Temperature 1") label(2 "Temperature 2") ///
 			label(3 "Temperature 3")) saving("$sfig/twsa_density_tp", replace)
+			
+	graph export 	"$xfig\twsa_density_tp.png", width(1400) replace		
 
 * mean temp - Tropic-warm/subhumid
 	twoway	(kdensity v15_tp1 if aez == 313, color(gray%30) recast(area)) ///
@@ -217,6 +231,8 @@
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "Temperature 1") label(2 "Temperature 2") ///
 			label(3 "Temperature 3")) saving("$sfig/twsh_density_tp", replace)
+			
+	graph export 	"$xfig\twsh_density_tp.png", width(1400) replace		
 
 * mean temp - Tropic-warm/humid
 	twoway	(kdensity v15_tp1 if aez == 314, color(gray%30) recast(area)) ///
@@ -225,7 +241,9 @@
 			xtitle("") xscale(r(20(5)30)) title("Tropic-warm/humid (n = 3,280)") ///
 			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "Temperature 1") label(2 "Temperature 2") ///
-			label(3 "Temperature 3")) saving("$sfig/twh_density_tp", replace)		
+			label(3 "Temperature 3")) saving("$sfig/twh_density_tp", replace)	
+			
+	graph export 	"$xfig\twh_density_tp.png", width(1400) replace			
 
 * mean temp - Tropic-cool/semiarid
 	twoway	(kdensity v15_tp1 if aez == 322, color(gray%30) recast(area)) ///
@@ -235,6 +253,8 @@
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "Temperature 1") label(2 "Temperature 2") ///
 			label(3 "Temperature 3")) saving("$sfig/tcsa_density_tp", replace)
+			
+	graph export 	"$xfig\tcsa_density_tp.png", width(1400) replace		
 
 * mean temp - Tropic-cool/subhumid
 	twoway	(kdensity v15_tp1 if aez == 323, color(gray%30) recast(area)) ///
@@ -245,6 +265,8 @@
 			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "Temperature 1") label(2 "Temperature 2") ///
 			label(3 "Temperature 3")) saving("$sfig/tcsh_density_tp", replace)
+			
+	graph export 	"$xfig\tcsh_density_tp.png", width(1400) replace		
 
 * mean temp - Tropic-cool/humid
 	twoway	(kdensity v15_tp1 if aez == 324, color(gray%30) recast(area)) ///
@@ -254,7 +276,9 @@
 			title("Tropic-warm/humid (n = 2,960)") ///
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "Temperature 1") label(2 "Temperature 2") ///
-			label(3 "Temperature 3")) saving("$sfig/tch_density_tp", replace)				
+			label(3 "Temperature 3")) saving("$sfig/tch_density_tp", replace)	
+			
+	graph export 	"$xfig\tch_density_tp.png", width(1400) replace					
 		
 		
 	grc1leg2 		"$sfig/twsa_density_tp.gph" "$sfig/twsh_density_tp.gph" ///
