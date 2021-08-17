@@ -296,6 +296,8 @@ preserve
 						saving("$sfig/r2_reg1_reg4_rf", replace)	
 restore
 
+	graph export 	"$xfig\r2_reg1_reg4_rf.png", width(1400) replace			
+
 
 * weather FE and weather squared FE
 preserve
@@ -668,6 +670,8 @@ preserve
 						label(3 "mean adjusted R{sup:2}") label(4 "95% C.I.") )  ///
 						saving("$sfig/r2_reg1_reg4_sat_rf", replace)	
 restore
+
+	graph export 	"$xfig\r2_reg1_reg4_sat_rf.png", width(1400) replace		
 	
 * weather FE and weather squared FE
 preserve
@@ -849,6 +853,9 @@ preserve
 						label(3 "mean adjusted R{sup:2}") label(4 "95% C.I.") ) ///
 						saving("$sfig/r2_reg1_reg4_sat_tp", replace)	
 restore
+
+	graph export 	"$xfig\r2_reg1_reg4_sat_tp.png", width(1400) replace		
+	
 
 
 * weather FE and weather squared FE
