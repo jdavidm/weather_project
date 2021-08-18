@@ -88,9 +88,14 @@
 			
 		* both AEZ & hhFE
 			xtreg 		lncp_yld `v' i.aez `inputscp' i.year, fe
-			*/
-}	
-	
+		
+}	*/
+
+
+* **********************************************************************
+* 3.1 - exploring weather effects by country and aez
+* **********************************************************************
+/*	
 * 1 - HETEROGENEITY OF WEATHER EFFECT BY AEZ WITHOUT REGARD TO COUNTRY	
 
 	loc 		inputscp 	lncp_lab lncp_frt cp_pst cp_hrb cp_irr
@@ -197,6 +202,65 @@ foreach l of local levels {
 		* Y = \omega W + \beta AEZ + \theta (W x country) + \pi X + \alpha_{h} + \gamma_{t} + u_{ht}
 			reg 		lncp_yld c.`v'##i.aez `inputscp' i.year, vce(cluster hhid)
 			
-}			
+}
+
 		restore
 }							
+*/
+
+* **********************************************************************
+* 4 - sample split by country, building tables
+* **********************************************************************
+
+loc 		inputscp 	lncp_lab lncp_frt cp_pst cp_hrb cp_irr
+
+levelsof 	country, local(levels)
+foreach l of local levels {	
+	
+* preserve only one country
+		preserve
+		drop 		if country != `l'	
+		
+	* weather metrics			
+		foreach 	v of varlist `weather' { 
+		    
+		* define locals for naming conventions
+			loc 	sat = 	substr("`v'", 5, 3)
+			loc 	varn = 	substr("`v'", 1, 3)
+			
+		* Y = \omega W + \pi X + \alpha_{h} + \gamma_{t} + u_{ht}
+			reg 		lncp_yld c.`v'#i.aez `inputscp' i.year, vce(cluster hhid)
+			eststo		reg_`v'_`l'
+			
+}			
+
+*build tables
+		esttab reg_v01_rf1_x1_`l' reg_v01_rf2_x1_`l' reg_v01_rf3_x1_`l' reg_v01_rf4_x1_`l' ///
+			reg_v01_rf5_x1_`l' reg_v01_rf6_x1_`l' ///
+			using "G:/My Drive/weather_project/regression_data/eawp_sandbox/rf_mean_0.tex", replace ///
+			title(Mean Daily Rainfall `l') nonumbers ///
+			mtitles("Rainfall 1" "Rainfall 2" "Rainfall 3" "Rainfall 4" "Rainfall 5" "Rainfall 6" ) ///
+			rename(312.aez#c.v01_rf1_x1 312.aez 312.aez#c.v01_rf2_x1 312.aez ///
+			312.aez#c.v01_rf3_x1 312.aez 312.aez#c.v01_rf4_x1 312.aez ///
+			312.aez#c.v01_rf5_x1 312.aez 312.aez#c.v01_rf6_x1 312.aez ///
+			313.aez#c.v01_rf1_x1 313.aez 313.aez#c.v01_rf2_x1 313.aez ///
+			313.aez#c.v01_rf3_x1 313.aez 313.aez#c.v01_rf4_x1 313.aez ///
+			313.aez#c.v01_rf5_x1 313.aez 313.aez#c.v01_rf6_x1 313.aez ///
+			314.aez#c.v01_rf1_x1 314.aez 314.aez#c.v01_rf2_x1 314.aez ///
+			314.aez#c.v01_rf3_x1 314.aez 314.aez#c.v01_rf4_x1 314.aez ///
+			314.aez#c.v01_rf5_x1 314.aez 314.aez#c.v01_rf6_x1 314.aez ///
+			322.aez#c.v01_rf1_x1 322.aez 322.aez#c.v01_rf2_x1 322.aez ///
+			322.aez#c.v01_rf3_x1 322.aez 322.aez#c.v01_rf4_x1 322.aez ///
+			322.aez#c.v01_rf5_x1 322.aez 322.aez#c.v01_rf6_x1 322.aez ///
+			323.aez#c.v01_rf1_x1 323.aez 323.aez#c.v01_rf2_x1 323.aez ///
+			323.aez#c.v01_rf3_x1 323.aez 323.aez#c.v01_rf4_x1 323.aez ///
+			323.aez#c.v01_rf5_x1 323.aez 323.aez#c.v01_rf6_x1 323.aez ///
+			324.aez#c.v01_rf1_x1 324.aez 324.aez#c.v01_rf2_x1 324.aez ///
+			324.aez#c.v01_rf3_x1 324.aez 324.aez#c.v01_rf4_x1 324.aez ///
+			324.aez#c.v01_rf5_x1 324.aez 324.aez#c.v01_rf6_x1 324.aez ) ///
+			drop(lncp_lab lncp_frt cp_pst cp_hrb cp_irr ///
+			2011.year 2013.year 2015.year _cons) stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
+			"\multicolumn{1}{c}{@}") labels(`"Observations"' `"\(R^{2}\)"'))
+				
+		restore
+		}
