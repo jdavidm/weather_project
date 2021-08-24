@@ -2,7 +2,7 @@
 * Created on: November 2020
 * Created by: jdm
 * Edited by: jdm
-* Last edit: 3 June 2021 
+* Last edit: 23 August 2021 
 * Stata v.16.1 
 
 * does
@@ -88,16 +88,17 @@ preserve
 						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
-						9 "Extraction 1" 10 "Extraction 2" 11 "Extraction 3" ///
-						12 "Extraction 4" 13 "Extraction 5" 14 "Extraction 6" ///
-						15 "Extraction 7" 16 "Extraction 8" 17 "Extraction 9" ///
-						18 "Extraction 10" 19 "*{bf:Extraction}*" 28 " ", angle(0) ///
+						9 "HH Bilinear" 10 "HH Simple" 11 "EA Bilinear" ///
+						12 "EA Simple" 13 "Modified EA Bilinear" 14 "Modified EA Simple" ///
+						15 "Administrative Bilinear" 16 "Administrative Simple" 17 "EA Buffer Zonal Mean" ///
+						18 "Administrative Zonal Mean" 19 "*{bf:Extraction}*" 28 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
+						(scatter k2 obs if ext == 1 | ext == 3 | ext == 5, msize(small small) mcolor(orange)) ///
 						(scatter r2_mu obs, yaxis(2) mcolor(maroon) ///
 						ylab(0.012(0.002)0.024, axis(2) labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2))) || ///
 						(rbar r2_lo r2_hi obs, barwidth(.2) color(edkblue%40) yaxis(2) ), ///
-						legend(order(3 4 5) cols(1) size(small) rowgap(.5) pos(12) ///
-						label(3 "mean adjusted R{sup:2}") label(4 "95% C.I.") ) ///
+						legend(order(4 5) cols(1) size(small) rowgap(.5) pos(12) ///
+						label(4 "mean adjusted R{sup:2}") label(5 "95% C.I.") ) ///
 						saving("$sfig/r2_reg1_reg4_ext", replace)	
 restore
 	
@@ -137,16 +138,17 @@ preserve
 						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
-						9 "Extraction 1" 10 "Extraction 2" 11 "Extraction 3" ///
-						12 "Extraction 4" 13 "Extraction 5" 14 "Extraction 6" ///
-						15 "Extraction 7" 16 "Extraction 8" 17 "Extraction 9" ///
-						18 "Extraction 10" 19 "*{bf:Extraction}*" 28 " ", angle(0) ///
+						9 "HH Bilinear" 10 "HH Simple" 11 "EA Bilinear" ///
+						12 "EA Simple" 13 "Modified EA Bilinear" 14 "Modified EA Simple" ///
+						15 "Administrative Bilinear" 16 "Administrative Simple" 17 "EA Buffer Zonal Mean" ///
+						18 "Administrative Zonal Mean" 19 "*{bf:Extraction}*" 28 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
+						(scatter k2 obs if ext == 1 | ext == 3 | ext == 5, msize(small small) mcolor(orange)) ///
 						(scatter r2_mu obs, yaxis(2) mcolor(maroon) ///
 						ylab(.082(.003).097, axis(2) labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2))) || ///
 						(rbar r2_lo r2_hi obs, barwidth(.2) color(edkblue%40) yaxis(2) ), ///
-						legend(order(3 4 5) cols(1) size(small) rowgap(.5) pos(12) ///
-						label(3 "mean adjusted R{sup:2}") label(4 "95% C.I.") ) ///
+						legend(order(4 5) cols(1) size(small) rowgap(.5) pos(12) ///
+						label(4 "mean adjusted R{sup:2}") label(5 "95% C.I.") ) ///
 						saving("$sfig/r2_reg2_reg5_ext", replace)	
 restore
 
@@ -186,16 +188,17 @@ preserve
 						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
-						9 "Extraction 1" 10 "Extraction 2" 11 "Extraction 3" ///
-						12 "Extraction 4" 13 "Extraction 5" 14 "Extraction 6" ///
-						15 "Extraction 7" 16 "Extraction 8" 17 "Extraction 9" ///
-						18 "Extraction 10" 19 "*{bf:Extraction}*" 28 " ", angle(0) ///
+						9 "HH Bilinear" 10 "HH Simple" 11 "EA Bilinear" ///
+						12 "EA Simple" 13 "Modified EA Bilinear" 14 "Modified EA Simple" ///
+						15 "Administrative Bilinear" 16 "Administrative Simple" 17 "EA Buffer Zonal Mean" ///
+						18 "Administrative Zonal Mean" 19 "*{bf:Extraction}*" 28 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
+						(scatter k2 obs if ext == 1 | ext == 3 | ext == 5, msize(small small) mcolor(orange)) ///
 						(scatter r2_mu obs, yaxis(2) mcolor(maroon) ///
 						ylab(.223(.003).238, axis(2) labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2))) || ///
 						(rbar r2_lo r2_hi obs, barwidth(.2) color(edkblue%40) yaxis(2) ), ///
-						legend(order(3 4 5) cols(1) size(small) rowgap(.5) pos(12) ///
-						label(3 "mean adjusted R{sup:2}") label(4 "95% C.I.") ) ///
+						legend(order(4 5) cols(1) size(small) rowgap(.5) pos(12) ///
+						label(4 "mean adjusted R{sup:2}") label(5 "95% C.I.") ) ///
 						saving("$sfig/r2_reg3_reg6_ext", replace)	
 restore
 
@@ -204,14 +207,16 @@ restore
 						"$sfig/r2_reg3_reg6_ext.gph", col(2) iscale(.5) ///
 						ring(0) pos(5) holes(4) commonscheme
 						
-	graph export 	"$xfig\r2_ext.eps", as(eps) replace
+	graph export 	"$xfig\r2_ext.pdf", as(pdf) replace
 		
 
 * **********************************************************************
 * 2 - generate random number to select extraction method
 * **********************************************************************
 
-* choose one extraction method at random
+* prior to the posting of the anonymized paper on arXiv the following random extraction was used
+
+/* choose one extraction method at random
 preserve
 	clear			all
 	set obs			1
@@ -221,6 +226,11 @@ preserve
 	sum		 		u i 
 restore	
 *** random number was 3, so we proceed with extraction method 3
+*/
+
+* after the data was de-anonymized, we replace the above method of selection
+* with the "true" or preferred extraction method household bilinear (ext 1)
+
 
 * **********************************************************************
 * 3 - generate R^2 specification curves by weather metric & model
@@ -234,8 +244,8 @@ restore
 * load data 
 	use 			"$root/lsms_complete_results", clear
 
-* keep extraction 3	
-	keep			if ext == 3
+* keep EA Bilinear	
+	keep			if ext == 1
 	sort 			regname varname 
 
 	collapse 		(mean) r2_mu = adjustedr ///
@@ -417,7 +427,7 @@ restore
 * load data 
 	use 			"$root/lsms_complete_results", clear
 
-* keep extraction 3	
+* keep EA Bilinear	
 	keep			if ext == 3
 	sort 			regname varname 
 
@@ -608,7 +618,7 @@ restore
 * load data 
 	use 			"$root/lsms_complete_results", clear
 
-* keep extraction 3	
+* keep EA Bilinear	
 	keep			if ext == 3
 	keep			if varname == 1 | varname == 5 | varname == 8 | ///
 						varname == 12
@@ -787,7 +797,7 @@ restore
 * load data 
 	use 			"$root/lsms_complete_results", clear
 
-* keep extraction 3	
+* keep EA Bilinear	
 	keep			if ext == 3
 	keep			if varname == 15 | varname == 16 | ///
 						varname == 17

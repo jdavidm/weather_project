@@ -2,7 +2,7 @@
 * Created on: September 2019
 * Created by: jdm
 * Edited by: jdm
-* Last edit: 29 November 2020 
+* Last edit: 23 August 2021
 * Stata v.16.1 
 
 * does
@@ -89,6 +89,14 @@ preserve
 	replace			obs = 1 + obs if obs > 27
 	replace			obs = 1 + obs if obs > 31
 	replace			obs = 1 + obs if obs > 35
+
+	sum			 	hi if p == 95 & ext == 1
+	global			bmax = r(max)
+	
+	sum			 	lo if p == 95 & ext == 1
+	global			bmin = r(min)	
+	
+	bys ext: sum mu if p == 95
 	
 	twoway			(bar mu obs if p == 90, color(emerald*1.5%60)) || ///
 						(bar mu obs if p == 95, color(eltblue*1.5%60)) || ///
@@ -97,10 +105,12 @@ preserve
 						ylab(0(.1)1, labsize(small)) title("Rainfall") ///
 						ytitle("Share of Significant Point Estimates") ///
 						xscale(r(0 40) ex) ///
-						xlabel(2 "Extraction 1 " 6 "Extraction 2 " 10 "Extraction 3 " ///
-						14 "Extraction 4 " 18 "Extraction 5 " 22 "Extraction 6 " ///
-						26 "Extraction 7 " 30 "Extraction 8 " 34 "Extraction 9 " ///
-						38 "Extraction 10 ", angle(45) notick) xtitle("")), ///
+						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
+						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
+						xlabel(2 "HH Bilinear " 6 "HH Simple " 10 "EA Bilinear " ///
+						14 "EA Simple " 18 "Modified EA Bilinear " 22 "Modified EA Simple " ///
+						26 "Administrative Bilinear " 30 "Administrative Simple " 34 "EA Buffer Zonal Mean " ///
+						38 "Administrative Zonal Mean ", angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(5) order(1 2 3 4) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I."))  ///
 						saving("$sfig/pval_ext_rf", replace)
@@ -136,7 +146,13 @@ preserve
 	replace			obs = 1 + obs if obs > 27
 	replace			obs = 1 + obs if obs > 31
 	replace			obs = 1 + obs if obs > 35
+
+	sum			 	hi if p == 95 & ext == 1
+	global			bmax = r(max)
 	
+	sum			 	lo if p == 95 & ext == 1
+	global			bmin = r(min)	
+
 	twoway			(bar mu obs if p == 90, color(maroon*1.5%60)) || ///
 						(bar mu obs if p == 95, color(lavender*1.5%60)) || ///
 						(bar mu obs if p == 99, color(brown*1.5%60)) || ///
@@ -144,10 +160,12 @@ preserve
 						ylab(0(.1)1, labsize(small)) title("Temperature") ///
 						ytitle("Share of Significant Point Estimates") ///
 						xscale(r(0 40) ex) ///
-						xlabel(2 "Extraction 1 " 6 "Extraction 2 " 10 "Extraction 3 " ///
-						14 "Extraction 4 " 18 "Extraction 5 " 22 "Extraction 6 " ///
-						26 "Extraction 7 " 30 "Extraction 8 " 34 "Extraction 9 " ///
-						38 "Extraction 10 ", angle(45) notick) xtitle("")), ///
+						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
+						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
+						xlabel(2 "HH Bilinear " 6 "HH Simple " 10 "EA Bilinear " ///
+						14 "EA Simple " 18 "Modified EA Bilinear " 22 "Modified EA Simple " ///
+						26 "Administrative Bilinear " 30 "Administrative Simple " 34 "EA Buffer Zonal Mean " ///
+						38 "Administrative Zonal Mean ", angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(5) order(1 2 3 4) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I."))  ///
 						saving("$sfig/pval_ext_tp", replace)
@@ -157,7 +175,7 @@ restore
 	grc1leg2 		"$sfig/pval_ext_rf.gph" "$sfig/pval_ext_tp.gph", ///
 						col(1) iscale(.5) pos(12) commonscheme imargin(0 0 0 0)
 						
-	graph export 	"$xfig/pval_ext.png", width(1400) replace		
+	graph export 	"$xfig/pval_ext.pdf", as(pdf) replace		
 			
 				
 * **********************************************************************
@@ -212,10 +230,10 @@ preserve
 						lcolor(black) xscale(r(0 30) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xlabel(2 "Extraction 1 " 5 "Extraction 2 " 8 "Extraction 3 " ///
-						11 "Extraction 4 " 14 "Extraction 5 " 17 "Extraction 6 " ///
-						20 "Extraction 7 " 23 "Extraction 8 " 26 "Extraction 9 " ///
-						29 "Extraction 10 ", angle(45) notick) xtitle("")), ///
+						xlabel(2 "HH Bilinear " 5 "HH Simple " 8 "EA Bilinear " ///
+						11 "EA Simple " 14 "Modified EA Bilinear " 17 "Modified EA Simple " ///
+						20 "Administrative Bilinear " 23 "Administrative Simple " 26 "EA Buffer Zonal Mean " ///
+						29 "Administrative Zonal Mean ", angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(5) order(1 2) label(1 "p>0.95") ///
 						label(2 "95% C.I.")) ///
 						saving("$sfig/eth_pval_ext_rf", replace)
@@ -233,10 +251,10 @@ preserve
 						lcolor(black) xscale(r(0 30) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xlabel(2 "Extraction 1 " 5 "Extraction 2 " 8 "Extraction 3 " ///
-						11 "Extraction 4 " 14 "Extraction 5 " 17 "Extraction 6 " ///
-						20 "Extraction 7 " 23 "Extraction 8 " 26 "Extraction 9 " ///
-						29 "Extraction 10 ", angle(45) notick) xtitle("")), ///
+						xlabel(2 "HH Bilinear " 5 "HH Simple " 8 "EA Bilinear " ///
+						11 "EA Simple " 14 "Modified EA Bilinear " 17 "Modified EA Simple " ///
+						20 "Administrative Bilinear " 23 "Administrative Simple " 26 "EA Buffer Zonal Mean " ///
+						29 "Administrative Zonal Mean ", angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(5) order(1 2) label(1 "p>0.95") ///
 						label(2 "95% C.I.")) ///
 						saving("$sfig/mwi_pval_ext_rf", replace)
@@ -254,10 +272,10 @@ preserve
 						lcolor(black) xscale(r(0 30) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xlabel(2 "Extraction 1 " 5 "Extraction 2 " 8 "Extraction 3 " ///
-						11 "Extraction 4 " 14 "Extraction 5 " 17 "Extraction 6 " ///
-						20 "Extraction 7 " 23 "Extraction 8 " 26 "Extraction 9 " ///
-						29 "Extraction 10 ", angle(45) notick) xtitle("")), ///
+						xlabel(2 "HH Bilinear " 5 "HH Simple " 8 "EA Bilinear " ///
+						11 "EA Simple " 14 "Modified EA Bilinear " 17 "Modified EA Simple " ///
+						20 "Administrative Bilinear " 23 "Administrative Simple " 26 "EA Buffer Zonal Mean " ///
+						29 "Administrative Zonal Mean ", angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(5) order(1 2) label(1 "p>0.95") ///
 						label(2 "95% C.I.")) ///
 						saving("$sfig/ngr_pval_ext_rf", replace)
@@ -276,10 +294,10 @@ preserve
 						lcolor(black) xscale(r(0 30) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xlabel(2 "Extraction 1 " 5 "Extraction 2 " 8 "Extraction 3 " ///
-						11 "Extraction 4 " 14 "Extraction 5 " 17 "Extraction 6 " ///
-						20 "Extraction 7 " 23 "Extraction 8 " 26 "Extraction 9 " ///
-						29 "Extraction 10 ", angle(45) notick) xtitle("")), ///
+						xlabel(2 "HH Bilinear " 5 "HH Simple " 8 "EA Bilinear " ///
+						11 "EA Simple " 14 "Modified EA Bilinear " 17 "Modified EA Simple " ///
+						20 "Administrative Bilinear " 23 "Administrative Simple " 26 "EA Buffer Zonal Mean " ///
+						29 "Administrative Zonal Mean ", angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(5) order(1 2) label(1 "p>0.95") ///
 						label(2 "95% C.I.")) ///
 						saving("$sfig/nga_pval_ext_rf", replace)
@@ -297,10 +315,10 @@ preserve
 						lcolor(black) xscale(r(0 30) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xlabel(2 "Extraction 1 " 5 "Extraction 2 " 8 "Extraction 3 " ///
-						11 "Extraction 4 " 14 "Extraction 5 " 17 "Extraction 6 " ///
-						20 "Extraction 7 " 23 "Extraction 8 " 26 "Extraction 9 " ///
-						29 "Extraction 10 ", angle(45) notick) xtitle("")), ///
+						xlabel(2 "HH Bilinear " 5 "HH Simple " 8 "EA Bilinear " ///
+						11 "EA Simple " 14 "Modified EA Bilinear " 17 "Modified EA Simple " ///
+						20 "Administrative Bilinear " 23 "Administrative Simple " 26 "EA Buffer Zonal Mean " ///
+						29 "Administrative Zonal Mean ", angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(5) order(1 2) label(1 "p>0.95") ///
 						label(2 "95% C.I.")) ///
 						saving("$sfig/tza_pval_ext_rf", replace)
@@ -318,10 +336,10 @@ preserve
 						lcolor(black) xscale(r(0 30) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xlabel(2 "Extraction 1 " 5 "Extraction 2 " 8 "Extraction 3 " ///
-						11 "Extraction 4 " 14 "Extraction 5 " 17 "Extraction 6 " ///
-						20 "Extraction 7 " 23 "Extraction 8 " 26 "Extraction 9 " ///
-						29 "Extraction 10 ", angle(45) notick) xtitle("")), ///
+						xlabel(2 "HH Bilinear " 5 "HH Simple " 8 "EA Bilinear " ///
+						11 "EA Simple " 14 "Modified EA Bilinear " 17 "Modified EA Simple " ///
+						20 "Administrative Bilinear " 23 "Administrative Simple " 26 "EA Buffer Zonal Mean " ///
+						29 "Administrative Zonal Mean ", angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(5) order(1 2) label(1 "p>0.95") ///
 						label(2 "95% C.I.")) ///
 						saving("$sfig/uga_pval_ext_rf", replace)
@@ -376,10 +394,10 @@ preserve
 						lcolor(black) xscale(r(0 30) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xlabel(2 "Extraction 1 " 5 "Extraction 2 " 8 "Extraction 3 " ///
-						11 "Extraction 4 " 14 "Extraction 5 " 17 "Extraction 6 " ///
-						20 "Extraction 7 " 23 "Extraction 8 " 26 "Extraction 9 " ///
-						29 "Extraction 10 ", angle(45) notick) xtitle("")), ///
+						xlabel(2 "HH Bilinear " 5 "HH Simple " 8 "EA Bilinear " ///
+						11 "EA Simple " 14 "Modified EA Bilinear " 17 "Modified EA Simple " ///
+						20 "Administrative Bilinear " 23 "Administrative Simple " 26 "EA Buffer Zonal Mean " ///
+						29 "Administrative Zonal Mean ", angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(5) order(1 2) label(1 "p>0.95") ///
 						label(2 "95% C.I.")) ///
 						saving("$sfig/eth_pval_ext_tp", replace)
@@ -397,10 +415,10 @@ preserve
 						lcolor(black) xscale(r(0 30) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xlabel(2 "Extraction 1 " 5 "Extraction 2 " 8 "Extraction 3 " ///
-						11 "Extraction 4 " 14 "Extraction 5 " 17 "Extraction 6 " ///
-						20 "Extraction 7 " 23 "Extraction 8 " 26 "Extraction 9 " ///
-						29 "Extraction 10 ", angle(45) notick) xtitle("")), ///
+						xlabel(2 "HH Bilinear " 5 "HH Simple " 8 "EA Bilinear " ///
+						11 "EA Simple " 14 "Modified EA Bilinear " 17 "Modified EA Simple " ///
+						20 "Administrative Bilinear " 23 "Administrative Simple " 26 "EA Buffer Zonal Mean " ///
+						29 "Administrative Zonal Mean ", angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(5) order(1 2) label(1 "p>0.95") ///
 						label(2 "95% C.I.")) ///
 						saving("$sfig/mwi_pval_ext_tp", replace)
@@ -418,10 +436,10 @@ preserve
 						lcolor(black) xscale(r(0 30) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xlabel(2 "Extraction 1 " 5 "Extraction 2 " 8 "Extraction 3 " ///
-						11 "Extraction 4 " 14 "Extraction 5 " 17 "Extraction 6 " ///
-						20 "Extraction 7 " 23 "Extraction 8 " 26 "Extraction 9 " ///
-						29 "Extraction 10 ", angle(45) notick) xtitle("")), ///
+						xlabel(2 "HH Bilinear " 5 "HH Simple " 8 "EA Bilinear " ///
+						11 "EA Simple " 14 "Modified EA Bilinear " 17 "Modified EA Simple " ///
+						20 "Administrative Bilinear " 23 "Administrative Simple " 26 "EA Buffer Zonal Mean " ///
+						29 "Administrative Zonal Mean ", angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(5) order(1 2) label(1 "p>0.95") ///
 						label(2 "95% C.I.")) ///
 						saving("$sfig/ngr_pval_ext_tp", replace)
@@ -440,10 +458,10 @@ preserve
 						lcolor(black) xscale(r(0 30) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xlabel(2 "Extraction 1 " 5 "Extraction 2 " 8 "Extraction 3 " ///
-						11 "Extraction 4 " 14 "Extraction 5 " 17 "Extraction 6 " ///
-						20 "Extraction 7 " 23 "Extraction 8 " 26 "Extraction 9 " ///
-						29 "Extraction 10 ", angle(45) notick) xtitle("")), ///
+						xlabel(2 "HH Bilinear " 5 "HH Simple " 8 "EA Bilinear " ///
+						11 "EA Simple " 14 "Modified EA Bilinear " 17 "Modified EA Simple " ///
+						20 "Administrative Bilinear " 23 "Administrative Simple " 26 "EA Buffer Zonal Mean " ///
+						29 "Administrative Zonal Mean ", angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(5) order(1 2) label(1 "p>0.95") ///
 						label(2 "95% C.I.")) ///
 						saving("$sfig/nga_pval_ext_tp", replace)
@@ -461,10 +479,10 @@ preserve
 						lcolor(black) xscale(r(0 30) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xlabel(2 "Extraction 1 " 5 "Extraction 2 " 8 "Extraction 3 " ///
-						11 "Extraction 4 " 14 "Extraction 5 " 17 "Extraction 6 " ///
-						20 "Extraction 7 " 23 "Extraction 8 " 26 "Extraction 9 " ///
-						29 "Extraction 10 ", angle(45) notick) xtitle("")), ///
+						xlabel(2 "HH Bilinear " 5 "HH Simple " 8 "EA Bilinear " ///
+						11 "EA Simple " 14 "Modified EA Bilinear " 17 "Modified EA Simple " ///
+						20 "Administrative Bilinear " 23 "Administrative Simple " 26 "EA Buffer Zonal Mean " ///
+						29 "Administrative Zonal Mean ", angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(5) order(1 2) label(1 "p>0.95") ///
 						label(2 "95% C.I.")) ///
 						saving("$sfig/tza_pval_ext_tp", replace)
@@ -482,10 +500,10 @@ preserve
 						lcolor(black) xscale(r(0 30) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xlabel(2 "Extraction 1 " 5 "Extraction 2 " 8 "Extraction 3 " ///
-						11 "Extraction 4 " 14 "Extraction 5 " 17 "Extraction 6 " ///
-						20 "Extraction 7 " 23 "Extraction 8 " 26 "Extraction 9 " ///
-						29 "Extraction 10 ", angle(45) notick) xtitle("")), ///
+						xlabel(2 "HH Bilinear " 5 "HH Simple " 8 "EA Bilinear " ///
+						11 "EA Simple " 14 "Modified EA Bilinear " 17 "Modified EA Simple " ///
+						20 "Administrative Bilinear " 23 "Administrative Simple " 26 "EA Buffer Zonal Mean " ///
+						29 "Administrative Zonal Mean ", angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(5) order(1 2) label(1 "p>0.95") ///
 						label(2 "95% C.I.")) ///
 						saving("$sfig/uga_pval_ext_tp", replace)
@@ -497,7 +515,7 @@ restore
 						"$sfig/tza_pval_ext_rf.gph" "$sfig/uga_pval_ext_rf.gph", ///
 						col(3) iscale(.5) pos(12) commonscheme imargin(0 0 0 0)
 						
-	graph export 	"$xfig\pval_ext_rf.png", width(1400) replace
+	graph export 	"$xfig\pval_ext_rf.pdf", as(pdf) replace
 	
 * p-value extraction method for temperature
 	grc1leg2 		"$sfig/eth_pval_ext_tp.gph" "$sfig/mwi_pval_ext_tp.gph" ///
@@ -505,7 +523,7 @@ restore
 						"$sfig/tza_pval_ext_tp.gph" "$sfig/uga_pval_ext_tp.gph", ///
 						col(3) iscale(.5) pos(12) commonscheme imargin(0 0 0 0)
 						
-	graph export 	"$xfig\pval_ext_tp.png", width(1400) replace					
+	graph export 	"$xfig\pval_ext_tp.pdf", as(pdf) replace					
 
 
 
@@ -513,23 +531,29 @@ restore
 * 3 - generate random number to select extraction method
 * **********************************************************************
 
-* choose one extraction method at random
+* prior to the posting of the anonymized paper on arXiv the following random extraction was used
+
+/* choose one extraction method at random
 preserve
 	clear			all
 	set obs			1
 	set seed		3317230
 	gen double 		u = (10-1) * runiform() + 1
 	gen 			i = round(u)
-	sum		 		u i
+	sum		 		u i 
 restore	
 *** random number was 3, so we proceed with extraction method 3
+*/
+
+* after the data was de-anonymized, we replace the above method of selection
+* with the "true" or preferred extraction method household bilinear (ext 1)
 
 	
 * **********************************************************************
 * 4 - generate p-value graphs by weather metric
 * **********************************************************************
 		
-* keep extraction 3	
+* keep EA Bilinear	
 	keep			if ext == 3
 
 * **********************************************************************
