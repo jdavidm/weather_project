@@ -2,7 +2,7 @@
 * Created on: September 2019
 * Created by: jdm
 * Edited by: jdm
-* Last edit: 23 August 2021
+* Last edit: 24 August 2021
 * Stata v.16.1 
 
 * does
@@ -109,8 +109,8 @@ preserve
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
 						xlabel(2 "HH Bilinear " 6 "HH Simple " 10 "EA Bilinear " ///
 						14 "EA Simple " 18 "Modified EA Bilinear " 22 "Modified EA Simple " ///
-						26 "Administrative Bilinear " 30 "Administrative Simple " 34 "EA Buffer Zonal Mean " ///
-						38 "Administrative Zonal Mean ", angle(45) notick) xtitle("")), ///
+						26 "Admin Bilinear " 30 "Admin Simple " 34 "EA Zonal Mean " ///
+						38 "Admin Zonal Mean ", angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(5) order(1 2 3 4) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I."))  ///
 						saving("$sfig/pval_ext_rf", replace)
@@ -164,8 +164,8 @@ preserve
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
 						xlabel(2 "HH Bilinear " 6 "HH Simple " 10 "EA Bilinear " ///
 						14 "EA Simple " 18 "Modified EA Bilinear " 22 "Modified EA Simple " ///
-						26 "Administrative Bilinear " 30 "Administrative Simple " 34 "EA Buffer Zonal Mean " ///
-						38 "Administrative Zonal Mean ", angle(45) notick) xtitle("")), ///
+						26 "Admin Bilinear " 30 "Admin Simple " 34 "EA Zonal Mean " ///
+						38 "Admin Zonal Mean ", angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(5) order(1 2 3 4) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I."))  ///
 						saving("$sfig/pval_ext_tp", replace)
@@ -232,8 +232,8 @@ preserve
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
 						xlabel(2 "HH Bilinear " 5 "HH Simple " 8 "EA Bilinear " ///
 						11 "EA Simple " 14 "Modified EA Bilinear " 17 "Modified EA Simple " ///
-						20 "Administrative Bilinear " 23 "Administrative Simple " 26 "EA Buffer Zonal Mean " ///
-						29 "Administrative Zonal Mean ", angle(45) notick) xtitle("")), ///
+						20 "Admin Bilinear " 23 "Admin Simple " 26 "EA Zonal Mean " ///
+						29 "Admin Zonal Mean ", angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(5) order(1 2) label(1 "p>0.95") ///
 						label(2 "95% C.I.")) ///
 						saving("$sfig/eth_pval_ext_rf", replace)
@@ -253,8 +253,8 @@ preserve
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
 						xlabel(2 "HH Bilinear " 5 "HH Simple " 8 "EA Bilinear " ///
 						11 "EA Simple " 14 "Modified EA Bilinear " 17 "Modified EA Simple " ///
-						20 "Administrative Bilinear " 23 "Administrative Simple " 26 "EA Buffer Zonal Mean " ///
-						29 "Administrative Zonal Mean ", angle(45) notick) xtitle("")), ///
+						20 "Admin Bilinear " 23 "Admin Simple " 26 "EA Zonal Mean " ///
+						29 "Admin Zonal Mean ", angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(5) order(1 2) label(1 "p>0.95") ///
 						label(2 "95% C.I.")) ///
 						saving("$sfig/mwi_pval_ext_rf", replace)
@@ -274,8 +274,8 @@ preserve
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
 						xlabel(2 "HH Bilinear " 5 "HH Simple " 8 "EA Bilinear " ///
 						11 "EA Simple " 14 "Modified EA Bilinear " 17 "Modified EA Simple " ///
-						20 "Administrative Bilinear " 23 "Administrative Simple " 26 "EA Buffer Zonal Mean " ///
-						29 "Administrative Zonal Mean ", angle(45) notick) xtitle("")), ///
+						20 "Admin Bilinear " 23 "Admin Simple " 26 "EA Zonal Mean " ///
+						29 "Admin Zonal Mean ", angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(5) order(1 2) label(1 "p>0.95") ///
 						label(2 "95% C.I.")) ///
 						saving("$sfig/ngr_pval_ext_rf", replace)
@@ -296,8 +296,8 @@ preserve
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
 						xlabel(2 "HH Bilinear " 5 "HH Simple " 8 "EA Bilinear " ///
 						11 "EA Simple " 14 "Modified EA Bilinear " 17 "Modified EA Simple " ///
-						20 "Administrative Bilinear " 23 "Administrative Simple " 26 "EA Buffer Zonal Mean " ///
-						29 "Administrative Zonal Mean ", angle(45) notick) xtitle("")), ///
+						20 "Admin Bilinear " 23 "Admin Simple " 26 "EA Zonal Mean " ///
+						29 "Admin Zonal Mean ", angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(5) order(1 2) label(1 "p>0.95") ///
 						label(2 "95% C.I.")) ///
 						saving("$sfig/nga_pval_ext_rf", replace)
@@ -317,8 +317,8 @@ preserve
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
 						xlabel(2 "HH Bilinear " 5 "HH Simple " 8 "EA Bilinear " ///
 						11 "EA Simple " 14 "Modified EA Bilinear " 17 "Modified EA Simple " ///
-						20 "Administrative Bilinear " 23 "Administrative Simple " 26 "EA Buffer Zonal Mean " ///
-						29 "Administrative Zonal Mean ", angle(45) notick) xtitle("")), ///
+						20 "Admin Bilinear " 23 "Admin Simple " 26 "EA Zonal Mean " ///
+						29 "Admin Zonal Mean ", angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(5) order(1 2) label(1 "p>0.95") ///
 						label(2 "95% C.I.")) ///
 						saving("$sfig/tza_pval_ext_rf", replace)
@@ -338,8 +338,8 @@ preserve
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
 						xlabel(2 "HH Bilinear " 5 "HH Simple " 8 "EA Bilinear " ///
 						11 "EA Simple " 14 "Modified EA Bilinear " 17 "Modified EA Simple " ///
-						20 "Administrative Bilinear " 23 "Administrative Simple " 26 "EA Buffer Zonal Mean " ///
-						29 "Administrative Zonal Mean ", angle(45) notick) xtitle("")), ///
+						20 "Admin Bilinear " 23 "Admin Simple " 26 "EA Zonal Mean " ///
+						29 "Admin Zonal Mean ", angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(5) order(1 2) label(1 "p>0.95") ///
 						label(2 "95% C.I.")) ///
 						saving("$sfig/uga_pval_ext_rf", replace)
@@ -396,8 +396,8 @@ preserve
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
 						xlabel(2 "HH Bilinear " 5 "HH Simple " 8 "EA Bilinear " ///
 						11 "EA Simple " 14 "Modified EA Bilinear " 17 "Modified EA Simple " ///
-						20 "Administrative Bilinear " 23 "Administrative Simple " 26 "EA Buffer Zonal Mean " ///
-						29 "Administrative Zonal Mean ", angle(45) notick) xtitle("")), ///
+						20 "Admin Bilinear " 23 "Admin Simple " 26 "EA Zonal Mean " ///
+						29 "Admin Zonal Mean ", angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(5) order(1 2) label(1 "p>0.95") ///
 						label(2 "95% C.I.")) ///
 						saving("$sfig/eth_pval_ext_tp", replace)
@@ -417,8 +417,8 @@ preserve
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
 						xlabel(2 "HH Bilinear " 5 "HH Simple " 8 "EA Bilinear " ///
 						11 "EA Simple " 14 "Modified EA Bilinear " 17 "Modified EA Simple " ///
-						20 "Administrative Bilinear " 23 "Administrative Simple " 26 "EA Buffer Zonal Mean " ///
-						29 "Administrative Zonal Mean ", angle(45) notick) xtitle("")), ///
+						20 "Admin Bilinear " 23 "Admin Simple " 26 "EA Zonal Mean " ///
+						29 "Admin Zonal Mean ", angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(5) order(1 2) label(1 "p>0.95") ///
 						label(2 "95% C.I.")) ///
 						saving("$sfig/mwi_pval_ext_tp", replace)
@@ -438,8 +438,8 @@ preserve
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
 						xlabel(2 "HH Bilinear " 5 "HH Simple " 8 "EA Bilinear " ///
 						11 "EA Simple " 14 "Modified EA Bilinear " 17 "Modified EA Simple " ///
-						20 "Administrative Bilinear " 23 "Administrative Simple " 26 "EA Buffer Zonal Mean " ///
-						29 "Administrative Zonal Mean ", angle(45) notick) xtitle("")), ///
+						20 "Admin Bilinear " 23 "Admin Simple " 26 "EA Zonal Mean " ///
+						29 "Admin Zonal Mean ", angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(5) order(1 2) label(1 "p>0.95") ///
 						label(2 "95% C.I.")) ///
 						saving("$sfig/ngr_pval_ext_tp", replace)
@@ -460,8 +460,8 @@ preserve
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
 						xlabel(2 "HH Bilinear " 5 "HH Simple " 8 "EA Bilinear " ///
 						11 "EA Simple " 14 "Modified EA Bilinear " 17 "Modified EA Simple " ///
-						20 "Administrative Bilinear " 23 "Administrative Simple " 26 "EA Buffer Zonal Mean " ///
-						29 "Administrative Zonal Mean ", angle(45) notick) xtitle("")), ///
+						20 "Admin Bilinear " 23 "Admin Simple " 26 "EA Zonal Mean " ///
+						29 "Admin Zonal Mean ", angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(5) order(1 2) label(1 "p>0.95") ///
 						label(2 "95% C.I.")) ///
 						saving("$sfig/nga_pval_ext_tp", replace)
@@ -481,8 +481,8 @@ preserve
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
 						xlabel(2 "HH Bilinear " 5 "HH Simple " 8 "EA Bilinear " ///
 						11 "EA Simple " 14 "Modified EA Bilinear " 17 "Modified EA Simple " ///
-						20 "Administrative Bilinear " 23 "Administrative Simple " 26 "EA Buffer Zonal Mean " ///
-						29 "Administrative Zonal Mean ", angle(45) notick) xtitle("")), ///
+						20 "Admin Bilinear " 23 "Admin Simple " 26 "EA Zonal Mean " ///
+						29 "Admin Zonal Mean ", angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(5) order(1 2) label(1 "p>0.95") ///
 						label(2 "95% C.I.")) ///
 						saving("$sfig/tza_pval_ext_tp", replace)
@@ -502,8 +502,8 @@ preserve
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
 						xlabel(2 "HH Bilinear " 5 "HH Simple " 8 "EA Bilinear " ///
 						11 "EA Simple " 14 "Modified EA Bilinear " 17 "Modified EA Simple " ///
-						20 "Administrative Bilinear " 23 "Administrative Simple " 26 "EA Buffer Zonal Mean " ///
-						29 "Administrative Zonal Mean ", angle(45) notick) xtitle("")), ///
+						20 "Admin Bilinear " 23 "Admin Simple " 26 "EA Zonal Mean " ///
+						29 "Admin Zonal Mean ", angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(5) order(1 2) label(1 "p>0.95") ///
 						label(2 "95% C.I.")) ///
 						saving("$sfig/uga_pval_ext_tp", replace)

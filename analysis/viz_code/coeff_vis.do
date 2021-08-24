@@ -1,8 +1,8 @@
 * Project: WB Weather
 * Created on: September 2019
 * Created by: jdm
-* Edited by: alj
-* Last edit: 13 November 2020 
+* Edited by: jdm
+* Last edit: 24 August 2021
 * Stata v.16.1 
 
 * does
@@ -59,14 +59,17 @@ preserve
 						mfcolor(edkblue%5) mlcolor(edkblue%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Mean Daily Rainfall") ///
-						xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
-						xmtick(216(432)4320) xlabel(0 "0" 216 "Ext 1" ///
-						432 "432" 648 "Ext 2" 864 "864" 1080 "Ext 3" ///
-						1296 "1,296" 1512 "Ext 4" 1728 "1,728" 1944 "Ext 5" ///
-						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
-						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
-						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
-						xtitle("") saving("$sfig/v01_ext", replace)
+						xaxis(2) xmtick(0(432)4320) xtitle("", axis(2)) ///
+						xlabel(0 " " 216 "HH Bilinear" 648 "HH Simple" 1080 ///
+						"EA Bilinear" 1512 "EA Simple" 1944 "Modified EA Bilinear" ///
+						2376 "Modified EA Simple" 2808 "Admin Bilinear" ///
+						3240 "Admin Simple" 3672 "EA Zonal Mean" ///
+						4104 "Admin Zonal Mean" 4320 " ", axis(2) angle(45) notick) ///
+						addplot( , xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
+						xlabel(0 "0" 432 "432" 864 "864" 1296 "1,296" ///
+						1728 "1,728" 2160 "2,160" 2592 "2,592" 3024 "3,024" ///
+						3456 "3,456" 3888 "3,888" 4320 "4,320") xtitle("") ) ///
+						legend(off) saving("$sfig/v01_ext", replace)
 restore
 
 * median daily rainfall
@@ -80,14 +83,17 @@ preserve
 						mfcolor(emidblue%5) mlcolor(emidblue%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Median Daily Rainfall") ///
-						xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
-						xmtick(216(432)4320) xlabel(0 "0" 216 "Ext 1" ///
-						432 "432" 648 "Ext 2" 864 "864" 1080 "Ext 3" ///
-						1296 "1,296" 1512 "Ext 4" 1728 "1,728" 1944 "Ext 5" ///
-						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
-						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
-						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
-						xtitle("") saving("$sfig/v02_ext", replace)
+						xaxis(2) xmtick(0(432)4320) xtitle("", axis(2)) ///
+						xlabel(0 " " 216 "HH Bilinear" 648 "HH Simple" 1080 ///
+						"EA Bilinear" 1512 "EA Simple" 1944 "Modified EA Bilinear" ///
+						2376 "Modified EA Simple" 2808 "Admin Bilinear" ///
+						3240 "Admin Simple" 3672 "EA Zonal Mean" ///
+						4104 "Admin Zonal Mean" 4320 " ", axis(2) angle(45) notick) ///
+						addplot( , xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
+						xlabel(0 "0" 432 "432" 864 "864" 1296 "1,296" ///
+						1728 "1,728" 2160 "2,160" 2592 "2,592" 3024 "3,024" ///
+						3456 "3,456" 3888 "3,888" 4320 "4,320") xtitle("") ) ///
+						legend(off) saving("$sfig/v02_ext", replace)
 restore	
 
 * variance of daily rainfall
@@ -101,14 +107,17 @@ preserve
 						mfcolor(eltblue%5) mlcolor(eltblue%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Variance of Daily Rainfall") ///
-						xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
-						xmtick(216(432)4320) xlabel(0 "0" 216 "Ext 1" ///
-						432 "432" 648 "Ext 2" 864 "864" 1080 "Ext 3" ///
-						1296 "1,296" 1512 "Ext 4" 1728 "1,728" 1944 "Ext 5" ///
-						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
-						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
-						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
-						xtitle("") saving("$sfig/v03_ext", replace)
+						xaxis(2) xmtick(0(432)4320) xtitle("", axis(2)) ///
+						xlabel(0 " " 216 "HH Bilinear" 648 "HH Simple" 1080 ///
+						"EA Bilinear" 1512 "EA Simple" 1944 "Modified EA Bilinear" ///
+						2376 "Modified EA Simple" 2808 "Admin Bilinear" ///
+						3240 "Admin Simple" 3672 "EA Zonal Mean" ///
+						4104 "Admin Zonal Mean" 4320 " ", axis(2) angle(45) notick) ///
+						addplot( , xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
+						xlabel(0 "0" 432 "432" 864 "864" 1296 "1,296" ///
+						1728 "1,728" 2160 "2,160" 2592 "2,592" 3024 "3,024" ///
+						3456 "3,456" 3888 "3,888" 4320 "4,320") xtitle("") ) ///
+						legend(off) saving("$sfig/v03_ext", replace)
 restore
 	
 * skew of daily rainfall
@@ -122,14 +131,17 @@ preserve
 						mfcolor(emerald%5) mlcolor(emerald%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Skew of Daily Rainfall") ///
-						xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
-						xmtick(216(432)4320) xlabel(0 "0" 216 "Ext 1" ///
-						432 "432" 648 "Ext 2" 864 "864" 1080 "Ext 3" ///
-						1296 "1,296" 1512 "Ext 4" 1728 "1,728" 1944 "Ext 5" ///
-						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
-						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
-						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
-						xtitle("") saving("$sfig/v04_ext", replace)
+						xaxis(2) xmtick(0(432)4320) xtitle("", axis(2)) ///
+						xlabel(0 " " 216 "HH Bilinear" 648 "HH Simple" 1080 ///
+						"EA Bilinear" 1512 "EA Simple" 1944 "Modified EA Bilinear" ///
+						2376 "Modified EA Simple" 2808 "Admin Bilinear" ///
+						3240 "Admin Simple" 3672 "EA Zonal Mean" ///
+						4104 "Admin Zonal Mean" 4320 " ", axis(2) angle(45) notick) ///
+						addplot( , xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
+						xlabel(0 "0" 432 "432" 864 "864" 1296 "1,296" ///
+						1728 "1,728" 2160 "2,160" 2592 "2,592" 3024 "3,024" ///
+						3456 "3,456" 3888 "3,888" 4320 "4,320") xtitle("") ) ///
+						legend(off) saving("$sfig/v04_ext", replace)
 restore
 
 * total seasonal rainfall
@@ -143,14 +155,17 @@ preserve
 						mfcolor(erose%5) mlcolor(erose%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Total Seasonal Rainfall") ///
-						xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
-						xmtick(216(432)4320) xlabel(0 "0" 216 "Ext 1" ///
-						432 "432" 648 "Ext 2" 864 "864" 1080 "Ext 3" ///
-						1296 "1,296" 1512 "Ext 4" 1728 "1,728" 1944 "Ext 5" ///
-						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
-						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
-						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
-						xtitle("") saving("$sfig/v05_ext", replace)
+						xaxis(2) xmtick(0(432)4320) xtitle("", axis(2)) ///
+						xlabel(0 " " 216 "HH Bilinear" 648 "HH Simple" 1080 ///
+						"EA Bilinear" 1512 "EA Simple" 1944 "Modified EA Bilinear" ///
+						2376 "Modified EA Simple" 2808 "Admin Bilinear" ///
+						3240 "Admin Simple" 3672 "EA Zonal Mean" ///
+						4104 "Admin Zonal Mean" 4320 " ", axis(2) angle(45) notick) ///
+						addplot( , xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
+						xlabel(0 "0" 432 "432" 864 "864" 1296 "1,296" ///
+						1728 "1,728" 2160 "2,160" 2592 "2,592" 3024 "3,024" ///
+						3456 "3,456" 3888 "3,888" 4320 "4,320") xtitle("") ) ///
+						legend(off) saving("$sfig/v05_ext", replace)
 restore
 
 * deviation in total rainfall
@@ -164,14 +179,17 @@ preserve
 						mfcolor(ebblue%5) mlcolor(ebblue%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Deviation in Total Seasonal Rainfall") ///
-						xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
-						xmtick(216(432)4320) xlabel(0 "0" 216 "Ext 1" ///
-						432 "432" 648 "Ext 2" 864 "864" 1080 "Ext 3" ///
-						1296 "1,296" 1512 "Ext 4" 1728 "1,728" 1944 "Ext 5" ///
-						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
-						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
-						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
-						xtitle("") saving("$sfig/v06_ext", replace)
+						xaxis(2) xmtick(0(432)4320) xtitle("", axis(2)) ///
+						xlabel(0 " " 216 "HH Bilinear" 648 "HH Simple" 1080 ///
+						"EA Bilinear" 1512 "EA Simple" 1944 "Modified EA Bilinear" ///
+						2376 "Modified EA Simple" 2808 "Admin Bilinear" ///
+						3240 "Admin Simple" 3672 "EA Zonal Mean" ///
+						4104 "Admin Zonal Mean" 4320 " ", axis(2) angle(45) notick) ///
+						addplot( , xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
+						xlabel(0 "0" 432 "432" 864 "864" 1296 "1,296" ///
+						1728 "1,728" 2160 "2,160" 2592 "2,592" 3024 "3,024" ///
+						3456 "3,456" 3888 "3,888" 4320 "4,320") xtitle("") ) ///
+						legend(off) saving("$sfig/v06_ext", replace)
 restore
 
 * z-score of total rainfall
@@ -185,14 +203,17 @@ preserve
 						mfcolor(eltgreen%5) mlcolor(eltgreen%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("z-Score of Total Seasonal Rainfall") ///
-						xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
-						xmtick(216(432)4320) xlabel(0 "0" 216 "Ext 1" ///
-						432 "432" 648 "Ext 2" 864 "864" 1080 "Ext 3" ///
-						1296 "1,296" 1512 "Ext 4" 1728 "1,728" 1944 "Ext 5" ///
-						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
-						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
-						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
-						xtitle("") saving("$sfig/v07_ext", replace)
+						xaxis(2) xmtick(0(432)4320) xtitle("", axis(2)) ///
+						xlabel(0 " " 216 "HH Bilinear" 648 "HH Simple" 1080 ///
+						"EA Bilinear" 1512 "EA Simple" 1944 "Modified EA Bilinear" ///
+						2376 "Modified EA Simple" 2808 "Admin Bilinear" ///
+						3240 "Admin Simple" 3672 "EA Zonal Mean" ///
+						4104 "Admin Zonal Mean" 4320 " ", axis(2) angle(45) notick) ///
+						addplot( , xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
+						xlabel(0 "0" 432 "432" 864 "864" 1296 "1,296" ///
+						1728 "1,728" 2160 "2,160" 2592 "2,592" 3024 "3,024" ///
+						3456 "3,456" 3888 "3,888" 4320 "4,320") xtitle("") ) ///
+						legend(off) saving("$sfig/v07_ext", replace)
 restore
 
 * number of days with rain
@@ -206,14 +227,17 @@ preserve
 						mfcolor(stone%5) mlcolor(stone%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Number of Days with Rain") ///
-						xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
-						xmtick(216(432)4320) xlabel(0 "0" 216 "Ext 1" ///
-						432 "432" 648 "Ext 2" 864 "864" 1080 "Ext 3" ///
-						1296 "1,296" 1512 "Ext 4" 1728 "1,728" 1944 "Ext 5" ///
-						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
-						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
-						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
-						xtitle("") saving("$sfig/v08_ext", replace)
+						xaxis(2) xmtick(0(432)4320) xtitle("", axis(2)) ///
+						xlabel(0 " " 216 "HH Bilinear" 648 "HH Simple" 1080 ///
+						"EA Bilinear" 1512 "EA Simple" 1944 "Modified EA Bilinear" ///
+						2376 "Modified EA Simple" 2808 "Admin Bilinear" ///
+						3240 "Admin Simple" 3672 "EA Zonal Mean" ///
+						4104 "Admin Zonal Mean" 4320 " ", axis(2) angle(45) notick) ///
+						addplot( , xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
+						xlabel(0 "0" 432 "432" 864 "864" 1296 "1,296" ///
+						1728 "1,728" 2160 "2,160" 2592 "2,592" 3024 "3,024" ///
+						3456 "3,456" 3888 "3,888" 4320 "4,320") xtitle("") ) ///
+						legend(off) saving("$sfig/v08_ext", replace)
 restore
 
 * deviation in rainy days
@@ -227,14 +251,17 @@ preserve
 						mfcolor(navy%5) mlcolor(navy%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Deviation in Number of Days with Rain") ///
-						xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
-						xmtick(216(432)4320) xlabel(0 "0" 216 "Ext 1" ///
-						432 "432" 648 "Ext 2" 864 "864" 1080 "Ext 3" ///
-						1296 "1,296" 1512 "Ext 4" 1728 "1,728" 1944 "Ext 5" ///
-						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
-						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
-						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
-						xtitle("") saving("$sfig/v09_ext", replace)
+						xaxis(2) xmtick(0(432)4320) xtitle("", axis(2)) ///
+						xlabel(0 " " 216 "HH Bilinear" 648 "HH Simple" 1080 ///
+						"EA Bilinear" 1512 "EA Simple" 1944 "Modified EA Bilinear" ///
+						2376 "Modified EA Simple" 2808 "Admin Bilinear" ///
+						3240 "Admin Simple" 3672 "EA Zonal Mean" ///
+						4104 "Admin Zonal Mean" 4320 " ", axis(2) angle(45) notick) ///
+						addplot( , xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
+						xlabel(0 "0" 432 "432" 864 "864" 1296 "1,296" ///
+						1728 "1,728" 2160 "2,160" 2592 "2,592" 3024 "3,024" ///
+						3456 "3,456" 3888 "3,888" 4320 "4,320") xtitle("") ) ///
+						legend(off) saving("$sfig/v09_ext", replace)
 restore
 
 * number of days without rain
@@ -248,14 +275,17 @@ preserve
 						mfcolor(brown%5) mlcolor(brown%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Number of Days without Rain") ///
-						xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
-						xmtick(216(432)4320) xlabel(0 "0" 216 "Ext 1" ///
-						432 "432" 648 "Ext 2" 864 "864" 1080 "Ext 3" ///
-						1296 "1,296" 1512 "Ext 4" 1728 "1,728" 1944 "Ext 5" ///
-						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
-						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
-						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
-						xtitle("") saving("$sfig/v10_ext", replace)
+						xaxis(2) xmtick(0(432)4320) xtitle("", axis(2)) ///
+						xlabel(0 " " 216 "HH Bilinear" 648 "HH Simple" 1080 ///
+						"EA Bilinear" 1512 "EA Simple" 1944 "Modified EA Bilinear" ///
+						2376 "Modified EA Simple" 2808 "Admin Bilinear" ///
+						3240 "Admin Simple" 3672 "EA Zonal Mean" ///
+						4104 "Admin Zonal Mean" 4320 " ", axis(2) angle(45) notick) ///
+						addplot( , xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
+						xlabel(0 "0" 432 "432" 864 "864" 1296 "1,296" ///
+						1728 "1,728" 2160 "2,160" 2592 "2,592" 3024 "3,024" ///
+						3456 "3,456" 3888 "3,888" 4320 "4,320") xtitle("") ) ///
+						legend(off) saving("$sfig/v10_ext", replace)
 restore
 
 * deviation in no rain days
@@ -269,14 +299,17 @@ preserve
 						mfcolor(lavender%5) mlcolor(lavender%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Deviation in Number of Days without Rain") ///
-						xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
-						xmtick(216(432)4320) xlabel(0 "0" 216 "Ext 1" ///
-						432 "432" 648 "Ext 2" 864 "864" 1080 "Ext 3" ///
-						1296 "1,296" 1512 "Ext 4" 1728 "1,728" 1944 "Ext 5" ///
-						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
-						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
-						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
-						xtitle("") saving("$sfig/v11_ext", replace)
+						xaxis(2) xmtick(0(432)4320) xtitle("", axis(2)) ///
+						xlabel(0 " " 216 "HH Bilinear" 648 "HH Simple" 1080 ///
+						"EA Bilinear" 1512 "EA Simple" 1944 "Modified EA Bilinear" ///
+						2376 "Modified EA Simple" 2808 "Admin Bilinear" ///
+						3240 "Admin Simple" 3672 "EA Zonal Mean" ///
+						4104 "Admin Zonal Mean" 4320 " ", axis(2) angle(45) notick) ///
+						addplot( , xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
+						xlabel(0 "0" 432 "432" 864 "864" 1296 "1,296" ///
+						1728 "1,728" 2160 "2,160" 2592 "2,592" 3024 "3,024" ///
+						3456 "3,456" 3888 "3,888" 4320 "4,320") xtitle("") ) ///
+						legend(off) saving("$sfig/v11_ext", replace)
 restore
 
 * percentage of days with rain
@@ -290,14 +323,17 @@ preserve
 						mfcolor(teal%5) mlcolor(teal%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Percentage of Days with Rain") ///
-						xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
-						xmtick(216(432)4320) xlabel(0 "0" 216 "Ext 1" ///
-						432 "432" 648 "Ext 2" 864 "864" 1080 "Ext 3" ///
-						1296 "1,296" 1512 "Ext 4" 1728 "1,728" 1944 "Ext 5" ///
-						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
-						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
-						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
-						xtitle("") saving("$sfig/v12_ext", replace)
+						xaxis(2) xmtick(0(432)4320) xtitle("", axis(2)) ///
+						xlabel(0 " " 216 "HH Bilinear" 648 "HH Simple" 1080 ///
+						"EA Bilinear" 1512 "EA Simple" 1944 "Modified EA Bilinear" ///
+						2376 "Modified EA Simple" 2808 "Admin Bilinear" ///
+						3240 "Admin Simple" 3672 "EA Zonal Mean" ///
+						4104 "Admin Zonal Mean" 4320 " ", axis(2) angle(45) notick) ///
+						addplot( , xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
+						xlabel(0 "0" 432 "432" 864 "864" 1296 "1,296" ///
+						1728 "1,728" 2160 "2,160" 2592 "2,592" 3024 "3,024" ///
+						3456 "3,456" 3888 "3,888" 4320 "4,320") xtitle("") ) ///
+						legend(off) saving("$sfig/v12_ext", replace)
 restore
 
 * deviation in % rainy days
@@ -311,14 +347,17 @@ preserve
 						mfcolor(cranberry%5) mlcolor(cranberry%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Deviation in Percentage of Days with Rain") ///
-						xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
-						xmtick(216(432)4320) xlabel(0 "0" 216 "Ext 1" ///
-						432 "432" 648 "Ext 2" 864 "864" 1080 "Ext 3" ///
-						1296 "1,296" 1512 "Ext 4" 1728 "1,728" 1944 "Ext 5" ///
-						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
-						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
-						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
-						xtitle("") saving("$sfig/v13_ext", replace)
+						xaxis(2) xmtick(0(432)4320) xtitle("", axis(2)) ///
+						xlabel(0 " " 216 "HH Bilinear" 648 "HH Simple" 1080 ///
+						"EA Bilinear" 1512 "EA Simple" 1944 "Modified EA Bilinear" ///
+						2376 "Modified EA Simple" 2808 "Admin Bilinear" ///
+						3240 "Admin Simple" 3672 "EA Zonal Mean" ///
+						4104 "Admin Zonal Mean" 4320 " ", axis(2) angle(45) notick) ///
+						addplot( , xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
+						xlabel(0 "0" 432 "432" 864 "864" 1296 "1,296" ///
+						1728 "1,728" 2160 "2,160" 2592 "2,592" 3024 "3,024" ///
+						3456 "3,456" 3888 "3,888" 4320 "4,320") xtitle("") ) ///
+						legend(off) saving("$sfig/v13_ext", replace)
 restore
 
 * longest dry spell
@@ -332,14 +371,17 @@ preserve
 						mfcolor(khaki%5) mlcolor(khaki%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Longest Dry Spell") ///
-						xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
-						xmtick(216(432)4320) xlabel(0 "0" 216 "Ext 1" ///
-						432 "432" 648 "Ext 2" 864 "864" 1080 "Ext 3" ///
-						1296 "1,296" 1512 "Ext 4" 1728 "1,728" 1944 "Ext 5" ///
-						2160 "2,160" 2376 "Ext 6" 2592 "2,592" 2808 "Ext 7" ///
-						3024 "3,024" 3240 "Ext 8" 3456 "3,456" 3672 "Ext 9" ///
-						3888 "3,888" 4104 "Ext 10" 4320 "4,320", alt) ///
-						xtitle("") saving("$sfig/v14_ext", replace)
+						xaxis(2) xmtick(0(432)4320) xtitle("", axis(2)) ///
+						xlabel(0 " " 216 "HH Bilinear" 648 "HH Simple" 1080 ///
+						"EA Bilinear" 1512 "EA Simple" 1944 "Modified EA Bilinear" ///
+						2376 "Modified EA Simple" 2808 "Admin Bilinear" ///
+						3240 "Admin Simple" 3672 "EA Zonal Mean" ///
+						4104 "Admin Zonal Mean" 4320 " ", axis(2) angle(45) notick) ///
+						addplot( , xline(432 864 1296 1728 2160 2592 3024 3456 3888) ///
+						xlabel(0 "0" 432 "432" 864 "864" 1296 "1,296" ///
+						1728 "1,728" 2160 "2,160" 2592 "2,592" 3024 "3,024" ///
+						3456 "3,456" 3888 "3,888" 4320 "4,320") xtitle("") ) ///
+						legend(off) saving("$sfig/v14_ext", replace)
 restore
 
 * combine moments graphs
@@ -382,14 +424,17 @@ preserve
 						mfcolor(edkblue%5) mlcolor(edkblue%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Mean Daily Temperature") ///
-						xline(216 432 648 864 1080 1296 1512 1728 1944) ///
-						xmtick(108(216)2160) xlabel(0 "0" 108 "Ext 1" ///
-						216 "216" 324 "Ext 2" 432 "432" 540 "Ext 3" ///
-						648 "648" 756 "Ext 4" 865 "864" 972 "Ext 5" ///
-						1080 "1,080" 1188 "Ext 6" 1296 "1,296" 1404 "Ext 7" ///
-						1512 "1,512" 1620 "Ext 8" 1728 "1,728" 1836 "Ext 9" ///
-						1944 "1,944" 2052 "Ext 10" 2160 "2,160", alt) ///
-						xtitle("") saving("$sfig/var15_ext", replace)
+						xaxis(2) xmtick(0(216)2160) xtitle("", axis(2)) ///
+						xlabel(0 " " 108 "HH Bilinear" 324 "HH Simple" 540 ///
+						"EA Bilinear" 756 "EA Simple" 972 "Modified EA Bilinear" ///
+						1188 "Modified EA Simple" 1404 "Admin Bilinear" ///
+						1620 "Admin Simple" 1836 "EA Zonal Mean" ///
+						2052 "Admin Zonal Mean" 2160 " ", axis(2) angle(45) notick) ///
+						addplot( , xline(216 432 648 864 1080 1296 1512 1728 1944) ///
+						xlabel(0 "0" 216 "216" 432 "432" 648 "648" ///
+						864 "864" 1080 "1,080" 1296 "1,296" 1512 "1,512" ///
+						1728 "1,728" 1944 "1,944" 2160 "2,160") xtitle("") ) ///
+						legend(off) saving("$sfig/var15_ext", replace)
 restore
 
 * median daily temperature
@@ -403,14 +448,17 @@ preserve
 						mfcolor(emidblue%5) mlcolor(emidblue%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Median Daily Temperature") ///
-						xline(216 432 648 864 1080 1296 1512 1728 1944) ///
-						xmtick(108(216)2160) xlabel(0 "0" 108 "Ext 1" ///
-						216 "216" 324 "Ext 2" 432 "432" 540 "Ext 3" ///
-						648 "648" 756 "Ext 4" 865 "864" 972 "Ext 5" ///
-						1080 "1,080" 1188 "Ext 6" 1296 "1,296" 1404 "Ext 7" ///
-						1512 "1,512" 1620 "Ext 8" 1728 "1,728" 1836 "Ext 9" ///
-						1944 "1,944" 2052 "Ext 10" 2160 "2,160", alt) ///
-						xtitle("") saving("$sfig/var16_ext", replace)
+						xaxis(2) xmtick(0(216)2160) xtitle("", axis(2)) ///
+						xlabel(0 " " 108 "HH Bilinear" 324 "HH Simple" 540 ///
+						"EA Bilinear" 756 "EA Simple" 972 "Modified EA Bilinear" ///
+						1188 "Modified EA Simple" 1404 "Admin Bilinear" ///
+						1620 "Admin Simple" 1836 "EA Zonal Mean" ///
+						2052 "Admin Zonal Mean" 2160 " ", axis(2) angle(45) notick) ///
+						addplot( , xline(216 432 648 864 1080 1296 1512 1728 1944) ///
+						xlabel(0 "0" 216 "216" 432 "432" 648 "648" ///
+						864 "864" 1080 "1,080" 1296 "1,296" 1512 "1,512" ///
+						1728 "1,728" 1944 "1,944" 2160 "2,160") xtitle("") ) ///
+						legend(off) saving("$sfig/var16_ext", replace)
 restore
 
 * variance of daily temperature
@@ -424,14 +472,17 @@ preserve
 						mfcolor(eltblue%5) mlcolor(eltblue%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Variance of Daily Temperature") ///
-						xline(216 432 648 864 1080 1296 1512 1728 1944) ///
-						xmtick(108(216)2160) xlabel(0 "0" 108 "Ext 1" ///
-						216 "216" 324 "Ext 2" 432 "432" 540 "Ext 3" ///
-						648 "648" 756 "Ext 4" 865 "864" 972 "Ext 5" ///
-						1080 "1,080" 1188 "Ext 6" 1296 "1,296" 1404 "Ext 7" ///
-						1512 "1,512" 1620 "Ext 8" 1728 "1,728" 1836 "Ext 9" ///
-						1944 "1,944" 2052 "Ext 10" 2160 "2,160", alt) ///
-						xtitle("") saving("$sfig/var17_ext", replace)
+						xaxis(2) xmtick(0(216)2160) xtitle("", axis(2)) ///
+						xlabel(0 " " 108 "HH Bilinear" 324 "HH Simple" 540 ///
+						"EA Bilinear" 756 "EA Simple" 972 "Modified EA Bilinear" ///
+						1188 "Modified EA Simple" 1404 "Admin Bilinear" ///
+						1620 "Admin Simple" 1836 "EA Zonal Mean" ///
+						2052 "Admin Zonal Mean" 2160 " ", axis(2) angle(45) notick) ///
+						addplot( , xline(216 432 648 864 1080 1296 1512 1728 1944) ///
+						xlabel(0 "0" 216 "216" 432 "432" 648 "648" ///
+						864 "864" 1080 "1,080" 1296 "1,296" 1512 "1,512" ///
+						1728 "1,728" 1944 "1,944" 2160 "2,160") xtitle("") ) ///
+						legend(off) saving("$sfig/var17_ext", replace)
 restore
 
 * skew of daily temperature
@@ -445,14 +496,17 @@ preserve
 						mfcolor(emerald%5) mlcolor(emerald%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Skew of Daily Temperature") ///
-						xline(216 432 648 864 1080 1296 1512 1728 1944) ///
-						xmtick(108(216)2160) xlabel(0 "0" 108 "Ext 1" ///
-						216 "216" 324 "Ext 2" 432 "432" 540 "Ext 3" ///
-						648 "648" 756 "Ext 4" 865 "864" 972 "Ext 5" ///
-						1080 "1,080" 1188 "Ext 6" 1296 "1,296" 1404 "Ext 7" ///
-						1512 "1,512" 1620 "Ext 8" 1728 "1,728" 1836 "Ext 9" ///
-						1944 "1,944" 2052 "Ext 10" 2160 "2,160", alt) ///
-						xtitle("") saving("$sfig/var18_ext", replace)
+						xaxis(2) xmtick(0(216)2160) xtitle("", axis(2)) ///
+						xlabel(0 " " 108 "HH Bilinear" 324 "HH Simple" 540 ///
+						"EA Bilinear" 756 "EA Simple" 972 "Modified EA Bilinear" ///
+						1188 "Modified EA Simple" 1404 "Admin Bilinear" ///
+						1620 "Admin Simple" 1836 "EA Zonal Mean" ///
+						2052 "Admin Zonal Mean" 2160 " ", axis(2) angle(45) notick) ///
+						addplot( , xline(216 432 648 864 1080 1296 1512 1728 1944) ///
+						xlabel(0 "0" 216 "216" 432 "432" 648 "648" ///
+						864 "864" 1080 "1,080" 1296 "1,296" 1512 "1,512" ///
+						1728 "1,728" 1944 "1,944" 2160 "2,160") xtitle("") ) ///
+						legend(off) saving("$sfig/var18_ext", replace)
 restore
 
 * growing degree days (gdd)
@@ -466,14 +520,17 @@ preserve
 						mfcolor(erose%5) mlcolor(erose%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Growing Degree Days (GDD)") ///
-						xline(216 432 648 864 1080 1296 1512 1728 1944) ///
-						xmtick(108(216)2160) xlabel(0 "0" 108 "Ext 1" ///
-						216 "216" 324 "Ext 2" 432 "432" 540 "Ext 3" ///
-						648 "648" 756 "Ext 4" 865 "864" 972 "Ext 5" ///
-						1080 "1,080" 1188 "Ext 6" 1296 "1,296" 1404 "Ext 7" ///
-						1512 "1,512" 1620 "Ext 8" 1728 "1,728" 1836 "Ext 9" ///
-						1944 "1,944" 2052 "Ext 10" 2160 "2,160", alt) ///
-						xtitle("") saving("$sfig/var19_ext", replace)
+						xaxis(2) xmtick(0(216)2160) xtitle("", axis(2)) ///
+						xlabel(0 " " 108 "HH Bilinear" 324 "HH Simple" 540 ///
+						"EA Bilinear" 756 "EA Simple" 972 "Modified EA Bilinear" ///
+						1188 "Modified EA Simple" 1404 "Admin Bilinear" ///
+						1620 "Admin Simple" 1836 "EA Zonal Mean" ///
+						2052 "Admin Zonal Mean" 2160 " ", axis(2) angle(45) notick) ///
+						addplot( , xline(216 432 648 864 1080 1296 1512 1728 1944) ///
+						xlabel(0 "0" 216 "216" 432 "432" 648 "648" ///
+						864 "864" 1080 "1,080" 1296 "1,296" 1512 "1,512" ///
+						1728 "1,728" 1944 "1,944" 2160 "2,160") xtitle("") ) ///
+						legend(off) saving("$sfig/var19_ext", replace)
 restore
 
 * deviation in gdd
@@ -487,14 +544,17 @@ preserve
 						mfcolor(ebblue%5) mlcolor(ebblue%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Deviation in Growing Degree Days (GDD)") ///
-						xline(216 432 648 864 1080 1296 1512 1728 1944) ///
-						xmtick(108(216)2160) xlabel(0 "0" 108 "Ext 1" ///
-						216 "216" 324 "Ext 2" 432 "432" 540 "Ext 3" ///
-						648 "648" 756 "Ext 4" 865 "864" 972 "Ext 5" ///
-						1080 "1,080" 1188 "Ext 6" 1296 "1,296" 1404 "Ext 7" ///
-						1512 "1,512" 1620 "Ext 8" 1728 "1,728" 1836 "Ext 9" ///
-						1944 "1,944" 2052 "Ext 10" 2160 "2,160", alt) ///
-						xtitle("") saving("$sfig/var20_ext", replace)
+						xaxis(2) xmtick(0(216)2160) xtitle("", axis(2)) ///
+						xlabel(0 " " 108 "HH Bilinear" 324 "HH Simple" 540 ///
+						"EA Bilinear" 756 "EA Simple" 972 "Modified EA Bilinear" ///
+						1188 "Modified EA Simple" 1404 "Admin Bilinear" ///
+						1620 "Admin Simple" 1836 "EA Zonal Mean" ///
+						2052 "Admin Zonal Mean" 2160 " ", axis(2) angle(45) notick) ///
+						addplot( , xline(216 432 648 864 1080 1296 1512 1728 1944) ///
+						xlabel(0 "0" 216 "216" 432 "432" 648 "648" ///
+						864 "864" 1080 "1,080" 1296 "1,296" 1512 "1,512" ///
+						1728 "1,728" 1944 "1,944" 2160 "2,160") xtitle("") ) ///
+						legend(off) saving("$sfig/var20_ext", replace)
 restore
 
 * z-score of gdd
@@ -508,14 +568,17 @@ preserve
 						mfcolor(eltgreen%5) mlcolor(eltgreen%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("z-Score of Growing Degree Days (GDD)") ///
-						xline(216 432 648 864 1080 1296 1512 1728 1944) ///
-						xmtick(108(216)2160) xlabel(0 "0" 108 "Ext 1" ///
-						216 "216" 324 "Ext 2" 432 "432" 540 "Ext 3" ///
-						648 "648" 756 "Ext 4" 865 "864" 972 "Ext 5" ///
-						1080 "1,080" 1188 "Ext 6" 1296 "1,296" 1404 "Ext 7" ///
-						1512 "1,512" 1620 "Ext 8" 1728 "1,728" 1836 "Ext 9" ///
-						1944 "1,944" 2052 "Ext 10" 2160 "2,160", alt) ///
-						xtitle("") saving("$sfig/var21_ext", replace)
+						xaxis(2) xmtick(0(216)2160) xtitle("", axis(2)) ///
+						xlabel(0 " " 108 "HH Bilinear" 324 "HH Simple" 540 ///
+						"EA Bilinear" 756 "EA Simple" 972 "Modified EA Bilinear" ///
+						1188 "Modified EA Simple" 1404 "Admin Bilinear" ///
+						1620 "Admin Simple" 1836 "EA Zonal Mean" ///
+						2052 "Admin Zonal Mean" 2160 " ", axis(2) angle(45) notick) ///
+						addplot( , xline(216 432 648 864 1080 1296 1512 1728 1944) ///
+						xlabel(0 "0" 216 "216" 432 "432" 648 "648" ///
+						864 "864" 1080 "1,080" 1296 "1,296" 1512 "1,512" ///
+						1728 "1,728" 1944 "1,944" 2160 "2,160") xtitle("") ) ///
+						legend(off) saving("$sfig/var21_ext", replace)
 restore
 
 * max daily temperature
@@ -529,14 +592,17 @@ preserve
 						mfcolor(stone%5) mlcolor(stone%5)) ///
 						scale (1.96) yline(0, lcolor(maroon) lstyle(solid) ) ///
 						ytitle("Coefficient") title("Maximum Daily Temperature") ///
-						xline(216 432 648 864 1080 1296 1512 1728 1944) ///
-						xmtick(108(216)2160) xlabel(0 "0" 108 "Ext 1" ///
-						216 "216" 324 "Ext 2" 432 "432" 540 "Ext 3" ///
-						648 "648" 756 "Ext 4" 865 "864" 972 "Ext 5" ///
-						1080 "1,080" 1188 "Ext 6" 1296 "1,296" 1404 "Ext 7" ///
-						1512 "1,512" 1620 "Ext 8" 1728 "1,728" 1836 "Ext 9" ///
-						1944 "1,944" 2052 "Ext 10" 2160 "2,160", alt) ///
-						xtitle("") saving("$sfig/var22_ext", replace)
+						xaxis(2) xmtick(0(216)2160) xtitle("", axis(2)) ///
+						xlabel(0 " " 108 "HH Bilinear" 324 "HH Simple" 540 ///
+						"EA Bilinear" 756 "EA Simple" 972 "Modified EA Bilinear" ///
+						1188 "Modified EA Simple" 1404 "Admin Bilinear" ///
+						1620 "Admin Simple" 1836 "EA Zonal Mean" ///
+						2052 "Admin Zonal Mean" 2160 " ", axis(2) angle(45) notick) ///
+						addplot( , xline(216 432 648 864 1080 1296 1512 1728 1944) ///
+						xlabel(0 "0" 216 "216" 432 "432" 648 "648" ///
+						864 "864" 1080 "1,080" 1296 "1,296" 1512 "1,512" ///
+						1728 "1,728" 1944 "1,944" 2160 "2,160") xtitle("") ) ///
+						legend(off) saving("$sfig/var22_ext", replace)
 restore
 
 * combine moments graphs
@@ -556,7 +622,9 @@ restore
 * 2 - generate random number to select extraction method
 * **********************************************************************
 
-* choose one extraction method at random
+* prior to the posting of the anonymized paper on arXiv the following random extraction was used
+
+/* choose one extraction method at random
 preserve
 	clear			all
 	set obs			1
@@ -566,9 +634,11 @@ preserve
 	sum		 		u i 
 restore	
 *** random number was 3, so we proceed with extraction method 3
+*/
 
-* keep extraction 3	
-	keep			if ext == 3
+* after the data was de-anonymized, we replace the above method of selection
+* with the "true" or preferred extraction method household bilinear (ext 1)
+
 		
 * **********************************************************************
 * 3 - generate serrbar graphs by metric

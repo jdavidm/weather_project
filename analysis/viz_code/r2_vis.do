@@ -2,7 +2,7 @@
 * Created on: November 2020
 * Created by: jdm
 * Edited by: jdm
-* Last edit: 23 August 2021 
+* Last edit: 24 August 2021 
 * Stata v.16.1 
 
 * does
@@ -90,8 +90,8 @@ preserve
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
 						9 "HH Bilinear" 10 "HH Simple" 11 "EA Bilinear" ///
 						12 "EA Simple" 13 "Modified EA Bilinear" 14 "Modified EA Simple" ///
-						15 "Administrative Bilinear" 16 "Administrative Simple" 17 "EA Buffer Zonal Mean" ///
-						18 "Administrative Zonal Mean" 19 "*{bf:Extraction}*" 28 " ", angle(0) ///
+						15 "Admin Bilinear" 16 "Admin Simple" 17 "EA Zonal Mean" ///
+						18 "Admin Zonal Mean" 19 "*{bf:Extraction}*" 28 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter k2 obs if ext == 1 | ext == 3 | ext == 5, msize(small small) mcolor(orange)) ///
 						(scatter r2_mu obs, yaxis(2) mcolor(maroon) ///
@@ -140,8 +140,8 @@ preserve
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
 						9 "HH Bilinear" 10 "HH Simple" 11 "EA Bilinear" ///
 						12 "EA Simple" 13 "Modified EA Bilinear" 14 "Modified EA Simple" ///
-						15 "Administrative Bilinear" 16 "Administrative Simple" 17 "EA Buffer Zonal Mean" ///
-						18 "Administrative Zonal Mean" 19 "*{bf:Extraction}*" 28 " ", angle(0) ///
+						15 "Admin Bilinear" 16 "Admin Simple" 17 "EA Zonal Mean" ///
+						18 "Admin Zonal Mean" 19 "*{bf:Extraction}*" 28 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter k2 obs if ext == 1 | ext == 3 | ext == 5, msize(small small) mcolor(orange)) ///
 						(scatter r2_mu obs, yaxis(2) mcolor(maroon) ///
@@ -190,8 +190,8 @@ preserve
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
 						9 "HH Bilinear" 10 "HH Simple" 11 "EA Bilinear" ///
 						12 "EA Simple" 13 "Modified EA Bilinear" 14 "Modified EA Simple" ///
-						15 "Administrative Bilinear" 16 "Administrative Simple" 17 "EA Buffer Zonal Mean" ///
-						18 "Administrative Zonal Mean" 19 "*{bf:Extraction}*" 28 " ", angle(0) ///
+						15 "Admin Bilinear" 16 "Admin Simple" 17 "EA Zonal Mean" ///
+						18 "Admin Zonal Mean" 19 "*{bf:Extraction}*" 28 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter k2 obs if ext == 1 | ext == 3 | ext == 5, msize(small small) mcolor(orange)) ///
 						(scatter r2_mu obs, yaxis(2) mcolor(maroon) ///
