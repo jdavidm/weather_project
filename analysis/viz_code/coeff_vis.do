@@ -388,7 +388,7 @@ restore
 	gr combine 		"$sfig/v01_ext.gph" "$sfig/v02_ext.gph" "$sfig/v03_ext.gph" ///
 						"$sfig/v04_ext.gph", col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\ext_moment_rf.pdf", as(pdf) replace
+	graph export 	"$xfig\ext_moment_rf.png", width(1400) replace
 	
 * combine total graphs
 	gr combine 		"$sfig/v05_ext.gph" "$sfig/v06_ext.gph" "$sfig/v07_ext.gph", ///
