@@ -2,8 +2,8 @@
 * Created on: November 2020
 * Created by: jdm
 * Edited by: jdm
-* Last edit: 24 August 2021 
-* Stata v.16.1 
+* Last edit: 26 August 2021 
+* Stata v.17.0 
 
 * does
 	* reads in results data set
@@ -93,9 +93,11 @@ preserve
 						15 "Admin Bilinear" 16 "Admin Simple" 17 "EA Zonal Mean" ///
 						18 "Admin Zonal Mean" 19 "*{bf:Extraction}*" 28 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
-						(scatter k2 obs if ext == 1 | ext == 3 | ext == 5, msize(small small) mcolor(orange)) ///
+						(scatter k2 obs if ext == 1 | ext == 3 | ext == 5, ///
+						msize(small small) mcolor(orange)) ///
 						(scatter r2_mu obs, yaxis(2) mcolor(maroon) ///
-						ylab(0.012(0.002)0.024, axis(2) labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2))) || ///
+						ylab(0.012(0.002)0.024, axis(2) labsize(tiny) angle(0) ) ///
+						yscale(range($from_y $bmax ) axis(2))) || ///
 						(rbar r2_lo r2_hi obs, barwidth(.2) color(edkblue%40) yaxis(2) ), ///
 						legend(order(4 5) cols(1) size(small) rowgap(.5) pos(12) ///
 						label(4 "mean adjusted R{sup:2}") label(5 "95% C.I.") ) ///
@@ -143,9 +145,11 @@ preserve
 						15 "Admin Bilinear" 16 "Admin Simple" 17 "EA Zonal Mean" ///
 						18 "Admin Zonal Mean" 19 "*{bf:Extraction}*" 28 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
-						(scatter k2 obs if ext == 1 | ext == 3 | ext == 5, msize(small small) mcolor(orange)) ///
+						(scatter k2 obs if ext == 1 | ext == 3 | ext == 5, ///
+						msize(small small) mcolor(orange)) ///
 						(scatter r2_mu obs, yaxis(2) mcolor(maroon) ///
-						ylab(.082(.003).097, axis(2) labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2))) || ///
+						ylab(.082(.003).097, axis(2) labsize(tiny) angle(0) ) ///
+						yscale(range($from_y $bmax ) axis(2))) || ///
 						(rbar r2_lo r2_hi obs, barwidth(.2) color(edkblue%40) yaxis(2) ), ///
 						legend(order(4 5) cols(1) size(small) rowgap(.5) pos(12) ///
 						label(4 "mean adjusted R{sup:2}") label(5 "95% C.I.") ) ///
@@ -193,9 +197,11 @@ preserve
 						15 "Admin Bilinear" 16 "Admin Simple" 17 "EA Zonal Mean" ///
 						18 "Admin Zonal Mean" 19 "*{bf:Extraction}*" 28 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
-						(scatter k2 obs if ext == 1 | ext == 3 | ext == 5, msize(small small) mcolor(orange)) ///
+						(scatter k2 obs if ext == 1 | ext == 3 | ext == 5, ///
+						msize(small small) mcolor(orange)) ///
 						(scatter r2_mu obs, yaxis(2) mcolor(maroon) ///
-						ylab(.223(.003).238, axis(2) labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2))) || ///
+						ylab(.223(.003).238, axis(2) labsize(tiny) angle(0) ) ///
+						yscale(range($from_y $bmax ) axis(2))) || ///
 						(rbar r2_lo r2_hi obs, barwidth(.2) color(edkblue%40) yaxis(2) ), ///
 						legend(order(4 5) cols(1) size(small) rowgap(.5) pos(12) ///
 						label(4 "mean adjusted R{sup:2}") label(5 "95% C.I.") ) ///
@@ -244,7 +250,7 @@ restore
 * load data 
 	use 			"$root/lsms_complete_results", clear
 
-* keep EA Bilinear	
+* keep HH Bilinear	
 	keep			if ext == 1
 	sort 			regname varname 
 
@@ -298,11 +304,14 @@ preserve
 						21 "Dev. in % Rainy Days" 22 "Longest Dry Spell" ///
 						23 "*{bf:Rainfall Metric}*" 37 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
+						(scatter k2 obs if varname == 1 | varname == 5 | varname == 8 | ///
+						varname == 10 | varname == 12, msize(small small) mcolor(orange)) ///
 						(scatter r2_mu obs, yaxis(2) mcolor(maroon) ///
-						ylab(0(0.01)0.04, axis(2) labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2))) || ///
+						ylab(0(0.01)0.04, axis(2) labsize(tiny) angle(0) ) ///
+						yscale(range($from_y $bmax ) axis(2))) || ///
 						(rbar r2_lo r2_hi obs, barwidth(.2) color(edkblue%40) yaxis(2) ), ///
-						legend(order(3 4 5) cols(1) size(small) rowgap(.5) pos(12) ///
-						label(3 "mean adjusted R{sup:2}") label(4 "95% C.I.") ) ///
+						legend(order(4 5) cols(1) size(small) rowgap(.5) pos(12) ///
+						label(4 "mean adjusted R{sup:2}") label(5 "95% C.I.") ) ///
 						saving("$sfig/r2_reg1_reg4_rf", replace)	
 restore
 
@@ -352,11 +361,14 @@ preserve
 						21 "Dev. in % Rainy Days" 22 "Longest Dry Spell" ///
 						23 "*{bf:Rainfall Metric}*" 37 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
+						(scatter k2 obs if varname == 1 | varname == 5 | varname == 8 | ///
+						varname == 10 | varname == 12, msize(small small) mcolor(orange)) ///
 						(scatter r2_mu obs, yaxis(2) mcolor(maroon) ///
-						ylab(0.07(0.01)0.12, axis(2) labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2))) || ///
+						ylab(0.07(0.01)0.12, axis(2) labsize(tiny) angle(0) ) ///
+						yscale(range($from_y $bmax ) axis(2))) || ///
 						(rbar r2_lo r2_hi obs, barwidth(.2) color(edkblue%40) yaxis(2) ), ///
-						legend(order(3 4 5) cols(1) size(small) rowgap(.5) pos(12) ///
-						label(3 "mean adjusted R{sup:2}") label(4 "95% C.I.") ) ///
+						legend(order(4 5) cols(1) size(small) rowgap(.5) pos(12) ///
+						label(4 "mean adjusted R{sup:2}") label(5 "95% C.I.") ) ///
 						saving("$sfig/r2_reg2_reg5_rf", replace)	
 restore
 
@@ -404,11 +416,14 @@ preserve
 						21 "Dev. in % Rainy Days" 22 "Longest Dry Spell" ///
 						23 "*{bf:Rainfall Metric}*" 37 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
+						(scatter k2 obs if varname == 1 | varname == 5 | varname == 8 | ///
+						varname == 10 | varname == 12, msize(small small) mcolor(orange)) ///
 						(scatter r2_mu obs, yaxis(2) mcolor(maroon) ///
-						ylab(0.2(0.02)0.26, axis(2) labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2))) || ///
+						ylab(0.2(0.02)0.26, axis(2) labsize(tiny) angle(0) ) ///
+						yscale(range($from_y $bmax ) axis(2))) || ///
 						(rbar r2_lo r2_hi obs, barwidth(.2) color(edkblue%40) yaxis(2) ), ///
-						legend(order(3 4 5) cols(1) size(small) rowgap(.5) pos(12) ///
-						label(3 "mean adjusted R{sup:2}") label(4 "95% C.I.") ) ///
+						legend(order(4 5) cols(1) size(small) rowgap(.5) pos(12) ///
+						label(4 "mean adjusted R{sup:2}") label(5 "95% C.I.") ) ///
 						saving("$sfig/r2_reg3_reg6_rf", replace)	
 restore	
 	
@@ -428,7 +443,7 @@ restore
 	use 			"$root/lsms_complete_results", clear
 
 * keep EA Bilinear	
-	keep			if ext == 3
+	keep			if ext == 1
 	sort 			regname varname 
 
 	collapse 		(mean) r2_mu = adjustedr ///
@@ -479,11 +494,14 @@ preserve
 						13 "Growing Degree Days" 14 "Dev. in GDD" 15 "z-Score of GDD" ///
 						16 "Max Daily Temp" 17 "*{bf:Temperature Metric}*" 31 " ", ///
 						angle(0) labsize(vsmall) tstyle(notick)) || ///
+						(scatter k2 obs if varname == 15 | varname == 16, ///
+						msize(small small) mcolor(orange)) ///
 						(scatter r2_mu obs, yaxis(2) mcolor(maroon) ///
-						ylab(0(0.02)0.08, axis(2) labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2))) || ///
+						ylab(0(0.02)0.08, axis(2) labsize(tiny) angle(0) ) ///
+						yscale(range($from_y $bmax ) axis(2))) || ///
 						(rbar r2_lo r2_hi obs, barwidth(.2) color(edkblue%40) yaxis(2) ), ///
-						legend(order(3 4 5) cols(1) size(small) rowgap(.5) pos(12) ///
-						label(3 "mean adjusted R{sup:2}") label(4 "95% C.I.") ) ///
+						legend(order(4 5) cols(1) size(small) rowgap(.5) pos(12) ///
+						label(4 "mean adjusted R{sup:2}") label(5 "95% C.I.") ) ///
 						saving("$sfig/r2_reg1_reg4_tp", replace)	
 restore
 
@@ -529,11 +547,14 @@ preserve
 						13 "Growing Degree Days" 14 "Dev. in GDD" 15 "z-Score of GDD" ///
 						16 "Max Daily Temp" 17 "*{bf:Temperature Metric}*" 31 " ", ///
 						angle(0) labsize(vsmall) tstyle(notick)) || ///
+						(scatter k2 obs if varname == 15 | varname == 16, ///
+						msize(small small) mcolor(orange)) ///
 						(scatter r2_mu obs, yaxis(2) mcolor(maroon) ///
-						ylab(0.06(0.02)0.14, axis(2) labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2))) || ///
+						ylab(0.06(0.02)0.14, axis(2) labsize(tiny) angle(0) ) ///
+						yscale(range($from_y $bmax ) axis(2))) || ///
 						(rbar r2_lo r2_hi obs, barwidth(.2) color(edkblue%40) yaxis(2) ), ///
-						legend(order(3 4 5) cols(1) size(small) rowgap(.5) pos(12) ///
-						label(3 "mean adjusted R{sup:2}") label(4 "95% C.I.") ) ///
+						legend(order(4 5) cols(1) size(small) rowgap(.5) pos(12) ///
+						label(4 "mean adjusted R{sup:2}") label(5 "95% C.I.") ) ///
 						saving("$sfig/r2_reg2_reg5_tp", replace)	
 restore
 
@@ -579,11 +600,14 @@ preserve
 						13 "Growing Degree Days" 14 "Dev. in GDD" 15 "z-Score of GDD" ///
 						16 "Max Daily Temp" 17 "*{bf:Temperature Metric}*" 31 " ", ///
 						angle(0) labsize(vsmall) tstyle(notick)) || ///
+						(scatter k2 obs if varname == 15 | varname == 16, ///
+						msize(small small) mcolor(orange)) ///
 						(scatter r2_mu obs, yaxis(2) mcolor(maroon) ///
-						ylab(0.18(0.02)0.28, axis(2) labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2))) || ///
+						ylab(0.18(0.02)0.28, axis(2) labsize(tiny) angle(0) ) ///
+						yscale(range($from_y $bmax ) axis(2))) || ///
 						(rbar r2_lo r2_hi obs, barwidth(.2) color(edkblue%40) yaxis(2) ), ///
-						legend(order(3 4 5) cols(1) size(small) rowgap(.5) pos(12) ///
-						label(3 "mean adjusted R{sup:2}") label(4 "95% C.I.") ) ///
+						legend(order(4 5) cols(1) size(small) rowgap(.5) pos(12) ///
+						label(4 "mean adjusted R{sup:2}") label(5 "95% C.I.") ) ///
 						saving("$sfig/r2_reg3_reg6_tp", replace)	
 restore	
 	

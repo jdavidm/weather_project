@@ -2,8 +2,8 @@
 * Created on: September 2019
 * Created by: jdm
 * Edited by: jdm
-* Last edit: 24 August 2021
-* Stata v.16.1 
+* Last edit: 26 August 2021
+* Stata v.17.0 
 
 * does
 	* reads in results data set
@@ -553,8 +553,8 @@ restore
 * 4 - generate p-value graphs by weather metric
 * **********************************************************************
 		
-* keep EA Bilinear	
-	keep			if ext == 3
+* keep HH Bilinear	
+	keep			if ext == 1
 
 * **********************************************************************
 * 4a - generate p-value graphs by weather metric across countries
@@ -595,6 +595,12 @@ preserve
 	replace			obs = 1 + obs if obs > 47
 	replace			obs = 1 + obs if obs > 51
 	
+	sum			 	hi if p == 95 & varname == 1
+	global			bmax = r(max)
+	
+	sum			 	lo if p == 95 & varname == 1
+	global			bmin = r(min)	
+	
 	twoway			(bar mu obs if p == 90, color(emerald*1.5%60)) || ///
 						(bar mu obs if p == 95, color(eltblue*1.5%60)) || ///
 						(bar mu obs if p == 99, color(khaki*1.5%60)) || ///
@@ -602,6 +608,8 @@ preserve
 						ylab(0(.1)1, labsize(small)) title("Rainfall") ///
 						ytitle("Share of Significant Point Estimates") ///
 						xscale(r(0 24) ex) ///
+						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
+						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
 						xlabel(2 "Mean Daily Rain " 6 "Median Daily Rain " ///
 						10 "Variance of Daily Rain " 14 "Skew of Daily Rain " ///
 						18 "Total Seasonal Rain " 22 "Dev. in Total Rain " ///
@@ -646,6 +654,13 @@ preserve
 	replace			obs = 1 + obs if obs > 23
 	replace			obs = 1 + obs if obs > 27
 	
+	sum			 	hi if p == 95 & varname == 15
+	global			bmax = r(max)
+	
+	sum			 	lo if p == 95 & varname == 15
+	global			bmin = r(min)	
+	
+	
 	twoway			(bar mu obs if p == 90, color(maroon*1.5%60)) || ///
 						(bar mu obs if p == 95, color(lavender*1.5%60)) || ///
 						(bar mu obs if p == 99, color(brown*1.5%60)) || ///
@@ -653,6 +668,8 @@ preserve
 						ylab(0(.1)1, labsize(small)) title("Temperature") ///
 						ytitle("Share of Significant Point Estimates") ///
 						xscale(r(0 24) ex) ///
+						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
+						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
 						xlabel(2 "Mean Daily Temp " 6 "Median Daily Temp " ///
 						10 "Variance of Daily Temp " 14 "Skew of Daily Temp " ///
 						18 "Growing Degree Days " 22 "Dev. in GDD " ///
@@ -669,7 +686,7 @@ restore
 	grc1leg2 		"$sfig/pval_varname_rf.gph" "$sfig/pval_varname_tp.gph", ///
 						col(1) iscale(.5) pos(12) commonscheme imargin(0 0 0 0)
 						
-	graph export 	"$xfig\pval_varname.png", width(1400) replace							
+	graph export 	"$xfig\pval_varname.pdf", as(pdf) replace							
 
 
 * **********************************************************************
@@ -1074,7 +1091,7 @@ restore
 						"$sfig/tza_pval_varname_rf.gph" "$sfig/uga_pval_varname_rf.gph", ///
 						col(3) iscale(.5) pos(12) commonscheme imargin(0 0 0 0)
 						
-	graph export 	"$xfig\pval_varname_rf.png", width(1400) replace
+	graph export 	"$xfig\pval_varname_rf.pdf", as(pdf) replace
 
 	
 * **********************************************************************
@@ -1425,7 +1442,7 @@ restore
 						"$sfig/tza_pval_varname_tp.gph" "$sfig/uga_pval_varname_tp.gph", ///
 						col(3) iscale(.5) pos(12) commonscheme imargin(0 0 0 0)
 						
-	graph export 	"$xfig\pval_varname_tp.png", width(1400) replace
+	graph export 	"$xfig\pval_varname_tp.pdf", as(pdf) replace
 
 
 * **********************************************************************
