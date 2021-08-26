@@ -2,8 +2,8 @@
 * Created on: September 2019
 * Created by: jdm
 * Edited by: jdm
-* Last edit: 24 August 2021
-* Stata v.16.1 
+* Last edit: 26 August 2021
+* Stata v.17.0 
 
 * does
 	* reads in results data set
@@ -644,6 +644,9 @@ restore
 * 3 - generate serrbar graphs by metric
 * **********************************************************************
 
+* keep HH Bilinear	
+	keep			if ext == 1
+	
 *generate different betas based on signficance
 	gen 			b_sig = beta
 	replace 		b_sig = . if pval > .05
@@ -787,7 +790,7 @@ restore
 						"$sfig/v01_nga.gph" "$sfig/v01_tza.gph" "$sfig/v01_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v01_cty.png", as(png) replace
+	graph export 	"$xfig\v01_cty.png", width(1400) replace
 
 	
 *** median daily rainfall ***
@@ -906,7 +909,7 @@ restore
 						"$sfig/v02_nga.gph" "$sfig/v02_tza.gph" "$sfig/v02_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v02_cty.png", as(png) replace
+	graph export 	"$xfig\v02_cty.png", width(1400) replace
 
 	
 *** variance daily rainfall ***
@@ -1025,7 +1028,7 @@ restore
 						"$sfig/v03_nga.gph" "$sfig/v03_tza.gph" "$sfig/v03_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v03_cty.png", as(png) replace
+	graph export 	"$xfig\v03_cty.png", width(1400) replace
 		
 	
 *** skew daily rainfall ***
@@ -1144,7 +1147,7 @@ restore
 						"$sfig/v04_nga.gph" "$sfig/v04_tza.gph" "$sfig/v04_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v04_cty.png", as(png) replace
+	graph export 	"$xfig\v04_cty.png", width(1400) replace
 			
 		
 *** total seasonal rainfall ***
@@ -1263,7 +1266,7 @@ restore
 						"$sfig/v05_nga.gph" "$sfig/v05_tza.gph" "$sfig/v05_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v05_cty.png", as(png) replace
+	graph export 	"$xfig\v05_cty.png", width(1400) replace
 			
 		
 *** deviation in total seasonal rainfall ***
@@ -1382,7 +1385,7 @@ restore
 						"$sfig/v06_nga.gph" "$sfig/v06_tza.gph" "$sfig/v06_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v06_cty.png", as(png) replace
+	graph export 	"$xfig\v06_cty.png", width(1400) replace
 		
 			
 *** z-score total seasonal rainfall ***
@@ -1501,7 +1504,7 @@ restore
 						"$sfig/v07_nga.gph" "$sfig/v07_tza.gph" "$sfig/v07_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v07_cty.png", as(png) replace
+	graph export 	"$xfig\v07_cty.png", width(1400) replace
 
 			
 *** number of days with rain ***
@@ -1620,7 +1623,7 @@ restore
 						"$sfig/v08_nga.gph" "$sfig/v08_tza.gph" "$sfig/v08_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v08_cty.png", as(png) replace
+	graph export 	"$xfig\v08_cty.png", width(1400) replace
 		
 		
 *** deviation in number of days with rain ***
@@ -1739,7 +1742,7 @@ restore
 						"$sfig/v09_nga.gph" "$sfig/v09_tza.gph" "$sfig/v09_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v09_cty.png", as(png) replace
+	graph export 	"$xfig\v09_cty.png", width(1400) replace
 
 	
 *** number of days without rain ***
@@ -1858,7 +1861,7 @@ restore
 						"$sfig/v10_nga.gph" "$sfig/v10_tza.gph" "$sfig/v10_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v10_cty.png", as(png) replace
+	graph export 	"$xfig\v10_cty.png", width(1400) replace
 
 	
 *** deviation in no rain days ***
@@ -1977,7 +1980,7 @@ restore
 						"$sfig/v11_nga.gph" "$sfig/v11_tza.gph" "$sfig/v11_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v11_cty.png", as(png) replace
+	graph export 	"$xfig\v11_cty.png", width(1400) replace
 				
 	
 *** percentage of days with rain ***
@@ -2096,7 +2099,7 @@ restore
 						"$sfig/v12_nga.gph" "$sfig/v12_tza.gph" "$sfig/v12_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v12_cty.png", as(png) replace
+	graph export 	"$xfig\v12_cty.png", width(1400) replace
 				
 	
 *** deviation in % of days with rain ***
@@ -2215,7 +2218,7 @@ restore
 						"$sfig/v13_nga.gph" "$sfig/v13_tza.gph" "$sfig/v13_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v13_cty.png", as(png) replace
+	graph export 	"$xfig\v13_cty.png", width(1400) replace
 				
 	
 *** longest dry spell ***
@@ -2334,7 +2337,7 @@ restore
 						"$sfig/v14_nga.gph" "$sfig/v14_tza.gph" "$sfig/v14_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v14_cty.png", as(png) replace
+	graph export 	"$xfig\v14_cty.png", width(1400) replace
 	
 
 * **********************************************************************
@@ -2457,7 +2460,7 @@ restore
 						"$sfig/v15_nga.gph" "$sfig/v15_tza.gph" "$sfig/v15_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v15_cty.png", as(png) replace
+	graph export 	"$xfig\v15_cty.png", width(1400) replace
 
 	
 *** median daily temperature ***		
@@ -2576,7 +2579,7 @@ restore
 						"$sfig/v16_nga.gph" "$sfig/v16_tza.gph" "$sfig/v16_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v16_cty.png", as(png) replace
+	graph export 	"$xfig\v16_cty.png", width(1400) replace
 	
 	
 *** variance of daily temperature ***		
@@ -2695,7 +2698,7 @@ restore
 						"$sfig/v17_nga.gph" "$sfig/v17_tza.gph" "$sfig/v17_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v17_cty.png", as(png) replace
+	graph export 	"$xfig\v17_cty.png", width(1400) replace
 	
 	
 *** skew of daily temperature ***		
@@ -2814,7 +2817,7 @@ restore
 						"$sfig/v18_nga.gph" "$sfig/v18_tza.gph" "$sfig/v18_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v18_cty.png", as(png) replace
+	graph export 	"$xfig\v18_cty.png", width(1400) replace
 
 	
 *** growing degree days (gdd) ***		
@@ -2933,7 +2936,7 @@ restore
 						"$sfig/v19_nga.gph" "$sfig/v19_tza.gph" "$sfig/v19_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v19_cty.png", as(png) replace
+	graph export 	"$xfig\v19_cty.png", width(1400) replace
 
 	
 *** deviation in growing degree days (gdd) ***		
@@ -3052,7 +3055,7 @@ restore
 						"$sfig/v20_nga.gph" "$sfig/v20_tza.gph" "$sfig/v20_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v20_cty.png", as(png) replace
+	graph export 	"$xfig\v20_cty.png", width(1400) replace
 
 	
 *** z-score of growing degree days (gdd) ***		
@@ -3171,7 +3174,7 @@ restore
 						"$sfig/v21_nga.gph" "$sfig/v21_tza.gph" "$sfig/v21_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v21_cty.png", as(png) replace
+	graph export 	"$xfig\v21_cty.png", width(1400) replace
 						
 	
 *** max daily temp ***		
@@ -3290,7 +3293,7 @@ restore
 						"$sfig/v22_nga.gph" "$sfig/v22_tza.gph" "$sfig/v22_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v22_cty.png", as(png) replace
+	graph export 	"$xfig\v22_cty.png", width(1400) replace
 						
 						
 * **********************************************************************
