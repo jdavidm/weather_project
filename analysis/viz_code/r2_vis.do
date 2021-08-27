@@ -643,7 +643,7 @@ restore
 	use 			"$root/lsms_complete_results", clear
 
 * keep EA Bilinear	
-	keep			if ext == 3
+	keep			if ext == 1
 	keep			if varname == 1 | varname == 5 | varname == 8 | ///
 						varname == 12
 	sort 			regname sat 
@@ -692,8 +692,8 @@ preserve
 						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
-						9 "Rainfall 1" 10 "Rainfall 2" 11 "Rainfall 3" ///
-						12 "Rainfall 4" 13 "Rainfall 5" 14 "Rainfall 6" ///
+						9 "CHIRPS" 10 "CPC" 11 "MERRA-2" ///
+						12 "ARC2" 13 "ECMWF" 14 "TAMSAT" ///
 						15 "*{bf:Weather Product}*" 22 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter r2_mu obs, yaxis(2) mcolor(maroon) msize(small) ///
@@ -743,8 +743,8 @@ preserve
 						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
-						9 "Rainfall 1" 10 "Rainfall 2" 11 "Rainfall 3" ///
-						12 "Rainfall 4" 13 "Rainfall 5" 14 "Rainfall 6" ///
+						9 "CHIRPS" 10 "CPC" 11 "MERRA-2" ///
+						12 "ARC2" 13 "ECMWF" 14 "TAMSAT" ///
 						15 "*{bf:Weather Product}*" 22 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter r2_mu obs, yaxis(2) mcolor(maroon) msize(small) ///
@@ -793,8 +793,8 @@ preserve
 						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
-						9 "Rainfall 1" 10 "Rainfall 2" 11 "Rainfall 3" ///
-						12 "Rainfall 4" 13 "Rainfall 5" 14 "Rainfall 6" ///
+						9 "CHIRPS" 10 "CPC" 11 "MERRA-2" ///
+						12 "ARC2" 13 "ECMWF" 14 "TAMSAT" ///
 						15 "*{bf:Weather Product}*" 22 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter r2_mu obs, yaxis(2) mcolor(maroon) msize(small) ///
@@ -811,7 +811,7 @@ restore
 						"$sfig/r2_reg3_reg6_sat_rf.gph", col(2) iscale(.5) ///
 						ring(0) pos(5) holes(4) commonscheme
 						
-	graph export 	"$xfig\r2_sat_rf.png", as(png) replace
+	graph export 	"$xfig\r2_sat_rf.pdf", as(pdf) replace
 		
 	
 * **********************************************************************
@@ -822,7 +822,7 @@ restore
 	use 			"$root/lsms_complete_results", clear
 
 * keep EA Bilinear	
-	keep			if ext == 3
+	keep			if ext == 1
 	keep			if varname == 15 | varname == 16 | ///
 						varname == 17
 	sort 			regname sat 
@@ -876,7 +876,7 @@ preserve
 						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
-						9 "Temperature 1" 10 "Temperature 2" 11 "Temperature 3" ///
+						9 "MERRA-2" 10 "ECMWF" 11 "CPC" ///
 						12 "*{bf:Weather Product}*" 18 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter r2_mu obs, yaxis(2) mcolor(maroon) msize(small) ///
@@ -933,7 +933,7 @@ preserve
 						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
-						9 "Temperature 1" 10 "Temperature 2" 11 "Temperature 3" ///
+						9 "MERRA-2" 10 "ECMWF" 11 "CPC" ///
 						12 "*{bf:Weather Product}*" 18 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter r2_mu obs, yaxis(2) mcolor(maroon) msize(small) ///
@@ -987,7 +987,7 @@ preserve
 						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
-						9 "Temperature 1" 10 "Temperature 2" 11 "Temperature 3" ///
+						9 "MERRA-2" 10 "ECMWF" 11 "CPC" ///
 						12 "*{bf:Weather Product}*" 18 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter r2_mu obs, yaxis(2) mcolor(maroon) msize(small) ///
@@ -1004,7 +1004,7 @@ restore
 						"$sfig/r2_reg3_reg6_sat_tp.gph", col(2) iscale(.5) ///
 						ring(0) pos(5) holes(4) commonscheme
 						
-	graph export 	"$xfig\r2_sat_tp.png", as(png) replace
+	graph export 	"$xfig\r2_sat_tp.pdf", as(pdf) replace
 	
 	
 * **********************************************************************
