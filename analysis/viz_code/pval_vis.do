@@ -2,7 +2,7 @@
 * Created on: September 2019
 * Created by: jdm
 * Edited by: jdm
-* Last edit: 26 August 2021
+* Last edit: 30 August 2021
 * Stata v.17.0 
 
 * does
@@ -18,9 +18,9 @@
 	* complete
 
 	
-* **********************************************************************
-* 0 - setup
-* **********************************************************************
+************************************************************************
+**# 0 - setup
+************************************************************************
 
 * define paths
 	global	root 	= 	"$data/results_data"
@@ -35,9 +35,9 @@
 	log 	using 		"$logout/pval_vis", append
 
 		
-* **********************************************************************
-* 1 - load data
-* **********************************************************************
+************************************************************************
+**# 1 - load data
+************************************************************************
 
 * load data 
 	use 			"$root/lsms_complete_results", clear
@@ -51,13 +51,13 @@
 	replace 		p90 = 0 if pval > 0.10
 
 	
-* **********************************************************************
-* 2 - generate p-value graphs by extraction
-* **********************************************************************
+************************************************************************
+**# 2 - generate p-value graphs by extraction
+************************************************************************
 						
-* **********************************************************************
-* 2a - generate p-value graphs by extraction across countries
-* **********************************************************************
+************************************************************************
+**# 2a - generate p-value graphs by extraction across countries
+************************************************************************
 
 * p-value graph of rainfall by extraction method
 preserve
@@ -178,9 +178,9 @@ restore
 	graph export 	"$xfig/pval_ext.pdf", as(pdf) replace		
 			
 				
-* **********************************************************************
-* 2b - generate p-value graphs by extraction and country
-* **********************************************************************
+************************************************************************
+**# 2b - generate p-value graphs by extraction and country
+************************************************************************
 	
 * p-value graph of rainfall by extraction method
 preserve
@@ -527,9 +527,9 @@ restore
 
 
 
-* **********************************************************************
-* 3 - generate random number to select extraction method
-* **********************************************************************
+************************************************************************
+**# 3 - generate random number to select extraction method
+************************************************************************
 
 * prior to the posting of the anonymized paper on arXiv the following random extraction was used
 
@@ -549,16 +549,16 @@ restore
 * with the "true" or preferred extraction method household bilinear (ext 1)
 
 	
-* **********************************************************************
-* 4 - generate p-value graphs by weather metric
-* **********************************************************************
+************************************************************************
+**# 4 - generate p-value graphs by weather metric
+************************************************************************
 		
 * keep HH Bilinear	
 	keep			if ext == 1
 
-* **********************************************************************
-* 4a - generate p-value graphs by weather metric across countries
-* **********************************************************************
+************************************************************************
+**# 4a - generate p-value graphs by weather metric across countries
+************************************************************************
 
 * p-value graph of rainfall by varname
 preserve
@@ -689,9 +689,9 @@ restore
 	graph export 	"$xfig\pval_varname.pdf", as(pdf) replace							
 
 
-* **********************************************************************
-* 4b - generate p-value graphs by rainfall metric and country
-* **********************************************************************
+************************************************************************
+**# 4b - generate p-value graphs by rainfall metric and country
+************************************************************************
 
 * ethiopia rainfall	
 preserve
@@ -1094,9 +1094,9 @@ restore
 	graph export 	"$xfig\pval_varname_rf.pdf", as(pdf) replace
 
 	
-* **********************************************************************
-* 4c - generate p-value graphs by temperature metric and country
-* **********************************************************************
+************************************************************************
+**# 4c - generate p-value graphs by temperature metric and country
+************************************************************************
 
 * ethiopia temperature
 preserve
@@ -1445,9 +1445,9 @@ restore
 	graph export 	"$xfig\pval_varname_tp.pdf", as(pdf) replace
 
 
-* **********************************************************************
-* 5 - select weather metrics to investigate
-* **********************************************************************
+************************************************************************
+**# 5 - select weather metrics to investigate
+************************************************************************
 
 * based on above analysis we will proceed with following rainfall metrics
 	* mean rainfall (varname == 1)
@@ -1461,9 +1461,9 @@ restore
 	* variance temperature  (varname == 17)
 
 	
-* **********************************************************************
-* 5a - generate p-value graphs by satellite
-* **********************************************************************
+************************************************************************
+**# 5a - generate p-value graphs by satellite
+************************************************************************
 				
 * p-value graph of rainfall
 preserve
@@ -1500,9 +1500,9 @@ preserve
 						ylab(0(.1)1, labsize(small)) title("Rainfall") ///
 						ytitle("Share of Significant Point Estimates") ///
 						xscale(r(0 24) ex) ///
-						xlabel(2 "Rainfall 1 " 6 "Rainfall 2 " ///
-						10 "Rainfall 3 " 14 "Rainfall 4 " ///
-						18 "Rainfall 5 " 22 "Rainfall 6 ", ///
+						xlabel(2 "CHIRPS" 6 "CPC" ///
+						10 "MERRA-2" 14 "ARC2" ///
+						18 "ECMWF" 22 "TAMSAT", ///
 						angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(4) order(1 2 3 4) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I.")) ///
@@ -1543,8 +1543,8 @@ preserve
 						(rcap hi lo obs, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Temperature") ///
 						ytitle("Share of Significant Point Estimates") ///
-						xscale(r(0 12) ex) xlabel(2 "Temperature 1 " ///
-						6 "Temperature 2 " 10 "Temperature 3 " , ///
+						xscale(r(0 12) ex) xlabel(2 "MERRA-2" ///
+						6 "ECMWF" 10 "CPC" , ///
 						angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(4) order(1 2 3 4) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I.")) ///
@@ -1556,7 +1556,7 @@ restore
 	grc1leg2 		"$sfig/pval_rf.gph" "$sfig/pval_tp.gph", ///
 						col(2) iscale(.5) pos(12) commonscheme
 						
-	graph export 	"$xfig\pval_sat.png", width(1400) replace
+	graph export 	"$xfig\pval_sat.pdf", as(pdf) replace
 
 	
 * p-value graph of mean daily rainfall
@@ -1593,9 +1593,9 @@ preserve
 						ylab(0(.1)1, labsize(small)) title("Mean Daily Rainfall") ///
 						ytitle("Share of Significant Point Estimates") ///
 						xscale(r(0 24) ex) ///
-						xlabel(2 "Rainfall 1 " 6 "Rainfall 2 " ///
-						10 "Rainfall 3 " 14 "Rainfall 4 " ///
-						18 "Rainfall 5 " 22 "Rainfall 6 ", ///
+						xlabel(2 "CHIRPS" 6 "CPC" ///
+						10 "MERRA-2" 14 "ARC2" ///
+						18 "ECMWF" 22 "TAMSAT", ///
 						angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(4) order(1 2 3 4) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I."))  ///
@@ -1636,9 +1636,9 @@ preserve
 						ylab(0(.1)1, labsize(small)) title("Total Seasonal Rainfall") ///
 						ytitle("Share of Significant Point Estimates") ///
 						xscale(r(0 24) ex) ///
-						xlabel(2 "Rainfall 1 " 6 "Rainfall 2 " ///
-						10 "Rainfall 3 " 14 "Rainfall 4 " ///
-						18 "Rainfall 5 " 22 "Rainfall 6 ", ///
+						xlabel(2 "CHIRPS" 6 "CPC" ///
+						10 "MERRA-2" 14 "ARC2" ///
+						18 "ECMWF" 22 "TAMSAT", ///
 						angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(4) order(1 2 3 4) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I."))  ///
@@ -1679,9 +1679,9 @@ preserve
 						ylab(0(.1)1, labsize(small)) title("Number of Rainy Days") ///
 						ytitle("Share of Significant Point Estimates") ///
 						xscale(r(0 24) ex) ///
-						xlabel(2 "Rainfall 1 " 6 "Rainfall 2 " ///
-						10 "Rainfall 3 " 14 "Rainfall 4 " ///
-						18 "Rainfall 5 " 22 "Rainfall 6 ", ///
+						xlabel(2 "CHIRPS" 6 "CPC" ///
+						10 "MERRA-2" 14 "ARC2" ///
+						18 "ECMWF" 22 "TAMSAT", ///
 						angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(4) order(1 2 3 4) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I."))  ///
@@ -1722,9 +1722,9 @@ preserve
 						ylab(0(.1)1, labsize(small)) title("% Rainy Days") ///
 						ytitle("Share of Significant Point Estimates") ///
 						xscale(r(0 24) ex) ///
-						xlabel(2 "Rainfall 1 " 6 "Rainfall 2 " ///
-						10 "Rainfall 3 " 14 "Rainfall 4 " ///
-						18 "Rainfall 5 " 22 "Rainfall 6 ", ///
+						xlabel(2 "CHIRPS" 6 "CPC" ///
+						10 "MERRA-2" 14 "ARC2" ///
+						18 "ECMWF" 22 "TAMSAT", ///
 						angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(4) order(1 2 3 4) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I."))  ///
@@ -1736,7 +1736,7 @@ restore
 						"$sfig/pval_v08.gph" "$sfig/pval_v12.gph", ///
 						col(2) iscale(.5) pos(12) commonscheme
 						
-	graph export 	"$xfig\pval_v_rf.png", width(1400) replace
+	graph export 	"$xfig\pval_v_rf.pdf", as(pdf) replace
 
 						
 * p-value graph of mean daily temp
@@ -1770,8 +1770,8 @@ preserve
 						(rcap hi lo obs, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Mean Daily Temperature") ///
 						ytitle("Share of Significant Point Estimates") ///
-						xscale(r(0 12) ex) xlabel(2 "Temperature 1 " ///
-						6 "Temperature 2 " 10 "Temperature 3 " , ///
+						xscale(r(0 12) ex) xlabel(2 "MERRA-2" ///
+						6 "ECMWF" 10 "CPC" , ///
 						angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(2) order(1 2 3 4) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I."))  ///
@@ -1809,8 +1809,8 @@ preserve
 						(rcap hi lo obs, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Median Daily Temperature") ///
 						ytitle("Share of Significant Point Estimates") ///
-						xscale(r(0 12) ex) xlabel(2 "Temperature 1 " ///
-						6 "Temperature 2 " 10 "Temperature 3 " , ///
+						xscale(r(0 12) ex) xlabel(2 "MERRA-2" ///
+						6 "ECMWF" 10 "CPC" , ///
 						angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(2) order(1 2 3 4) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I."))  ///
@@ -1848,8 +1848,8 @@ preserve
 						(rcap hi lo obs, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Variance of Daily Temperature") ///
 						ytitle("Share of Significant Point Estimates") ///
-						xscale(r(0 12) ex) xlabel(2 "Temperature 1 " ///
-						6 "Temperature 2 " 10 "Temperature 3 " , ///
+						xscale(r(0 12) ex) xlabel(2 "MERRA-2" ///
+						6 "ECMWF" 10 "CPC" , ///
 						angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(2) order(1 2 3 4) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I."))  ///
@@ -1861,17 +1861,17 @@ restore
 						"$sfig/pval_v17.gph",  col(2) iscale(.5) ///
 						ring(0) pos(5) holes(4) commonscheme
 						
-	graph export 	"$xfig\pval_v_tp.png", width(1400) replace
+	graph export 	"$xfig\pval_v_tp.pdf", as(pdf) replace
 					
 					
-* **********************************************************************
-* 5b - generate p-value graphs by satellite and country
-* **********************************************************************
+************************************************************************
+**# 5b - generate p-value graphs by satellite and country
+************************************************************************
 	
 	
-* **********************************************************************
-* 4 - end matter
-* **********************************************************************
+************************************************************************
+**# 6 - end matter
+************************************************************************
 
 
 * close the log
