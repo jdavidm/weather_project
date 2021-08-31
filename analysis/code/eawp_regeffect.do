@@ -45,6 +45,8 @@
 	loc 	inputscp 	lncp_lab lncp_frt cp_pst cp_hrb cp_irr
 	loc		inputstf 	lntf_lab lntf_frt tf_pst tf_hrb tf_irr
 	loc		weather 	v*
+	loc		weatherRF 	v01* v02* v03* v04* v05* v06* v07* 
+	*v08* v09* v10* v11* v12* v13* v14*
 	
 /*
 * create file to post results to
@@ -1322,7 +1324,7 @@ loc 		inputscp 	lncp_lab lncp_frt cp_pst cp_hrb cp_irr
 		preserve
 		drop 		if country != 6	
 
-		foreach 	v of varlist `weather' { 
+		foreach 	v of varlist `weatherRF' { 
 		    
 		* define locals for naming conventions
 			loc 	sat = 	substr("`v'", 5, 3)
