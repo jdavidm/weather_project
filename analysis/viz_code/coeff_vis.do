@@ -667,7 +667,7 @@ restore
 	gen 			b_sign = 1 if b_sig > 0 & b_sig != .
 	replace 		b_sign = 0 if b_sig < 0 & b_sig != .
 	lab	def			posneg 0 "Negative" 1 "Positive"
-	lab val			b_sign psoneg
+	lab val			b_sign posneg
 	lab var			b_sign "Sign on weather variable"
 	
 ************************************************************************
@@ -681,7 +681,7 @@ preserve
 	keep			if country == 1 & varname == 1
 	sort 			country beta
 	gen 			obs = _n
-
+	
 	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
 						(scatter b_sig obs, mcolor(edkblue%75) ) || ///
 						(rbar ci_lo ci_up obs if b_sig == ., ///
@@ -783,6 +783,13 @@ preserve
 						xtitle("") ), legend(pos(12) col(2) ///
 						order(1 2)) saving("$sfig/v01_uga", replace)
 restore
+
+* generate summary stats for discussion in paper
+	tab				sig if varname == 1
+	tab				b_sign if varname == 1
+	
+	bys country: 	tab	sig if varname == 1
+	bys country:	tab	b_sign if varname == 1
 
 	
 * combine mean daily rain
@@ -903,6 +910,13 @@ preserve
 						order(1 2)) saving("$sfig/v02_uga", replace)
 restore
 
+* generate summary stats for discussion in paper
+	tab				sig if varname == 2
+	tab				b_sign if varname == 2
+	
+	bys country: 	tab	sig if varname == 2
+	bys country:	tab	b_sign if varname == 2
+
 	
 * combine median daily rain
 	gr combine 		"$sfig/v02_eth.gph" "$sfig/v02_mwi.gph" "$sfig/v02_ngr.gph" ///
@@ -1022,6 +1036,12 @@ preserve
 						order(1 2)) saving("$sfig/v03_uga", replace)
 restore
 
+* generate summary stats for discussion in paper
+	tab				sig if varname == 3
+	tab				b_sign if varname == 3
+	
+	bys country: 	tab	sig if varname == 3
+	bys country:	tab	b_sign if varname == 3
 	
 * combine variance daily rain
 	gr combine 		"$sfig/v03_eth.gph" "$sfig/v03_mwi.gph" "$sfig/v03_ngr.gph" ///
@@ -1140,6 +1160,13 @@ preserve
 						xtitle("") ), legend(pos(12) col(2) ///
 						order(1 2)) saving("$sfig/v04_uga", replace)
 restore
+
+* generate summary stats for discussion in paper
+	tab				sig if varname == 4
+	tab				b_sign if varname == 4
+	
+	bys country: 	tab	sig if varname == 4
+	bys country:	tab	b_sign if varname == 4
 
 	
 * combine skew daily rain
@@ -1260,6 +1287,12 @@ preserve
 						order(1 2)) saving("$sfig/v05_uga", replace)
 restore
 
+* generate summary stats for discussion in paper
+	tab				sig if varname == 5
+	tab				b_sign if varname == 5
+	
+	bys country: 	tab	sig if varname == 5
+	bys country:	tab	b_sign if varname == 5
 	
 * combine total seasonal rain
 	gr combine 		"$sfig/v05_eth.gph" "$sfig/v05_mwi.gph" "$sfig/v05_ngr.gph" ///
@@ -1379,6 +1412,13 @@ preserve
 						order(1 2)) saving("$sfig/v06_uga", replace)
 restore
 
+* generate summary stats for discussion in paper
+	tab				sig if varname == 6
+	tab				b_sign if varname == 6
+	
+	bys country: 	tab	sig if varname == 6
+	bys country:	tab	b_sign if varname == 6
+	
 	
 * combine deviation in total seasonal rain
 	gr combine 		"$sfig/v06_eth.gph" "$sfig/v06_mwi.gph" "$sfig/v06_ngr.gph" ///
@@ -1498,6 +1538,13 @@ preserve
 						order(1 2)) saving("$sfig/v07_uga", replace)
 restore
 
+* generate summary stats for discussion in paper
+	tab				sig if varname == 7
+	tab				b_sign if varname == 7
+	
+	bys country: 	tab	sig if varname == 7
+	bys country:	tab	b_sign if varname == 7
+	
 	
 * combine z-score of total seasonal rain
 	gr combine 		"$sfig/v07_eth.gph" "$sfig/v07_mwi.gph" "$sfig/v07_ngr.gph" ///
@@ -1617,6 +1664,13 @@ preserve
 						order(1 2)) saving("$sfig/v08_uga", replace)
 restore
 
+* generate summary stats for discussion in paper
+	tab				sig if varname == 8
+	tab				b_sign if varname == 8
+	
+	bys country: 	tab	sig if varname == 8
+	bys country:	tab	b_sign if varname == 8
+	
 	
 * combine number of days with rain
 	gr combine 		"$sfig/v08_eth.gph" "$sfig/v08_mwi.gph" "$sfig/v08_ngr.gph" ///
@@ -1735,6 +1789,13 @@ preserve
 						xtitle("") ), legend(pos(12) col(2) ///
 						order(1 2)) saving("$sfig/v09_uga", replace)
 restore
+
+* generate summary stats for discussion in paper
+	tab				sig if varname == 9
+	tab				b_sign if varname == 9
+	
+	bys country: 	tab	sig if varname == 9
+	bys country:	tab	b_sign if varname == 9
 
 	
 * combine deviation in number of days with rain
@@ -1855,6 +1916,13 @@ preserve
 						order(1 2)) saving("$sfig/v10_uga", replace)
 restore
 
+* generate summary stats for discussion in paper
+	tab				sig if varname == 10
+	tab				b_sign if varname == 10
+	
+	bys country: 	tab	sig if varname == 10
+	bys country:	tab	b_sign if varname == 10
+
 	
 * combine number of days without rain
 	gr combine 		"$sfig/v10_eth.gph" "$sfig/v10_mwi.gph" "$sfig/v10_ngr.gph" ///
@@ -1973,6 +2041,13 @@ preserve
 						xtitle("") ), legend(pos(12) col(2) ///
 						order(1 2)) saving("$sfig/v11_uga", replace)
 restore
+
+* generate summary stats for discussion in paper
+	tab				sig if varname == 11
+	tab				b_sign if varname == 11
+	
+	bys country: 	tab	sig if varname == 11
+	bys country:	tab	b_sign if varname == 11
 
 	
 * combine deviation in no rain days
@@ -2093,6 +2168,13 @@ preserve
 						order(1 2)) saving("$sfig/v12_uga", replace)
 restore
 
+* generate summary stats for discussion in paper
+	tab				sig if varname == 12
+	tab				b_sign if varname == 12
+	
+	bys country: 	tab	sig if varname == 12
+	bys country:	tab	b_sign if varname == 12
+
 	
 * combine percentage of days with rain
 	gr combine 		"$sfig/v12_eth.gph" "$sfig/v12_mwi.gph" "$sfig/v12_ngr.gph" ///
@@ -2212,6 +2294,13 @@ preserve
 						order(1 2)) saving("$sfig/v13_uga", replace)
 restore
 
+* generate summary stats for discussion in paper
+	tab				sig if varname == 13
+	tab				b_sign if varname == 13
+	
+	bys country: 	tab	sig if varname == 13
+	bys country:	tab	b_sign if varname == 13
+
 	
 * combine deviation in percentage of days with rain
 	gr combine 		"$sfig/v13_eth.gph" "$sfig/v13_mwi.gph" "$sfig/v13_ngr.gph" ///
@@ -2330,6 +2419,13 @@ preserve
 						xtitle("") ), legend(pos(12) col(2) ///
 						order(1 2)) saving("$sfig/v14_uga", replace)
 restore
+
+* generate summary stats for discussion in paper
+	tab				sig if varname == 14
+	tab				b_sign if varname == 14
+	
+	bys country: 	tab	sig if varname == 14
+	bys country:	tab	b_sign if varname == 14
 
 	
 * combine longest dry spell
@@ -2454,6 +2550,13 @@ preserve
 						order(1 2)) saving("$sfig/v15_uga", replace)
 restore
 
+* generate summary stats for discussion in paper
+	tab				sig if varname == 15
+	tab				b_sign if varname == 15
+	
+	bys country: 	tab	sig if varname == 15
+	bys country:	tab	b_sign if varname == 15
+
 	
 * combine mean daily temperature
 	gr combine 		"$sfig/v15_eth.gph" "$sfig/v15_mwi.gph" "$sfig/v15_ngr.gph" ///
@@ -2572,6 +2675,13 @@ preserve
 						xtitle("") ), legend(pos(12) col(2) ///
 						order(1 2)) saving("$sfig/v16_uga", replace)
 restore
+
+* generate summary stats for discussion in paper
+	tab				sig if varname == 16
+	tab				b_sign if varname == 16
+	
+	bys country: 	tab	sig if varname == 16
+	bys country:	tab	b_sign if varname == 16
 
 	
 * combine median daily temperature
@@ -2692,6 +2802,13 @@ preserve
 						order(1 2)) saving("$sfig/v17_uga", replace)
 restore
 
+* generate summary stats for discussion in paper
+	tab				sig if varname == 17
+	tab				b_sign if varname == 17
+	
+	bys country: 	tab	sig if varname == 17
+	bys country:	tab	b_sign if varname == 17
+
 	
 * combine variance of daily temperature
 	gr combine 		"$sfig/v17_eth.gph" "$sfig/v17_mwi.gph" "$sfig/v17_ngr.gph" ///
@@ -2810,6 +2927,13 @@ preserve
 						xtitle("") ), legend(pos(12) col(2) ///
 						order(1 2)) saving("$sfig/v18_uga", replace)
 restore
+
+* generate summary stats for discussion in paper
+	tab				sig if varname == 18
+	tab				b_sign if varname == 18
+	
+	bys country: 	tab	sig if varname == 18
+	bys country:	tab	b_sign if varname == 18
 
 	
 * combine skew of daily temperature
@@ -2930,6 +3054,13 @@ preserve
 						order(1 2)) saving("$sfig/v19_uga", replace)
 restore
 
+* generate summary stats for discussion in paper
+	tab				sig if varname == 19
+	tab				b_sign if varname == 19
+	
+	bys country: 	tab	sig if varname == 19
+	bys country:	tab	b_sign if varname == 19
+
 	
 * combine growing degree days (gdd)
 	gr combine 		"$sfig/v19_eth.gph" "$sfig/v19_mwi.gph" "$sfig/v19_ngr.gph" ///
@@ -3048,6 +3179,13 @@ preserve
 						xtitle("") ), legend(pos(12) col(2) ///
 						order(1 2)) saving("$sfig/v20_uga", replace)
 restore
+
+* generate summary stats for discussion in paper
+	tab				sig if varname == 20
+	tab				b_sign if varname == 20
+	
+	bys country: 	tab	sig if varname == 20
+	bys country:	tab	b_sign if varname == 20
 
 	
 * combine deviation in growing degree days (gdd)
@@ -3168,6 +3306,13 @@ preserve
 						order(1 2)) saving("$sfig/v21_uga", replace)
 restore
 
+* generate summary stats for discussion in paper
+	tab				sig if varname == 21
+	tab				b_sign if varname == 21
+	
+	bys country: 	tab	sig if varname == 21
+	bys country:	tab	b_sign if varname == 21
+
 	
 * combine z-score of growing degree days (gdd)
 	gr combine 		"$sfig/v21_eth.gph" "$sfig/v21_mwi.gph" "$sfig/v21_ngr.gph" ///
@@ -3286,6 +3431,13 @@ preserve
 						xtitle("") ), legend(pos(12) col(2) ///
 						order(1 2)) saving("$sfig/v22_uga", replace)
 restore
+
+* generate summary stats for discussion in paper
+	tab				sig if varname == 22
+	tab				b_sign if varname == 22
+	
+	bys country: 	tab	sig if varname == 22
+	bys country:	tab	b_sign if varname == 22
 
 	
 * combine max daily temp
