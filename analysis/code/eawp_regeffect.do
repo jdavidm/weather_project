@@ -1307,7 +1307,7 @@ loc 		inputscp 	lncp_lab lncp_frt cp_pst cp_hrb cp_irr
 
 		*/		
 *************************************************************************
-**# 4.3 - sample split by country, no aezs
+**# 4.3 - sample split by country, no aezs **IGNORE THIS ANN**
 *************************************************************************
 
 	eststo clear
@@ -1421,7 +1421,6 @@ loc 		inputscp 	lncp_lab lncp_frt cp_pst cp_hrb cp_irr
 			v14_rf5_x1 RF_LongestDry v14_rf6_x1 RF_LongestDry )
 			stats(N r2, fmt(0 3) layout("\multicolumn{1}{c}{@}" ///
 			"\multicolumn{1}{c}{@}"))
-			
 			
 		restore	
 	
