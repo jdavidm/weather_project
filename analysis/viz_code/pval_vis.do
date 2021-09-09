@@ -2,7 +2,7 @@
 * Created on: September 2019
 * Created by: jdm
 * Edited by: jdm
-* Last edit: 30 August 2021
+* Last edit: 7 September 2021
 * Stata v.17.0 
 
 * does
@@ -1483,6 +1483,11 @@ preserve
 	gen 			hi90 = mu90 + invttail(n90-1,0.025)*(sd90 / sqrt(n90))
 	gen				lo90 = mu90 - invttail(n90-1,0.025)*(sd90 / sqrt(n90))
 	
+	sum 			lo90 if sat == 5
+	sum				hi90 if sat == 3
+	
+	bys sat:		sum mu95
+	
 	reshape 		long mu sd n hi lo, i(sat) j(p)	
 	
 	sort 			sat p
@@ -1492,6 +1497,7 @@ preserve
 	replace			obs = 1 + obs if obs > 11
 	replace			obs = 1 + obs if obs > 15
 	replace			obs = 1 + obs if obs > 19
+
 	
 	twoway			(bar mu obs if p == 90, color(emerald*1.5%60)) || ///
 						(bar mu obs if p == 95, color(eltblue*1.5%60)) || ///
@@ -1526,6 +1532,10 @@ preserve
 	
 	gen 			hi90 = mu90 + invttail(n90-1,0.025)*(sd90 / sqrt(n90))
 	gen				lo90 = mu90 - invttail(n90-1,0.025)*(sd90 / sqrt(n90))
+
+	sum 			lo90 if sat == 8
+	
+	bys sat:		sum mu95
 	
 	reshape 		long mu sd n hi lo, i(sat) j(p)	
 	
@@ -1576,6 +1586,10 @@ preserve
 	gen 			hi90 = mu90 + invttail(n90-1,0.025)*(sd90 / sqrt(n90))
 	gen				lo90 = mu90 - invttail(n90-1,0.025)*(sd90 / sqrt(n90))
 	
+	bys sat:		sum lo95
+	
+	bys sat:		sum mu95
+	
 	reshape 		long mu sd n hi lo, i(sat) j(p)	
 	
 	sort 			sat p
@@ -1618,6 +1632,11 @@ preserve
 	
 	gen 			hi90 = mu90 + invttail(n90-1,0.025)*(sd90 / sqrt(n90))
 	gen				lo90 = mu90 - invttail(n90-1,0.025)*(sd90 / sqrt(n90))
+	
+	bys sat:		sum lo95
+	
+	bys sat:		sum mu95
+	
 	
 	reshape 		long mu sd n hi lo, i(sat) j(p)	
 	
@@ -1662,6 +1681,11 @@ preserve
 	gen 			hi90 = mu90 + invttail(n90-1,0.025)*(sd90 / sqrt(n90))
 	gen				lo90 = mu90 - invttail(n90-1,0.025)*(sd90 / sqrt(n90))
 	
+	bys sat:		sum lo95
+	
+	bys sat:		sum mu95
+	
+	
 	reshape 		long mu sd n hi lo, i(sat) j(p)	
 	
 	sort 			sat p
@@ -1704,6 +1728,11 @@ preserve
 	
 	gen 			hi90 = mu90 + invttail(n90-1,0.025)*(sd90 / sqrt(n90))
 	gen				lo90 = mu90 - invttail(n90-1,0.025)*(sd90 / sqrt(n90))
+	
+	bys sat:		sum lo95
+	
+	bys sat:		sum mu95
+	
 	
 	reshape 		long mu sd n hi lo, i(sat) j(p)	
 	
@@ -1756,6 +1785,10 @@ preserve
 	gen 			hi90 = mu90 + invttail(n90-1,0.025)*(sd90 / sqrt(n90))
 	gen				lo90 = mu90 - invttail(n90-1,0.025)*(sd90 / sqrt(n90))
 	
+	bys sat:		sum lo95
+	
+	bys sat:		sum mu95
+	
 	reshape 		long mu sd n hi lo, i(sat) j(p)	
 	
 	sort 			sat p
@@ -1795,6 +1828,10 @@ preserve
 	gen 			hi90 = mu90 + invttail(n90-1,0.025)*(sd90 / sqrt(n90))
 	gen				lo90 = mu90 - invttail(n90-1,0.025)*(sd90 / sqrt(n90))
 	
+	bys sat:		sum lo95
+	
+	bys sat:		sum mu95
+	
 	reshape 		long mu sd n hi lo, i(sat) j(p)	
 	
 	sort 			sat p
@@ -1833,6 +1870,10 @@ preserve
 	
 	gen 			hi90 = mu90 + invttail(n90-1,0.025)*(sd90 / sqrt(n90))
 	gen				lo90 = mu90 - invttail(n90-1,0.025)*(sd90 / sqrt(n90))
+	
+	bys sat:		sum lo95
+	
+	bys sat:		sum mu95
 	
 	reshape 		long mu sd n hi lo, i(sat) j(p)	
 	

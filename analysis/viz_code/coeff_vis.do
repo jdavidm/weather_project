@@ -4159,6 +4159,21 @@ restore
 **# 5a - specification curves for ethiopia
 ************************************************************************
 
+* summary stats
+	bys sat:	tab b_sign  if country == 1 & varname == 1
+	
+	bys sat:	tab b_sign  if country == 1 & varname == 5
+	
+	bys sat:	tab b_sign  if country == 1 & varname == 8
+	
+	bys sat:	tab b_sign  if country == 1 & varname == 12
+	
+	bys sat:	tab b_sign  if country == 1 & varname == 15
+	
+	bys sat:	tab b_sign  if country == 1 & varname == 16
+	
+	bys sat:	tab b_sign  if country == 1 & varname == 17
+
 * mean daily rainfall
 preserve
 	keep			if varname == 1 & country == 1
@@ -4589,6 +4604,21 @@ restore
 **# 5b - specification curves for malawi
 ************************************************************************
 
+* summary stats
+	bys sat:	tab b_sign  if country == 2 & varname == 1
+	
+	bys sat:	tab b_sign  if country == 2 & varname == 5
+	
+	bys sat:	tab b_sign  if country == 2 & varname == 8
+	
+	bys sat:	tab b_sign  if country == 2 & varname == 12
+	
+	bys sat:	tab b_sign  if country == 2 & varname == 15
+	
+	bys sat:	tab b_sign  if country == 2 & varname == 16
+	
+	bys sat:	tab b_sign  if country == 2 & varname == 17
+	
 * mean daily rainfall
 preserve
 	keep			if varname == 1 & country == 2
@@ -5018,6 +5048,21 @@ restore
 ************************************************************************
 **# 5c - specification curves for niger
 ************************************************************************
+
+* summary stats
+	bys sat:	tab b_sign  if country == 4 & varname == 1
+	
+	bys sat:	tab b_sign  if country == 4 & varname == 5
+	
+	bys sat:	tab b_sign  if country == 4 & varname == 8
+	
+	bys sat:	tab b_sign  if country == 4 & varname == 12
+	
+	bys sat:	tab b_sign  if country == 4 & varname == 15
+	
+	bys sat:	tab b_sign  if country == 4 & varname == 16
+	
+	bys sat:	tab b_sign  if country == 4 & varname == 17
 
 * mean daily rainfall
 preserve
@@ -5449,6 +5494,21 @@ restore
 **# 5d - specification curves for nigeria
 ************************************************************************
 
+* summary stats
+	bys sat:	tab b_sign  if country == 5 & varname == 1
+	
+	bys sat:	tab b_sign  if country == 5 & varname == 5
+	
+	bys sat:	tab b_sign  if country == 5 & varname == 8
+	
+	bys sat:	tab b_sign  if country == 5 & varname == 12
+	
+	bys sat:	tab b_sign  if country == 5 & varname == 15
+	
+	bys sat:	tab b_sign  if country == 5 & varname == 16
+	
+	bys sat:	tab b_sign  if country == 5 & varname == 17
+
 * mean daily rainfall
 preserve
 	keep			if varname == 1 & country == 5
@@ -5879,6 +5939,21 @@ restore
 **# 5e - specification curves for tanzania
 ************************************************************************
 
+* summary stats
+	bys sat:	tab b_sign  if country == 6 & varname == 1
+	
+	bys sat:	tab b_sign  if country == 6 & varname == 5
+	
+	bys sat:	tab b_sign  if country == 6 & varname == 8
+	
+	bys sat:	tab b_sign  if country == 6 & varname == 12
+	
+	bys sat:	tab b_sign  if country == 6 & varname == 15
+	
+	bys sat:	tab b_sign  if country == 6 & varname == 16
+	
+	bys sat:	tab b_sign  if country == 6 & varname == 17
+	
 * mean daily rainfall
 preserve
 	keep			if varname == 1 & country == 6
@@ -6309,6 +6384,21 @@ restore
 **# 5f - specification curves for uganda
 ************************************************************************
 
+* summary stats
+	bys sat:	tab b_sign  if country == 7 & varname == 1
+	
+	bys sat:	tab b_sign  if country == 7 & varname == 5
+	
+	bys sat:	tab b_sign  if country == 7 & varname == 8
+	
+	bys sat:	tab b_sign  if country == 7 & varname == 12
+	
+	bys sat:	tab b_sign  if country == 7 & varname == 15
+	
+	bys sat:	tab b_sign  if country == 7 & varname == 16
+	
+	bys sat:	tab b_sign  if country == 7 & varname == 17
+	
 * mean daily rainfall
 preserve
 	keep			if varname == 1 & country == 7
@@ -6341,7 +6431,9 @@ preserve
 	di $brange
 	di $from_y
 	di $gheight
-		
+	
+	bys sat:		tab sig
+	
 	twoway 			scatter k1 k2 k3 obs, xlab(0(4)72) xsize(10) ysize(6) msize(small small small)  ///
 						title("Uganda") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
 						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
