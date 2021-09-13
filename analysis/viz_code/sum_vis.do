@@ -118,7 +118,7 @@
 			xtitle("") xscale(r(0(500)2000)) title("Tropic-warm/semiarid (n = 9,095)") ///
 			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "CHIRPS") label(2 "CPC") ///
-			label(3 "MERRA-2") label(4 "ARC2") label(5 "ECMWF") ///
+			label(3 "MERRA-2") label(4 "ARC2") label(5 "ERA5") ///
 			label(6 "TAMSAT")) saving("$sfig/twsa_density_rf", replace)
 			
 	graph export 	"$xfig\twsa_density_rf.png", width(1400) replace
@@ -133,7 +133,7 @@
 			xtitle("") xscale(r(0(1000)4000)) title("Tropic-warm/subhumid (n = 9,009)") ///
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "CHIRPS") label(2 "CPC") ///
-			label(3 "MERRA-2") label(4 "ARC2") label(5 "ECMWF") ///
+			label(3 "MERRA-2") label(4 "ARC2") label(5 "ERA5") ///
 			label(6 "TAMSAT")) saving("$sfig/twsh_density_rf", replace)
 			
 	graph export 	"$xfig\twsh_density_rf.png", width(1400) replace
@@ -148,7 +148,7 @@
 			xtitle("") xscale(r(0(1000)4000)) title("Tropic-warm/humid (n = 3,280)") ///
 			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "CHIRPS") label(2 "CPC") ///
-			label(3 "MERRA-2") label(4 "ARC2") label(5 "ECMWF") ///
+			label(3 "MERRA-2") label(4 "ARC2") label(5 "ERA5") ///
 			label(6 "TAMSAT")) saving("$sfig/twh_density_rf", replace)
 			
 	graph export 	"$xfig\twh_density_rf.png", width(1400) replace
@@ -163,7 +163,7 @@
 			xtitle("") xscale(r(0(500)2500)) title("Tropic-cool/semiarid (n = 2,840)") ///
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "CHIRPS") label(2 "CPC") ///
-			label(3 "MERRA-2") label(4 "ARC2") label(5 "ECMWF") ///
+			label(3 "MERRA-2") label(4 "ARC2") label(5 "ERA5") ///
 			label(6 "TAMSAT")) saving("$sfig/tcsa_density_rf", replace)
 			
 	graph export 	"$xfig\tcsa_density_rf.png", width(1400) replace
@@ -179,7 +179,7 @@
 			title("Tropic-cool/subhumid (n = 5,886)") ///
 			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "CHIRPS") label(2 "CPC") ///
-			label(3 "MERRA-2") label(4 "ARC2") label(5 "ECMWF") ///
+			label(3 "MERRA-2") label(4 "ARC2") label(5 "ERA5") ///
 			label(6 "TAMSAT")) saving("$sfig/tcsh_density_rf", replace)
 			
 	graph export 	"$xfig\tcsh_density_rf.png", width(1400) replace
@@ -195,7 +195,7 @@
 			title("Tropic-cool/humid (n = 2,960)") ///
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "CHIRPS") label(2 "CPC") ///
-			label(3 "MERRA-2") label(4 "ARC2") label(5 "ECMWF") ///
+			label(3 "MERRA-2") label(4 "ARC2") label(5 "ERA5") ///
 			label(6 "TAMSAT")) saving("$sfig/tch_density_rf", replace)	
 			
 	graph export 	"$xfig\tch_density_rf.png", width(1400) replace		
@@ -218,7 +218,7 @@
 			(kdensity v15_tp3 if aez == 312, color(sea%30) recast(area) ///
 			xtitle("") xscale(r(20(5)32)) title("Tropic-warm/semiarid (n = 9,095)") ///
 			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
-			legend(pos(6) col(3) label(1 "MERRA-2") label(2 "ECMWF") ///
+			legend(pos(6) col(3) label(1 "MERRA-2") label(2 "ERA5") ///
 			label(3 "CPC")) saving("$sfig/twsa_density_tp", replace)
 			
 	graph export 	"$xfig\twsa_density_tp.png", width(1400) replace		
@@ -229,7 +229,7 @@
 			(kdensity v15_tp3 if aez == 313, color(sea%30) recast(area) ///
 			xtitle("") xscale(r(15(5)30)) title("Tropic-warm/subhumid (n = 9,009)") ///
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
-			legend(pos(6) col(3) label(1 "MERRA-2") label(2 "ECMWF") ///
+			legend(pos(6) col(3) label(1 "MERRA-2") label(2 "ERA5") ///
 			label(3 "CPC")) saving("$sfig/twsh_density_tp", replace)
 			
 	graph export 	"$xfig\twsh_density_tp.png", width(1400) replace		
@@ -240,7 +240,7 @@
 			(kdensity v15_tp3 if aez == 314, color(sea%30) recast(area) ///
 			xtitle("") xscale(r(20(5)30)) title("Tropic-warm/humid (n = 3,280)") ///
 			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
-			legend(pos(6) col(3) label(1 "MERRA-2") label(2 "ECMWF") ///
+			legend(pos(6) col(3) label(1 "MERRA-2") label(2 "ERA5") ///
 			label(3 "CPC")) saving("$sfig/twh_density_tp", replace)	
 			
 	graph export 	"$xfig\twh_density_tp.png", width(1400) replace			
@@ -251,7 +251,7 @@
 			(kdensity v15_tp3 if aez == 322, color(sea%30) recast(area) ///
 			xtitle("") xscale(r(15(5)30)) title("Tropic-cool/semiarid (n = 2,840)") ///
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
-			legend(pos(6) col(3) label(1 "MERRA-2") label(2 "ECMWF") ///
+			legend(pos(6) col(3) label(1 "MERRA-2") label(2 "ERA5") ///
 			label(3 "CPC")) saving("$sfig/tcsa_density_tp", replace)
 			
 	graph export 	"$xfig\tcsa_density_tp.png", width(1400) replace		
@@ -263,7 +263,7 @@
 			xtitle("Mean Seasonal Temperature (C)") xscale(r(10(5)30)) ///
 			title("Tropic-warm/subhumid (n = 5,886)") ///
 			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
-			legend(pos(6) col(3) label(1 "MERRA-2") label(2 "ECMWF") ///
+			legend(pos(6) col(3) label(1 "MERRA-2") label(2 "ERA5") ///
 			label(3 "CPC")) saving("$sfig/tcsh_density_tp", replace)
 			
 	graph export 	"$xfig\tcsh_density_tp.png", width(1400) replace		
@@ -275,7 +275,7 @@
 			xtitle("Mean Seasonal Temperature (C)") xscale(r(16(2)26)) ///
 			title("Tropic-warm/humid (n = 2,960)") ///
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
-			legend(pos(6) col(3) label(1 "MERRA-2") label(2 "ECMWF") ///
+			legend(pos(6) col(3) label(1 "MERRA-2") label(2 "ERA5") ///
 			label(3 "CPC")) saving("$sfig/tch_density_tp", replace)	
 			
 	graph export 	"$xfig\tch_density_tp.png", width(1400) replace					
@@ -303,7 +303,7 @@
 			xtitle("") xscale(r(2008(1)2015)) title("Tropic-warm/semiarid (n = 9,095)") ///
 			ytitle("Days without Rain") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "CHIRPS") label(3 "CPC") ///
-			label(5 "MERRA-2") label(7 "ARC2") label(9 "ECMWF") ///
+			label(5 "MERRA-2") label(7 "ARC2") label(9 "ERA5") ///
 			label(11 "TAMSAT") order(1 3 5 7 9 11)) saving("$sfig/twsa_norain_rf", replace)
 
 * days without rain - Tropic-warm/subhumid	
@@ -316,7 +316,7 @@
 			xtitle("") xscale(r(2008(1)2015)) title("Tropic-warm/subhumid (n = 9,009)") ///
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "CHIRPS") label(3 "CPC") ///
-			label(5 "MERRA-2") label(7 "ARC2") label(9 "ECMWF") ///
+			label(5 "MERRA-2") label(7 "ARC2") label(9 "ERA5") ///
 			label(11 "TAMSAT") order(1 3 5 7 9 11)) saving("$sfig/twsh_norain_rf", replace)
 			
 * days without rain - Tropic-warm/humid	
@@ -329,7 +329,7 @@
 			xtitle("") xscale(r(2008(1)2015)) title("Tropic-warm/humid (n = 3,280)") ///
 			ytitle("Days without Rain") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "CHIRPS") label(3 "CPC") ///
-			label(5 "MERRA-2") label(7 "ARC2") label(9 "ECMWF") ///
+			label(5 "MERRA-2") label(7 "ARC2") label(9 "ERA5") ///
 			label(11 "TAMSAT") order(1 3 5 7 9 11)) saving("$sfig/twh_norain_rf", replace)
 
 * days without rain - Tropic-cool/semiarid	
@@ -342,7 +342,7 @@
 			xtitle("") xscale(r(2008(1)2015)) title("Tropic-cool/semiarid (n = 2,840)") ///
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "CHIRPS") label(3 "CPC") ///
-			label(5 "MERRA-2") label(7 "ARC2") label(9 "ECMWF") ///
+			label(5 "MERRA-2") label(7 "ARC2") label(9 "ERA5") ///
 			label(11 "TAMSAT") order(1 3 5 7 9 11)) saving("$sfig/tcsa_norain_rf", replace)
 
 * days without rain - Tropic-cool/subhumid	
@@ -355,7 +355,7 @@
 			xtitle("Year") xscale(r(2008(1)2015)) title("Tropic-cool/subhumid (n = 5,886)") ///
 			ytitle("Days without Rain") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "CHIRPS") label(3 "CPC") ///
-			label(5 "MERRA-2") label(7 "ARC2") label(9 "ECMWF") ///
+			label(5 "MERRA-2") label(7 "ARC2") label(9 "ERA5") ///
 			label(11 "TAMSAT") order(1 3 5 7 9 11)) saving("$sfig/tcsh_norain_rf", replace)
 			
 * days without rain - Tropic-cool/humid	
@@ -368,7 +368,7 @@
 			xtitle("Year") xscale(r(2008(1)2015)) title("Tropic-cool/humid (n = 2,960)") ///
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "CHIRPS") label(3 "CPC") ///
-			label(5 "MERRA-2") label(7 "ARC2") label(9 "ECMWF") ///
+			label(5 "MERRA-2") label(7 "ARC2") label(9 "ERA5") ///
 			label(11 "TAMSAT") order(1 3 5 7 9 11)) saving("$sfig/tch_norain_rf", replace)				
 		
 		
@@ -390,7 +390,7 @@
 			(fpfitci v19_tp3 year if aez == 312, color(sea%30)  ///
 			xtitle("") xscale(r(2008(1)2015)) title("Tropic-warm/semiarid (n = 9,095)") ///
 			ytitle("Growing degree days") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
-			legend(pos(6) col(3) label(1 "MERRA-2") label(3 "ECMWF") ///
+			legend(pos(6) col(3) label(1 "MERRA-2") label(3 "ERA5") ///
 			label(5 "CPC") order(1 3 5)) saving("$sfig/twsa_gdd_tp", replace)
 
 * growing degree days - Tropic-warm/subhumid
@@ -399,7 +399,7 @@
 			(fpfitci v19_tp3 year if aez == 313, color(sea%30)  ///
 			xtitle("") xscale(r(2008(1)2015)) title("Tropic-warm/subhumid (n = 9,009)") ///
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
-			legend(pos(6) col(3) label(1 "MERRA-2") label(3 "ECMWF") ///
+			legend(pos(6) col(3) label(1 "MERRA-2") label(3 "ERA5") ///
 			label(5 "CPC") order(1 3 5)) saving("$sfig/twsh_gdd_tp", replace)
 
 * growing degree days - Tropic-warm/humid
@@ -408,7 +408,7 @@
 			(fpfitci v19_tp3 year if aez == 314, color(sea%30) ///
 			xtitle("") xscale(r(2008(1)2015)) title("Tropic-warm/humid (n = 3,280)") ///
 			ytitle("Growing degree days") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
-			legend(pos(6) col(3) label(1 "MERRA-2") label(3 "ECMWF") ///
+			legend(pos(6) col(3) label(1 "MERRA-2") label(3 "ERA5") ///
 			label(5 "CPC") order(1 3 5)) saving("$sfig/twh_gdd_tp", replace)		
 
 * growing degree days - Tropic-cool/semiarid
@@ -417,7 +417,7 @@
 			(fpfitci v19_tp3 year if aez == 322, color(sea%30)  ///
 			xtitle("") xscale(r(2008(1)2015)) title("Tropic-cool/semiarid (n = 2,840)") ///
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
-			legend(pos(6) col(3) label(1 "MERRA-2") label(3 "ECMWF") ///
+			legend(pos(6) col(3) label(1 "MERRA-2") label(3 "ERA5") ///
 			label(5 "CPC") order(1 3 5)) saving("$sfig/tcsa_gdd_tp", replace)
 
 * growing degree days - Tropic-cool/subhumid
@@ -426,7 +426,7 @@
 			(fpfitci v19_tp3 year if aez == 323, color(sea%30)  ///
 			xtitle("Year") xscale(r(2008(1)2015)) title("Tropic-cool/subhumid (n = 5,886)") ///
 			ytitle("Gorwing degree days") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
-			legend(pos(6) col(3) label(1 "MERRA-2") label(3 "ECMWF") ///
+			legend(pos(6) col(3) label(1 "MERRA-2") label(3 "ERA5") ///
 			label(5 "CPC") order(1 3 5)) saving("$sfig/tcsh_gdd_tp", replace)
 
 * growing degree days - Tropic-cool/humid
@@ -435,7 +435,7 @@
 			(fpfitci v19_tp3 year if aez == 324, color(sea%30)  ///
 			xtitle("Year") xscale(r(2008(1)2015)) title("Tropic-cool/humid (n = 2,960)") ///
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
-			legend(pos(6) col(3) label(1 "MERRA-2") label(3 "ECMWF") ///
+			legend(pos(6) col(3) label(1 "MERRA-2") label(3 "ERA5") ///
 			label(5 "CPC") order(1 3 5)) saving("$sfig/tch_gdd_tp", replace)				
 			
 	grc1leg2 		"$sfig/twsa_gdd_tp.gph" "$sfig/twsh_gdd_tp.gph" ///

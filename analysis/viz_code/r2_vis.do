@@ -693,7 +693,7 @@ preserve
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
 						9 "CHIRPS" 10 "CPC" 11 "MERRA-2" ///
-						12 "ARC2" 13 "ECMWF" 14 "TAMSAT" ///
+						12 "ARC2" 13 "ERA5" 14 "TAMSAT" ///
 						15 "*{bf:Weather Product}*" 22 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter r2_mu obs, yaxis(2) mcolor(maroon) msize(small) ///
@@ -744,7 +744,7 @@ preserve
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
 						9 "CHIRPS" 10 "CPC" 11 "MERRA-2" ///
-						12 "ARC2" 13 "ECMWF" 14 "TAMSAT" ///
+						12 "ARC2" 13 "ERA5" 14 "TAMSAT" ///
 						15 "*{bf:Weather Product}*" 22 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter r2_mu obs, yaxis(2) mcolor(maroon) msize(small) ///
@@ -794,7 +794,7 @@ preserve
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
 						9 "CHIRPS" 10 "CPC" 11 "MERRA-2" ///
-						12 "ARC2" 13 "ECMWF" 14 "TAMSAT" ///
+						12 "ARC2" 13 "ERA5" 14 "TAMSAT" ///
 						15 "*{bf:Weather Product}*" 22 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter r2_mu obs, yaxis(2) mcolor(maroon) msize(small) ///
@@ -876,7 +876,7 @@ preserve
 						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
-						9 "MERRA-2" 10 "ECMWF" 11 "CPC" ///
+						9 "MERRA-2" 10 "ERA5" 11 "CPC" ///
 						12 "*{bf:Weather Product}*" 18 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter r2_mu obs, yaxis(2) mcolor(maroon) msize(small) ///
@@ -933,7 +933,7 @@ preserve
 						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
-						9 "MERRA-2" 10 "ECMWF" 11 "CPC" ///
+						9 "MERRA-2" 10 "ERA5" 11 "CPC" ///
 						12 "*{bf:Weather Product}*" 18 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter r2_mu obs, yaxis(2) mcolor(maroon) msize(small) ///
@@ -987,7 +987,7 @@ preserve
 						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
-						9 "MERRA-2" 10 "ECMWF" 11 "CPC" ///
+						9 "MERRA-2" 10 "ERA5" 11 "CPC" ///
 						12 "*{bf:Weather Product}*" 18 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter r2_mu obs, yaxis(2) mcolor(maroon) msize(small) ///

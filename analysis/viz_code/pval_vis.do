@@ -1508,7 +1508,7 @@ preserve
 						xscale(r(0 24) ex) ///
 						xlabel(2 "CHIRPS" 6 "CPC" ///
 						10 "MERRA-2" 14 "ARC2" ///
-						18 "ECMWF" 22 "TAMSAT", ///
+						18 "ERA5" 22 "TAMSAT", ///
 						angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(4) order(1 2 3 4) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I.")) ///
@@ -1554,7 +1554,7 @@ preserve
 						ylab(0(.1)1, labsize(small)) title("Temperature") ///
 						ytitle("Share of Significant Point Estimates") ///
 						xscale(r(0 12) ex) xlabel(2 "MERRA-2" ///
-						6 "ECMWF" 10 "CPC" , ///
+						6 "ERA5" 10 "CPC" , ///
 						angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(4) order(1 2 3 4) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I.")) ///
@@ -1609,7 +1609,7 @@ preserve
 						xscale(r(0 24) ex) ///
 						xlabel(2 "CHIRPS" 6 "CPC" ///
 						10 "MERRA-2" 14 "ARC2" ///
-						18 "ECMWF" 22 "TAMSAT", ///
+						18 "ERA5" 22 "TAMSAT", ///
 						angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(4) order(1 2 3 4) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I."))  ///
@@ -1657,7 +1657,7 @@ preserve
 						xscale(r(0 24) ex) ///
 						xlabel(2 "CHIRPS" 6 "CPC" ///
 						10 "MERRA-2" 14 "ARC2" ///
-						18 "ECMWF" 22 "TAMSAT", ///
+						18 "ERA5" 22 "TAMSAT", ///
 						angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(4) order(1 2 3 4) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I."))  ///
@@ -1705,7 +1705,7 @@ preserve
 						xscale(r(0 24) ex) ///
 						xlabel(2 "CHIRPS" 6 "CPC" ///
 						10 "MERRA-2" 14 "ARC2" ///
-						18 "ECMWF" 22 "TAMSAT", ///
+						18 "ERA5" 22 "TAMSAT", ///
 						angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(4) order(1 2 3 4) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I."))  ///
@@ -1753,7 +1753,7 @@ preserve
 						xscale(r(0 24) ex) ///
 						xlabel(2 "CHIRPS" 6 "CPC" ///
 						10 "MERRA-2" 14 "ARC2" ///
-						18 "ECMWF" 22 "TAMSAT", ///
+						18 "ERA5" 22 "TAMSAT", ///
 						angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(4) order(1 2 3 4) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I."))  ///
@@ -1804,7 +1804,7 @@ preserve
 						ylab(0(.1)1, labsize(small)) title("Mean Daily Temperature") ///
 						ytitle("Share of Significant Point Estimates") ///
 						xscale(r(0 12) ex) xlabel(2 "MERRA-2" ///
-						6 "ECMWF" 10 "CPC" , ///
+						6 "ERA5" 10 "CPC" , ///
 						angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(2) order(1 2 3 4) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I."))  ///
@@ -1847,7 +1847,7 @@ preserve
 						ylab(0(.1)1, labsize(small)) title("Median Daily Temperature") ///
 						ytitle("Share of Significant Point Estimates") ///
 						xscale(r(0 12) ex) xlabel(2 "MERRA-2" ///
-						6 "ECMWF" 10 "CPC" , ///
+						6 "ERA5" 10 "CPC" , ///
 						angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(2) order(1 2 3 4) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I."))  ///
@@ -1890,7 +1890,7 @@ preserve
 						ylab(0(.1)1, labsize(small)) title("Variance of Daily Temperature") ///
 						ytitle("Share of Significant Point Estimates") ///
 						xscale(r(0 12) ex) xlabel(2 "MERRA-2" ///
-						6 "ECMWF" 10 "CPC" , ///
+						6 "ERA5" 10 "CPC" , ///
 						angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(2) order(1 2 3 4) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I."))  ///
