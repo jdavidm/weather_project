@@ -1518,7 +1518,7 @@ restore
 			
 * p-value graph of temperature
 preserve
-	keep			if varname == 16 | varname == 16 | varname == 17
+	keep			if varname == 15 | varname == 16 | varname == 17
 	
 	collapse 		(mean) mu99 = p99 mu95 = p95 mu90 = p90 ///
 						(sd) sd99 = p99 sd95 = p95 sd90 = p90 ///
