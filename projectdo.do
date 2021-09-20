@@ -1,7 +1,7 @@
 * Project: WB Weather
 * Created on: May 2020
 * Created by: jdm
-* Stata v.16
+* Stata v.17.0
 
 * does
 	* establishes an identical workspace between users
@@ -26,7 +26,7 @@
 	global 			pack 	0
 		
 * Specify Stata version in use
-    global stataVersion 16.1    // set Stata version
+    global stataVersion 17.0    // set Stata version
     version $stataVersion
 
 * **********************************************************************

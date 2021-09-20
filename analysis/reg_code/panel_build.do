@@ -239,10 +239,6 @@
 	
 	order			lntf_frt, before(tf_frt)
 	order			lncp_frt, before(cp_frt)
-
-* drop unnecessary variables
-	drop 			tf_hrv tf_lnd tf_yld cp_hrv cp_lnd cp_yld tf_lab ///
-						tf_frt cp_lab cp_frt	
 					
 					
 * **********************************************************************
