@@ -81,7 +81,7 @@ restore
 	gr combine 		"$sfig/v01_v15_cty.gph" "$sfig/v15_v01_cty.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v01_v15_cty.png", width(1400) replace
+	graph export 	"$xfig\v01_v15_cty.png", width(9600) replace
 	
 
 * combine median rainfall and temperature
@@ -123,7 +123,7 @@ restore
 	gr combine 		"$sfig/v02_v16_cty.gph" "$sfig/v16_v02_cty.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v02_v16_cty.png", width(1400) replace
+	graph export 	"$xfig\v02_v16_cty.png", width(9600) replace
 	
 	
 * combine total rainfall  and GDD
@@ -165,7 +165,7 @@ restore
 	gr combine 		"$sfig/v05_v19_cty.gph" "$sfig/v19_v05_cty.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v05_v19_cty.png", width(1400) replace
+	graph export 	"$xfig\v05_v19_cty.png", width(9600) replace
 	
 
 * combine z-score rainfall and temperature
@@ -207,7 +207,7 @@ restore
 	gr combine 		"$sfig/v07_v21_cty.gph" "$sfig/v21_v07_cty.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v07_v21_cty.png", width(1400) replace
+	graph export 	"$xfig\v07_v21_cty.png", width(9600) replace
 	
 		
 * **********************************************************************

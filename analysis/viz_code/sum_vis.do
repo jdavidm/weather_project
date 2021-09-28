@@ -121,7 +121,7 @@
 			label(3 "MERRA-2") label(4 "ARC2") label(5 "ERA5") ///
 			label(6 "TAMSAT")) saving("$sfig/twsa_density_rf", replace)
 			
-	graph export 	"$xfig\twsa_density_rf.png", width(1400) replace
+	graph export 	"$sfig\twsa_density_rf.png", width(9600) replace
 
 * total season rainfall - Tropic-warm/sub-humid		
 	twoway  (kdensity v05_rf1 if aez == 313, color(gray%30) recast(area)) ///
@@ -136,7 +136,7 @@
 			label(3 "MERRA-2") label(4 "ARC2") label(5 "ERA5") ///
 			label(6 "TAMSAT")) saving("$sfig/twsh_density_rf", replace)
 			
-	graph export 	"$xfig\twsh_density_rf.png", width(1400) replace
+	graph export 	"$sfig\twsh_density_rf.png", width(9600) replace
 
 * total season rainfall - Tropic-warm/humid		
 	twoway  (kdensity v05_rf1 if aez == 314, color(gray%30) recast(area)) ///
@@ -152,7 +152,7 @@
 			label(3 "MERRA-2") label(4 "ARC2") label(5 "ERA5") ///
 			label(6 "TAMSAT")) saving("$sfig/twh_density_rf", replace)
 			
-	graph export 	"$xfig\twh_density_rf.png", width(1400) replace
+	graph export 	"$sfig\twh_density_rf.png", width(9600) replace
 
 * total season rainfall - Tropic-cool/semi-arid	
 	twoway  (kdensity v05_rf1 if aez == 322, color(gray%30) recast(area)) ///
@@ -167,7 +167,7 @@
 			label(3 "MERRA-2") label(4 "ARC2") label(5 "ERA5") ///
 			label(6 "TAMSAT")) saving("$sfig/tcsa_density_rf", replace)
 			
-	graph export 	"$xfig\tcsa_density_rf.png", width(1400) replace
+	graph export 	"$sfig\tcsa_density_rf.png", width(9600) replace
 
 * total season rainfall - Tropic-cool/sub-humid		
 	twoway  (kdensity v05_rf1 if aez == 323, color(gray%30) recast(area)) ///
@@ -182,7 +182,7 @@
 			label(3 "MERRA-2") label(4 "ARC2") label(5 "ERA5") ///
 			label(6 "TAMSAT")) saving("$sfig/tcsh_density_rf", replace)
 			
-	graph export 	"$xfig\tcsh_density_rf.png", width(1400) replace
+	graph export 	"$sfig\tcsh_density_rf.png", width(9600) replace
 
 * total season rainfall - Tropic-cool/humid		
 	twoway  (kdensity v05_rf1 if aez == 324, color(gray%30) recast(area)) ///
@@ -198,7 +198,7 @@
 			label(3 "MERRA-2") label(4 "ARC2") label(5 "ERA5") ///
 			label(6 "TAMSAT")) saving("$sfig/tch_density_rf", replace)	
 			
-	graph export 	"$xfig\tch_density_rf.png", width(1400) replace		
+	graph export 	"$sfig\tch_density_rf.png", width(9600) replace		
 			
 	grc1leg2 		"$sfig/twsa_density_rf.gph" "$sfig/tcsa_density_rf.gph" ///
 						"$sfig/twsh_density_rf.gph" "$sfig/tcsh_density_rf.gph"   ///
@@ -221,7 +221,7 @@
 			legend(pos(6) col(3) label(1 "MERRA-2") label(2 "ERA5") ///
 			label(3 "CPC")) saving("$sfig/twsa_density_tp", replace)
 			
-	graph export 	"$xfig\twsa_density_tp.png", width(1400) replace		
+	graph export 	"$sfig\twsa_density_tp.png", width(9600) replace		
 
 * mean temp - Tropic-warm/sub-humid
 	twoway	(kdensity v15_tp1 if aez == 313, color(gray%30) recast(area)) ///
@@ -232,7 +232,7 @@
 			legend(pos(6) col(3) label(1 "MERRA-2") label(2 "ERA5") ///
 			label(3 "CPC")) saving("$sfig/twsh_density_tp", replace)
 			
-	graph export 	"$xfig\twsh_density_tp.png", width(1400) replace		
+	graph export 	"$sfig\twsh_density_tp.png", width(9600) replace		
 
 * mean temp - Tropic-warm/humid
 	twoway	(kdensity v15_tp1 if aez == 314, color(gray%30) recast(area)) ///
@@ -244,7 +244,7 @@
 			legend(pos(6) col(3) label(1 "MERRA-2") label(2 "ERA5") ///
 			label(3 "CPC")) saving("$sfig/twh_density_tp", replace)	
 			
-	graph export 	"$xfig\twh_density_tp.png", width(1400) replace			
+	graph export 	"$sfig\twh_density_tp.png", width(9600) replace			
 
 * mean temp - Tropic-cool/semi-arid
 	twoway	(kdensity v15_tp1 if aez == 322, color(gray%30) recast(area)) ///
@@ -255,7 +255,7 @@
 			legend(pos(6) col(3) label(1 "MERRA-2") label(2 "ERA5") ///
 			label(3 "CPC")) saving("$sfig/tcsa_density_tp", replace)
 			
-	graph export 	"$xfig\tcsa_density_tp.png", width(1400) replace		
+	graph export 	"$sfig\tcsa_density_tp.png", width(9600) replace		
 
 * mean temp - Tropic-cool/sub-humid
 	twoway	(kdensity v15_tp1 if aez == 323, color(gray%30) recast(area)) ///
@@ -266,7 +266,7 @@
 			legend(pos(6) col(3) label(1 "MERRA-2") label(2 "ERA5") ///
 			label(3 "CPC")) saving("$sfig/tcsh_density_tp", replace)
 			
-	graph export 	"$xfig\tcsh_density_tp.png", width(1400) replace		
+	graph export 	"$sfig\tcsh_density_tp.png", width(9600) replace		
 
 * mean temp - Tropic-cool/humid
 	twoway	(kdensity v15_tp1 if aez == 324, color(gray%30) recast(area)) ///
@@ -278,7 +278,7 @@
 			legend(pos(6) col(3) label(1 "MERRA-2") label(2 "ERA5") ///
 			label(3 "CPC")) saving("$sfig/tch_density_tp", replace)	
 			
-	graph export 	"$xfig\tch_density_tp.png", width(1400) replace					
+	graph export 	"$sfig\tch_density_tp.png", width(9600) replace					
 		
 		
 	grc1leg2 		"$sfig/twsa_density_tp.gph" "$sfig/tcsa_density_tp.gph" ///
