@@ -118,7 +118,7 @@ if $pack == 1 {
 */
 
 * **********************************************************************
-* 2 - run household data cleaning .do file
+* 2 - run household data cleaning .do files and merge with weather data
 * **********************************************************************
 /*
 	do 			"$code/ethiopia/household_code/eth_hh_masterdo.do"
@@ -129,16 +129,32 @@ if $pack == 1 {
 	do 			"$code/uganda/household_code/uga_hh_masterdo.do"
 */
 
-* **********************************************************************
-* 3 - run .do files that merge weather and household data
-* **********************************************************************
-
 
 * **********************************************************************
-* 5 - run regression .do files
+* 3 - build cross-country household panel data set
 * **********************************************************************
+/*
+	do			"$code/analysis/reg_code/panel_build.do"
+*/
 
+* **********************************************************************
+* 4 - run regression .do files
+* **********************************************************************
+/*
+	do			"$code/analysis/reg_code/regressions.do"
+	do			"$code/analysis/reg_code/regressions-linear-combo.do"
+	do			"$code/analysis/reg_code/regressions-multi-combo.do"
+*/
 
 * **********************************************************************
 * 5 - run analysis .do files
 * **********************************************************************
+/*
+	do			"$code/analysis/viz_code/sum_table.do"
+	do			"$code/analysis/viz_code/sum_viz.do"
+	do			"$code/analysis/viz_code/r2_vis.do"
+	do			"$code/analysis/viz_code/pval_vis.do"
+	do			"$code/analysis/viz_code/coeff_vis.do"
+	do			"$code/analysis/viz_code/coeff_lc_vis.do"
+	do			"$code/analysis/viz_code/coeff_mc_vis.do"
+*/

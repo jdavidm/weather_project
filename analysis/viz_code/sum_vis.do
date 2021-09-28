@@ -2,8 +2,8 @@
 * Created on: September 2020
 * Created by: alj
 * Edited by: jdm
-* Last edit: 23 August 2021 
-* Stata v.16.1 
+* Last edit: 28 September 2021 
+* Stata v.17.0 
 
 * does
 	* reads in lsms data set
@@ -108,14 +108,14 @@
 * 3 - generate total season distribution graphs by aez
 * **********************************************************************
 
-* total season rainfall - Tropic-warm/semiarid	
+* total season rainfall - Tropic-warm/semi-arid	
 	twoway  (kdensity v05_rf1 if aez == 312, color(gray%30) recast(area)) ///
 			(kdensity v05_rf2 if aez == 312, color(vermillion%30) recast(area)) ///
 			(kdensity v05_rf3 if aez == 312, color(sea%30) recast(area)) ///
 			(kdensity v05_rf4 if aez == 312, color(turquoise%30) recast(area)) ///
 			(kdensity v05_rf5 if aez == 312, color(reddish%30) recast(area)) ///
 			(kdensity v05_rf6 if aez == 312, color(ananas%30) recast(area) ///
-			xtitle("") xscale(r(0(500)2000)) title("Tropic-warm/semiarid (n = 9,095)") ///
+			xtitle("") xscale(r(0(500)2000)) title("Tropic-warm/semi-arid (n = 9,095)") ///
 			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "CHIRPS") label(2 "CPC") ///
 			label(3 "MERRA-2") label(4 "ARC2") label(5 "ERA5") ///
@@ -123,15 +123,15 @@
 			
 	graph export 	"$xfig\twsa_density_rf.png", width(1400) replace
 
-* total season rainfall - Tropic-warm/subhumid		
+* total season rainfall - Tropic-warm/sub-humid		
 	twoway  (kdensity v05_rf1 if aez == 313, color(gray%30) recast(area)) ///
 			(kdensity v05_rf2 if aez == 313, color(vermillion%30) recast(area)) ///
 			(kdensity v05_rf3 if aez == 313, color(sea%30) recast(area)) ///
 			(kdensity v05_rf4 if aez == 313, color(turquoise%30) recast(area)) ///
 			(kdensity v05_rf5 if aez == 313, color(reddish%30) recast(area)) ///
 			(kdensity v05_rf6 if aez == 313, color(ananas%30) recast(area) ///
-			xtitle("") xscale(r(0(1000)4000)) title("Tropic-warm/subhumid (n = 9,009)") ///
-			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			xtitle("") xscale(r(0(1000)4000)) title("Tropic-warm/sub-humid (n = 9,009)") ///
+			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "CHIRPS") label(2 "CPC") ///
 			label(3 "MERRA-2") label(4 "ARC2") label(5 "ERA5") ///
 			label(6 "TAMSAT")) saving("$sfig/twsh_density_rf", replace)
@@ -145,7 +145,8 @@
 			(kdensity v05_rf4 if aez == 314, color(turquoise%30) recast(area)) ///
 			(kdensity v05_rf5 if aez == 314, color(reddish%30) recast(area)) ///
 			(kdensity v05_rf6 if aez == 314, color(ananas%30) recast(area) ///
-			xtitle("") xscale(r(0(1000)4000)) title("Tropic-warm/humid (n = 3,280)") ///
+			xtitle("Total Season Rainfall (mm)") xscale(r(0(1000)4000)) ///
+			title("Tropic-warm/humid (n = 3,280)") ///
 			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "CHIRPS") label(2 "CPC") ///
 			label(3 "MERRA-2") label(4 "ARC2") label(5 "ERA5") ///
@@ -153,14 +154,14 @@
 			
 	graph export 	"$xfig\twh_density_rf.png", width(1400) replace
 
-* total season rainfall - Tropic-cool/semiarid	
+* total season rainfall - Tropic-cool/semi-arid	
 	twoway  (kdensity v05_rf1 if aez == 322, color(gray%30) recast(area)) ///
 			(kdensity v05_rf2 if aez == 322, color(vermillion%30) recast(area)) ///
 			(kdensity v05_rf3 if aez == 322, color(sea%30) recast(area)) ///
 			(kdensity v05_rf4 if aez == 322, color(turquoise%30) recast(area)) ///
 			(kdensity v05_rf5 if aez == 322, color(reddish%30) recast(area)) ///
 			(kdensity v05_rf6 if aez == 322, color(ananas%30) recast(area) ///
-			xtitle("") xscale(r(0(500)2500)) title("Tropic-cool/semiarid (n = 2,840)") ///
+			xtitle("") xscale(r(0(500)2500)) title("Tropic-cool/semi-arid (n = 2,840)") ///
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "CHIRPS") label(2 "CPC") ///
 			label(3 "MERRA-2") label(4 "ARC2") label(5 "ERA5") ///
@@ -168,16 +169,15 @@
 			
 	graph export 	"$xfig\tcsa_density_rf.png", width(1400) replace
 
-* total season rainfall - Tropic-cool/subhumid		
+* total season rainfall - Tropic-cool/sub-humid		
 	twoway  (kdensity v05_rf1 if aez == 323, color(gray%30) recast(area)) ///
 			(kdensity v05_rf2 if aez == 323, color(vermillion%30) recast(area)) ///
 			(kdensity v05_rf3 if aez == 323, color(sea%30) recast(area)) ///
 			(kdensity v05_rf4 if aez == 323, color(turquoise%30) recast(area)) ///
 			(kdensity v05_rf5 if aez == 323, color(reddish%30) recast(area)) ///
 			(kdensity v05_rf6 if aez == 323, color(ananas%30) recast(area) ///
-			xtitle("Total Season Rainfall (mm)") xscale(r(0(1000)7000)) ///
-			title("Tropic-cool/subhumid (n = 5,886)") ///
-			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			xtitle("") xscale(r(0(1000)7000)) title("Tropic-cool/sub-humid (n = 5,886)") ///
+			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "CHIRPS") label(2 "CPC") ///
 			label(3 "MERRA-2") label(4 "ARC2") label(5 "ERA5") ///
 			label(6 "TAMSAT")) saving("$sfig/tcsh_density_rf", replace)
@@ -200,9 +200,9 @@
 			
 	graph export 	"$xfig\tch_density_rf.png", width(1400) replace		
 			
-	grc1leg2 		"$sfig/twsa_density_rf.gph" "$sfig/twsh_density_rf.gph" ///
-						"$sfig/twh_density_rf.gph" "$sfig/tcsa_density_rf.gph" ///
-						"$sfig/tcsh_density_rf.gph" "$sfig/tch_density_rf.gph", ///
+	grc1leg2 		"$sfig/twsa_density_rf.gph" "$sfig/tcsa_density_rf.gph" ///
+						"$sfig/twsh_density_rf.gph" "$sfig/tcsh_density_rf.gph"   ///
+						"$sfig/twh_density_rf.gph" "$sfig/tch_density_rf.gph", ///
 						col(2) iscale(.5) commonscheme
 						
 	graph export 	"$xfig\density_aez_rf.pdf", replace
@@ -212,23 +212,23 @@
 * 4 - generate mean temperature distribution graphs
 * **********************************************************************
 
-* mean temp - Tropic-warm/semiarid
+* mean temp - Tropic-warm/semi-arid
 	twoway	(kdensity v15_tp1 if aez == 312, color(gray%30) recast(area)) ///
 			(kdensity v15_tp2 if aez == 312, color(vermillion%30) recast(area)) ///
 			(kdensity v15_tp3 if aez == 312, color(sea%30) recast(area) ///
-			xtitle("") xscale(r(20(5)32)) title("Tropic-warm/semiarid (n = 9,095)") ///
+			xtitle("") xscale(r(20(5)32)) title("Tropic-warm/semi-arid (n = 9,095)") ///
 			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "MERRA-2") label(2 "ERA5") ///
 			label(3 "CPC")) saving("$sfig/twsa_density_tp", replace)
 			
 	graph export 	"$xfig\twsa_density_tp.png", width(1400) replace		
 
-* mean temp - Tropic-warm/subhumid
+* mean temp - Tropic-warm/sub-humid
 	twoway	(kdensity v15_tp1 if aez == 313, color(gray%30) recast(area)) ///
 			(kdensity v15_tp2 if aez == 313, color(vermillion%30) recast(area)) ///
 			(kdensity v15_tp3 if aez == 313, color(sea%30) recast(area) ///
-			xtitle("") xscale(r(15(5)30)) title("Tropic-warm/subhumid (n = 9,009)") ///
-			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			xtitle("") xscale(r(15(5)30)) title("Tropic-warm/sub-humid (n = 9,009)") ///
+			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "MERRA-2") label(2 "ERA5") ///
 			label(3 "CPC")) saving("$sfig/twsh_density_tp", replace)
 			
@@ -238,31 +238,31 @@
 	twoway	(kdensity v15_tp1 if aez == 314, color(gray%30) recast(area)) ///
 			(kdensity v15_tp2 if aez == 314, color(vermillion%30) recast(area)) ///
 			(kdensity v15_tp3 if aez == 314, color(sea%30) recast(area) ///
-			xtitle("") xscale(r(20(5)30)) title("Tropic-warm/humid (n = 3,280)") ///
+			xtitle("Mean Seasonal Temperature (C)") xscale(r(20(5)30)) ///
+			title("Tropic-warm/humid (n = 3,280)") ///
 			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "MERRA-2") label(2 "ERA5") ///
 			label(3 "CPC")) saving("$sfig/twh_density_tp", replace)	
 			
 	graph export 	"$xfig\twh_density_tp.png", width(1400) replace			
 
-* mean temp - Tropic-cool/semiarid
+* mean temp - Tropic-cool/semi-arid
 	twoway	(kdensity v15_tp1 if aez == 322, color(gray%30) recast(area)) ///
 			(kdensity v15_tp2 if aez == 322, color(vermillion%30) recast(area)) ///
 			(kdensity v15_tp3 if aez == 322, color(sea%30) recast(area) ///
-			xtitle("") xscale(r(15(5)30)) title("Tropic-cool/semiarid (n = 2,840)") ///
+			xtitle("") xscale(r(15(5)30)) title("Tropic-cool/semi-arid (n = 2,840)") ///
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "MERRA-2") label(2 "ERA5") ///
 			label(3 "CPC")) saving("$sfig/tcsa_density_tp", replace)
 			
 	graph export 	"$xfig\tcsa_density_tp.png", width(1400) replace		
 
-* mean temp - Tropic-cool/subhumid
+* mean temp - Tropic-cool/sub-humid
 	twoway	(kdensity v15_tp1 if aez == 323, color(gray%30) recast(area)) ///
 			(kdensity v15_tp2 if aez == 323, color(vermillion%30) recast(area)) ///
 			(kdensity v15_tp3 if aez == 323, color(sea%30) recast(area) ///
-			xtitle("Mean Seasonal Temperature (C)") xscale(r(10(5)30)) ///
-			title("Tropic-warm/subhumid (n = 5,886)") ///
-			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			xtitle("") xscale(r(10(5)30)) title("Tropic-cool/sub-humid (n = 5,886)") ///
+			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "MERRA-2") label(2 "ERA5") ///
 			label(3 "CPC")) saving("$sfig/tcsh_density_tp", replace)
 			
@@ -273,7 +273,7 @@
 			(kdensity v15_tp2 if aez == 324, color(vermillion%30) recast(area)) ///
 			(kdensity v15_tp3 if aez == 324, color(sea%30) recast(area) ///
 			xtitle("Mean Seasonal Temperature (C)") xscale(r(16(2)26)) ///
-			title("Tropic-warm/humid (n = 2,960)") ///
+			title("Tropic-cool/humid (n = 2,960)") ///
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "MERRA-2") label(2 "ERA5") ///
 			label(3 "CPC")) saving("$sfig/tch_density_tp", replace)	
@@ -281,9 +281,9 @@
 	graph export 	"$xfig\tch_density_tp.png", width(1400) replace					
 		
 		
-	grc1leg2 		"$sfig/twsa_density_tp.gph" "$sfig/twsh_density_tp.gph" ///
-						"$sfig/twh_density_tp.gph" "$sfig/tcsa_density_tp.gph" ///
-						"$sfig/tcsh_density_tp.gph" "$sfig/tch_density_tp.gph", ///
+	grc1leg2 		"$sfig/twsa_density_tp.gph" "$sfig/tcsa_density_tp.gph" ///
+						"$sfig/twsh_density_tp.gph" "$sfig/tcsh_density_tp.gph" ///
+						"$sfig/twh_density_tp.gph" "$sfig/tch_density_tp.gph", ///
 						col(2) iscale(.5) commonscheme
 						
 	graph export 	"$xfig\density_aez_tp.pdf", replace
@@ -293,28 +293,28 @@
 * 5 - generate days without rain line graphs by aez
 * **********************************************************************
 
-* days without rain - Tropic-warm/semiarid	
+* days without rain - Tropic-warm/semi-arid	
 	twoway  (fpfitci v10_rf1 year if aez == 312, color(gray%30) ) ///
 			(fpfitci v10_rf2 year if aez == 312, color(vermillion%30) ) ///
 			(fpfitci v10_rf3 year if aez == 312, color(sea%30) ) ///
 			(fpfitci v10_rf4 year if aez == 312, color(turquoise%30) ) ///
 			(fpfitci v10_rf5 year if aez == 312, color(reddish%30) ) ///
 			(fpfitci v10_rf6 year if aez == 312, color(ananas%30)  ///
-			xtitle("") xscale(r(2008(1)2015)) title("Tropic-warm/semiarid (n = 9,095)") ///
+			xtitle("") xscale(r(2008(1)2015)) title("Tropic-warm/semi-arid (n = 9,095)") ///
 			ytitle("Days without Rain") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "CHIRPS") label(3 "CPC") ///
 			label(5 "MERRA-2") label(7 "ARC2") label(9 "ERA5") ///
 			label(11 "TAMSAT") order(1 3 5 7 9 11)) saving("$sfig/twsa_norain_rf", replace)
 
-* days without rain - Tropic-warm/subhumid	
+* days without rain - Tropic-warm/sub-humid	
 	twoway  (fpfitci v10_rf1 year if aez == 313, color(gray%30) ) ///
 			(fpfitci v10_rf2 year if aez == 313, color(vermillion%30) ) ///
 			(fpfitci v10_rf3 year if aez == 313, color(sea%30) ) ///
 			(fpfitci v10_rf4 year if aez == 313, color(turquoise%30) ) ///
 			(fpfitci v10_rf5 year if aez == 313, color(reddish%30) ) ///
 			(fpfitci v10_rf6 year if aez == 313, color(ananas%30)  ///
-			xtitle("") xscale(r(2008(1)2015)) title("Tropic-warm/subhumid (n = 9,009)") ///
-			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			xtitle("") xscale(r(2008(1)2015)) title("Tropic-warm/sub-humid (n = 9,009)") ///
+			ytitle("Days without Rain") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "CHIRPS") label(3 "CPC") ///
 			label(5 "MERRA-2") label(7 "ARC2") label(9 "ERA5") ///
 			label(11 "TAMSAT") order(1 3 5 7 9 11)) saving("$sfig/twsh_norain_rf", replace)
@@ -326,34 +326,34 @@
 			(fpfitci v10_rf4 year if aez == 314, color(turquoise%30) ) ///
 			(fpfitci v10_rf5 year if aez == 314, color(reddish%30) ) ///
 			(fpfitci v10_rf6 year if aez == 314, color(ananas%30)  ///
-			xtitle("") xscale(r(2008(1)2015)) title("Tropic-warm/humid (n = 3,280)") ///
+			xtitle("Year") xscale(r(2008(1)2015)) title("Tropic-warm/humid (n = 3,280)") ///
 			ytitle("Days without Rain") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "CHIRPS") label(3 "CPC") ///
 			label(5 "MERRA-2") label(7 "ARC2") label(9 "ERA5") ///
 			label(11 "TAMSAT") order(1 3 5 7 9 11)) saving("$sfig/twh_norain_rf", replace)
 
-* days without rain - Tropic-cool/semiarid	
+* days without rain - Tropic-cool/semi-arid	
 	twoway  (fpfitci v10_rf1 year if aez == 322, color(gray%30) ) ///
 			(fpfitci v10_rf2 year if aez == 322, color(vermillion%30) ) ///
 			(fpfitci v10_rf3 year if aez == 322, color(sea%30) ) ///
 			(fpfitci v10_rf4 year if aez == 322, color(turquoise%30) ) ///
 			(fpfitci v10_rf5 year if aez == 322, color(reddish%30) ) ///
 			(fpfitci v10_rf6 year if aez == 322, color(ananas%30)  ///
-			xtitle("") xscale(r(2008(1)2015)) title("Tropic-cool/semiarid (n = 2,840)") ///
+			xtitle("") xscale(r(2008(1)2015)) title("Tropic-cool/semi-arid (n = 2,840)") ///
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "CHIRPS") label(3 "CPC") ///
 			label(5 "MERRA-2") label(7 "ARC2") label(9 "ERA5") ///
 			label(11 "TAMSAT") order(1 3 5 7 9 11)) saving("$sfig/tcsa_norain_rf", replace)
 
-* days without rain - Tropic-cool/subhumid	
+* days without rain - Tropic-cool/sub-humid	
 	twoway  (fpfitci v10_rf1 year if aez == 323, color(gray%30) ) ///
 			(fpfitci v10_rf2 year if aez == 323, color(vermillion%30) ) ///
 			(fpfitci v10_rf3 year if aez == 323, color(sea%30) ) ///
 			(fpfitci v10_rf4 year if aez == 323, color(turquoise%30) ) ///
 			(fpfitci v10_rf5 year if aez == 323, color(reddish%30) ) ///
 			(fpfitci v10_rf6 year if aez == 323, color(ananas%30)  ///
-			xtitle("Year") xscale(r(2008(1)2015)) title("Tropic-cool/subhumid (n = 5,886)") ///
-			ytitle("Days without Rain") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			xtitle("") xscale(r(2008(1)2015)) title("Tropic-cool/sub-humid (n = 5,886)") ///
+			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "CHIRPS") label(3 "CPC") ///
 			label(5 "MERRA-2") label(7 "ARC2") label(9 "ERA5") ///
 			label(11 "TAMSAT") order(1 3 5 7 9 11)) saving("$sfig/tcsh_norain_rf", replace)
@@ -372,9 +372,9 @@
 			label(11 "TAMSAT") order(1 3 5 7 9 11)) saving("$sfig/tch_norain_rf", replace)				
 		
 		
-	grc1leg2 		"$sfig/twsa_norain_rf.gph" "$sfig/twsh_norain_rf.gph" ///
-						"$sfig/twh_norain_rf.gph" "$sfig/tcsa_norain_rf.gph" ///
-						"$sfig/tcsh_norain_rf.gph" "$sfig/tch_norain_rf.gph", ///
+	grc1leg2 		"$sfig/twsa_norain_rf.gph" "$sfig/tcsa_norain_rf.gph" ///
+						"$sfig/twsh_norain_rf.gph" "$sfig/tcsh_norain_rf.gph" ///
+						"$sfig/twh_norain_rf.gph"  "$sfig/tch_norain_rf.gph", ///
 						col(2) iscale(.5) commonscheme
 						
 	graph export 	"$xfig\norain_aez_rf.pdf", replace	
@@ -384,21 +384,21 @@
 * 6 - generate GDD line graphs by aez
 * **********************************************************************
 
-* growing degree days - Tropic-warm/semiarid
+* growing degree days - Tropic-warm/semi-arid
 	twoway	(fpfitci v19_tp1 year if aez == 312, color(gray%30) ) ///
 			(fpfitci v19_tp2 year if aez == 312, color(vermillion%30) ) ///
 			(fpfitci v19_tp3 year if aez == 312, color(sea%30)  ///
-			xtitle("") xscale(r(2008(1)2015)) title("Tropic-warm/semiarid (n = 9,095)") ///
-			ytitle("Growing degree days") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			xtitle("") xscale(r(2008(1)2015)) title("Tropic-warm/semi-arid (n = 9,095)") ///
+			ytitle("Growing Degree Days") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "MERRA-2") label(3 "ERA5") ///
 			label(5 "CPC") order(1 3 5)) saving("$sfig/twsa_gdd_tp", replace)
 
-* growing degree days - Tropic-warm/subhumid
+* growing degree days - Tropic-warm/sub-humid
 	twoway	(fpfitci v19_tp1 year if aez == 313, color(gray%30) ) ///
 			(fpfitci v19_tp2 year if aez == 313, color(vermillion%30) ) ///
 			(fpfitci v19_tp3 year if aez == 313, color(sea%30)  ///
-			xtitle("") xscale(r(2008(1)2015)) title("Tropic-warm/subhumid (n = 9,009)") ///
-			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			xtitle("") xscale(r(2008(1)2015)) title("Tropic-warm/sub-humid (n = 9,009)") ///
+			ytitle("Gorwing Degree Days") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "MERRA-2") label(3 "ERA5") ///
 			label(5 "CPC") order(1 3 5)) saving("$sfig/twsh_gdd_tp", replace)
 
@@ -406,26 +406,26 @@
 	twoway	(fpfitci v19_tp1 year if aez == 314, color(gray%30) ) ///
 			(fpfitci v19_tp2 year if aez == 314, color(vermillion%30) ) ///
 			(fpfitci v19_tp3 year if aez == 314, color(sea%30) ///
-			xtitle("") xscale(r(2008(1)2015)) title("Tropic-warm/humid (n = 3,280)") ///
-			ytitle("Growing degree days") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			xtitle("Year") xscale(r(2008(1)2015)) title("Tropic-warm/humid (n = 3,280)") ///
+			ytitle("Growing Degree Days") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "MERRA-2") label(3 "ERA5") ///
 			label(5 "CPC") order(1 3 5)) saving("$sfig/twh_gdd_tp", replace)		
 
-* growing degree days - Tropic-cool/semiarid
+* growing degree days - Tropic-cool/semi-arid
 	twoway	(fpfitci v19_tp1 year if aez == 322, color(gray%30) ) ///
 			(fpfitci v19_tp2 year if aez == 322, color(vermillion%30) ) ///
 			(fpfitci v19_tp3 year if aez == 322, color(sea%30)  ///
-			xtitle("") xscale(r(2008(1)2015)) title("Tropic-cool/semiarid (n = 2,840)") ///
+			xtitle("") xscale(r(2008(1)2015)) title("Tropic-cool/semi-arid (n = 2,840)") ///
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "MERRA-2") label(3 "ERA5") ///
 			label(5 "CPC") order(1 3 5)) saving("$sfig/tcsa_gdd_tp", replace)
 
-* growing degree days - Tropic-cool/subhumid
+* growing degree days - Tropic-cool/sub-humid
 	twoway	(fpfitci v19_tp1 year if aez == 323, color(gray%30) ) ///
 			(fpfitci v19_tp2 year if aez == 323, color(vermillion%30) ) ///
 			(fpfitci v19_tp3 year if aez == 323, color(sea%30)  ///
-			xtitle("Year") xscale(r(2008(1)2015)) title("Tropic-cool/subhumid (n = 5,886)") ///
-			ytitle("Gorwing degree days") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			xtitle("") xscale(r(2008(1)2015)) title("Tropic-cool/sub-humid (n = 5,886)") ///
+			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(3) label(1 "MERRA-2") label(3 "ERA5") ///
 			label(5 "CPC") order(1 3 5)) saving("$sfig/tcsh_gdd_tp", replace)
 
@@ -438,9 +438,9 @@
 			legend(pos(6) col(3) label(1 "MERRA-2") label(3 "ERA5") ///
 			label(5 "CPC") order(1 3 5)) saving("$sfig/tch_gdd_tp", replace)				
 			
-	grc1leg2 		"$sfig/twsa_gdd_tp.gph" "$sfig/twsh_gdd_tp.gph" ///
-						"$sfig/twh_gdd_tp.gph" "$sfig/tcsa_gdd_tp.gph" ///
-						"$sfig/tcsh_gdd_tp.gph" "$sfig/tch_gdd_tp.gph", ///
+	grc1leg2 		"$sfig/twsa_gdd_tp.gph" "$sfig/tcsa_gdd_tp.gph" ///
+						"$sfig/twsh_gdd_tp.gph" "$sfig/tcsh_gdd_tp.gph" ///
+						"$sfig/twh_gdd_tp.gph" "$sfig/tch_gdd_tp.gph", ///
 						col(2) iscale(.5) commonscheme
 						
 	graph export 	"$xfig\gdd_aez_tp.pdf", replace			
