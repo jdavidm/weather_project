@@ -115,7 +115,7 @@ restore
 						"$sfig/v15_v17_v01_v03_cty.gph" "$sfig/v17_v15_v01_v03_cty.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export "$xfig\v01_v03_v15_v17_cty.png", width(9600) replace
+	graph export "$xfig\v01_v03_v15_v17_cty.png", width(1400) replace
 	
 
 * **********************************************************************
@@ -228,7 +228,7 @@ restore
 						"$sfig/v17_v18_v15_v01_v03_v04_cty.gph" "$sfig/v18_v15_v17_v01_v03_v04_cty.gph", ///
 						col(3) iscale(.5) commonscheme
 						
-	graph export "$xfig\v01_v03_v04_v15_v17_v18_cty.png", width(9600) replace
+	graph export "$xfig\v01_v03_v04_v15_v17_v18_cty.png", width(1400) replace
 		
 	
 * **********************************************************************

@@ -388,25 +388,25 @@ restore
 	gr combine 		"$sfig/v01_ext.gph" "$sfig/v02_ext.gph" "$sfig/v03_ext.gph" ///
 						"$sfig/v04_ext.gph", col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\ext_moment_rf.png", width(9600) replace
+	graph export 	"$xfig\ext_moment_rf.png", width(1400) replace
 	
 * combine total graphs
 	gr combine 		"$sfig/v05_ext.gph" "$sfig/v06_ext.gph" "$sfig/v07_ext.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\ext_total_rf.png", width(9600) replace
+	graph export 	"$xfig\ext_total_rf.png", width(1400) replace
 	
 * combine rainy days
 	gr combine 		"$sfig/v08_ext.gph" "$sfig/v09_ext.gph" "$sfig/v12_ext.gph" ///
 						"$sfig/v13_ext.gph", col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\ext_rain_rf.png", width(9600) replace
+	graph export 	"$xfig\ext_rain_rf.png", width(1400) replace
 	
 * combine total graphs
 	gr combine 		"$sfig/v10_ext.gph" "$sfig/v11_ext.gph" "$sfig/v14_ext.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig/ext_none_rf.png", width(9600) replace
+	graph export 	"$xfig/ext_none_rf.png", width(1400) replace
 	
 
 ************************************************************************
@@ -609,13 +609,13 @@ restore
 	gr combine 		"$sfig/var15_ext.gph" "$sfig/var16_ext.gph" "$sfig/var17_ext.gph" ///
 						"$sfig/var18_ext.gph", col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\ext_moment_tp.png", width(9600) replace
+	graph export 	"$xfig\ext_moment_tp.png", width(1400) replace
 	
 * combine total graphs
 	gr combine 		"$sfig/var19_ext.gph" "$sfig/var20_ext.gph" "$sfig/var21_ext.gph" ///
 						"$sfig/var22_ext.gph", col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig/ext_total_tp.png", width(9600) replace
+	graph export 	"$xfig/ext_total_tp.png", width(1400) replace
 	
 
 ************************************************************************
@@ -678,110 +678,266 @@ restore
 
 * ethiopia
 preserve
-	keep			if country == 1 & varname == 1
-	sort 			country beta
+	keep			if varname == 1 & country == 1
+	sort 			beta
 	gen 			obs = _n
+
+* stack values of the specification indicators
+	gen 			k1 		= 	regname
 	
-	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
-						(scatter b_sig obs, mcolor(edkblue%75) ) || ///
+* label new variables	
+	lab				var obs "Specification # - sorted by effect size"
+
+	lab 			var k1 "Model"
+
+	sum			 	ci_up
+	global			bmax = r(max)
+	
+	sum			 	ci_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - .5*$brange
+	global			gheight	=	20
+
+	twoway 			scatter k1 obs, xlab(0(4)72) xsize(10) ysize(6) msize(small small small)  ///
+						title("Ethiopia") ylab(0(1)$gheight ) xtitle("") ytitle("") ///
+						ylabel(1 "Weather" 2 "Weather + FE" 3 "Weather + FE + Inputs" ///
+						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
+						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
+						20 " ", angle(0) ///
+						labsize(vsmall) tstyle(notick)) || ///
+						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
+						labsize(vsmall) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(scatter b_sig obs, yaxis(2) mcolor(edkblue%75) ylab(, axis(2) ///
+						labsize(vsmall) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
 						(rbar ci_lo ci_up obs if b_sig == ., ///
-						barwidth(.2) color(black%50) ) || ///
+						barwidth(.2) color(black%50) yaxis(2) ) || ///
 						(rbar ci_lo ci_up obs if b_sig != ., ///
-						barwidth(.2) color(edkblue%50) xscale(r(0 72)) ///
-						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
-						ytitle("Coefficient") title("Ethiopia") ///
-						xtitle("") ), legend(pos(12) col(2) ///
-						order(1 2)) saving("$sfig/v01_eth", replace)
+						barwidth(.2) color(edkblue%50) yaxis(2)  ///
+						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
+						legend(order(2 3) cols(2) size(small) rowgap(.5) pos(12)) ///
+						saving("$sfig/v01_eth", replace)
 restore
 
 * malawi
 preserve
-	keep			if country == 2 & varname == 1
-	sort 			country beta
+	keep			if varname == 2 & country == 1
+	sort 			beta
 	gen 			obs = _n
 
-	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
-						(scatter b_sig obs, mcolor(edkblue%75) ) || ///
+* stack values of the specification indicators
+	gen 			k1 		= 	regname
+	
+* label new variables	
+	lab				var obs "Specification # - sorted by effect size"
+
+	lab 			var k1 "Model"
+
+	sum			 	ci_up
+	global			bmax = r(max)
+	
+	sum			 	ci_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - .5*$brange
+	global			gheight	=	20
+
+	twoway 			scatter k1 obs, xlab(0(4)72) xsize(10) ysize(6) msize(small small small)  ///
+						title("Malawi") ylab(0(1)$gheight ) xtitle("") ytitle("") ///
+						ylabel(1 "Weather" 2 "Weather + FE" 3 "Weather + FE + Inputs" ///
+						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
+						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
+						20 " ", angle(0) ///
+						labsize(vsmall) tstyle(notick)) || ///
+						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
+						labsize(vsmall) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(scatter b_sig obs, yaxis(2) mcolor(edkblue%75) ylab(, axis(2) ///
+						labsize(vsmall) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
 						(rbar ci_lo ci_up obs if b_sig == ., ///
-						barwidth(.2) color(black%50) ) || ///
+						barwidth(.2) color(black%50) yaxis(2) ) || ///
 						(rbar ci_lo ci_up obs if b_sig != ., ///
-						barwidth(.2) color(edkblue%50) xscale(r(0 72)) ///
-						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
-						ytitle("Coefficient") title("Malawi") ///
-						xtitle("") ), legend(pos(12) col(2) ///
-						order(1 2)) saving("$sfig/v01_mwi", replace)
+						barwidth(.2) color(edkblue%50) yaxis(2)  ///
+						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
+						legend(order(2 3) cols(2) size(small) rowgap(.5) pos(12)) ///
+						saving("$sfig/v01_mwi", replace)
 restore
 
 * niger
 preserve
-	keep			if country == 4 & varname == 1
-	sort 			country beta
+	keep			if varname == 4 & country == 1
+	sort 			beta
 	gen 			obs = _n
 
-	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
-						(scatter b_sig obs, mcolor(edkblue%75) ) || ///
+* stack values of the specification indicators
+	gen 			k1 		= 	regname
+	
+* label new variables	
+	lab				var obs "Specification # - sorted by effect size"
+
+	lab 			var k1 "Model"
+
+	sum			 	ci_up
+	global			bmax = r(max)
+	
+	sum			 	ci_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - .5*$brange
+	global			gheight	=	20
+
+	twoway 			scatter k1 obs, xlab(0(4)72) xsize(10) ysize(6) msize(small small small)  ///
+						title("Niger") ylab(0(1)$gheight ) xtitle("") ytitle("") ///
+						ylabel(1 "Weather" 2 "Weather + FE" 3 "Weather + FE + Inputs" ///
+						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
+						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
+						20 " ", angle(0) ///
+						labsize(vsmall) tstyle(notick)) || ///
+						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
+						labsize(vsmall) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(scatter b_sig obs, yaxis(2) mcolor(edkblue%75) ylab(, axis(2) ///
+						labsize(vsmall) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
 						(rbar ci_lo ci_up obs if b_sig == ., ///
-						barwidth(.2) color(black%50) ) || ///
+						barwidth(.2) color(black%50) yaxis(2) ) || ///
 						(rbar ci_lo ci_up obs if b_sig != ., ///
-						barwidth(.2) color(edkblue%50) xscale(r(0 72)) ///
-						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
-						ytitle("Coefficient") title("Niger") ///
-						xtitle("") ), legend(pos(12) col(2) ///
-						order(1 2)) saving("$sfig/v01_ngr", replace)
+						barwidth(.2) color(edkblue%50) yaxis(2)  ///
+						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
+						legend(order(2 3) cols(2) size(small) rowgap(.5) pos(12)) ///
+						saving("$sfig/v01_ngr", replace)
 restore
 
 * nigeria
 preserve
-	keep			if country == 5 & varname == 1
-	sort 			country beta
+	keep			if varname == 5 & country == 1
+	sort 			beta
 	gen 			obs = _n
 
-	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
-						(scatter b_sig obs, mcolor(edkblue%75) ) || ///
+* stack values of the specification indicators
+	gen 			k1 		= 	regname
+	
+* label new variables	
+	lab				var obs "Specification # - sorted by effect size"
+
+	lab 			var k1 "Model"
+
+	sum			 	ci_up
+	global			bmax = r(max)
+	
+	sum			 	ci_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - .5*$brange
+	global			gheight	=	20
+
+	twoway 			scatter k1 obs, xlab(0(4)72) xsize(10) ysize(6) msize(small small small)  ///
+						title("Nigeria") ylab(0(1)$gheight ) xtitle("") ytitle("") ///
+						ylabel(1 "Weather" 2 "Weather + FE" 3 "Weather + FE + Inputs" ///
+						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
+						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
+						20 " ", angle(0) ///
+						labsize(vsmall) tstyle(notick)) || ///
+						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
+						labsize(vsmall) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(scatter b_sig obs, yaxis(2) mcolor(edkblue%75) ylab(, axis(2) ///
+						labsize(vsmall) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
 						(rbar ci_lo ci_up obs if b_sig == ., ///
-						barwidth(.2) color(black%50) ) || ///
+						barwidth(.2) color(black%50) yaxis(2) ) || ///
 						(rbar ci_lo ci_up obs if b_sig != ., ///
-						barwidth(.2) color(edkblue%50) xscale(r(0 72)) ///
-						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
-						ytitle("Coefficient") title("Nigeria") ///
-						xtitle("") ), legend(pos(12) col(2) ///
-						order(1 2)) saving("$sfig/v01_nga", replace)
+						barwidth(.2) color(edkblue%50) yaxis(2)  ///
+						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
+						legend(order(2 3) cols(2) size(small) rowgap(.5) pos(12)) ///
+						saving("$sfig/v01_nga", replace)
 restore
 
 * tanzania
 preserve
-	keep			if country == 6 & varname == 1
-	sort 			country beta
+	keep			if varname == 6 & country == 1
+	sort 			beta
 	gen 			obs = _n
 
-	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
-						(scatter b_sig obs, mcolor(edkblue%75) ) || ///
+* stack values of the specification indicators
+	gen 			k1 		= 	regname
+	
+* label new variables	
+	lab				var obs "Specification # - sorted by effect size"
+
+	lab 			var k1 "Model"
+
+	sum			 	ci_up
+	global			bmax = r(max)
+	
+	sum			 	ci_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - .5*$brange
+	global			gheight	=	20
+
+	twoway 			scatter k1 obs, xlab(0(4)72) xsize(10) ysize(6) msize(small small small)  ///
+						title("Tanzania") ylab(0(1)$gheight ) ytitle("") ///
+						ylabel(1 "Weather" 2 "Weather + FE" 3 "Weather + FE + Inputs" ///
+						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
+						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
+						20 " ", angle(0) ///
+						labsize(vsmall) tstyle(notick)) || ///
+						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
+						labsize(vsmall) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(scatter b_sig obs, yaxis(2) mcolor(edkblue%75) ylab(, axis(2) ///
+						labsize(vsmall) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
 						(rbar ci_lo ci_up obs if b_sig == ., ///
-						barwidth(.2) color(black%50) ) || ///
+						barwidth(.2) color(black%50) yaxis(2) ) || ///
 						(rbar ci_lo ci_up obs if b_sig != ., ///
-						barwidth(.2) color(edkblue%50) xscale(r(0 72)) ///
-						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
-						ytitle("Coefficient") title("Tanzania") ///
-						xtitle("") ), legend(pos(12) col(2) ///
-						order(1 2)) saving("$sfig/v01_tza", replace)
+						barwidth(.2) color(edkblue%50) yaxis(2)  ///
+						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
+						legend(order(2 3) cols(2) size(small) rowgap(.5) pos(12)) ///
+						saving("$sfig/v01_tza", replace)
 restore
 
 * uganda
 preserve
-	keep			if country == 7 & varname == 1
-	sort 			country beta
+	keep			if varname == 7 & country == 1
+	sort 			beta
 	gen 			obs = _n
 
-	twoway			(scatter b_ns obs, mcolor(black%75) ) || ///
-						(scatter b_sig obs, mcolor(edkblue%75) ) || ///
+* stack values of the specification indicators
+	gen 			k1 		= 	regname
+	
+* label new variables	
+	lab				var obs "Specification # - sorted by effect size"
+
+	lab 			var k1 "Model"
+
+	sum			 	ci_up
+	global			bmax = r(max)
+	
+	sum			 	ci_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - .5*$brange
+	global			gheight	=	20
+
+	twoway 			scatter k1 obs, xlab(0(4)72) xsize(10) ysize(6) msize(small small small)  ///
+						title("Uganda") ylab(0(1)$gheight ) ytitle("") ///
+						ylabel(1 "Weather" 2 "Weather + FE" 3 "Weather + FE + Inputs" ///
+						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
+						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
+						20 " ", angle(0) ///
+						labsize(vsmall) tstyle(notick)) || ///
+						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
+						labsize(vsmall) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(scatter b_sig obs, yaxis(2) mcolor(edkblue%75) ylab(, axis(2) ///
+						labsize(vsmall) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
 						(rbar ci_lo ci_up obs if b_sig == ., ///
-						barwidth(.2) color(black%50) ) || ///
+						barwidth(.2) color(black%50) yaxis(2) ) || ///
 						(rbar ci_lo ci_up obs if b_sig != ., ///
-						barwidth(.2) color(edkblue%50) xscale(r(0 72)) ///
-						yline(0, lcolor(maroon) ) xlabel(0(12)72) ///
-						ytitle("Coefficient") title("Uganda") ///
-						xtitle("") ), legend(pos(12) col(2) ///
-						order(1 2)) saving("$sfig/v01_uga", replace)
+						barwidth(.2) color(edkblue%50) yaxis(2)  ///
+						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
+						legend(order(2 3) cols(2) size(small) rowgap(.5) pos(12)) ///
+						saving("$sfig/v01_uga", replace)
 restore
 
 * generate summary stats for discussion in paper
@@ -793,11 +949,11 @@ restore
 
 	
 * combine mean daily rain
-	gr combine 		"$sfig/v01_eth.gph" "$sfig/v01_mwi.gph" "$sfig/v01_ngr.gph" ///
+	grc1leg2 		"$sfig/v01_eth.gph" "$sfig/v01_mwi.gph" "$sfig/v01_ngr.gph" ///
 						"$sfig/v01_nga.gph" "$sfig/v01_tza.gph" "$sfig/v01_uga.gph", ///
-						col(2) iscale(.5) commonscheme
+						col(2) iscale(.5) pos(12) commonscheme
 						
-	graph export 	"$xfig\v01_cty.png", width(9600) replace
+	graph export 	"$xfig\v01_cty.png", width(1400) replace
 
 	
 *** median daily rainfall ***
@@ -923,7 +1079,7 @@ restore
 						"$sfig/v02_nga.gph" "$sfig/v02_tza.gph" "$sfig/v02_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v02_cty.png", width(9600) replace
+	graph export 	"$xfig\v02_cty.png", width(1400) replace
 
 	
 *** variance daily rainfall ***
@@ -1048,7 +1204,7 @@ restore
 						"$sfig/v03_nga.gph" "$sfig/v03_tza.gph" "$sfig/v03_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v03_cty.png", width(9600) replace
+	graph export 	"$xfig\v03_cty.png", width(1400) replace
 		
 	
 *** skew daily rainfall ***
@@ -1174,7 +1330,7 @@ restore
 						"$sfig/v04_nga.gph" "$sfig/v04_tza.gph" "$sfig/v04_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v04_cty.png", width(9600) replace
+	graph export 	"$xfig\v04_cty.png", width(1400) replace
 			
 		
 *** total seasonal rainfall ***
@@ -1299,7 +1455,7 @@ restore
 						"$sfig/v05_nga.gph" "$sfig/v05_tza.gph" "$sfig/v05_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v05_cty.png", width(9600) replace
+	graph export 	"$xfig\v05_cty.png", width(1400) replace
 			
 		
 *** deviation in total seasonal rainfall ***
@@ -1425,7 +1581,7 @@ restore
 						"$sfig/v06_nga.gph" "$sfig/v06_tza.gph" "$sfig/v06_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v06_cty.png", width(9600) replace
+	graph export 	"$xfig\v06_cty.png", width(1400) replace
 		
 			
 *** z-score total seasonal rainfall ***
@@ -1551,7 +1707,7 @@ restore
 						"$sfig/v07_nga.gph" "$sfig/v07_tza.gph" "$sfig/v07_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v07_cty.png", width(9600) replace
+	graph export 	"$xfig\v07_cty.png", width(1400) replace
 
 			
 *** number of days with rain ***
@@ -1677,7 +1833,7 @@ restore
 						"$sfig/v08_nga.gph" "$sfig/v08_tza.gph" "$sfig/v08_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v08_cty.png", width(9600) replace
+	graph export 	"$xfig\v08_cty.png", width(1400) replace
 		
 		
 *** deviation in number of days with rain ***
@@ -1803,7 +1959,7 @@ restore
 						"$sfig/v09_nga.gph" "$sfig/v09_tza.gph" "$sfig/v09_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v09_cty.png", width(9600) replace
+	graph export 	"$xfig\v09_cty.png", width(1400) replace
 
 	
 *** number of days without rain ***
@@ -1929,7 +2085,7 @@ restore
 						"$sfig/v10_nga.gph" "$sfig/v10_tza.gph" "$sfig/v10_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v10_cty.png", width(9600) replace
+	graph export 	"$xfig\v10_cty.png", width(1400) replace
 
 	
 *** deviation in no rain days ***
@@ -2055,7 +2211,7 @@ restore
 						"$sfig/v11_nga.gph" "$sfig/v11_tza.gph" "$sfig/v11_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v11_cty.png", width(9600) replace
+	graph export 	"$xfig\v11_cty.png", width(1400) replace
 				
 	
 *** percentage of days with rain ***
@@ -2181,7 +2337,7 @@ restore
 						"$sfig/v12_nga.gph" "$sfig/v12_tza.gph" "$sfig/v12_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v12_cty.png", width(9600) replace
+	graph export 	"$xfig\v12_cty.png", width(1400) replace
 				
 	
 *** deviation in % of days with rain ***
@@ -2307,7 +2463,7 @@ restore
 						"$sfig/v13_nga.gph" "$sfig/v13_tza.gph" "$sfig/v13_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v13_cty.png", width(9600) replace
+	graph export 	"$xfig\v13_cty.png", width(1400) replace
 				
 	
 *** longest dry spell ***
@@ -2433,7 +2589,7 @@ restore
 						"$sfig/v14_nga.gph" "$sfig/v14_tza.gph" "$sfig/v14_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v14_cty.png", width(9600) replace
+	graph export 	"$xfig\v14_cty.png", width(1400) replace
 	
 
 ************************************************************************
@@ -2563,7 +2719,7 @@ restore
 						"$sfig/v15_nga.gph" "$sfig/v15_tza.gph" "$sfig/v15_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v15_cty.png", width(9600) replace
+	graph export 	"$xfig\v15_cty.png", width(1400) replace
 
 	
 *** median daily temperature ***		
@@ -2689,7 +2845,7 @@ restore
 						"$sfig/v16_nga.gph" "$sfig/v16_tza.gph" "$sfig/v16_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v16_cty.png", width(9600) replace
+	graph export 	"$xfig\v16_cty.png", width(1400) replace
 	
 	
 *** variance of daily temperature ***		
@@ -2815,7 +2971,7 @@ restore
 						"$sfig/v17_nga.gph" "$sfig/v17_tza.gph" "$sfig/v17_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v17_cty.png", width(9600) replace
+	graph export 	"$xfig\v17_cty.png", width(1400) replace
 	
 	
 *** skew of daily temperature ***		
@@ -2941,7 +3097,7 @@ restore
 						"$sfig/v18_nga.gph" "$sfig/v18_tza.gph" "$sfig/v18_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v18_cty.png", width(9600) replace
+	graph export 	"$xfig\v18_cty.png", width(1400) replace
 
 	
 *** growing degree days (gdd) ***		
@@ -3067,7 +3223,7 @@ restore
 						"$sfig/v19_nga.gph" "$sfig/v19_tza.gph" "$sfig/v19_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v19_cty.png", width(9600) replace
+	graph export 	"$xfig\v19_cty.png", width(1400) replace
 
 	
 *** deviation in growing degree days (gdd) ***		
@@ -3193,7 +3349,7 @@ restore
 						"$sfig/v20_nga.gph" "$sfig/v20_tza.gph" "$sfig/v20_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v20_cty.png", width(9600) replace
+	graph export 	"$xfig\v20_cty.png", width(1400) replace
 
 	
 *** z-score of growing degree days (gdd) ***		
@@ -3319,7 +3475,7 @@ restore
 						"$sfig/v21_nga.gph" "$sfig/v21_tza.gph" "$sfig/v21_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v21_cty.png", width(9600) replace
+	graph export 	"$xfig\v21_cty.png", width(1400) replace
 						
 	
 *** max daily temp ***		
@@ -3445,7 +3601,7 @@ restore
 						"$sfig/v22_nga.gph" "$sfig/v22_tza.gph" "$sfig/v22_uga.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v22_cty.png", width(9600) replace
+	graph export 	"$xfig\v22_cty.png", width(1400) replace
 						
 						
 ************************************************************************
@@ -3769,25 +3925,25 @@ restore
 	gr combine 		"$sfig/v01_sat.gph" "$sfig/v02_sat.gph" "$sfig/v03_sat.gph" ///
 						"$sfig/v04_sat.gph", col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\sat_moment_rf.png", width(9600) replace
+	graph export 	"$xfig\sat_moment_rf.png", width(1400) replace
 	
 * combine total graphs
 	gr combine 		"$sfig/v05_sat.gph" "$sfig/v06_sat.gph" "$sfig/v07_sat.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\sat_total_rf.png", width(9600) replace
+	graph export 	"$xfig\sat_total_rf.png", width(1400) replace
 	
 * combine rainy days
 	gr combine 		"$sfig/v08_sat.gph" "$sfig/v09_sat.gph" "$sfig/v12_sat.gph" ///
 						"$sfig/v13_sat.gph", col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\sat_rain_rf.png", width(9600) replace
+	graph export 	"$xfig\sat_rain_rf.png", width(1400) replace
 	
 * combine total graphs
 	gr combine 		"$sfig/v10_sat.gph" "$sfig/v11_sat.gph" "$sfig/v14_sat.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\sat_none_rf.png", width(9600) replace
+	graph export 	"$xfig\sat_none_rf.png", width(1400) replace
 	
 
 ************************************************************************
@@ -3966,13 +4122,13 @@ restore
 	gr combine 		"$sfig/v15_sat.gph" "$sfig/v16_sat.gph" "$sfig/v17_sat.gph" ///
 						"$sfig/v18_sat.gph", col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\sat_moment_tp.png", width(9600) replace
+	graph export 	"$xfig\sat_moment_tp.png", width(1400) replace
 	
 * combine total graphs
 	gr combine 		"$sfig/v19_sat.gph" "$sfig/v20_sat.gph" "$sfig/v21_sat.gph" ///
 						"$sfig/v22_sat.gph", col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\sat_total_tp.png", width(9600) replace
+	graph export 	"$xfig\sat_total_tp.png", width(1400) replace
 	
 ************************************************************************
 **# 4c - generate table of significant values
@@ -4288,7 +4444,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/eth_v05_sat", replace)
 						
-	graph export 	"$xfig\eth_v05_sat.png", width(9600) replace
+	graph export 	"$xfig\eth_v05_sat.png", width(1400) replace
 	
 restore
 
@@ -4347,7 +4503,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/eth_v08_sat", replace)	
 						
-	graph export 	"$xfig\eth_v08_sat.png", width(9600) replace
+	graph export 	"$xfig\eth_v08_sat.png", width(1400) replace
 						
 restore	
 
@@ -4406,7 +4562,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/eth_v12_sat", replace)
 						
-	graph export 	"$xfig\eth_v12_sat.png", width(9600) replace
+	graph export 	"$xfig\eth_v12_sat.png", width(1400) replace
 							
 restore	
 
@@ -4469,7 +4625,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/eth_v15_sat", replace)
 						
-	graph export 	"$xfig\eth_v15_sat.png", width(9600) replace
+	graph export 	"$xfig\eth_v15_sat.png", width(1400) replace
 	
 restore
 
@@ -4532,7 +4688,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/eth_v16_sat", replace)
 						
-	graph export 	"$xfig\eth_v16_sat.png", width(9600) replace
+	graph export 	"$xfig\eth_v16_sat.png", width(1400) replace
 	
 restore
 
@@ -4595,7 +4751,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/eth_v17_sat", replace)
 						
-	graph export 	"$xfig\eth_v17_sat.png", width(9600) replace
+	graph export 	"$xfig\eth_v17_sat.png", width(1400) replace
 	
 restore
 	
@@ -4674,7 +4830,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/mwi_v01_sat", replace)
 						
-	graph export 	"$xfig\mwi_v01_sat.png", width(9600) replace
+	graph export 	"$xfig\mwi_v01_sat.png", width(1400) replace
 							
 restore
 	
@@ -4733,7 +4889,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/mwi_v05_sat", replace)
 						
-	graph export 	"$xfig\mwi_v05_sat.png", width(9600) replace
+	graph export 	"$xfig\mwi_v05_sat.png", width(1400) replace
 													
 restore
 
@@ -4792,7 +4948,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/mwi_v08_sat", replace)	
 						
-	graph export 	"$xfig\mwi_v08_sat.png", width(9600) replace
+	graph export 	"$xfig\mwi_v08_sat.png", width(1400) replace
 												
 restore
 
@@ -4851,7 +5007,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/mwi_v12_sat", replace)	
 						
-	graph export 	"$xfig\mwi_v12_sat.png", width(9600) replace
+	graph export 	"$xfig\mwi_v12_sat.png", width(1400) replace
 												
 restore
 
@@ -4914,7 +5070,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/mwi_v15_sat", replace)
 						
-	graph export 	"$xfig\mwi_v15_sat.png", width(9600) replace
+	graph export 	"$xfig\mwi_v15_sat.png", width(1400) replace
 	
 restore
 
@@ -4977,7 +5133,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/mwi_v16_sat", replace)
 						
-	graph export 	"$xfig\mwi_v16_sat.png", width(9600) replace
+	graph export 	"$xfig\mwi_v16_sat.png", width(1400) replace
 	
 restore
 
@@ -5040,7 +5196,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/mwi_v17_sat", replace)
 						
-	graph export 	"$xfig\mwi_v17_sat.png", width(9600) replace
+	graph export 	"$xfig\mwi_v17_sat.png", width(1400) replace
 	
 restore
 
@@ -5119,7 +5275,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/ngr_v01_sat", replace)
 						
-	graph export 	"$xfig\ngr_v01_sat.png", width(9600) replace
+	graph export 	"$xfig\ngr_v01_sat.png", width(1400) replace
 													
 restore
 	
@@ -5178,7 +5334,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/ngr_v05_sat", replace)
 						
-	graph export 	"$xfig\ngr_v05_sat.png", width(9600) replace
+	graph export 	"$xfig\ngr_v05_sat.png", width(1400) replace
 																			
 restore
 
@@ -5237,7 +5393,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/ngr_v08_sat", replace)	
 						
-	graph export 	"$xfig\ngr_v08_sat.png", width(9600) replace
+	graph export 	"$xfig\ngr_v08_sat.png", width(1400) replace
 																		
 restore
 
@@ -5296,7 +5452,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/ngr_v12_sat", replace)	
 						
-	graph export 	"$xfig\ngr_v12_sat.png", width(9600) replace
+	graph export 	"$xfig\ngr_v12_sat.png", width(1400) replace
 																		
 restore
 
@@ -5359,7 +5515,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/ngr_v15_sat", replace)
 						
-	graph export 	"$xfig\ngr_v15_sat.png", width(9600) replace
+	graph export 	"$xfig\ngr_v15_sat.png", width(1400) replace
 	
 restore
 
@@ -5422,7 +5578,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/ngr_v16_sat", replace)
 						
-	graph export 	"$xfig\ngr_v16_sat.png", width(9600) replace
+	graph export 	"$xfig\ngr_v16_sat.png", width(1400) replace
 	
 restore
 
@@ -5485,7 +5641,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/ngr_v17_sat", replace)
 						
-	graph export 	"$xfig\ngr_v17_sat.png", width(9600) replace
+	graph export 	"$xfig\ngr_v17_sat.png", width(1400) replace
 	
 restore
 
@@ -5564,7 +5720,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/nga_v01_sat", replace)
 						
-	graph export 	"$xfig\nga_v01_sat.png", width(9600) replace
+	graph export 	"$xfig\nga_v01_sat.png", width(1400) replace
 																			
 restore
 	
@@ -5623,7 +5779,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/nga_v05_sat", replace)	
 						
-	graph export 	"$xfig\nga_v05_sat.png", width(9600) replace
+	graph export 	"$xfig\nga_v05_sat.png", width(1400) replace
 																						
 restore
 
@@ -5682,7 +5838,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/nga_v08_sat", replace)
 						
-	graph export 	"$xfig\nga_v08_sat.png", width(9600) replace
+	graph export 	"$xfig\nga_v08_sat.png", width(1400) replace
 																							
 restore
 
@@ -5741,7 +5897,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/nga_v12_sat", replace)
 						
-	graph export 	"$xfig\nga_v12_sat.png", width(9600) replace
+	graph export 	"$xfig\nga_v12_sat.png", width(1400) replace
 																							
 restore
 
@@ -5804,7 +5960,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/nga_v15_sat", replace)
 						
-	graph export 	"$xfig\nga_v15_sat.png", width(9600) replace
+	graph export 	"$xfig\nga_v15_sat.png", width(1400) replace
 	
 restore
 
@@ -5867,7 +6023,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/nga_v16_sat", replace)
 						
-	graph export 	"$xfig\nga_v16_sat.png", width(9600) replace
+	graph export 	"$xfig\nga_v16_sat.png", width(1400) replace
 	
 restore
 
@@ -5930,7 +6086,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/nga_v17_sat", replace)
 						
-	graph export 	"$xfig\nga_v17_sat.png", width(9600) replace
+	graph export 	"$xfig\nga_v17_sat.png", width(1400) replace
 	
 restore
 
@@ -6009,7 +6165,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/tza_v01_sat", replace)	
 						
-	graph export 	"$xfig\tza_v01_sat.png", width(9600) replace
+	graph export 	"$xfig\tza_v01_sat.png", width(1400) replace
 																						
 restore
 	
@@ -6068,7 +6224,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/tza_v05_sat", replace)
 						
-	graph export 	"$xfig\tza_v05_sat.png", width(9600) replace
+	graph export 	"$xfig\tza_v05_sat.png", width(1400) replace
 																							
 restore
 
@@ -6127,7 +6283,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/tza_v08_sat", replace)	
 						
-	graph export 	"$xfig\tza_v08_sat.png", width(9600) replace
+	graph export 	"$xfig\tza_v08_sat.png", width(1400) replace
 																						
 restore
 
@@ -6186,7 +6342,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/tza_v12_sat", replace)
 						
-	graph export 	"$xfig\tza_v12_sat.png", width(9600) replace
+	graph export 	"$xfig\tza_v12_sat.png", width(1400) replace
 																							
 restore
 
@@ -6249,7 +6405,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/tza_v15_sat", replace)
 						
-	graph export 	"$xfig\tza_v15_sat.png", width(9600) replace
+	graph export 	"$xfig\tza_v15_sat.png", width(1400) replace
 	
 restore
 
@@ -6312,7 +6468,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/tza_v16_sat", replace)
 						
-	graph export 	"$xfig\tza_v16_sat.png", width(9600) replace
+	graph export 	"$xfig\tza_v16_sat.png", width(1400) replace
 	
 restore
 
@@ -6375,7 +6531,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/tza_v17_sat", replace)
 						
-	graph export 	"$xfig\tza_v17_sat.png", width(9600) replace
+	graph export 	"$xfig\tza_v17_sat.png", width(1400) replace
 	
 restore
 
@@ -6456,7 +6612,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/uga_v01_sat", replace)		
 						
-	graph export 	"$xfig\uga_v01_sat.png", width(9600) replace
+	graph export 	"$xfig\uga_v01_sat.png", width(1400) replace
 																					
 restore
 	
@@ -6515,7 +6671,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/uga_v05_sat", replace)	
 						
-	graph export 	"$xfig\uga_v05_sat.png", width(9600) replace
+	graph export 	"$xfig\uga_v05_sat.png", width(1400) replace
 																							
 restore
 
@@ -6574,7 +6730,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/uga_v08_sat", replace)	
 						
-	graph export 	"$xfig\uga_v08_sat.png", width(9600) replace
+	graph export 	"$xfig\uga_v08_sat.png", width(1400) replace
 																							
 restore
 
@@ -6633,7 +6789,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/uga_v12_sat", replace)	
 						
-	graph export 	"$xfig\uga_v12_sat.png", width(9600) replace
+	graph export 	"$xfig\uga_v12_sat.png", width(1400) replace
 																							
 restore
 
@@ -6696,7 +6852,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/uga_v15_sat", replace)
 						
-	graph export 	"$xfig\uga_v15_sat.png", width(9600) replace
+	graph export 	"$xfig\uga_v15_sat.png", width(1400) replace
 	
 restore
 
@@ -6759,7 +6915,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/uga_v16_sat", replace)
 						
-	graph export 	"$xfig\uga_v16_sat.png", width(9600) replace
+	graph export 	"$xfig\uga_v16_sat.png", width(1400) replace
 	
 restore
 
@@ -6822,7 +6978,7 @@ preserve
 						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/uga_v17_sat", replace)
 						
-	graph export 	"$xfig\uga_v17_sat.png", width(9600) replace
+	graph export 	"$xfig\uga_v17_sat.png", width(1400) replace
 	
 restore
 
