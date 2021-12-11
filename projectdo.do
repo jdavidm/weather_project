@@ -149,7 +149,7 @@ if $pack == 1 {
 * **********************************************************************
 * 5 - run analysis .do files
 * **********************************************************************
-
+/*
 	do			"$code/analysis/viz_code/sum_table.do"
 	do			"$code/analysis/viz_code/sum_vis.do"
 	do			"$code/analysis/viz_code/r2_vis.do"
