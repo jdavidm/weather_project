@@ -2,7 +2,7 @@
 * Created on: September 2020
 * Created by: alj
 * Edited by: jdm
-* Last edit: 10 December 2021 
+* Last edit: 21 December 2021 
 * Stata v.17.0 
 
 * does
@@ -73,131 +73,131 @@
 
 
 * **********************************************************************
-* 2 - generate total season distribution graphs by extraction
+* 2 - generate mean daily rainfall distribution graphs by extraction
 * **********************************************************************
 
 	colorpalette	economist
 
 * total seasonal rainfall - CHIRPS
-	twoway	(kdensity v05_rf1_x1, color(edkblue) lpattern(dash) ) ///
-			(kdensity v05_rf1_x2, color(eltblue) lpattern(dot) ) ///
-			(kdensity v05_rf1_x3, color(emerald) lpattern(dash_dot) ) ///
-			(kdensity v05_rf1_x4, color(erose) lpattern(shortdash) ) ///
-			(kdensity v05_rf1_x5, color(eltgreen) lpattern(shortdash_dot) ) ///
-			(kdensity v05_rf1_x6, color(stone) lpattern(longdash) ) ///
-			(kdensity v05_rf1_x7, color(maroon) lpattern(._) ) ///
-			(kdensity v05_rf1_x8, color(brown) lpattern(..--_#) ) ///
-			(kdensity v05_rf1_x9, color(lavender) lpattern(---...) ) ///
-			(kdensity v05_rf1_x0, color(cranberry) lpattern(solid) ///
-			xtitle("") xscale(r(0(500)2000)) title("CHIRPS") ///
-			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+	twoway	(kdensity v01_rf1_x1, color(edkblue) lpattern(dash) ) ///
+			(kdensity v01_rf1_x2, color(eltblue) lpattern(dot) ) ///
+			(kdensity v01_rf1_x3, color(emerald) lpattern(dash_dot) ) ///
+			(kdensity v01_rf1_x4, color(erose) lpattern(shortdash) ) ///
+			(kdensity v01_rf1_x5, color(eltgreen) lpattern(shortdash_dot) ) ///
+			(kdensity v01_rf1_x6, color(stone) lpattern(longdash) ) ///
+			(kdensity v01_rf1_x7, color(maroon) lpattern(._) ) ///
+			(kdensity v01_rf1_x8, color(brown) lpattern(..--_#) ) ///
+			(kdensity v01_rf1_x9, color(lavender) lpattern(---...) ) ///
+			(kdensity v01_rf1_x0, color(cranberry) lpattern(solid) ///
+			xtitle("") xscale(r(0(5)15)) title("CHIRPS") ///
+			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(0(5)15, nogrid labsize(small))), ///
 			legend(pos(6) col(5) size(vsmall) label(1 "HH Bilinear") label(2 "HH Simple") ///
 			label(3 "EA Bilinear") label(4 "EA Simple") label(5 "Modified EA Bilinear") ///
 			label(6 "Modified EA Simple") label(7 "Admin Bilinear") ///
 			label(8 "Admin Simple") label(9 "EA Zonal Mean") ///
-			label(10 "Admin Zonal Mean")) saving("$sfig/v05_rf1_density", replace)
+			label(10 "Admin Zonal Mean")) saving("$sfig/v01_rf1_density", replace)
 
 * total seasonal rainfall - CPC
-	twoway	(kdensity v05_rf2_x1, color(edkblue) lpattern(dash) ) ///
-			(kdensity v05_rf2_x2, color(eltblue) lpattern(dot) ) ///
-			(kdensity v05_rf2_x3, color(emerald) lpattern(dash_dot) ) ///
-			(kdensity v05_rf2_x4, color(erose) lpattern(shortdash) ) ///
-			(kdensity v05_rf2_x5, color(eltgreen) lpattern(shortdash_dot) ) ///
-			(kdensity v05_rf2_x6, color(stone) lpattern(longdash) ) ///
-			(kdensity v05_rf2_x7, color(maroon) lpattern(._) ) ///
-			(kdensity v05_rf2_x8, color(brown) lpattern(..--_#) ) ///
-			(kdensity v05_rf2_x9, color(lavender) lpattern(---...) ) ///
-			(kdensity v05_rf2_x0, color(cranberry) lpattern(solid) ///
-			xtitle("") xscale(r(0(500)2000)) title("CPC") ///
-			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+	twoway	(kdensity v01_rf2_x1, color(edkblue) lpattern(dash) ) ///
+			(kdensity v01_rf2_x2, color(eltblue) lpattern(dot) ) ///
+			(kdensity v01_rf2_x3, color(emerald) lpattern(dash_dot) ) ///
+			(kdensity v01_rf2_x4, color(erose) lpattern(shortdash) ) ///
+			(kdensity v01_rf2_x5, color(eltgreen) lpattern(shortdash_dot) ) ///
+			(kdensity v01_rf2_x6, color(stone) lpattern(longdash) ) ///
+			(kdensity v01_rf2_x7, color(maroon) lpattern(._) ) ///
+			(kdensity v01_rf2_x8, color(brown) lpattern(..--_#) ) ///
+			(kdensity v01_rf2_x9, color(lavender) lpattern(---...) ) ///
+			(kdensity v01_rf2_x0, color(cranberry) lpattern(solid) ///
+			xtitle("") xscale(r(0(5)15)) title("CPC") ///
+			ytitle("") ylabel(, nogrid labsize(small)) xlabel(0(5)15, nogrid labsize(small))), ///
 			legend(pos(6) col(5) size(vsmall) label(1 "HH Bilinear") label(2 "HH Simple") ///
 			label(3 "EA Bilinear") label(4 "EA Simple") label(5 "Modified EA Bilinear") ///
 			label(6 "Modified EA Simple") label(7 "Admin Bilinear") ///
 			label(8 "Admin Simple") label(9 "EA Zonal Mean") ///
-			label(10 "Admin Zonal Mean")) saving("$sfig/v05_rf2_density", replace)
+			label(10 "Admin Zonal Mean")) saving("$sfig/v01_rf2_density", replace)
 
 * total seasonal rainfall - MERRA-2
-	twoway	(kdensity v05_rf3_x1, color(edkblue) lpattern(dash) ) ///
-			(kdensity v05_rf3_x2, color(eltblue) lpattern(dot) ) ///
-			(kdensity v05_rf3_x3, color(emerald) lpattern(dash_dot) ) ///
-			(kdensity v05_rf3_x4, color(erose) lpattern(shortdash) ) ///
-			(kdensity v05_rf3_x5, color(eltgreen) lpattern(shortdash_dot) ) ///
-			(kdensity v05_rf3_x6, color(stone) lpattern(longdash) ) ///
-			(kdensity v05_rf3_x7, color(maroon) lpattern(._) ) ///
-			(kdensity v05_rf3_x8, color(brown) lpattern(..--_#) ) ///
-			(kdensity v05_rf3_x9, color(lavender) lpattern(---...) ) ///
-			(kdensity v05_rf3_x0, color(cranberry) lpattern(solid) ///
-			xtitle("") xscale(r(0(500)2000)) title("MERRA-2") ///
-			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+	twoway	(kdensity v01_rf3_x1, color(edkblue) lpattern(dash) ) ///
+			(kdensity v01_rf3_x2, color(eltblue) lpattern(dot) ) ///
+			(kdensity v01_rf3_x3, color(emerald) lpattern(dash_dot) ) ///
+			(kdensity v01_rf3_x4, color(erose) lpattern(shortdash) ) ///
+			(kdensity v01_rf3_x5, color(eltgreen) lpattern(shortdash_dot) ) ///
+			(kdensity v01_rf3_x6, color(stone) lpattern(longdash) ) ///
+			(kdensity v01_rf3_x7, color(maroon) lpattern(._) ) ///
+			(kdensity v01_rf3_x8, color(brown) lpattern(..--_#) ) ///
+			(kdensity v01_rf3_x9, color(lavender) lpattern(---...) ) ///
+			(kdensity v01_rf3_x0, color(cranberry) lpattern(solid) ///
+			xtitle("") xscale(r(0(5)15)) title("MERRA-2") ///
+			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(0(5)15, nogrid labsize(small))), ///
 			legend(pos(6) col(5) size(vsmall) label(1 "HH Bilinear") label(2 "HH Simple") ///
 			label(3 "EA Bilinear") label(4 "EA Simple") label(5 "Modified EA Bilinear") ///
 			label(6 "Modified EA Simple") label(7 "Admin Bilinear") ///
 			label(8 "Admin Simple") label(9 "EA Zonal Mean") ///
-			label(10 "Admin Zonal Mean")) saving("$sfig/v05_rf3_density", replace)
+			label(10 "Admin Zonal Mean")) saving("$sfig/v01_rf3_density", replace)
 			
 * total seasonal rainfall - ARC2
-	twoway	(kdensity v05_rf4_x1, color(edkblue) lpattern(dash) ) ///
-			(kdensity v05_rf4_x2, color(eltblue) lpattern(dot) ) ///
-			(kdensity v05_rf4_x3, color(emerald) lpattern(dash_dot) ) ///
-			(kdensity v05_rf4_x4, color(erose) lpattern(shortdash) ) ///
-			(kdensity v05_rf4_x5, color(eltgreen) lpattern(shortdash_dot) ) ///
-			(kdensity v05_rf4_x6, color(stone) lpattern(longdash) ) ///
-			(kdensity v05_rf4_x7, color(maroon) lpattern(._) ) ///
-			(kdensity v05_rf4_x8, color(brown) lpattern(..--_#) ) ///
-			(kdensity v05_rf4_x9, color(lavender) lpattern(---...) ) ///
-			(kdensity v05_rf4_x0, color(cranberry) lpattern(solid) ///
-			xtitle("") xscale(r(0(500)2000)) title("ARC2") ///
-			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+	twoway	(kdensity v01_rf4_x1, color(edkblue) lpattern(dash) ) ///
+			(kdensity v01_rf4_x2, color(eltblue) lpattern(dot) ) ///
+			(kdensity v01_rf4_x3, color(emerald) lpattern(dash_dot) ) ///
+			(kdensity v01_rf4_x4, color(erose) lpattern(shortdash) ) ///
+			(kdensity v01_rf4_x5, color(eltgreen) lpattern(shortdash_dot) ) ///
+			(kdensity v01_rf4_x6, color(stone) lpattern(longdash) ) ///
+			(kdensity v01_rf4_x7, color(maroon) lpattern(._) ) ///
+			(kdensity v01_rf4_x8, color(brown) lpattern(..--_#) ) ///
+			(kdensity v01_rf4_x9, color(lavender) lpattern(---...) ) ///
+			(kdensity v01_rf4_x0, color(cranberry) lpattern(solid) ///
+			xtitle("") xscale(r(0(5)15)) title("ARC2") ///
+			ytitle("") ylabel(, nogrid labsize(small)) xlabel(0(5)15, nogrid labsize(small))), ///
 			legend(pos(6) col(5) size(vsmall) label(1 "HH Bilinear") label(2 "HH Simple") ///
 			label(3 "EA Bilinear") label(4 "EA Simple") label(5 "Modified EA Bilinear") ///
 			label(6 "Modified EA Simple") label(7 "Admin Bilinear") ///
 			label(8 "Admin Simple") label(9 "EA Zonal Mean") ///
-			label(10 "Admin Zonal Mean")) saving("$sfig/v05_rf4_density", replace)
+			label(10 "Admin Zonal Mean")) saving("$sfig/v01_rf4_density", replace)
 			
 * total seasonal rainfall - ERA5
-	twoway	(kdensity v05_rf5_x1, color(edkblue) lpattern(dash) ) ///
-			(kdensity v05_rf5_x2, color(eltblue) lpattern(dot) ) ///
-			(kdensity v05_rf5_x3, color(emerald) lpattern(dash_dot) ) ///
-			(kdensity v05_rf5_x4, color(erose) lpattern(shortdash) ) ///
-			(kdensity v05_rf5_x5, color(eltgreen) lpattern(shortdash_dot) ) ///
-			(kdensity v05_rf5_x6, color(stone) lpattern(longdash) ) ///
-			(kdensity v05_rf5_x7, color(maroon) lpattern(._) ) ///
-			(kdensity v05_rf5_x8, color(brown) lpattern(..--_#) ) ///
-			(kdensity v05_rf5_x9, color(lavender) lpattern(---...) ) ///
-			(kdensity v05_rf5_x0, color(cranberry) lpattern(solid) ///
-			xtitle("Total Season Rainfall (mm)") xscale(r(0(500)2000)) title("ERA5") ///
+	twoway	(kdensity v01_rf5_x1, color(edkblue) lpattern(dash) ) ///
+			(kdensity v01_rf5_x2, color(eltblue) lpattern(dot) ) ///
+			(kdensity v01_rf5_x3, color(emerald) lpattern(dash_dot) ) ///
+			(kdensity v01_rf5_x4, color(erose) lpattern(shortdash) ) ///
+			(kdensity v01_rf5_x5, color(eltgreen) lpattern(shortdash_dot) ) ///
+			(kdensity v01_rf5_x6, color(stone) lpattern(longdash) ) ///
+			(kdensity v01_rf5_x7, color(maroon) lpattern(._) ) ///
+			(kdensity v01_rf5_x8, color(brown) lpattern(..--_#) ) ///
+			(kdensity v01_rf5_x9, color(lavender) lpattern(---...) ) ///
+			(kdensity v01_rf5_x0, color(cranberry) lpattern(solid) ///
+			xtitle("Total Season Rainfall (mm)") title("ERA5") ///
 			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
 			legend(pos(6) col(5) size(vsmall) label(1 "HH Bilinear") label(2 "HH Simple") ///
 			label(3 "EA Bilinear") label(4 "EA Simple") label(5 "Modified EA Bilinear") ///
 			label(6 "Modified EA Simple") label(7 "Admin Bilinear") ///
 			label(8 "Admin Simple") label(9 "EA Zonal Mean") ///
-			label(10 "Admin Zonal Mean")) saving("$sfig/v05_rf5_density", replace)
+			label(10 "Admin Zonal Mean")) saving("$sfig/v01_rf5_density", replace)
 			
 * total seasonal rainfall - TAMSAT
-	twoway	(kdensity v05_rf6_x1, color(edkblue) lpattern(dash) ) ///
-			(kdensity v05_rf6_x2, color(eltblue) lpattern(dot) ) ///
-			(kdensity v05_rf6_x3, color(emerald) lpattern(dash_dot) ) ///
-			(kdensity v05_rf6_x4, color(erose) lpattern(shortdash) ) ///
-			(kdensity v05_rf6_x5, color(eltgreen) lpattern(shortdash_dot) ) ///
-			(kdensity v05_rf6_x6, color(stone) lpattern(longdash) ) ///
-			(kdensity v05_rf6_x7, color(maroon) lpattern(._) ) ///
-			(kdensity v05_rf6_x8, color(brown) lpattern(..--_#) ) ///
-			(kdensity v05_rf6_x9, color(lavender) lpattern(---...) ) ///
-			(kdensity v05_rf6_x0, color(cranberry) lpattern(solid) ///
-			xtitle("Total Season Rainfall (mm)") xscale(r(0(500)2000)) title("TAMSAT") ///
-			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+	twoway	(kdensity v01_rf6_x1, color(edkblue) lpattern(dash) ) ///
+			(kdensity v01_rf6_x2, color(eltblue) lpattern(dot) ) ///
+			(kdensity v01_rf6_x3, color(emerald) lpattern(dash_dot) ) ///
+			(kdensity v01_rf6_x4, color(erose) lpattern(shortdash) ) ///
+			(kdensity v01_rf6_x5, color(eltgreen) lpattern(shortdash_dot) ) ///
+			(kdensity v01_rf6_x6, color(stone) lpattern(longdash) ) ///
+			(kdensity v01_rf6_x7, color(maroon) lpattern(._) ) ///
+			(kdensity v01_rf6_x8, color(brown) lpattern(..--_#) ) ///
+			(kdensity v01_rf6_x9, color(lavender) lpattern(---...) ) ///
+			(kdensity v01_rf6_x0, color(cranberry) lpattern(solid) ///
+			xtitle("Total Season Rainfall (mm)") xscale(r(0(5)15)) title("TAMSAT") ///
+			ytitle("") ylabel(, nogrid labsize(small)) xlabel(0(5)15, nogrid labsize(small))), ///
 			legend(pos(6) col(5) size(vsmall) label(1 "HH Bilinear") label(2 "HH Simple") ///
 			label(3 "EA Bilinear") label(4 "EA Simple") label(5 "Modified EA Bilinear") ///
 			label(6 "Modified EA Simple") label(7 "Admin Bilinear") ///
 			label(8 "Admin Simple") label(9 "EA Zonal Mean") ///
-			label(10 "Admin Zonal Mean")) saving("$sfig/v05_rf6_density", replace)
+			label(10 "Admin Zonal Mean")) saving("$sfig/v01_rf6_density", replace)
 			
-	grc1leg2 		"$sfig/v05_rf1_density.gph" "$sfig/v05_rf2_density.gph" ///
-						"$sfig/v05_rf3_density.gph" "$sfig/v05_rf4_density.gph"   ///
-						"$sfig/v05_rf5_density.gph" "$sfig/v05_rf6_density.gph", ///
+	grc1leg2 		"$sfig/v01_rf1_density.gph" "$sfig/v01_rf2_density.gph" ///
+						"$sfig/v01_rf3_density.gph" "$sfig/v01_rf4_density.gph"   ///
+						"$sfig/v01_rf5_density.gph" "$sfig/v01_rf6_density.gph", ///
 						col(2) iscale(.5) commonscheme
 						
-	graph export 	"$xfig\v05_density_x.pdf", replace
+	graph export 	"$xfig\v01_density_x.pdf", replace
 
 	
 * **********************************************************************
@@ -215,8 +215,8 @@
 			(kdensity v15_tp1_x8, color(brown) lpattern(..--_#) ) ///
 			(kdensity v15_tp1_x9, color(lavender) lpattern(---...) ) ///
 			(kdensity v15_tp1_x0, color(cranberry) lpattern(solid) ///
-			xtitle("") xscale(r(0(5)40)) title("MERRA-2") ///
-			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			xtitle("") xscale(r(0(5)35)) title("MERRA-2") ///
+			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(0(5)35, nogrid labsize(small))), ///
 			legend(pos(4) col(1) size(vsmall) label(1 "HH Bilinear") label(2 "HH Simple") ///
 			label(3 "EA Bilinear") label(4 "EA Simple") label(5 "Modified EA Bilinear") ///
 			label(6 "Modified EA Simple") label(7 "Admin Bilinear") ///
@@ -234,8 +234,8 @@
 			(kdensity v15_tp2_x8, color(brown) lpattern(..--_#) ) ///
 			(kdensity v15_tp2_x9, color(lavender) lpattern(---...) ) ///
 			(kdensity v15_tp2_x0, color(cranberry) lpattern(solid) ///
-			xtitle("Mean Seasonal Temperature (C)") xscale(r(20(5)32)) title("ERA5") ///
-			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			xtitle("Mean Seasonal Temperature (C)") xscale(r(0(5)35)) title("ERA5") ///
+			ytitle("") ylabel(, nogrid labsize(small)) xlabel(0(5)35, nogrid labsize(small))), ///
 			legend(pos(6) col(5) size(vsmall) label(1 "HH Bilinear") label(2 "HH Simple") ///
 			label(3 "EA Bilinear") label(4 "EA Simple") label(5 "Modified EA Bilinear") ///
 			label(6 "Modified EA Simple") label(7 "Admin Bilinear") ///
@@ -253,8 +253,8 @@
 			(kdensity v15_tp3_x8, color(brown) lpattern(..--_#) ) ///
 			(kdensity v15_tp3_x9, color(lavender) lpattern(---...) ) ///
 			(kdensity v15_tp3_x0, color(cranberry) lpattern(solid) ///
-			xtitle("Mean Seasonal Temperature (C)") xscale(r(20(5)32)) title("CPC") ///
-			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
+			xtitle("Mean Seasonal Temperature (C)") xscale(r(0(5)35)) title("CPC") ///
+			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(0(5)35, nogrid labsize(small))), ///
 			legend(pos(6) col(5) size(vsmall) label(1 "HH Bilinear") label(2 "HH Simple") ///
 			label(3 "EA Bilinear") label(4 "EA Simple") label(5 "Modified EA Bilinear") ///
 			label(6 "Modified EA Simple") label(7 "Admin Bilinear") ///

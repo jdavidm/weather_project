@@ -2,7 +2,7 @@
 * Created on: 14 December 2019
 * Created by: jdm
 * Edited by: jdm
-* Last edit: 14 December 2021
+* Last edit: 21 December 2021
 * Stata v.17.0 
 
 * does
@@ -49,6 +49,8 @@
 	gen 			p90 = 1 if pval <= 0.10
 	replace 		p90 = 0 if pval > 0.10
 
+* drop models with covariates
+	drop if			regname == 3 | regname == 6
 	
 ************************************************************************
 **# 2 - generate p-value graphs by extraction
@@ -112,7 +114,7 @@ preserve
 						38 "Admin Zonal Mean ", angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(5) order(1 2 3 4) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I."))  ///
-						saving("$sfig/pval_ext_rf", replace)
+						saving("$sfig/pval_ext_rf_x", replace)
 restore
 
 * p-value graph of temperature by extraction method
@@ -167,11 +169,11 @@ preserve
 						38 "Admin Zonal Mean ", angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(5) order(1 2 3 4) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I."))  ///
-						saving("$sfig/pval_ext_tp", replace)
+						saving("$sfig/pval_ext_tp_x", replace)
 restore
 					
 
-	grc1leg2 		"$sfig/pval_ext_rf.gph" "$sfig/pval_ext_tp.gph", ///
+	grc1leg2 		"$sfig/pval_ext_rf_x.gph" "$sfig/pval_ext_tp_x.gph", ///
 						col(1) iscale(.5) pos(12) commonscheme imargin(0 0 0 0)
 						
 	graph export 	"$xfig/pval_ext.pdf", as(pdf) replace		
@@ -204,17 +206,7 @@ preserve
 					
 * generate count variable that repeats by country	
 	bys country (ext): gen obs = _n
-/*
-	replace			obs = 1 + obs if obs > 3
-	replace			obs = 1 + obs if obs > 7
-	replace			obs = 1 + obs if obs > 11
-	replace			obs = 1 + obs if obs > 15
-	replace			obs = 1 + obs if obs > 19
-	replace			obs = 1 + obs if obs > 23
-	replace			obs = 1 + obs if obs > 27
-	replace			obs = 1 + obs if obs > 31
-	replace			obs = 1 + obs if obs > 35
-*/
+	
 * ethiopia
 	sum			 	hi if country == 1 & p == 95 & ext == 1
 	global			bmax = r(max)
@@ -368,17 +360,7 @@ preserve
 					
 * generate count variable that repeats by country	
 	bys country (ext): gen obs = _n
-/*
-	replace			obs = 1 + obs if obs > 3
-	replace			obs = 1 + obs if obs > 7
-	replace			obs = 1 + obs if obs > 11
-	replace			obs = 1 + obs if obs > 15
-	replace			obs = 1 + obs if obs > 19
-	replace			obs = 1 + obs if obs > 23
-	replace			obs = 1 + obs if obs > 27
-	replace			obs = 1 + obs if obs > 31
-	replace			obs = 1 + obs if obs > 35
-*/
+	
 * ethiopia
 	sum			 	hi if country == 1 & p == 95 & ext == 1
 	global			bmax = r(max)

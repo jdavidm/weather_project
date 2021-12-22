@@ -2,7 +2,7 @@
 * Created on: 13 December 2021
 * Created by: jdm
 * Edited by: jdm
-* Last edit: 13 December 2021 
+* Last edit: 21 December 2021 
 * Stata v.17.0 
 
 * does
@@ -193,7 +193,7 @@ preserve
 	di $gheight
 		
 	twoway 			scatter k1 obs, xlab(0(1)10) xsize(10) ysize(6) ///
-						title("Weather + FE") xtitle("") ///
+						title("Weather + FE")  ///
 						msize(small small small) ylab(0(1)$gheight ) ///
 						ytitle("") ylabel(1 "HH Bilinear" 2 "HH Simple" ///
 						3 "EA Bilinear" 4 "EA Simple" 5 "Modified EA Bilinear" ///
@@ -247,7 +247,7 @@ preserve
 	di $gheight
 		
 	twoway 			scatter k1 obs, xlab(0(1)10) xsize(10) ysize(6) ///
-						title("Weather + Weather{sup:2} + FE") xtitle("") ///
+						title("Weather + Weather{sup:2} + FE") ///
 						msize(small small small) ylab(0(1)$gheight ) ///
 						ytitle("") ylabel(1 "HH Bilinear" 2 "HH Simple" ///
 						3 "EA Bilinear" 4 "EA Simple" 5 "Modified EA Bilinear" ///
@@ -381,8 +381,7 @@ restore
 
 * combine R^2 specification curves for extration
 	grc1leg2 		"$sfig/r2_reg1_ext.gph" "$sfig/r2_reg4_ext.gph" ///
-						"$sfig/r2_reg2_ext.gph" "$sfig/r2_reg5_ext.gph" ///
-						"$sfig/r2_reg3_ext.gph" "$sfig/r2_reg6_ext.gph", ///
+						"$sfig/r2_reg2_ext.gph" "$sfig/r2_reg5_ext.gph", ///
 						col(2) iscale(.5) pos(12) commonscheme
 						
 	graph export 	"$xfig\r2_ext.pdf", as(pdf) replace
