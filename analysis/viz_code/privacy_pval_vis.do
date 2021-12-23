@@ -154,6 +154,8 @@ preserve
 	sum			 	lo if p == 95 & ext == 1
 	global			bmin = r(min)	
 
+	bys ext: sum mu if p == 95
+	
 	twoway			(bar mu obs if p == 90, color(maroon*1.5%60)) || ///
 						(bar mu obs if p == 95, color(lavender*1.5%60)) || ///
 						(bar mu obs if p == 99, color(brown*1.5%60)) || ///
@@ -214,6 +216,8 @@ preserve
 	sum			 	lo if country == 1 & p == 95 & ext == 1
 	global			bmin = r(min)
 
+	bys ext: sum mu if country == 1 & p == 95
+	
 	twoway			(bar mu obs if p == 95 & country == 1, color(eltblue*1.5%60)) || ///
 						(rcap hi lo obs if country == 1 & p == 95, yscale(r(0 1)) ///
 						ylab(0(.1)1, labsize(small)) title("Ethiopia") ///
@@ -235,6 +239,8 @@ preserve
 	
 	sum			 	lo if country == 2 & p == 95 & ext == 1
 	global			bmin = r(min)
+
+	bys ext: sum mu if country == 2 & p == 95
 	
 	twoway			(bar mu obs if p == 95 & country == 2, color(eltblue*1.5%60)) || ///
 						(rcap hi lo obs if country == 2 & p == 95, yscale(r(0 1)) ///
@@ -256,6 +262,8 @@ preserve
 	
 	sum			 	lo if country == 4 & p == 95 & ext == 1
 	global			bmin = r(min)
+
+	bys ext: sum mu if country == 4 & p == 95
 	
 	twoway			(bar mu obs if p == 95 & country == 4, color(eltblue*1.5%60)) || ///
 						(rcap hi lo obs if country == 4 & p == 95, yscale(r(0 1)) ///
@@ -277,6 +285,8 @@ preserve
 	
 	sum			 	lo if country == 5 & p == 95 & ext == 1
 	global			bmin = r(min)
+
+	bys ext: sum mu if country == 5 & p == 95
 	
 	twoway			(bar mu obs if p == 95 & country == 5, color(eltblue*1.5%60)) || ///
 						(rcap hi lo obs if country == 5 & p == 95, yscale(r(0 1)) ///
@@ -299,6 +309,8 @@ preserve
 	
 	sum			 	lo if country == 6 & p == 95 & ext == 1
 	global			bmin = r(min)
+
+	bys ext: sum mu if country == 6 & p == 95
 	
 	twoway			(bar mu obs if p == 95 & country == 6, color(eltblue*1.5%60)) || ///
 						(rcap hi lo obs if country == 6 & p == 95, yscale(r(0 1)) ///
@@ -320,6 +332,8 @@ preserve
 	
 	sum			 	lo if country == 7 & p == 95 & ext == 1
 	global			bmin = r(min)
+
+	bys ext: sum mu if country == 7 & p == 95
 	
 	twoway			(bar mu obs if p == 95 & country == 7, color(eltblue*1.5%60)) || ///
 						(rcap hi lo obs if country == 7 & p == 95, yscale(r(0 1)) ///
@@ -367,6 +381,8 @@ preserve
 	
 	sum			 	lo if country == 1 & p == 95 & ext == 1
 	global			bmin = r(min)
+
+	bys ext: sum mu if country == 1 & p == 95
 	
 	twoway			(bar mu obs if p == 95 & country == 1, color(lavender*1.5%60)) || ///
 						(rcap hi lo obs if country == 1 & p == 95, yscale(r(0 1)) ///
@@ -389,6 +405,8 @@ preserve
 	
 	sum			 	lo if country == 2 & p == 95 & ext == 1
 	global			bmin = r(min)
+
+	bys ext: sum mu if country == 2 & p == 95
 	
 	twoway			(bar mu obs if p == 95 & country == 2, color(lavender*1.5%60)) || ///
 						(rcap hi lo obs if country == 2 & p == 95, yscale(r(0 1)) ///
@@ -410,6 +428,8 @@ preserve
 	
 	sum			 	lo if country == 4 & p == 95 & ext == 1
 	global			bmin = r(min)
+
+	bys ext: sum mu if country == 4 & p == 95
 	
 	twoway			(bar mu obs if p == 95 & country == 4, color(lavender*1.5%60)) || ///
 						(rcap hi lo obs if country == 4 & p == 95, yscale(r(0 1)) ///
@@ -431,6 +451,8 @@ preserve
 	
 	sum			 	lo if country == 5 & p == 95 & ext == 1
 	global			bmin = r(min)
+
+	bys ext: sum mu if country == 5 & p == 95
 	
 	twoway			(bar mu obs if p == 95 & country == 5, color(lavender*1.5%60)) || ///
 						(rcap hi lo obs if country == 5 & p == 95, yscale(r(0 1)) ///
@@ -453,6 +475,8 @@ preserve
 	
 	sum			 	lo if country == 6 & p == 95 & ext == 1
 	global			bmin = r(min)
+
+	bys ext: sum mu if country == 6 & p == 95
 	
 	twoway			(bar mu obs if p == 95 & country == 6, color(lavender*1.5%60)) || ///
 						(rcap hi lo obs if country == 6 & p == 95, yscale(r(0 1)) ///
@@ -474,6 +498,8 @@ preserve
 	
 	sum			 	lo if country == 7 & p == 95 & ext == 1
 	global			bmin = r(min)
+
+	bys ext: sum mu if country == 7 & p == 95
 	
 	twoway			(bar mu obs if p == 95 & country == 7, color(lavender*1.5%60)) || ///
 						(rcap hi lo obs if country == 7 & p == 95, yscale(r(0 1)) ///

@@ -49,7 +49,14 @@
 	
 	gen 			r2_hi = r2_mu + invttail(n-1,0.025) * (r2_sd / sqrt(n))
 	gen				r2_lo = r2_mu - invttail(n-1,0.025) * (r2_sd / sqrt(n))
-
+/*
+	collapse 		(mean) r2_mu = loglike ///
+						(sd) r2_sd = loglike ///
+						(count) n = loglike, by(regname ext)
+	
+	gen 			r2_hi = r2_mu + invttail(n-1,0.025) * (r2_sd / sqrt(n))
+	gen				r2_lo = r2_mu - invttail(n-1,0.025) * (r2_sd / sqrt(n))
+*/
 	
 ************************************************************************
 **## 1a - weather only
@@ -65,7 +72,7 @@ preserve
 * stack values of the specification indicators
 	gen 			k1 		= 	ext
 	
-	lab				var obs "Specification # - sorted by model & effect size"
+	lab				var obs "Specification # - sorted by effect size"
 
 	lab 			var k1 "Extraction"
 
@@ -100,7 +107,7 @@ preserve
 						yscale(range($from_y $bmax ) axis(2))) || ///
 						(rbar r2_lo r2_hi obs, barwidth(.08) color(edkblue%40) yaxis(2) ), ///
 						legend(order(3 4) cols(2) size(small) rowgap(.5) pos(12) ///
-						label(3 "mean adjusted R{sup:2}") label(4 "95% C.I. on mean") ) ///
+						label(3 "mean log likelihood") label(4 "95% C.I. on mean") ) ///
 						saving("$sfig/r2_reg1_ext", replace)	
 restore
 		
@@ -119,7 +126,7 @@ preserve
 * stack values of the specification indicators
 	gen 			k1 		= 	ext
 	
-	lab				var obs "Specification # - sorted by model & effect size"
+	lab				var obs "Specification # - sorted by effect size"
 
 	lab 			var k1 "Extraction"
 
@@ -154,7 +161,7 @@ preserve
 						yscale(range($from_y $bmax ) axis(2))) || ///
 						(rbar r2_lo r2_hi obs, barwidth(.08) color(edkblue%40) yaxis(2) ), ///
 						legend(order(3 4) cols(2) size(small) rowgap(.5) pos(12) ///
-						label(3 "mean adjusted R{sup:2}") label(4 "95% C.I. on mean") ) ///
+						label(3 "mean log likelihood") label(4 "95% C.I. on mean") ) ///
 						saving("$sfig/r2_reg4_ext", replace)	
 restore
 
@@ -173,7 +180,7 @@ preserve
 * stack values of the specification indicators
 	gen 			k1 		= 	ext
 	
-	lab				var obs "Specification # - sorted by model & effect size"
+	lab				var obs "Specification # - sorted by effect size"
 
 	lab 			var k1 "Extraction"
 
@@ -208,7 +215,7 @@ preserve
 						yscale(range($from_y $bmax ) axis(2))) || ///
 						(rbar r2_lo r2_hi obs, barwidth(.08) color(edkblue%40) yaxis(2) ), ///
 						legend(order(3 4) cols(2) size(small) rowgap(.5) pos(12) ///
-						label(3 "mean adjusted R{sup:2}") label(4 "95% C.I. on mean") ) ///
+						label(3 "mean log likelihood") label(4 "95% C.I. on mean") ) ///
 						saving("$sfig/r2_reg2_ext", replace)	
 restore		
 
@@ -227,7 +234,7 @@ preserve
 * stack values of the specification indicators
 	gen 			k1 		= 	ext
 	
-	lab				var obs "Specification # - sorted by model & effect size"
+	lab				var obs "Specification # - sorted by effect size"
 
 	lab 			var k1 "Extraction"
 
@@ -262,7 +269,7 @@ preserve
 						yscale(range($from_y $bmax ) axis(2))) || ///
 						(rbar r2_lo r2_hi obs, barwidth(.08) color(edkblue%40) yaxis(2) ), ///
 						legend(order(3 4) cols(2) size(small) rowgap(.5) pos(12) ///
-						label(3 "mean adjusted R{sup:2}") label(4 "95% C.I. on mean") ) ///
+						label(3 "mean log likelihood") label(4 "95% C.I. on mean") ) ///
 						saving("$sfig/r2_reg5_ext", replace)	
 restore			
 
@@ -281,7 +288,7 @@ preserve
 * stack values of the specification indicators
 	gen 			k1 		= 	ext
 	
-	lab				var obs "Specification # - sorted by model & effect size"
+	lab				var obs "Specification # - sorted by effect size"
 
 	lab 			var k1 "Extraction"
 
@@ -316,7 +323,7 @@ preserve
 						yscale(range($from_y $bmax ) axis(2))) || ///
 						(rbar r2_lo r2_hi obs, barwidth(.08) color(edkblue%40) yaxis(2) ), ///
 						legend(order(3 4) cols(2) size(small) rowgap(.5) pos(12) ///
-						label(3 "mean adjusted R{sup:2}") label(4 "95% C.I. on mean") ) ///
+						label(3 "mean log likelihood") label(4 "95% C.I. on mean") ) ///
 						saving("$sfig/r2_reg3_ext", replace)	
 restore			
 
@@ -335,7 +342,7 @@ preserve
 * stack values of the specification indicators
 	gen 			k1 		= 	ext
 	
-	lab				var obs "Specification # - sorted by model & effect size"
+	lab				var obs "Specification # - sorted by effect size"
 
 	lab 			var k1 "Extraction"
 
@@ -370,7 +377,7 @@ preserve
 						yscale(range($from_y $bmax ) axis(2))) || ///
 						(rbar r2_lo r2_hi obs, barwidth(.08) color(edkblue%40) yaxis(2) ), ///
 						legend(order(3 4) cols(2) size(small) rowgap(.5) pos(12) ///
-						label(3 "mean adjusted R{sup:2}") label(4 "95% C.I. on mean") ) ///
+						label(3 "mean log likelihood") label(4 "95% C.I. on mean") ) ///
 						saving("$sfig/r2_reg6_ext", replace)	
 restore	
 
