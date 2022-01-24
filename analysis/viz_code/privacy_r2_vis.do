@@ -94,11 +94,11 @@ preserve
 	twoway 			scatter k1 obs, xlab(0(1)10) xsize(10) ysize(6) ///
 						title("Weather") xtitle("") ///
 						msize(small small small) ylab(0(1)$gheight ) ///
-						ytitle("") ylabel(1 "HH Bilinear" 2 "HH Simple" ///
-						3 "EA Bilinear" 4 "EA Simple" 5 "Modified EA Bilinear" ///
-						6 "Modified EA Simple" 7 "Admin Bilinear" ///
-						8 "Admin Simple" 9 "EA Zonal Mean" ///
-						10 "Admin Zonal Mean" 11 "*{bf:Extraction}*" 18 " ", ///
+						ytitle("") ylabel(1 "HH bilinear" 2 "HH simple" ///
+						3 "EA bilinear" 4 "EA simple" 5 "EA modified bilinear" ///
+						6 "EA modified simple" 7 "Admin bilinear" ///
+						8 "Admin simple" 9 "EA zone" ///
+						10 "Admin area" 11 "*{bf:Extraction}*" 18 " ", ///
 						angle(0) labsize(vsmall) tstyle(notick)) || ///
 						(scatter k1 obs if ext == 1 | ext == 3 | ext == 5, ///
 						msize(small small) mcolor(orange)) ///
@@ -148,11 +148,11 @@ preserve
 	twoway 			scatter k1 obs, xlab(0(1)10) xsize(10) ysize(6) ///
 						title("Weather + Weather{sup:2}") xtitle("") ///
 						msize(small small small) ylab(0(1)$gheight ) ///
-						ytitle("") ylabel(1 "HH Bilinear" 2 "HH Simple" ///
-						3 "EA Bilinear" 4 "EA Simple" 5 "Modified EA Bilinear" ///
-						6 "Modified EA Simple" 7 "Admin Bilinear" ///
-						8 "Admin Simple" 9 "EA Zonal Mean" ///
-						10 "Admin Zonal Mean" 11 "*{bf:Extraction}*" 18 " ", ///
+						ytitle("") ylabel(1 "HH bilinear" 2 "HH simple" ///
+						3 "EA bilinear" 4 "EA simple" 5 "EA modified bilinear" ///
+						6 "EA modified simple" 7 "Admin bilinear" ///
+						8 "Admin simple" 9 "EA zone" ///
+						10 "Admin area" 11 "*{bf:Extraction}*" 18 " ", ///
 						angle(0) labsize(vsmall) tstyle(notick)) || ///
 						(scatter k1 obs if ext == 1 | ext == 3 | ext == 5, ///
 						msize(small small) mcolor(orange)) ///
@@ -202,11 +202,11 @@ preserve
 	twoway 			scatter k1 obs, xlab(0(1)10) xsize(10) ysize(6) ///
 						title("Weather + FE")  ///
 						msize(small small small) ylab(0(1)$gheight ) ///
-						ytitle("") ylabel(1 "HH Bilinear" 2 "HH Simple" ///
-						3 "EA Bilinear" 4 "EA Simple" 5 "Modified EA Bilinear" ///
-						6 "Modified EA Simple" 7 "Admin Bilinear" ///
-						8 "Admin Simple" 9 "EA Zonal Mean" ///
-						10 "Admin Zonal Mean" 11 "*{bf:Extraction}*" 18 " ", ///
+						ytitle("") ylabel(1 "HH bilinear" 2 "HH simple" ///
+						3 "EA bilinear" 4 "EA simple" 5 "EA modified bilinear" ///
+						6 "EA modified simple" 7 "Admin bilinear" ///
+						8 "Admin simple" 9 "EA zone" ///
+						10 "Admin area" 11 "*{bf:Extraction}*" 18 " ", ///
 						angle(0) labsize(vsmall) tstyle(notick)) || ///
 						(scatter k1 obs if ext == 1 | ext == 3 | ext == 5, ///
 						msize(small small) mcolor(orange)) ///
@@ -256,11 +256,11 @@ preserve
 	twoway 			scatter k1 obs, xlab(0(1)10) xsize(10) ysize(6) ///
 						title("Weather + Weather{sup:2} + FE") ///
 						msize(small small small) ylab(0(1)$gheight ) ///
-						ytitle("") ylabel(1 "HH Bilinear" 2 "HH Simple" ///
-						3 "EA Bilinear" 4 "EA Simple" 5 "Modified EA Bilinear" ///
-						6 "Modified EA Simple" 7 "Admin Bilinear" ///
-						8 "Admin Simple" 9 "EA Zonal Mean" ///
-						10 "Admin Zonal Mean" 11 "*{bf:Extraction}*" 18 " ", ///
+						ytitle("") ylabel(1 "HH bilinear" 2 "HH simple" ///
+						3 "EA bilinear" 4 "EA simple" 5 "EA modified bilinear" ///
+						6 "EA modified simple" 7 "Admin bilinear" ///
+						8 "Admin simple" 9 "EA zone" ///
+						10 "Admin area" 11 "*{bf:Extraction}*" 18 " ", ///
 						angle(0) labsize(vsmall) tstyle(notick)) || ///
 						(scatter k1 obs if ext == 1 | ext == 3 | ext == 5, ///
 						msize(small small) mcolor(orange)) ///
@@ -310,11 +310,11 @@ preserve
 	twoway 			scatter k1 obs, xlab(0(1)10) xsize(10) ysize(6) ///
 						title("Weather + FE + Inputs") ///
 						msize(small small small) ylab(0(1)$gheight ) ///
-						ytitle("") ylabel(1 "HH Bilinear" 2 "HH Simple" ///
-						3 "EA Bilinear" 4 "EA Simple" 5 "Modified EA Bilinear" ///
-						6 "Modified EA Simple" 7 "Admin Bilinear" ///
-						8 "Admin Simple" 9 "EA Zonal Mean" ///
-						10 "Admin Zonal Mean" 11 "*{bf:Extraction}*" 18 " ", ///
+						ytitle("") ylabel(1 "HH bilinear" 2 "HH simple" ///
+						3 "EA bilinear" 4 "EA simple" 5 "EA modified bilinear" ///
+						6 "EA modified simple" 7 "Admin bilinear" ///
+						8 "Admin simple" 9 "EA zone" ///
+						10 "Admin area" 11 "*{bf:Extraction}*" 18 " ", ///
 						angle(0) labsize(vsmall) tstyle(notick)) || ///
 						(scatter k1 obs if ext == 1 | ext == 3 | ext == 5, ///
 						msize(small small) mcolor(orange)) ///
@@ -364,11 +364,11 @@ preserve
 	twoway 			scatter k1 obs, xlab(0(1)10) xsize(10) ysize(6) ///
 						title("Weather + Weather{sup:2} + FE + Inputs") ///
 						msize(small small small) ylab(0(1)$gheight ) ///
-						ytitle("") ylabel(1 "HH Bilinear" 2 "HH Simple" ///
-						3 "EA Bilinear" 4 "EA Simple" 5 "Modified EA Bilinear" ///
-						6 "Modified EA Simple" 7 "Admin Bilinear" ///
-						8 "Admin Simple" 9 "EA Zonal Mean" ///
-						10 "Admin Zonal Mean" 11 "*{bf:Extraction}*" 18 " ", ///
+						ytitle("") ylabel(1 "HH bilinear" 2 "HH simple" ///
+						3 "EA bilinear" 4 "EA simple" 5 "EA modified bilinear" ///
+						6 "EA modified simple" 7 "Admin bilinear" ///
+						8 "Admin simple" 9 "EA zone" ///
+						10 "Admin area" 11 "*{bf:Extraction}*" 18 " ", ///
 						angle(0) labsize(vsmall) tstyle(notick)) || ///
 						(scatter k1 obs if ext == 1 | ext == 3 | ext == 5, ///
 						msize(small small) mcolor(orange)) ///

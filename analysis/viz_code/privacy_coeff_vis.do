@@ -110,11 +110,11 @@ preserve
 						xtitle("") ytitle("") msize(vsmall vsmall vsmall) ylabel( ///
 						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "CHIRPS" ///
 						6 "CPC" 7 "MERRA-2" 8 "ARC2" 9 "ERA5" 10 "TAMSAT" ///
-						11 "*{bf:Weather Product}*" 13 "HH Bilinear" ///
-						14 "HH Simple" 15 "EA Bilinear" 16 "EA Simple" ///
-						17 "Modified EA Bilinear" 18 "Modified EA Simple" ///
-						19 "Admin Bilinear" 20 "Admin Simple" 21 "EA Zonal Mean" ///
-						22 "Admin Zonal Mean" 23 "*{bf:Extraction}*" 34 " ", ///
+						11 "*{bf:Weather Product}*" 13 "HH bilinear" ///
+						14 "HH simple" 15 "EA bilinear" 16 "EA simple" ///
+						17 "EA modified bilinear" 18 "EA modified simple" ///
+						19 "Admin bilinear" 20 "Admin simple" 21 "EA zone" ///
+						22 "Admin area" 23 "*{bf:Extraction}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
@@ -168,11 +168,11 @@ preserve
 						xtitle("") ytitle("") msize(vsmall vsmall vsmall) ylabel( ///
 						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "CHIRPS" ///
 						6 "CPC" 7 "MERRA-2" 8 "ARC2" 9 "ERA5" 10 "TAMSAT" ///
-						11 "*{bf:Weather Product}*" 13 "HH Bilinear" ///
-						14 "HH Simple" 15 "EA Bilinear" 16 "EA Simple" ///
-						17 "Modified EA Bilinear" 18 "Modified EA Simple" ///
-						19 "Admin Bilinear" 20 "Admin Simple" 21 "EA Zonal Mean" ///
-						22 "Admin Zonal Mean" 23 "*{bf:Extraction}*" 34 " ", ///
+						11 "*{bf:Weather Product}*" 13 "HH bilinear" ///
+						14 "HH simple" 15 "EA bilinear" 16 "EA simple" ///
+						17 "EA modified bilinear" 18 "EA modified simple" ///
+						19 "Admin bilinear" 20 "Admin simple" 21 "EA zone" ///
+						22 "Admin area" 23 "*{bf:Extraction}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
@@ -226,11 +226,11 @@ preserve
 						ytitle("") msize(vsmall vsmall vsmall) ylabel( ///
 						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "CHIRPS" ///
 						6 "CPC" 7 "MERRA-2" 8 "ARC2" 9 "ERA5" 10 "TAMSAT" ///
-						11 "*{bf:Weather Product}*" 13 "HH Bilinear" ///
-						14 "HH Simple" 15 "EA Bilinear" 16 "EA Simple" ///
-						17 "Modified EA Bilinear" 18 "Modified EA Simple" ///
-						19 "Admin Bilinear" 20 "Admin Simple" 21 "EA Zonal Mean" ///
-						22 "Admin Zonal Mean" 23 "*{bf:Extraction}*" 34 " ", ///
+						11 "*{bf:Weather Product}*" 13 "HH bilinear" ///
+						14 "HH simple" 15 "EA bilinear" 16 "EA simple" ///
+						17 "EA modified bilinear" 18 "EA modified simple" ///
+						19 "Admin bilinear" 20 "Admin simple" 21 "EA zone" ///
+						22 "Admin area" 23 "*{bf:Extraction}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
@@ -284,11 +284,11 @@ preserve
 						ytitle("") msize(vsmall vsmall vsmall) ylabel( ///
 						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "CHIRPS" ///
 						6 "CPC" 7 "MERRA-2" 8 "ARC2" 9 "ERA5" 10 "TAMSAT" ///
-						11 "*{bf:Weather Product}*" 13 "HH Bilinear" ///
-						14 "HH Simple" 15 "EA Bilinear" 16 "EA Simple" ///
-						17 "Modified EA Bilinear" 18 "Modified EA Simple" ///
-						19 "Admin Bilinear" 20 "Admin Simple" 21 "EA Zonal Mean" ///
-						22 "Admin Zonal Mean" 23 "*{bf:Extraction}*" 34 " ", ///
+						11 "*{bf:Weather Product}*" 13 "HH bilinear" ///
+						14 "HH simple" 15 "EA bilinear" 16 "EA simple" ///
+						17 "EA modified bilinear" 18 "EA modified simple" ///
+						19 "Admin bilinear" 20 "Admin simple" 21 "EA zone" ///
+						22 "Admin area" 23 "*{bf:Extraction}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
@@ -342,11 +342,11 @@ preserve
 						ytitle("") msize(vsmall vsmall vsmall) ylabel( ///
 						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "CHIRPS" ///
 						6 "CPC" 7 "MERRA-2" 8 "ARC2" 9 "ERA5" 10 "TAMSAT" ///
-						11 "*{bf:Weather Product}*" 13 "HH Bilinear" ///
-						14 "HH Simple" 15 "EA Bilinear" 16 "EA Simple" ///
-						17 "Modified EA Bilinear" 18 "Modified EA Simple" ///
-						19 "Admin Bilinear" 20 "Admin Simple" 21 "EA Zonal Mean" ///
-						22 "Admin Zonal Mean" 23 "*{bf:Extraction}*" 34 " ", ///
+						11 "*{bf:Weather Product}*" 13 "HH bilinear" ///
+						14 "HH simple" 15 "EA bilinear" 16 "EA simple" ///
+						17 "EA modified bilinear" 18 "EA modified simple" ///
+						19 "Admin bilinear" 20 "Admin simple" 21 "EA zone" ///
+						22 "Admin area" 23 "*{bf:Extraction}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
@@ -400,11 +400,11 @@ preserve
 						ytitle("") msize(vsmall vsmall vsmall) ylabel( ///
 						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "CHIRPS" ///
 						6 "CPC" 7 "MERRA-2" 8 "ARC2" 9 "ERA5" 10 "TAMSAT" ///
-						11 "*{bf:Weather Product}*" 13 "HH Bilinear" ///
-						14 "HH Simple" 15 "EA Bilinear" 16 "EA Simple" ///
-						17 "Modified EA Bilinear" 18 "Modified EA Simple" ///
-						19 "Admin Bilinear" 20 "Admin Simple" 21 "EA Zonal Mean" ///
-						22 "Admin Zonal Mean" 23 "*{bf:Extraction}*" 34 " ", ///
+						11 "*{bf:Weather Product}*" 13 "HH bilinear" ///
+						14 "HH simple" 15 "EA bilinear" 16 "EA simple" ///
+						17 "EA modified bilinear" 18 "EA modified simple" ///
+						19 "Admin bilinear" 20 "Admin simple" 21 "EA zone" ///
+						22 "Admin area" 23 "*{bf:Extraction}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
@@ -469,11 +469,11 @@ preserve
 						ytitle("") msize(vsmall vsmall vsmall) ylabel( ///
 						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "CHIRPS" ///
 						6 "CPC" 7 "MERRA-2" 8 "ARC2" 9 "ERA5" 10 "TAMSAT" ///
-						11 "*{bf:Weather Product}*" 13 "HH Bilinear" ///
-						14 "HH Simple" 15 "EA Bilinear" 16 "EA Simple" ///
-						17 "Modified EA Bilinear" 18 "Modified EA Simple" ///
-						19 "Admin Bilinear" 20 "Admin Simple" 21 "EA Zonal Mean" ///
-						22 "Admin Zonal Mean" 23 "*{bf:Extraction}*" 34 " ", ///
+						11 "*{bf:Weather Product}*" 13 "HH bilinear" ///
+						14 "HH simple" 15 "EA bilinear" 16 "EA simple" ///
+						17 "EA modified bilinear" 18 "EA modified simple" ///
+						19 "Admin bilinear" 20 "Admin simple" 21 "EA zone" ///
+						22 "Admin area" 23 "*{bf:Extraction}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
@@ -527,11 +527,11 @@ preserve
 						ytitle("") msize(vsmall vsmall vsmall) ylabel( ///
 						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "CHIRPS" ///
 						6 "CPC" 7 "MERRA-2" 8 "ARC2" 9 "ERA5" 10 "TAMSAT" ///
-						11 "*{bf:Weather Product}*" 13 "HH Bilinear" ///
-						14 "HH Simple" 15 "EA Bilinear" 16 "EA Simple" ///
-						17 "Modified EA Bilinear" 18 "Modified EA Simple" ///
-						19 "Admin Bilinear" 20 "Admin Simple" 21 "EA Zonal Mean" ///
-						22 "Admin Zonal Mean" 23 "*{bf:Extraction}*" 34 " ", ///
+						11 "*{bf:Weather Product}*" 13 "HH bilinear" ///
+						14 "HH simple" 15 "EA bilinear" 16 "EA simple" ///
+						17 "EA modified bilinear" 18 "EA modified simple" ///
+						19 "Admin bilinear" 20 "Admin simple" 21 "EA zone" ///
+						22 "Admin area" 23 "*{bf:Extraction}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
@@ -585,11 +585,11 @@ preserve
 						ytitle("") msize(vsmall vsmall vsmall) ylabel( ///
 						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "CHIRPS" ///
 						6 "CPC" 7 "MERRA-2" 8 "ARC2" 9 "ERA5" 10 "TAMSAT" ///
-						11 "*{bf:Weather Product}*" 13 "HH Bilinear" ///
-						14 "HH Simple" 15 "EA Bilinear" 16 "EA Simple" ///
-						17 "Modified EA Bilinear" 18 "Modified EA Simple" ///
-						19 "Admin Bilinear" 20 "Admin Simple" 21 "EA Zonal Mean" ///
-						22 "Admin Zonal Mean" 23 "*{bf:Extraction}*" 34 " ", ///
+						11 "*{bf:Weather Product}*" 13 "HH bilinear" ///
+						14 "HH simple" 15 "EA bilinear" 16 "EA simple" ///
+						17 "EA modified bilinear" 18 "EA modified simple" ///
+						19 "Admin bilinear" 20 "Admin simple" 21 "EA zone" ///
+						22 "Admin area" 23 "*{bf:Extraction}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
@@ -643,11 +643,11 @@ preserve
 						ytitle("") msize(vsmall vsmall vsmall) ylabel( ///
 						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "CHIRPS" ///
 						6 "CPC" 7 "MERRA-2" 8 "ARC2" 9 "ERA5" 10 "TAMSAT" ///
-						11 "*{bf:Weather Product}*" 13 "HH Bilinear" ///
-						14 "HH Simple" 15 "EA Bilinear" 16 "EA Simple" ///
-						17 "Modified EA Bilinear" 18 "Modified EA Simple" ///
-						19 "Admin Bilinear" 20 "Admin Simple" 21 "EA Zonal Mean" ///
-						22 "Admin Zonal Mean" 23 "*{bf:Extraction}*" 34 " ", ///
+						11 "*{bf:Weather Product}*" 13 "HH bilinear" ///
+						14 "HH simple" 15 "EA bilinear" 16 "EA simple" ///
+						17 "EA modified bilinear" 18 "EA modified simple" ///
+						19 "Admin bilinear" 20 "Admin simple" 21 "EA zone" ///
+						22 "Admin area" 23 "*{bf:Extraction}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
@@ -701,11 +701,11 @@ preserve
 						ytitle("") msize(vsmall vsmall vsmall) ylabel( ///
 						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "CHIRPS" ///
 						6 "CPC" 7 "MERRA-2" 8 "ARC2" 9 "ERA5" 10 "TAMSAT" ///
-						11 "*{bf:Weather Product}*" 13 "HH Bilinear" ///
-						14 "HH Simple" 15 "EA Bilinear" 16 "EA Simple" ///
-						17 "Modified EA Bilinear" 18 "Modified EA Simple" ///
-						19 "Admin Bilinear" 20 "Admin Simple" 21 "EA Zonal Mean" ///
-						22 "Admin Zonal Mean" 23 "*{bf:Extraction}*" 34 " ", ///
+						11 "*{bf:Weather Product}*" 13 "HH bilinear" ///
+						14 "HH simple" 15 "EA bilinear" 16 "EA simple" ///
+						17 "EA modified bilinear" 18 "EA modified simple" ///
+						19 "Admin bilinear" 20 "Admin simple" 21 "EA zone" ///
+						22 "Admin area" 23 "*{bf:Extraction}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
@@ -759,11 +759,11 @@ preserve
 						ytitle("") msize(vsmall vsmall vsmall) ylabel( ///
 						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "CHIRPS" ///
 						6 "CPC" 7 "MERRA-2" 8 "ARC2" 9 "ERA5" 10 "TAMSAT" ///
-						11 "*{bf:Weather Product}*" 13 "HH Bilinear" ///
-						14 "HH Simple" 15 "EA Bilinear" 16 "EA Simple" ///
-						17 "Modified EA Bilinear" 18 "Modified EA Simple" ///
-						19 "Admin Bilinear" 20 "Admin Simple" 21 "EA Zonal Mean" ///
-						22 "Admin Zonal Mean" 23 "*{bf:Extraction}*" 34 " ", ///
+						11 "*{bf:Weather Product}*" 13 "HH bilinear" ///
+						14 "HH simple" 15 "EA bilinear" 16 "EA simple" ///
+						17 "EA modified bilinear" 18 "EA modified simple" ///
+						19 "Admin bilinear" 20 "Admin simple" 21 "EA zone" ///
+						22 "Admin area" 23 "*{bf:Extraction}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
@@ -855,11 +855,11 @@ preserve
 						title("Mean Daily Temperature: Weather")  ylab(0(1)$gheight ) ///
 						xtitle("") ytitle("") msize(vsmall vsmall vsmall) ylabel( ///
 						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "MERRA-2" ///
-						6 "ERA5" 7 "CPC" 8 "*{bf:Weather Product}*" 10 "HH Bilinear" ///
-						11 "HH Simple" 12 "EA Bilinear" 13 "EA Simple" ///
-						14 "Modified EA Bilinear" 15 "Modified EA Simple" ///
-						16 "Admin Bilinear" 17 "Admin Simple" 18 "EA Zonal Mean" ///
-						19"Admin Zonal Mean" 20 "*{bf:Extraction}*" 34 " ", ///
+						6 "ERA5" 7 "CPC" 8 "*{bf:Weather Product}*" 10 "HH bilinear" ///
+						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
+						14 "EA modified bilinear" 15 "EA modified simple" ///
+						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
+						19 "Admin area" 20 "*{bf:Extraction}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
@@ -918,10 +918,10 @@ preserve
 						xtitle("") ytitle("") msize(vsmall vsmall vsmall) ylabel( ///
 						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "MERRA-2" ///
 						6 "ERA5" 7 "CPC" 8 "*{bf:Weather Product}*" 10 "HH Bilinear" ///
-						11 "HH Simple" 12 "EA Bilinear" 13 "EA Simple" ///
-						14 "Modified EA Bilinear" 15 "Modified EA Simple" ///
-						16 "Admin Bilinear" 17 "Admin Simple" 18 "EA Zonal Mean" ///
-						19"Admin Zonal Mean" 20 "*{bf:Extraction}*" 34 " ", ///
+						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
+						14 "EA modified bilinear" 15 "EA modified simple" ///
+						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
+						19 "Admin area" 20 "*{bf:Extraction}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
@@ -980,10 +980,10 @@ preserve
 						ytitle("") msize(vsmall vsmall vsmall) ylabel( ///
 						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "MERRA-2" ///
 						6 "ERA5" 7 "CPC" 8 "*{bf:Weather Product}*" 10 "HH Bilinear" ///
-						11 "HH Simple" 12 "EA Bilinear" 13 "EA Simple" ///
-						14 "Modified EA Bilinear" 15 "Modified EA Simple" ///
-						16 "Admin Bilinear" 17 "Admin Simple" 18 "EA Zonal Mean" ///
-						19"Admin Zonal Mean" 20 "*{bf:Extraction}*" 34 " ", ///
+						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
+						14 "EA modified bilinear" 15 "EA modified simple" ///
+						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
+						19 "Admin area" 20 "*{bf:Extraction}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
@@ -1042,10 +1042,10 @@ preserve
 						ytitle("") msize(vsmall vsmall vsmall) ylabel( ///
 						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "MERRA-2" ///
 						6 "ERA5" 7 "CPC" 8 "*{bf:Weather Product}*" 10 "HH Bilinear" ///
-						11 "HH Simple" 12 "EA Bilinear" 13 "EA Simple" ///
-						14 "Modified EA Bilinear" 15 "Modified EA Simple" ///
-						16 "Admin Bilinear" 17 "Admin Simple" 18 "EA Zonal Mean" ///
-						19"Admin Zonal Mean" 20 "*{bf:Extraction}*" 34 " ", ///
+						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
+						14 "EA modified bilinear" 15 "EA modified simple" ///
+						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
+						19 "Admin area" 20 "*{bf:Extraction}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
@@ -1104,10 +1104,10 @@ preserve
 						ytitle("") msize(vsmall vsmall vsmall) ylabel( ///
 						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "MERRA-2" ///
 						6 "ERA5" 7 "CPC" 8 "*{bf:Weather Product}*" 10 "HH Bilinear" ///
-						11 "HH Simple" 12 "EA Bilinear" 13 "EA Simple" ///
-						14 "Modified EA Bilinear" 15 "Modified EA Simple" ///
-						16 "Admin Bilinear" 17 "Admin Simple" 18 "EA Zonal Mean" ///
-						19"Admin Zonal Mean" 20 "*{bf:Extraction}*" 34 " ", ///
+						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
+						14 "EA modified bilinear" 15 "EA modified simple" ///
+						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
+						19 "Admin area" 20 "*{bf:Extraction}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
@@ -1166,10 +1166,10 @@ preserve
 						ytitle("") msize(vsmall vsmall vsmall) ylabel( ///
 						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "MERRA-2" ///
 						6 "ERA5" 7 "CPC" 8 "*{bf:Weather Product}*" 10 "HH Bilinear" ///
-						11 "HH Simple" 12 "EA Bilinear" 13 "EA Simple" ///
-						14 "Modified EA Bilinear" 15 "Modified EA Simple" ///
-						16 "Admin Bilinear" 17 "Admin Simple" 18 "EA Zonal Mean" ///
-						19"Admin Zonal Mean" 20 "*{bf:Extraction}*" 34 " ", ///
+						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
+						14 "EA modified bilinear" 15 "EA modified simple" ///
+						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
+						19 "Admin area" 20 "*{bf:Extraction}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
@@ -1238,10 +1238,10 @@ preserve
 						ytitle("") msize(vsmall vsmall vsmall) ylabel( ///
 						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "MERRA-2" ///
 						6 "ERA5" 7 "CPC" 8 "*{bf:Weather Product}*" 10 "HH Bilinear" ///
-						11 "HH Simple" 12 "EA Bilinear" 13 "EA Simple" ///
-						14 "Modified EA Bilinear" 15 "Modified EA Simple" ///
-						16 "Admin Bilinear" 17 "Admin Simple" 18 "EA Zonal Mean" ///
-						19"Admin Zonal Mean" 20 "*{bf:Extraction}*" 34 " ", ///
+						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
+						14 "EA modified bilinear" 15 "EA modified simple" ///
+						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
+						19 "Admin area" 20 "*{bf:Extraction}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
@@ -1300,10 +1300,10 @@ preserve
 						ytitle("") msize(vsmall vsmall vsmall) ylabel( ///
 						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "MERRA-2" ///
 						6 "ERA5" 7 "CPC" 8 "*{bf:Weather Product}*" 10 "HH Bilinear" ///
-						11 "HH Simple" 12 "EA Bilinear" 13 "EA Simple" ///
-						14 "Modified EA Bilinear" 15 "Modified EA Simple" ///
-						16 "Admin Bilinear" 17 "Admin Simple" 18 "EA Zonal Mean" ///
-						19"Admin Zonal Mean" 20 "*{bf:Extraction}*" 34 " ", ///
+						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
+						14 "EA modified bilinear" 15 "EA modified simple" ///
+						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
+						19 "Admin area" 20 "*{bf:Extraction}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
@@ -1362,10 +1362,10 @@ preserve
 						ytitle("") msize(vsmall vsmall vsmall) ylabel( ///
 						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "MERRA-2" ///
 						6 "ERA5" 7 "CPC" 8 "*{bf:Weather Product}*" 10 "HH Bilinear" ///
-						11 "HH Simple" 12 "EA Bilinear" 13 "EA Simple" ///
-						14 "Modified EA Bilinear" 15 "Modified EA Simple" ///
-						16 "Admin Bilinear" 17 "Admin Simple" 18 "EA Zonal Mean" ///
-						19"Admin Zonal Mean" 20 "*{bf:Extraction}*" 34 " ", ///
+						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
+						14 "EA modified bilinear" 15 "EA modified simple" ///
+						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
+						19 "Admin area" 20 "*{bf:Extraction}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
@@ -1424,10 +1424,10 @@ preserve
 						ytitle("") msize(vsmall vsmall vsmall) ylabel( ///
 						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "MERRA-2" ///
 						6 "ERA5" 7 "CPC" 8 "*{bf:Weather Product}*" 10 "HH Bilinear" ///
-						11 "HH Simple" 12 "EA Bilinear" 13 "EA Simple" ///
-						14 "Modified EA Bilinear" 15 "Modified EA Simple" ///
-						16 "Admin Bilinear" 17 "Admin Simple" 18 "EA Zonal Mean" ///
-						19"Admin Zonal Mean" 20 "*{bf:Extraction}*" 34 " ", ///
+						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
+						14 "EA modified bilinear" 15 "EA modified simple" ///
+						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
+						19 "Admin area" 20 "*{bf:Extraction}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
@@ -1486,10 +1486,10 @@ preserve
 						ytitle("") msize(vsmall vsmall vsmall) ylabel( ///
 						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "MERRA-2" ///
 						6 "ERA5" 7 "CPC" 8 "*{bf:Weather Product}*" 10 "HH Bilinear" ///
-						11 "HH Simple" 12 "EA Bilinear" 13 "EA Simple" ///
-						14 "Modified EA Bilinear" 15 "Modified EA Simple" ///
-						16 "Admin Bilinear" 17 "Admin Simple" 18 "EA Zonal Mean" ///
-						19"Admin Zonal Mean" 20 "*{bf:Extraction}*" 34 " ", ///
+						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
+						14 "EA modified bilinear" 15 "EA modified simple" ///
+						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
+						19 "Admin area" 20 "*{bf:Extraction}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
@@ -1548,10 +1548,10 @@ preserve
 						ytitle("") msize(vsmall vsmall vsmall) ylabel( ///
 						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "MERRA-2" ///
 						6 "ERA5" 7 "CPC" 8 "*{bf:Weather Product}*" 10 "HH Bilinear" ///
-						11 "HH Simple" 12 "EA Bilinear" 13 "EA Simple" ///
-						14 "Modified EA Bilinear" 15 "Modified EA Simple" ///
-						16 "Admin Bilinear" 17 "Admin Simple" 18 "EA Zonal Mean" ///
-						19"Admin Zonal Mean" 20 "*{bf:Extraction}*" 34 " ", ///
+						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
+						14 "EA modified bilinear" 15 "EA modified simple" ///
+						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
+						19 "Admin area" 20 "*{bf:Extraction}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///

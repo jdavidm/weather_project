@@ -91,11 +91,11 @@
 			(kdensity v01_rf1_x0, color(cranberry) lpattern(solid) ///
 			xtitle("") xscale(r(0(5)15)) title("CHIRPS") ///
 			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(0(5)15, nogrid labsize(small))), ///
-			legend(pos(6) col(5) size(vsmall) label(1 "HH Bilinear") label(2 "HH Simple") ///
-			label(3 "EA Bilinear") label(4 "EA Simple") label(5 "Modified EA Bilinear") ///
-			label(6 "Modified EA Simple") label(7 "Admin Bilinear") ///
-			label(8 "Admin Simple") label(9 "EA Zonal Mean") ///
-			label(10 "Admin Zonal Mean")) saving("$sfig/v01_rf1_density", replace)
+			legend(pos(6) col(5) size(vsmall) label(1 "HH bilinear") label(2 "HH simple") ///
+			label(3 "EA bilinear") label(4 "EA simple") label(5 "EA modified bilinear") ///
+			label(6 "EA modified simple") label(7 "Admin bilinear") ///
+			label(8 "Admin simple") label(9 "EA zone") ///
+			label(10 "Admin area")) saving("$sfig/v01_rf1_density", replace)
 
 * total seasonal rainfall - CPC
 	twoway	(kdensity v01_rf2_x1, color(edkblue) lpattern(dash) ) ///
@@ -110,11 +110,11 @@
 			(kdensity v01_rf2_x0, color(cranberry) lpattern(solid) ///
 			xtitle("") xscale(r(0(5)15)) title("CPC") ///
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(0(5)15, nogrid labsize(small))), ///
-			legend(pos(6) col(5) size(vsmall) label(1 "HH Bilinear") label(2 "HH Simple") ///
-			label(3 "EA Bilinear") label(4 "EA Simple") label(5 "Modified EA Bilinear") ///
-			label(6 "Modified EA Simple") label(7 "Admin Bilinear") ///
-			label(8 "Admin Simple") label(9 "EA Zonal Mean") ///
-			label(10 "Admin Zonal Mean")) saving("$sfig/v01_rf2_density", replace)
+			legend(pos(6) col(5) size(vsmall) label(1 "HH bilinear") label(2 "HH simple") ///
+			label(3 "EA bilinear") label(4 "EA simple") label(5 "EA modified bilinear") ///
+			label(6 "EA modified simple") label(7 "Admin bilinear") ///
+			label(8 "Admin simple") label(9 "EA zone") ///
+			label(10 "Admin area")) saving("$sfig/v01_rf2_density", replace)
 
 * total seasonal rainfall - MERRA-2
 	twoway	(kdensity v01_rf3_x1, color(edkblue) lpattern(dash) ) ///
@@ -129,11 +129,11 @@
 			(kdensity v01_rf3_x0, color(cranberry) lpattern(solid) ///
 			xtitle("") xscale(r(0(5)15)) title("MERRA-2") ///
 			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(0(5)15, nogrid labsize(small))), ///
-			legend(pos(6) col(5) size(vsmall) label(1 "HH Bilinear") label(2 "HH Simple") ///
-			label(3 "EA Bilinear") label(4 "EA Simple") label(5 "Modified EA Bilinear") ///
-			label(6 "Modified EA Simple") label(7 "Admin Bilinear") ///
-			label(8 "Admin Simple") label(9 "EA Zonal Mean") ///
-			label(10 "Admin Zonal Mean")) saving("$sfig/v01_rf3_density", replace)
+			legend(pos(6) col(5) size(vsmall) label(1 "HH bilinear") label(2 "HH simple") ///
+			label(3 "EA bilinear") label(4 "EA simple") label(5 "EA modified bilinear") ///
+			label(6 "EA modified simple") label(7 "Admin bilinear") ///
+			label(8 "Admin simple") label(9 "EA zone") ///
+			label(10 "Admin area")) saving("$sfig/v01_rf3_density", replace)
 			
 * total seasonal rainfall - ARC2
 	twoway	(kdensity v01_rf4_x1, color(edkblue) lpattern(dash) ) ///
@@ -148,11 +148,11 @@
 			(kdensity v01_rf4_x0, color(cranberry) lpattern(solid) ///
 			xtitle("") xscale(r(0(5)15)) title("ARC2") ///
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(0(5)15, nogrid labsize(small))), ///
-			legend(pos(6) col(5) size(vsmall) label(1 "HH Bilinear") label(2 "HH Simple") ///
-			label(3 "EA Bilinear") label(4 "EA Simple") label(5 "Modified EA Bilinear") ///
-			label(6 "Modified EA Simple") label(7 "Admin Bilinear") ///
-			label(8 "Admin Simple") label(9 "EA Zonal Mean") ///
-			label(10 "Admin Zonal Mean")) saving("$sfig/v01_rf4_density", replace)
+			legend(pos(6) col(5) size(vsmall) label(1 "HH bilinear") label(2 "HH simple") ///
+			label(3 "EA bilinear") label(4 "EA simple") label(5 "EA modified bilinear") ///
+			label(6 "EA modified simple") label(7 "Admin bilinear") ///
+			label(8 "Admin simple") label(9 "EA zone") ///
+			label(10 "Admin area")) saving("$sfig/v01_rf4_density", replace)
 			
 * total seasonal rainfall - ERA5
 	twoway	(kdensity v01_rf5_x1, color(edkblue) lpattern(dash) ) ///
@@ -167,11 +167,11 @@
 			(kdensity v01_rf5_x0, color(cranberry) lpattern(solid) ///
 			xtitle("Total Season Rainfall (mm)") title("ERA5") ///
 			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
-			legend(pos(6) col(5) size(vsmall) label(1 "HH Bilinear") label(2 "HH Simple") ///
-			label(3 "EA Bilinear") label(4 "EA Simple") label(5 "Modified EA Bilinear") ///
-			label(6 "Modified EA Simple") label(7 "Admin Bilinear") ///
-			label(8 "Admin Simple") label(9 "EA Zonal Mean") ///
-			label(10 "Admin Zonal Mean")) saving("$sfig/v01_rf5_density", replace)
+			legend(pos(6) col(5) size(vsmall) label(1 "HH bilinear") label(2 "HH simple") ///
+			label(3 "EA bilinear") label(4 "EA simple") label(5 "EA modified bilinear") ///
+			label(6 "EA modified simple") label(7 "Admin bilinear") ///
+			label(8 "Admin simple") label(9 "EA zone") ///
+			label(10 "Admin area")) saving("$sfig/v01_rf5_density", replace)
 			
 * total seasonal rainfall - TAMSAT
 	twoway	(kdensity v01_rf6_x1, color(edkblue) lpattern(dash) ) ///
@@ -186,11 +186,11 @@
 			(kdensity v01_rf6_x0, color(cranberry) lpattern(solid) ///
 			xtitle("Total Season Rainfall (mm)") xscale(r(0(5)15)) title("TAMSAT") ///
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(0(5)15, nogrid labsize(small))), ///
-			legend(pos(6) col(5) size(vsmall) label(1 "HH Bilinear") label(2 "HH Simple") ///
-			label(3 "EA Bilinear") label(4 "EA Simple") label(5 "Modified EA Bilinear") ///
-			label(6 "Modified EA Simple") label(7 "Admin Bilinear") ///
-			label(8 "Admin Simple") label(9 "EA Zonal Mean") ///
-			label(10 "Admin Zonal Mean")) saving("$sfig/v01_rf6_density", replace)
+			legend(pos(6) col(5) size(vsmall) label(1 "HH bilinear") label(2 "HH simple") ///
+			label(3 "EA bilinear") label(4 "EA simple") label(5 "EA modified bilinear") ///
+			label(6 "EA modified simple") label(7 "Admin bilinear") ///
+			label(8 "Admin simple") label(9 "EA zone") ///
+			label(10 "Admin area")) saving("$sfig/v01_rf6_density", replace)
 			
 	grc1leg2 		"$sfig/v01_rf1_density.gph" "$sfig/v01_rf2_density.gph" ///
 						"$sfig/v01_rf3_density.gph" "$sfig/v01_rf4_density.gph"   ///
@@ -217,11 +217,11 @@
 			(kdensity v15_tp1_x0, color(cranberry) lpattern(solid) ///
 			xtitle("") xscale(r(0(5)35)) title("MERRA-2") ///
 			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(0(5)35, nogrid labsize(small))), ///
-			legend(pos(4) col(1) size(vsmall) label(1 "HH Bilinear") label(2 "HH Simple") ///
-			label(3 "EA Bilinear") label(4 "EA Simple") label(5 "Modified EA Bilinear") ///
-			label(6 "Modified EA Simple") label(7 "Admin Bilinear") ///
-			label(8 "Admin Simple") label(9 "EA Zonal Mean") ///
-			label(10 "Admin Zonal Mean")) saving("$sfig/v15_tp1_density", replace)
+			legend(pos(4) col(1) size(vsmall) label(1 "HH bilinear") label(2 "HH simple") ///
+			label(3 "EA bilinear") label(4 "EA simple") label(5 "EA modified bilinear") ///
+			label(6 "EA modified simple") label(7 "Admin bilinear") ///
+			label(8 "Admin simple") label(9 "EA zone") ///
+			label(10 "Admin area")) saving("$sfig/v15_tp1_density", replace)
 			
 * mean temp - ERA5
 	twoway	(kdensity v15_tp2_x1, color(edkblue) lpattern(dash) ) ///
@@ -236,11 +236,11 @@
 			(kdensity v15_tp2_x0, color(cranberry) lpattern(solid) ///
 			xtitle("Mean Seasonal Temperature (C)") xscale(r(0(5)35)) title("ERA5") ///
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(0(5)35, nogrid labsize(small))), ///
-			legend(pos(6) col(5) size(vsmall) label(1 "HH Bilinear") label(2 "HH Simple") ///
-			label(3 "EA Bilinear") label(4 "EA Simple") label(5 "Modified EA Bilinear") ///
-			label(6 "Modified EA Simple") label(7 "Admin Bilinear") ///
-			label(8 "Admin Simple") label(9 "EA Zonal Mean") ///
-			label(10 "Admin Zonal Mean")) saving("$sfig/v15_tp2_density", replace)
+			legend(pos(6) col(5) size(vsmall) label(1 "HH bilinear") label(2 "HH simple") ///
+			label(3 "EA bilinear") label(4 "EA simple") label(5 "EA modified bilinear") ///
+			label(6 "EA modified simple") label(7 "Admin bilinear") ///
+			label(8 "Admin simple") label(9 "EA zone") ///
+			label(10 "Admin area")) saving("$sfig/v15_tp2_density", replace)
 
 * mean temp - CPC
 	twoway	(kdensity v15_tp3_x1, color(edkblue) lpattern(dash) ) ///
@@ -255,11 +255,11 @@
 			(kdensity v15_tp3_x0, color(cranberry) lpattern(solid) ///
 			xtitle("Mean Seasonal Temperature (C)") xscale(r(0(5)35)) title("CPC") ///
 			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(0(5)35, nogrid labsize(small))), ///
-			legend(pos(6) col(5) size(vsmall) label(1 "HH Bilinear") label(2 "HH Simple") ///
-			label(3 "EA Bilinear") label(4 "EA Simple") label(5 "Modified EA Bilinear") ///
-			label(6 "Modified EA Simple") label(7 "Admin Bilinear") ///
-			label(8 "Admin Simple") label(9 "EA Zonal Mean") ///
-			label(10 "Admin Zonal Mean")) saving("$sfig/v15_tp3_density", replace)
+			legend(pos(6) col(5) size(vsmall) label(1 "HH bilinear") label(2 "HH simple") ///
+			label(3 "EA bilinear") label(4 "EA simple") label(5 "EA modified bilinear") ///
+			label(6 "EA modified simple") label(7 "Admin bilinear") ///
+			label(8 "Admin simple") label(9 "EA zone") ///
+			label(10 "Admin area")) saving("$sfig/v15_tp3_density", replace)
 			
 	grc1leg2 		"$sfig/v15_tp1_density.gph" "$sfig/v15_tp2_density.gph" ///
 						"$sfig/v15_tp3_density.gph" , ring(0) pos(4) holes(4) ///
@@ -285,11 +285,11 @@
 			(fpfitci v10_rf1_x0 year, color(cranberry) lpattern(solid) ///
 			xtitle("") xscale(r(2008(1)2015)) title("CHIRPS") ///
 			ytitle("Days without Rain") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
-			legend(pos(6) col(5) size(vsmall) label(2 "HH Bilinear") label(4 "HH Simple") ///
-			label(6 "EA Bilinear") label(8 "EA Simple") label(10 "Modified EA Bilinear") ///
-			label(12 "Modified EA Simple") label(14 "Admin Bilinear") ///
-			label(16 "Admin Simple") label(18 "EA Zonal Mean") ///
-			label(20 "Admin Zonal Mean") order(2 4 6 8 10 12 14 16 18 20)) ///
+			legend(pos(6) col(5) size(vsmall) label(2 "HH bilinear") label(4 "HH simple") ///
+			label(6 "EA bilinear") label(8 "EA simple") label(10 "EA modified bilinear") ///
+			label(12 "EA modified simple") label(14 "Admin bilinear") ///
+			label(16 "Admin simple") label(18 "EA zone") ///
+			label(20 "Admin area") order(2 4 6 8 10 12 14 16 18 20)) ///
 			saving("$sfig/v10_rf1_density", replace)
 			
 * days without rain - CPC
@@ -305,11 +305,11 @@
 			(fpfitci v10_rf2_x0 year, color(cranberry) lpattern(solid) ///
 			xtitle("") xscale(r(2008(1)2015)) title("CPC") ///
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
-			legend(pos(6) col(5) size(vsmall) label(2 "HH Bilinear") label(4 "HH Simple") ///
-			label(6 "EA Bilinear") label(8 "EA Simple") label(10 "Modified EA Bilinear") ///
-			label(12 "Modified EA Simple") label(14 "Admin Bilinear") ///
-			label(16 "Admin Simple") label(18 "EA Zonal Mean") ///
-			label(20 "Admin Zonal Mean") order(2 4 6 8 10 12 14 16 18 20)) ///
+			legend(pos(6) col(5) size(vsmall) label(2 "HH bilinear") label(4 "HH simple") ///
+			label(6 "EA bilinear") label(8 "EA simple") label(10 "EA modified bilinear") ///
+			label(12 "EA modified simple") label(14 "Admin bilinear") ///
+			label(16 "Admin simple") label(18 "EA zone") ///
+			label(20 "Admin area") order(2 4 6 8 10 12 14 16 18 20)) ///
 			saving("$sfig/v10_rf2_density", replace)	
 			
 * days without rain - MERRA-2
@@ -325,11 +325,11 @@
 			(fpfitci v10_rf3_x0 year, color(cranberry) lpattern(solid) ///
 			xtitle("") xscale(r(2008(1)2015)) title("MERRA-2") ///
 			ytitle("Days without Rain") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
-			legend(pos(6) col(5) size(vsmall) label(2 "HH Bilinear") label(4 "HH Simple") ///
-			label(6 "EA Bilinear") label(8 "EA Simple") label(10 "Modified EA Bilinear") ///
-			label(12 "Modified EA Simple") label(14 "Admin Bilinear") ///
-			label(16 "Admin Simple") label(18 "EA Zonal Mean") ///
-			label(20 "Admin Zonal Mean") order(2 4 6 8 10 12 14 16 18 20)) ///
+			legend(pos(6) col(5) size(vsmall) label(2 "HH bilinear") label(4 "HH simple") ///
+			label(6 "EA bilinear") label(8 "EA simple") label(10 "EA modified bilinear") ///
+			label(12 "EA modified simple") label(14 "Admin bilinear") ///
+			label(16 "Admin simple") label(18 "EA zone") ///
+			label(20 "Admin area") order(2 4 6 8 10 12 14 16 18 20)) ///
 			saving("$sfig/v10_rf3_density", replace)
 			
 * days without rain - ARC2
@@ -345,11 +345,11 @@
 			(fpfitci v10_rf4_x0 year, color(cranberry) lpattern(solid) ///
 			xtitle("") xscale(r(2008(1)2015)) title("ARC2") ///
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
-			legend(pos(6) col(5) size(vsmall) label(2 "HH Bilinear") label(4 "HH Simple") ///
-			label(6 "EA Bilinear") label(8 "EA Simple") label(10 "Modified EA Bilinear") ///
-			label(12 "Modified EA Simple") label(14 "Admin Bilinear") ///
-			label(16 "Admin Simple") label(18 "EA Zonal Mean") ///
-			label(20 "Admin Zonal Mean") order(2 4 6 8 10 12 14 16 18 20)) ///
+			legend(pos(6) col(5) size(vsmall) label(2 "HH bilinear") label(4 "HH simple") ///
+			label(6 "EA bilinear") label(8 "EA simple") label(10 "EA modified bilinear") ///
+			label(12 "EA modified simple") label(14 "Admin bilinear") ///
+			label(16 "Admin simple") label(18 "EA zone") ///
+			label(20 "Admin area") order(2 4 6 8 10 12 14 16 18 20)) ///
 			saving("$sfig/v10_rf4_density", replace)	
 			
 * days without rain - ERA5
@@ -365,11 +365,11 @@
 			(fpfitci v10_rf5_x0 year, color(cranberry) lpattern(solid) ///
 			xtitle("Year") xscale(r(2008(1)2015)) title("ERA5") ///
 			ytitle("Days without Rain") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
-			legend(pos(6) col(5) size(vsmall) label(2 "HH Bilinear") label(4 "HH Simple") ///
-			label(6 "EA Bilinear") label(8 "EA Simple") label(10 "Modified EA Bilinear") ///
-			label(12 "Modified EA Simple") label(14 "Admin Bilinear") ///
-			label(16 "Admin Simple") label(18 "EA Zonal Mean") ///
-			label(20 "Admin Zonal Mean") order(2 4 6 8 10 12 14 16 18 20)) ///
+			legend(pos(6) col(5) size(vsmall) label(2 "HH bilinear") label(4 "HH simple") ///
+			label(6 "EA bilinear") label(8 "EA simple") label(10 "EA modified bilinear") ///
+			label(12 "EA modified simple") label(14 "Admin bilinear") ///
+			label(16 "Admin simple") label(18 "EA zone") ///
+			label(20 "Admin area") order(2 4 6 8 10 12 14 16 18 20)) ///
 			saving("$sfig/v10_rf5_density", replace)
 			
 * days without rain - TAMSAT
@@ -385,11 +385,11 @@
 			(fpfitci v10_rf6_x0 year, color(cranberry) lpattern(solid) ///
 			xtitle("Year") xscale(r(2008(1)2015)) title("TAMSAT") ///
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
-			legend(pos(6) col(5) size(vsmall) label(2 "HH Bilinear") label(4 "HH Simple") ///
-			label(6 "EA Bilinear") label(8 "EA Simple") label(10 "Modified EA Bilinear") ///
-			label(12 "Modified EA Simple") label(14 "Admin Bilinear") ///
-			label(16 "Admin Simple") label(18 "EA Zonal Mean") ///
-			label(20 "Admin Zonal Mean") order(2 4 6 8 10 12 14 16 18 20)) ///
+			legend(pos(6) col(5) size(vsmall) label(2 "HH bilinear") label(4 "HH simple") ///
+			label(6 "EA bilinear") label(8 "EA simple") label(10 "EA modified bilinear") ///
+			label(12 "EA modified simple") label(14 "Admin bilinear") ///
+			label(16 "Admin simple") label(18 "EA zone") ///
+			label(20 "Admin area") order(2 4 6 8 10 12 14 16 18 20)) ///
 			saving("$sfig/v10_rf6_density", replace)			
 		
 	grc1leg2 		"$sfig/v10_rf1_density.gph" "$sfig/v10_rf2_density.gph" ///
@@ -417,11 +417,11 @@
 			(fpfitci v19_tp1_x0 year, color(cranberry) lpattern(solid) ///
 			xtitle("") xscale(r(2008(1)2015)) title("MERRA-2") ///
 			ytitle("Growing Degree Days") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
-			legend(pos(4) col(1) size(vsmall) label(2 "HH Bilinear") label(4 "HH Simple") ///
-			label(6 "EA Bilinear") label(8 "EA Simple") label(10 "Modified EA Bilinear") ///
-			label(12 "Modified EA Simple") label(14 "Admin Bilinear") ///
-			label(16 "Admin Simple") label(18 "EA Zonal Mean") ///
-			label(20 "Admin Zonal Mean") order(2 4 6 8 10 12 14 16 18 20)) ///
+			legend(pos(4) col(1) size(vsmall) label(2 "HH bilinear") label(4 "HH simple") ///
+			label(6 "EA bilinear") label(8 "EA simple") label(10 "EA modified bilinear") ///
+			label(12 "EA modified simple") label(14 "Admin bilinear") ///
+			label(16 "Admin simple") label(18 "EA zone") ///
+			label(20 "Admin area") order(2 4 6 8 10 12 14 16 18 20)) ///
 			saving("$sfig/v19_tp1_density", replace)
 			
 * growing degree days - ERA5
@@ -437,11 +437,11 @@
 			(fpfitci v19_tp2_x0 year, color(cranberry) lpattern(solid) ///
 			xtitle("Year") xscale(r(2008(1)2015)) title("ERA5") ///
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
-			legend(pos(6) col(5) size(vsmall) label(2 "HH Bilinear") label(4 "HH Simple") ///
-			label(6 "EA Bilinear") label(8 "EA Simple") label(10 "Modified EA Bilinear") ///
-			label(12 "Modified EA Simple") label(14 "Admin Bilinear") ///
-			label(16 "Admin Simple") label(18 "EA Zonal Mean") ///
-			label(20 "Admin Zonal Mean") order(2 4 6 8 10 12 14 16 18 20)) ///
+			legend(pos(6) col(5) size(vsmall) label(2 "HH bilinear") label(4 "HH simple") ///
+			label(6 "EA bilinear") label(8 "EA simple") label(10 "EA modified bilinear") ///
+			label(12 "EA modified simple") label(14 "Admin bilinear") ///
+			label(16 "Admin simple") label(18 "EA zone") ///
+			label(20 "Admin area") order(2 4 6 8 10 12 14 16 18 20)) ///
 			saving("$sfig/v19_tp2_density", replace)
 
 * growing degree days - CPC
@@ -457,11 +457,11 @@
 			(fpfitci v19_tp3_x0 year, color(cranberry) lpattern(solid) ///
 			xtitle("Year") xscale(r(2008(1)2015)) title("CPC") ///
 			ytitle("Growing Degree Days") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
-			legend(pos(6) col(5) size(vsmall) label(2 "HH Bilinear") label(4 "HH Simple") ///
-			label(6 "EA Bilinear") label(8 "EA Simple") label(10 "Modified EA Bilinear") ///
-			label(12 "Modified EA Simple") label(14 "Admin Bilinear") ///
-			label(16 "Admin Simple") label(18 "EA Zonal Mean") ///
-			label(20 "Admin Zonal Mean") order(2 4 6 8 10 12 14 16 18 20)) ///
+			legend(pos(6) col(5) size(vsmall) label(2 "HH bilinear") label(4 "HH simple") ///
+			label(6 "EA bilinear") label(8 "EA simple") label(10 "EA modified bilinear") ///
+			label(12 "EA modified simple") label(14 "Admin bilinear") ///
+			label(16 "Admin simple") label(18 "EA zone") ///
+			label(20 "Admin area") order(2 4 6 8 10 12 14 16 18 20)) ///
 			saving("$sfig/v19_tp3_density", replace)
 			
 	grc1leg2 		"$sfig/v19_tp1_density.gph" "$sfig/v19_tp2_density.gph" ///
