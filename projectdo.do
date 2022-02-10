@@ -26,8 +26,9 @@
 	global 			pack 	0
 		
 * Specify Stata version in use
-    global stataVersion 17.0    // set Stata version
-    version $stataVersion
+   * global stataVersion 17.0    // set Stata version
+	 global stataVersion 16.1 
+	version $stataVersion
 
 * **********************************************************************
 * 0 (a) - Create user specific paths
@@ -149,7 +150,7 @@ if $pack == 1 {
 * **********************************************************************
 * 5 - run analysis .do files
 * **********************************************************************
-
+/*
 	do			"$code/analysis/viz_code/sum_table.do"
 	do			"$code/analysis/viz_code/sum_vis.do"
 	do			"$code/analysis/viz_code/r2_vis.do"
@@ -157,3 +158,4 @@ if $pack == 1 {
 	do			"$code/analysis/viz_code/coeff_vis.do"
 	do			"$code/analysis/viz_code/coeff_lc_vis.do"
 	do			"$code/analysis/viz_code/coeff_mc_vis.do"
+*/
