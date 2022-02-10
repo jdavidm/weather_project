@@ -55,10 +55,6 @@
 	count if 		year == 2011
 	*** wave 3 has 1807
 
-* generate uganda panel id	
-	egen			uga_id = group(hhid)
-	lab var			uga_id "Uganda panel household id"	
-
 * generate country and data types	
 	gen				country = "uganda"
 	lab var			country "Country"
@@ -66,7 +62,7 @@
 	gen				dtype = "lp"
 	lab var			dtype "Data type"
 
-	isid			uga_id year
+	isid			hhid year
 
 * generate one variable for sampling weight
 	gen				pw = wgt09wosplits  
@@ -78,26 +74,22 @@
 	lab var			pw "Household Sample Weight"
 
 * drop variables
-	drop			region district county subcounty parish hhid ///
+	drop			region district county subcounty parish ///
 						wgt09wosplits season wgt10 wgt11
 	
-	order			country dtype uga_id year aez pw
+	order			country dtype hhid year aez pw
 				
 	
 * **********************************************************************
 * 4 - End matter
 * **********************************************************************
 
-* create household, country, and data identifiers
-	egen			uid = seq()
-	lab var			uid "unique id"
-	
 * order variables
-	order			uid
+	order			hhid
 	
 * save file
 	qui: compress
-	customsave 	, idvarname(uid) filename("uga_complete.dta") ///
+	customsave 	, idvarname(hhid) filename("uga_complete.dta") ///
 		path("`export'") dofile(uga_append_built) user($user)
 
 * close the log
