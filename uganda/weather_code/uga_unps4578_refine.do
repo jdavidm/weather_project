@@ -72,7 +72,7 @@
 * **********************************************************************
 	
 	* define local with all files in each sub-folder
-	loc fileList : dir "$root" files "*rf*daily.dta"
+	loc fileList : dir "$root" files "*rf*.dta"
 	
 	* loop through each file in the above local
 	foreach file in `fileList' {
@@ -88,7 +88,7 @@
 		
 		* save file
 		customsave , idvar(xyid) filename("`name'_s.dta") ///
-			path("`export'/`folder'") dofile(uga_unps4578_refine) user($user)
+			path("$export") dofile(uga_unps4578_refine) user($user)
 	}
 
 * **********************************************************************
@@ -96,7 +96,7 @@
 * **********************************************************************
 	
 	* define local with all files in each sub-folder
-	loc fileList : dir "$root" files "*tp*daily.dta"
+	loc fileList : dir "$root" files "*tp*.dta"
 	
 	* loop through each file in the above local
 	foreach file in `fileList' {
@@ -121,7 +121,7 @@
 * **********************************************************************
 	
 	* define local with all files in each sub-folder
-	loc fileList : dir "$root" files "*t*daily.dta"
+	loc fileList : dir "$root" files "*tp*.dta"
 	
 	* loop through each file in the above local
 	foreach file in `fileList' {
@@ -137,7 +137,7 @@
 		
 		* save file
 		customsave , idvar(xyid) filename("`name'_s.dta") ///
-			path("`export'/`folder'") dofile(uga_unps4578_refine) user($user)
+			path("$export") dofile(uga_unps4578_refine) user($user)
 	}
 
 * close the log
