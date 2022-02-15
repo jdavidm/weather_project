@@ -17,7 +17,7 @@
 		-we define the relevant months for the south as February 1 - July 31 */
 
 * assumes
-	* UGA_UNPS4578_converter.do
+	* uga_unps4578.do
 	* weather_command.ado
 	* customsave.ado
 
