@@ -2,7 +2,7 @@
 * Created on: 14 December 2019
 * Created by: jdm
 * Edited by: jdm
-* Last edit: 21 December 2021
+* Last edit: 16 May 2022
 * Stata v.17.0 
 
 * does
@@ -108,13 +108,15 @@ preserve
 						xscale(r(0 40) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xlabel(2 "HH bilinear " 6 "HH simple " 10 "EA bilinear " ///
+						xlabel(2 "{bf:HH bilinear} " 6 "HH simple " 10 "EA bilinear " ///
 						14 "EA simple " 18 "EA modified bilinear " 22 "EA modified simple " ///
 						26 "Admin bilinear " 30 "Admin simple " 34 "EA zone " ///
 						38 "Admin area ", angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(5) order(1 2 3 4) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I."))  ///
 						saving("$sfig/pval_ext_rf_x", replace)
+						
+		graph export 	"$data/output/presentations/PacDev/pval_ext_rf.pdf", as(pdf) replace
 restore
 
 * p-value graph of temperature by extraction method
@@ -165,13 +167,15 @@ preserve
 						xscale(r(0 40) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xlabel(2 "HH bilinear " 6 "HH simple " 10 "EA bilinear " ///
+						xlabel(2 "{bf:HH bilinear} " 6 "HH simple " 10 "EA bilinear " ///
 						14 "EA simple " 18 "EA modified bilinear " 22 "EA modified simple " ///
 						26 "Admin bilinear " 30 "Admin simple " 34 "EA zone " ///
 						38 "Admin area ", angle(45) notick) xtitle("")), ///
 						legend(pos(12) col(5) order(1 2 3 4) label(1 "p>0.90") ///
 						label(2 "p>0.95") label(3 "p>0.99") label(4 "95% C.I."))  ///
 						saving("$sfig/pval_ext_tp_x", replace)
+						
+		graph export 	"$data/output/presentations/PacDev/pval_ext_tp.pdf", as(pdf) replace
 restore
 					
 
@@ -225,7 +229,7 @@ preserve
 						lcolor(black) xscale(r(0 30) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xlabel(2 "HH Bilinear " 5 "HH simple " 8 "EA bilinear " ///
+						xlabel(2 "{bf:HH bilinear} " 5 "HH simple " 8 "EA bilinear " ///
 						11 "EA simple " 14 "EA modified bilinear " 17 "EA modified simple " ///
 						20 "Admin bilinear " 23 "Admin simple " 26 "EA zone " ///
 						29 "Admin area ", angle(45) notick) xtitle("")), ///
@@ -248,7 +252,7 @@ preserve
 						lcolor(black) xscale(r(0 30) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xlabel(2 "HH Bilinear " 5 "HH simple " 8 "EA bilinear " ///
+						xlabel(2 "{bf:HH bilinear} " 5 "HH simple " 8 "EA bilinear " ///
 						11 "EA simple " 14 "EA modified bilinear " 17 "EA modified simple " ///
 						20 "Admin bilinear " 23 "Admin simple " 26 "EA zone " ///
 						29 "Admin area ", angle(45) notick) xtitle("")), ///
@@ -271,7 +275,7 @@ preserve
 						lcolor(black) xscale(r(0 30) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xlabel(2 "HH Bilinear " 5 "HH simple " 8 "EA bilinear " ///
+						xlabel(2 "{bf:HH bilinear} " 5 "HH simple " 8 "EA bilinear " ///
 						11 "EA simple " 14 "EA modified bilinear " 17 "EA modified simple " ///
 						20 "Admin bilinear " 23 "Admin simple " 26 "EA zone " ///
 						29 "Admin area ", angle(45) notick) xtitle("")), ///
@@ -295,7 +299,7 @@ preserve
 						lcolor(black) xscale(r(0 30) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xlabel(2 "HH Bilinear " 5 "HH simple " 8 "EA bilinear " ///
+						xlabel(2 "{bf:HH bilinear} " 5 "HH simple " 8 "EA bilinear " ///
 						11 "EA simple " 14 "EA modified bilinear " 17 "EA modified simple " ///
 						20 "Admin bilinear " 23 "Admin simple " 26 "EA zone " ///
 						29 "Admin area ", angle(45) notick) xtitle("")), ///
@@ -318,7 +322,7 @@ preserve
 						lcolor(black) xscale(r(0 30) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xlabel(2 "HH Bilinear " 5 "HH simple " 8 "EA bilinear " ///
+						xlabel(2 "{bf:HH bilinear} " 5 "HH simple " 8 "EA bilinear " ///
 						11 "EA simple " 14 "EA modified bilinear " 17 "EA modified simple " ///
 						20 "Admin bilinear " 23 "Admin simple " 26 "EA zone " ///
 						29 "Admin area ", angle(45) notick) xtitle("")), ///
@@ -341,7 +345,7 @@ preserve
 						lcolor(black) xscale(r(0 30) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xlabel(2 "HH Bilinear " 5 "HH simple " 8 "EA bilinear " ///
+						xlabel(2 "{bf:HH bilinear} " 5 "HH simple " 8 "EA bilinear " ///
 						11 "EA simple " 14 "EA modified bilinear " 17 "EA modified simple " ///
 						20 "Admin bilinear " 23 "Admin simple " 26 "EA zone " ///
 						29 "Admin area ", angle(45) notick) xtitle("")), ///
@@ -391,7 +395,7 @@ preserve
 						lcolor(black) xscale(r(0 30) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xlabel(2 "HH Bilinear " 5 "HH simple " 8 "EA bilinear " ///
+						xlabel(2 "{bf:HH bilinear} " 5 "HH simple " 8 "EA bilinear " ///
 						11 "EA simple " 14 "EA modified bilinear " 17 "EA modified simple " ///
 						20 "Admin bilinear " 23 "Admin simple " 26 "EA zone " ///
 						29 "Admin area ", angle(45) notick) xtitle("")), ///
@@ -414,7 +418,7 @@ preserve
 						lcolor(black) xscale(r(0 30) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xlabel(2 "HH Bilinear " 5 "HH simple " 8 "EA bilinear " ///
+						xlabel(2 "{bf:HH bilinear} " 5 "HH simple " 8 "EA bilinear " ///
 						11 "EA simple " 14 "EA modified bilinear " 17 "EA modified simple " ///
 						20 "Admin bilinear " 23 "Admin simple " 26 "EA zone " ///
 						29 "Admin area ", angle(45) notick) xtitle("")), ///
@@ -437,7 +441,7 @@ preserve
 						lcolor(black) xscale(r(0 30) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xlabel(2 "HH Bilinear " 5 "HH simple " 8 "EA bilinear " ///
+						xlabel(2 "{bf:HH bilinear} " 5 "HH simple " 8 "EA bilinear " ///
 						11 "EA simple " 14 "EA modified bilinear " 17 "EA modified simple " ///
 						20 "Admin bilinear " 23 "Admin simple " 26 "EA zone " ///
 						29 "Admin area ", angle(45) notick) xtitle("")), ///
@@ -461,7 +465,7 @@ preserve
 						lcolor(black) xscale(r(0 30) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xlabel(2 "HH Bilinear " 5 "HH simple " 8 "EA bilinear " ///
+						xlabel(2 "{bf:HH bilinear} " 5 "HH simple " 8 "EA bilinear " ///
 						11 "EA simple " 14 "EA modified bilinear " 17 "EA modified simple " ///
 						20 "Admin bilinear " 23 "Admin simple " 26 "EA zone " ///
 						29 "Admin area ", angle(45) notick) xtitle("")), ///
@@ -484,7 +488,7 @@ preserve
 						lcolor(black) xscale(r(0 30) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xlabel(2 "HH Bilinear " 5 "HH simple " 8 "EA bilinear " ///
+						xlabel(2 "{bf:HH bilinear} " 5 "HH simple " 8 "EA bilinear " ///
 						11 "EA simple " 14 "EA modified bilinear " 17 "EA modified simple " ///
 						20 "Admin bilinear " 23 "Admin simple " 26 "EA zone " ///
 						29 "Admin area ", angle(45) notick) xtitle("")), ///
@@ -507,7 +511,7 @@ preserve
 						lcolor(black) xscale(r(0 30) ex) ///
 						yline($bmax, lcolor(maroon) lstyle(solid) ) ///
 						yline($bmin, lcolor(maroon)  lstyle(solid) ) ///
-						xlabel(2 "HH Bilinear " 5 "HH simple " 8 "EA bilinear " ///
+						xlabel(2 "{bf:HH bilinear} " 5 "HH simple " 8 "EA bilinear " ///
 						11 "EA simple " 14 "EA modified bilinear " 17 "EA modified simple " ///
 						20 "Admin bilinear " 23 "Admin simple " 26 "EA zone " ///
 						29 "Admin area ", angle(45) notick) xtitle("")), ///

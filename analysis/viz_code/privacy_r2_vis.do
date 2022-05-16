@@ -2,7 +2,7 @@
 * Created on: 13 December 2021
 * Created by: jdm
 * Edited by: jdm
-* Last edit: 21 December 2021 
+* Last edit: 16 May 2022 
 * Stata v.17.0 
 
 * does
@@ -42,21 +42,21 @@
 	use 			"$root/lsms_complete_results", clear
 	
 	sort 			regname ext 
-
+/*
 	collapse 		(mean) r2_mu = adjustedr ///
 						(sd) r2_sd = adjustedr ///
 						(count) n = adjustedr, by(regname ext)
 	
 	gen 			r2_hi = r2_mu + invttail(n-1,0.025) * (r2_sd / sqrt(n))
 	gen				r2_lo = r2_mu - invttail(n-1,0.025) * (r2_sd / sqrt(n))
-/*
+*/
 	collapse 		(mean) r2_mu = loglike ///
 						(sd) r2_sd = loglike ///
 						(count) n = loglike, by(regname ext)
 	
 	gen 			r2_hi = r2_mu + invttail(n-1,0.025) * (r2_sd / sqrt(n))
 	gen				r2_lo = r2_mu - invttail(n-1,0.025) * (r2_sd / sqrt(n))
-*/
+
 	
 ************************************************************************
 **## 1a - weather only
@@ -94,13 +94,13 @@ preserve
 	twoway 			scatter k1 obs, xlab(0(1)10) xsize(10) ysize(6) ///
 						title("Weather") xtitle("") ///
 						msize(small small small) ylab(0(1)$gheight ) ///
-						ytitle("") ylabel(1 "HH bilinear" 2 "HH simple" ///
+						ytitle("") ylabel(1 "{bf:HH bilinear}" 2 "HH simple" ///
 						3 "EA bilinear" 4 "EA simple" 5 "EA modified bilinear" ///
 						6 "EA modified simple" 7 "Admin bilinear" ///
 						8 "Admin simple" 9 "EA zone" ///
 						10 "Admin area" 11 "*{bf:Extraction}*" 18 " ", ///
 						angle(0) labsize(vsmall) tstyle(notick)) || ///
-						(scatter k1 obs if ext == 1 | ext == 3 | ext == 5, ///
+						(scatter k1 obs if ext == 1, ///
 						msize(small small) mcolor(orange)) ///
 						(scatter r2_mu obs, yaxis(2) mcolor(maroon) ///
 						ylab( , axis(2) labsize(tiny) angle(0) ) ///
@@ -109,6 +109,8 @@ preserve
 						legend(order(3 4) cols(2) size(small) rowgap(.5) pos(12) ///
 						label(3 "mean log likelihood") label(4 "95% C.I. on mean") ) ///
 						saving("$sfig/r2_reg1_ext", replace)	
+						
+		graph export 	"$data/output/presentations/PacDev/r2_reg1_ext.pdf", as(pdf) replace
 restore
 		
 
@@ -148,13 +150,13 @@ preserve
 	twoway 			scatter k1 obs, xlab(0(1)10) xsize(10) ysize(6) ///
 						title("Weather + Weather{sup:2}") xtitle("") ///
 						msize(small small small) ylab(0(1)$gheight ) ///
-						ytitle("") ylabel(1 "HH bilinear" 2 "HH simple" ///
+						ytitle("") ylabel(1 "{bf:HH bilinear}" 2 "HH simple" ///
 						3 "EA bilinear" 4 "EA simple" 5 "EA modified bilinear" ///
 						6 "EA modified simple" 7 "Admin bilinear" ///
 						8 "Admin simple" 9 "EA zone" ///
 						10 "Admin area" 11 "*{bf:Extraction}*" 18 " ", ///
 						angle(0) labsize(vsmall) tstyle(notick)) || ///
-						(scatter k1 obs if ext == 1 | ext == 3 | ext == 5, ///
+						(scatter k1 obs if ext == 1, ///
 						msize(small small) mcolor(orange)) ///
 						(scatter r2_mu obs, yaxis(2) mcolor(maroon) ///
 						ylab( , axis(2) labsize(tiny) angle(0) ) ///
@@ -162,7 +164,9 @@ preserve
 						(rbar r2_lo r2_hi obs, barwidth(.08) color(edkblue%40) yaxis(2) ), ///
 						legend(order(3 4) cols(2) size(small) rowgap(.5) pos(12) ///
 						label(3 "mean log likelihood") label(4 "95% C.I. on mean") ) ///
-						saving("$sfig/r2_reg4_ext", replace)	
+						saving("$sfig/r2_reg4_ext", replace)		
+						
+		graph export 	"$data/output/presentations/PacDev/r2_reg4_ext.pdf", as(pdf) replace
 restore
 
 
@@ -202,13 +206,13 @@ preserve
 	twoway 			scatter k1 obs, xlab(0(1)10) xsize(10) ysize(6) ///
 						title("Weather + FE")  ///
 						msize(small small small) ylab(0(1)$gheight ) ///
-						ytitle("") ylabel(1 "HH bilinear" 2 "HH simple" ///
+						ytitle("") ylabel(1 "{bf:HH bilinear}" 2 "HH simple" ///
 						3 "EA bilinear" 4 "EA simple" 5 "EA modified bilinear" ///
 						6 "EA modified simple" 7 "Admin bilinear" ///
 						8 "Admin simple" 9 "EA zone" ///
 						10 "Admin area" 11 "*{bf:Extraction}*" 18 " ", ///
 						angle(0) labsize(vsmall) tstyle(notick)) || ///
-						(scatter k1 obs if ext == 1 | ext == 3 | ext == 5, ///
+						(scatter k1 obs if ext == 1, ///
 						msize(small small) mcolor(orange)) ///
 						(scatter r2_mu obs, yaxis(2) mcolor(maroon) ///
 						ylab( , axis(2) labsize(tiny) angle(0) ) ///
@@ -256,13 +260,13 @@ preserve
 	twoway 			scatter k1 obs, xlab(0(1)10) xsize(10) ysize(6) ///
 						title("Weather + Weather{sup:2} + FE") ///
 						msize(small small small) ylab(0(1)$gheight ) ///
-						ytitle("") ylabel(1 "HH bilinear" 2 "HH simple" ///
+						ytitle("") ylabel(1 "{bf:HH bilinear}" 2 "HH simple" ///
 						3 "EA bilinear" 4 "EA simple" 5 "EA modified bilinear" ///
 						6 "EA modified simple" 7 "Admin bilinear" ///
 						8 "Admin simple" 9 "EA zone" ///
 						10 "Admin area" 11 "*{bf:Extraction}*" 18 " ", ///
 						angle(0) labsize(vsmall) tstyle(notick)) || ///
-						(scatter k1 obs if ext == 1 | ext == 3 | ext == 5, ///
+						(scatter k1 obs if ext == 1, ///
 						msize(small small) mcolor(orange)) ///
 						(scatter r2_mu obs, yaxis(2) mcolor(maroon) ///
 						ylab( , axis(2) labsize(tiny) angle(0) ) ///
@@ -310,13 +314,13 @@ preserve
 	twoway 			scatter k1 obs, xlab(0(1)10) xsize(10) ysize(6) ///
 						title("Weather + FE + Inputs") ///
 						msize(small small small) ylab(0(1)$gheight ) ///
-						ytitle("") ylabel(1 "HH bilinear" 2 "HH simple" ///
+						ytitle("") ylabel(1 "{bf:HH bilinear}" 2 "HH simple" ///
 						3 "EA bilinear" 4 "EA simple" 5 "EA modified bilinear" ///
 						6 "EA modified simple" 7 "Admin bilinear" ///
 						8 "Admin simple" 9 "EA zone" ///
 						10 "Admin area" 11 "*{bf:Extraction}*" 18 " ", ///
 						angle(0) labsize(vsmall) tstyle(notick)) || ///
-						(scatter k1 obs if ext == 1 | ext == 3 | ext == 5, ///
+						(scatter k1 obs if ext == 1, ///
 						msize(small small) mcolor(orange)) ///
 						(scatter r2_mu obs, yaxis(2) mcolor(maroon) ///
 						ylab( , axis(2) labsize(tiny) angle(0) ) ///
@@ -364,13 +368,13 @@ preserve
 	twoway 			scatter k1 obs, xlab(0(1)10) xsize(10) ysize(6) ///
 						title("Weather + Weather{sup:2} + FE + Inputs") ///
 						msize(small small small) ylab(0(1)$gheight ) ///
-						ytitle("") ylabel(1 "HH bilinear" 2 "HH simple" ///
+						ytitle("") ylabel(1 "{bf:HH bilinear}" 2 "HH simple" ///
 						3 "EA bilinear" 4 "EA simple" 5 "EA modified bilinear" ///
 						6 "EA modified simple" 7 "Admin bilinear" ///
 						8 "Admin simple" 9 "EA zone" ///
 						10 "Admin area" 11 "*{bf:Extraction}*" 18 " ", ///
 						angle(0) labsize(vsmall) tstyle(notick)) || ///
-						(scatter k1 obs if ext == 1 | ext == 3 | ext == 5, ///
+						(scatter k1 obs if ext == 1, ///
 						msize(small small) mcolor(orange)) ///
 						(scatter r2_mu obs, yaxis(2) mcolor(maroon) ///
 						ylab( , axis(2) labsize(tiny) angle(0) ) ///
@@ -380,10 +384,6 @@ preserve
 						label(3 "mean log likelihood") label(4 "95% C.I. on mean") ) ///
 						saving("$sfig/r2_reg6_ext", replace)	
 restore	
-
-	
-	
-	
 	
 
 * combine R^2 specification curves for extration

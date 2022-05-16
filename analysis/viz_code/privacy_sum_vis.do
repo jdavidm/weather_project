@@ -2,7 +2,7 @@
 * Created on: September 2020
 * Created by: alj
 * Edited by: jdm
-* Last edit: 21 December 2021 
+* Last edit: 16 May 2022
 * Stata v.17.0 
 
 * does
@@ -91,7 +91,7 @@
 			(kdensity v01_rf1_x0, color(cranberry) lpattern(solid) ///
 			xtitle("") xscale(r(0(5)15)) title("CHIRPS") ///
 			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(0(5)15, nogrid labsize(small))), ///
-			legend(pos(6) col(5) size(vsmall) label(1 "HH bilinear") label(2 "HH simple") ///
+			legend(pos(6) col(5) size(vsmall) label(1 "{bf:{bf:HH bilinear}}") label(2 "HH simple") ///
 			label(3 "EA bilinear") label(4 "EA simple") label(5 "EA modified bilinear") ///
 			label(6 "EA modified simple") label(7 "Admin bilinear") ///
 			label(8 "Admin simple") label(9 "EA zone") ///
@@ -110,7 +110,7 @@
 			(kdensity v01_rf2_x0, color(cranberry) lpattern(solid) ///
 			xtitle("") xscale(r(0(5)15)) title("CPC") ///
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(0(5)15, nogrid labsize(small))), ///
-			legend(pos(6) col(5) size(vsmall) label(1 "HH bilinear") label(2 "HH simple") ///
+			legend(pos(6) col(5) size(vsmall) label(1 "{bf:HH bilinear}") label(2 "HH simple") ///
 			label(3 "EA bilinear") label(4 "EA simple") label(5 "EA modified bilinear") ///
 			label(6 "EA modified simple") label(7 "Admin bilinear") ///
 			label(8 "Admin simple") label(9 "EA zone") ///
@@ -129,7 +129,7 @@
 			(kdensity v01_rf3_x0, color(cranberry) lpattern(solid) ///
 			xtitle("") xscale(r(0(5)15)) title("MERRA-2") ///
 			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(0(5)15, nogrid labsize(small))), ///
-			legend(pos(6) col(5) size(vsmall) label(1 "HH bilinear") label(2 "HH simple") ///
+			legend(pos(6) col(5) size(vsmall) label(1 "{bf:HH bilinear}") label(2 "HH simple") ///
 			label(3 "EA bilinear") label(4 "EA simple") label(5 "EA modified bilinear") ///
 			label(6 "EA modified simple") label(7 "Admin bilinear") ///
 			label(8 "Admin simple") label(9 "EA zone") ///
@@ -148,7 +148,7 @@
 			(kdensity v01_rf4_x0, color(cranberry) lpattern(solid) ///
 			xtitle("") xscale(r(0(5)15)) title("ARC2") ///
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(0(5)15, nogrid labsize(small))), ///
-			legend(pos(6) col(5) size(vsmall) label(1 "HH bilinear") label(2 "HH simple") ///
+			legend(pos(6) col(5) size(vsmall) label(1 "{bf:HH bilinear}") label(2 "HH simple") ///
 			label(3 "EA bilinear") label(4 "EA simple") label(5 "EA modified bilinear") ///
 			label(6 "EA modified simple") label(7 "Admin bilinear") ///
 			label(8 "Admin simple") label(9 "EA zone") ///
@@ -167,7 +167,7 @@
 			(kdensity v01_rf5_x0, color(cranberry) lpattern(solid) ///
 			xtitle("Total Season Rainfall (mm)") title("ERA5") ///
 			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
-			legend(pos(6) col(5) size(vsmall) label(1 "HH bilinear") label(2 "HH simple") ///
+			legend(pos(6) col(5) size(vsmall) label(1 "{bf:HH bilinear}") label(2 "HH simple") ///
 			label(3 "EA bilinear") label(4 "EA simple") label(5 "EA modified bilinear") ///
 			label(6 "EA modified simple") label(7 "Admin bilinear") ///
 			label(8 "Admin simple") label(9 "EA zone") ///
@@ -186,7 +186,7 @@
 			(kdensity v01_rf6_x0, color(cranberry) lpattern(solid) ///
 			xtitle("Total Season Rainfall (mm)") xscale(r(0(5)15)) title("TAMSAT") ///
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(0(5)15, nogrid labsize(small))), ///
-			legend(pos(6) col(5) size(vsmall) label(1 "HH bilinear") label(2 "HH simple") ///
+			legend(pos(6) col(5) size(vsmall) label(1 "{bf:HH bilinear}") label(2 "HH simple") ///
 			label(3 "EA bilinear") label(4 "EA simple") label(5 "EA modified bilinear") ///
 			label(6 "EA modified simple") label(7 "Admin bilinear") ///
 			label(8 "Admin simple") label(9 "EA zone") ///
@@ -217,7 +217,7 @@
 			(kdensity v15_tp1_x0, color(cranberry) lpattern(solid) ///
 			xtitle("") xscale(r(0(5)35)) title("MERRA-2") ///
 			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(0(5)35, nogrid labsize(small))), ///
-			legend(pos(4) col(1) size(vsmall) label(1 "HH bilinear") label(2 "HH simple") ///
+			legend(pos(4) col(1) size(vsmall) label(1 "{bf:HH bilinear}") label(2 "HH simple") ///
 			label(3 "EA bilinear") label(4 "EA simple") label(5 "EA modified bilinear") ///
 			label(6 "EA modified simple") label(7 "Admin bilinear") ///
 			label(8 "Admin simple") label(9 "EA zone") ///
@@ -236,7 +236,7 @@
 			(kdensity v15_tp2_x0, color(cranberry) lpattern(solid) ///
 			xtitle("Mean Seasonal Temperature (C)") xscale(r(0(5)35)) title("ERA5") ///
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(0(5)35, nogrid labsize(small))), ///
-			legend(pos(6) col(5) size(vsmall) label(1 "HH bilinear") label(2 "HH simple") ///
+			legend(pos(6) col(5) size(vsmall) label(1 "{bf:HH bilinear}") label(2 "HH simple") ///
 			label(3 "EA bilinear") label(4 "EA simple") label(5 "EA modified bilinear") ///
 			label(6 "EA modified simple") label(7 "Admin bilinear") ///
 			label(8 "Admin simple") label(9 "EA zone") ///
@@ -255,7 +255,7 @@
 			(kdensity v15_tp3_x0, color(cranberry) lpattern(solid) ///
 			xtitle("Mean Seasonal Temperature (C)") xscale(r(0(5)35)) title("CPC") ///
 			ytitle("Density") ylabel(, nogrid labsize(small)) xlabel(0(5)35, nogrid labsize(small))), ///
-			legend(pos(6) col(5) size(vsmall) label(1 "HH bilinear") label(2 "HH simple") ///
+			legend(pos(6) col(5) size(vsmall) label(1 "{bf:HH bilinear}") label(2 "HH simple") ///
 			label(3 "EA bilinear") label(4 "EA simple") label(5 "EA modified bilinear") ///
 			label(6 "EA modified simple") label(7 "Admin bilinear") ///
 			label(8 "Admin simple") label(9 "EA zone") ///
@@ -285,7 +285,7 @@
 			(fpfitci v10_rf1_x0 year, color(cranberry) lpattern(solid) ///
 			xtitle("") xscale(r(2008(1)2015)) title("CHIRPS") ///
 			ytitle("Days without Rain") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
-			legend(pos(6) col(5) size(vsmall) label(2 "HH bilinear") label(4 "HH simple") ///
+			legend(pos(6) col(5) size(vsmall) label(2 "{bf:HH bilinear}") label(4 "HH simple") ///
 			label(6 "EA bilinear") label(8 "EA simple") label(10 "EA modified bilinear") ///
 			label(12 "EA modified simple") label(14 "Admin bilinear") ///
 			label(16 "Admin simple") label(18 "EA zone") ///
@@ -305,7 +305,7 @@
 			(fpfitci v10_rf2_x0 year, color(cranberry) lpattern(solid) ///
 			xtitle("") xscale(r(2008(1)2015)) title("CPC") ///
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
-			legend(pos(6) col(5) size(vsmall) label(2 "HH bilinear") label(4 "HH simple") ///
+			legend(pos(6) col(5) size(vsmall) label(2 "{bf:HH bilinear}") label(4 "HH simple") ///
 			label(6 "EA bilinear") label(8 "EA simple") label(10 "EA modified bilinear") ///
 			label(12 "EA modified simple") label(14 "Admin bilinear") ///
 			label(16 "Admin simple") label(18 "EA zone") ///
@@ -325,7 +325,7 @@
 			(fpfitci v10_rf3_x0 year, color(cranberry) lpattern(solid) ///
 			xtitle("") xscale(r(2008(1)2015)) title("MERRA-2") ///
 			ytitle("Days without Rain") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
-			legend(pos(6) col(5) size(vsmall) label(2 "HH bilinear") label(4 "HH simple") ///
+			legend(pos(6) col(5) size(vsmall) label(2 "{bf:HH bilinear}") label(4 "HH simple") ///
 			label(6 "EA bilinear") label(8 "EA simple") label(10 "EA modified bilinear") ///
 			label(12 "EA modified simple") label(14 "Admin bilinear") ///
 			label(16 "Admin simple") label(18 "EA zone") ///
@@ -345,7 +345,7 @@
 			(fpfitci v10_rf4_x0 year, color(cranberry) lpattern(solid) ///
 			xtitle("") xscale(r(2008(1)2015)) title("ARC2") ///
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
-			legend(pos(6) col(5) size(vsmall) label(2 "HH bilinear") label(4 "HH simple") ///
+			legend(pos(6) col(5) size(vsmall) label(2 "{bf:HH bilinear}") label(4 "HH simple") ///
 			label(6 "EA bilinear") label(8 "EA simple") label(10 "EA modified bilinear") ///
 			label(12 "EA modified simple") label(14 "Admin bilinear") ///
 			label(16 "Admin simple") label(18 "EA zone") ///
@@ -365,7 +365,7 @@
 			(fpfitci v10_rf5_x0 year, color(cranberry) lpattern(solid) ///
 			xtitle("Year") xscale(r(2008(1)2015)) title("ERA5") ///
 			ytitle("Days without Rain") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
-			legend(pos(6) col(5) size(vsmall) label(2 "HH bilinear") label(4 "HH simple") ///
+			legend(pos(6) col(5) size(vsmall) label(2 "{bf:HH bilinear}") label(4 "HH simple") ///
 			label(6 "EA bilinear") label(8 "EA simple") label(10 "EA modified bilinear") ///
 			label(12 "EA modified simple") label(14 "Admin bilinear") ///
 			label(16 "Admin simple") label(18 "EA zone") ///
@@ -385,7 +385,7 @@
 			(fpfitci v10_rf6_x0 year, color(cranberry) lpattern(solid) ///
 			xtitle("Year") xscale(r(2008(1)2015)) title("TAMSAT") ///
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
-			legend(pos(6) col(5) size(vsmall) label(2 "HH bilinear") label(4 "HH simple") ///
+			legend(pos(6) col(5) size(vsmall) label(2 "{bf:HH bilinear}") label(4 "HH simple") ///
 			label(6 "EA bilinear") label(8 "EA simple") label(10 "EA modified bilinear") ///
 			label(12 "EA modified simple") label(14 "Admin bilinear") ///
 			label(16 "Admin simple") label(18 "EA zone") ///
@@ -417,7 +417,7 @@
 			(fpfitci v19_tp1_x0 year, color(cranberry) lpattern(solid) ///
 			xtitle("") xscale(r(2008(1)2015)) title("MERRA-2") ///
 			ytitle("Growing Degree Days") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
-			legend(pos(4) col(1) size(vsmall) label(2 "HH bilinear") label(4 "HH simple") ///
+			legend(pos(4) col(1) size(vsmall) label(2 "{bf:HH bilinear}") label(4 "HH simple") ///
 			label(6 "EA bilinear") label(8 "EA simple") label(10 "EA modified bilinear") ///
 			label(12 "EA modified simple") label(14 "Admin bilinear") ///
 			label(16 "Admin simple") label(18 "EA zone") ///
@@ -437,7 +437,7 @@
 			(fpfitci v19_tp2_x0 year, color(cranberry) lpattern(solid) ///
 			xtitle("Year") xscale(r(2008(1)2015)) title("ERA5") ///
 			ytitle("") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
-			legend(pos(6) col(5) size(vsmall) label(2 "HH bilinear") label(4 "HH simple") ///
+			legend(pos(6) col(5) size(vsmall) label(2 "{bf:HH bilinear}") label(4 "HH simple") ///
 			label(6 "EA bilinear") label(8 "EA simple") label(10 "EA modified bilinear") ///
 			label(12 "EA modified simple") label(14 "Admin bilinear") ///
 			label(16 "Admin simple") label(18 "EA zone") ///
@@ -457,7 +457,7 @@
 			(fpfitci v19_tp3_x0 year, color(cranberry) lpattern(solid) ///
 			xtitle("Year") xscale(r(2008(1)2015)) title("CPC") ///
 			ytitle("Growing Degree Days") ylabel(, nogrid labsize(small)) xlabel(, nogrid labsize(small))), ///
-			legend(pos(6) col(5) size(vsmall) label(2 "HH bilinear") label(4 "HH simple") ///
+			legend(pos(6) col(5) size(vsmall) label(2 "{bf:HH bilinear}") label(4 "HH simple") ///
 			label(6 "EA bilinear") label(8 "EA simple") label(10 "EA modified bilinear") ///
 			label(12 "EA modified simple") label(14 "Admin bilinear") ///
 			label(16 "Admin simple") label(18 "EA zone") ///
