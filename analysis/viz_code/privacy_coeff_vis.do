@@ -2,7 +2,7 @@
 * Created on: 13 December 2019
 * Created by: jdm
 * Edited by: jdm
-* Last edit: 16 May 2022
+* Last edit: 17 May 2022
 * Stata v.17.0 
 
 * does
@@ -1210,7 +1210,7 @@ restore
 	
 	
 ************************************************************************
-**# 4 - generate specification chart for mean temperature
+**# 6 - generate specification chart for mean temperature
 ************************************************************************
 	
 * define loop through levels of the data type variable	
@@ -1219,11 +1219,11 @@ restore
 
 	
 ************************************************************************
-**## 4a - weather only
+**## 6a - weather only
 ************************************************************************
 	
 preserve
-	keep			if varname == 15 & country == `l' & regname == 1
+	keep			if varname == 15 & country ==`l' & regname == 1
 	sort 			beta
 	gen 			obs = _n
 
@@ -1254,9 +1254,9 @@ preserve
 	global			from_y	=	$bmin - 2.5*$brange
 	global			gheight	=	31
 
-	twoway 			scatter k1 k2 k3 obs, xlab(0(6)60) xsize(10) ysize(6) ///
+	twoway 			scatter k1 k2 k3 obs, xlab(0(6)60) xsize(10) ysize(6) xtitle("") ytitle("") ///
 						title("Mean Daily Temperature: Weather")  ylab(0(1)$gheight ) ///
-						xtitle("") ytitle("") msize(vsmall vsmall vsmall) ylabel( ///
+						msize(vsmall vsmall vsmall) mcolor(gs10 gs10 gs10) ylabel( ///
 						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "MERRA-2" ///
 						6 "ERA5" 7 "CPC" 8 "*{bf:Weather Product}*" 10 "{bf:HH bilinear}" ///
 						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
@@ -1264,6 +1264,8 @@ preserve
 						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
 						19 "Admin area" 20 "*{bf:Extraction}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
+						(scatter k3 obs if k3 == 10, ///
+						msize(vsmall vsmall) mcolor(orange)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
 						range($from_y $bmax ) axis(2)) ) || ///
@@ -1275,13 +1277,13 @@ preserve
 						(rbar ci_lo ci_up obs if b_sig != ., ///
 						barwidth(.2) color(emerald%50) yaxis(2)  ///
 						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
-						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
+						legend(order(5 6) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/v15_reg1_cty`l'", replace)
 restore
 
 
 ************************************************************************
-**## 4b - weather squared only
+**## 6b - weather squared only
 ************************************************************************
 
 preserve
@@ -1316,9 +1318,9 @@ preserve
 	global			from_y	=	$bmin - 2.5*$brange
 	global			gheight	=	31
 
-	twoway 			scatter k1 k2 k3 obs, xlab(0(6)60) xsize(10) ysize(6)   ///
+	twoway 			scatter k1 k2 k3 obs, xlab(0(6)60) xsize(10) ysize(6) xtitle("") ytitle("") ///
 						title("Mean Daily Temperature: Weather + Weather{sup:2}") ylab(0(1)$gheight ) ///
-						xtitle("") ytitle("") msize(vsmall vsmall vsmall) ylabel( ///
+						msize(vsmall vsmall vsmall) mcolor(gs10 gs10 gs10) ylabel( ///
 						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "MERRA-2" ///
 						6 "ERA5" 7 "CPC" 8 "*{bf:Weather Product}*" 10 "{bf:HH bilinear}" ///
 						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
@@ -1326,6 +1328,8 @@ preserve
 						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
 						19 "Admin area" 20 "*{bf:Extraction}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
+						(scatter k3 obs if k3 == 10, ///
+						msize(vsmall vsmall) mcolor(orange)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
 						range($from_y $bmax ) axis(2)) ) || ///
@@ -1337,13 +1341,13 @@ preserve
 						(rbar ci_lo ci_up obs if b_sig != ., ///
 						barwidth(.2) color(emerald%50) yaxis(2)  ///
 						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
-						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
+						legend(order(5 6) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/v15_reg4_cty`l'", replace)
 restore
 
 
 ************************************************************************
-**## 4c - weather and FEs
+**## 6c - weather and FEs
 ************************************************************************
 
 preserve
@@ -1378,9 +1382,9 @@ preserve
 	global			from_y	=	$bmin - 2.5*$brange
 	global			gheight	=	31
 
-	twoway 			scatter k1 k2 k3 obs, xlab(0(6)60) xsize(10) ysize(6)   ///
+	twoway 			scatter k1 k2 k3 obs, xlab(0(6)60) xsize(10) ysize(6) xtitle("") ytitle("") ///
 						title("Mean Daily Temperature: Weather + FE") ylab(0(1)$gheight ) ///
-						ytitle("") msize(vsmall vsmall vsmall) ylabel( ///
+						msize(vsmall vsmall vsmall) mcolor(gs10 gs10 gs10) ylabel( ///
 						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "MERRA-2" ///
 						6 "ERA5" 7 "CPC" 8 "*{bf:Weather Product}*" 10 "{bf:HH bilinear}" ///
 						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
@@ -1388,6 +1392,8 @@ preserve
 						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
 						19 "Admin area" 20 "*{bf:Extraction}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
+						(scatter k3 obs if k3 == 10, ///
+						msize(vsmall vsmall) mcolor(orange)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
 						range($from_y $bmax ) axis(2)) ) || ///
@@ -1399,13 +1405,13 @@ preserve
 						(rbar ci_lo ci_up obs if b_sig != ., ///
 						barwidth(.2) color(emerald%50) yaxis(2)  ///
 						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
-						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
+						legend(order(5 6) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/v15_reg2_cty`l'", replace)
 restore
 
 
 ************************************************************************
-**## 4d - weather squared and FEs
+**## 6d - weather squared and FEs
 ************************************************************************
 
 preserve
@@ -1440,9 +1446,9 @@ preserve
 	global			from_y	=	$bmin - 2.5*$brange
 	global			gheight	=	31
 
-	twoway 			scatter k1 k2 k3 obs, xlab(0(6)60) xsize(10) ysize(6)   ///
+	twoway 			scatter k1 k2 k3 obs, xlab(0(6)60) xsize(10) ysize(6) xtitle("") ytitle("") ///
 						title("Mean Daily Temperature: Weather + Weather{sup:2} + FE") ylab(0(1)$gheight ) ///
-						ytitle("") msize(vsmall vsmall vsmall) ylabel( ///
+						msize(vsmall vsmall vsmall) mcolor(gs10 gs10 gs10) ylabel( ///
 						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "MERRA-2" ///
 						6 "ERA5" 7 "CPC" 8 "*{bf:Weather Product}*" 10 "{bf:HH bilinear}" ///
 						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
@@ -1450,6 +1456,8 @@ preserve
 						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
 						19 "Admin area" 20 "*{bf:Extraction}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
+						(scatter k3 obs if k3 == 10, ///
+						msize(vsmall vsmall) mcolor(orange)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
 						range($from_y $bmax ) axis(2)) ) || ///
@@ -1461,13 +1469,13 @@ preserve
 						(rbar ci_lo ci_up obs if b_sig != ., ///
 						barwidth(.2) color(emerald%50) yaxis(2)  ///
 						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
-						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
+						legend(order(5 6) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/v15_reg5_cty`l'", replace)
 restore
 
 /*
 ************************************************************************
-**## 4e - weather and FEs and inputs
+**## 6e - weather and FEs and inputs
 ************************************************************************
 
 preserve
@@ -1502,9 +1510,9 @@ preserve
 	global			from_y	=	$bmin - 2.5*$brange
 	global			gheight	=	31
 
-	twoway 			scatter k1 k2 k3 obs, xlab(0(6)60) xsize(10) ysize(6)   ///
+	twoway 			scatter k1 k2 k3 obs, xlab(0(6)60) xsize(10) ysize(6) ytitle("") ///
 						title("Mean Daily Temperature: Weather + FE + Inputs") ylab(0(1)$gheight ) ///
-						ytitle("") msize(vsmall vsmall vsmall) ylabel( ///
+						msize(vsmall vsmall vsmall) mcolor(gs10 gs10 gs10) ylabel( ///
 						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "MERRA-2" ///
 						6 "ERA5" 7 "CPC" 8 "*{bf:Weather Product}*" 10 "{bf:HH bilinear}" ///
 						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
@@ -1512,6 +1520,8 @@ preserve
 						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
 						19 "Admin area" 20 "*{bf:Extraction}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
+						(scatter k3 obs if k3 == 10, ///
+						msize(vsmall vsmall) mcolor(orange)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
 						range($from_y $bmax ) axis(2)) ) || ///
@@ -1523,13 +1533,13 @@ preserve
 						(rbar ci_lo ci_up obs if b_sig != ., ///
 						barwidth(.2) color(emerald%50) yaxis(2)  ///
 						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
-						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
+						legend(order(5 6) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/v15_reg3_cty`l'", replace)
 restore			
 
 
 ************************************************************************
-**## 4f - weather squared and FEs and inputs
+**## 6f - weather squared and FEs and inputs
 ************************************************************************
 
 preserve
@@ -1564,9 +1574,9 @@ preserve
 	global			from_y	=	$bmin - 2.5*$brange
 	global			gheight	=	31
 
-	twoway 			scatter k1 k2 k3 obs, xlab(0(6)60) xsize(10) ysize(6)   ///
+	twoway 			scatter k1 k2 k3 obs, xlab(0(6)60) xsize(10) ysize(6) ytitle("") ///
 						title("Mean Daily Temperature: Weather + Weather{sup:2} + FE + Inputs") ylab(0(1)$gheight ) ///
-						ytitle("") msize(vsmall vsmall vsmall) ylabel( ///
+						msize(vsmall vsmall vsmall) mcolor(gs10 gs10 gs10) ylabel( ///
 						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "MERRA-2" ///
 						6 "ERA5" 7 "CPC" 8 "*{bf:Weather Product}*" 10 "{bf:HH bilinear}" ///
 						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
@@ -1574,6 +1584,8 @@ preserve
 						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
 						19 "Admin area" 20 "*{bf:Extraction}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
+						(scatter k3 obs if k3 == 10, ///
+						msize(vsmall vsmall) mcolor(orange)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
 						range($from_y $bmax ) axis(2)) ) || ///
@@ -1585,14 +1597,14 @@ preserve
 						(rbar ci_lo ci_up obs if b_sig != ., ///
 						barwidth(.2) color(emerald%50) yaxis(2)  ///
 						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
-						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
+						legend(order(5 6) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/v15_reg6_cty`l'", replace)
 restore
 */
 	}
 	
 ************************************************************************
-**# 5 - generate specification chart for GDD
+**# 7 - generate specification chart for GDD
 ************************************************************************
 	
 * define loop through levels of the data type variable	
@@ -1601,7 +1613,7 @@ restore
 
 	
 ************************************************************************
-**## 5a - weather only
+**## 7a - weather only
 ************************************************************************
 	
 preserve
@@ -1636,9 +1648,9 @@ preserve
 	global			from_y	=	$bmin - 2.5*$brange
 	global			gheight	=	31
 
-	twoway 			scatter k1 k2 k3 obs, xlab(0(6)60) xsize(10) ysize(6) ///
+	twoway 			scatter k1 k2 k3 obs, xlab(0(6)60) xsize(10) ysize(6) ytitle("") ///
 						title("Growing Degree Days: Weather")  ylab(0(1)$gheight ) ///
-						ytitle("") msize(vsmall vsmall vsmall) ylabel( ///
+						msize(vsmall vsmall vsmall) mcolor(gs10 gs10 gs10) ylabel( ///
 						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "MERRA-2" ///
 						6 "ERA5" 7 "CPC" 8 "*{bf:Weather Product}*" 10 "{bf:HH bilinear}" ///
 						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
@@ -1646,6 +1658,8 @@ preserve
 						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
 						19 "Admin area" 20 "*{bf:Extraction}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
+						(scatter k3 obs if k3 == 10, ///
+						msize(vsmall vsmall) mcolor(orange)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
 						range($from_y $bmax ) axis(2)) ) || ///
@@ -1657,13 +1671,13 @@ preserve
 						(rbar ci_lo ci_up obs if b_sig != ., ///
 						barwidth(.2) color(erose%50) yaxis(2)  ///
 						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
-						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
+						legend(order(5 6) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/v19_reg1_cty`l'", replace)
 restore
 
 
 ************************************************************************
-**## 5b - weather squared only
+**## 7b - weather squared only
 ************************************************************************
 
 preserve
@@ -1698,9 +1712,9 @@ preserve
 	global			from_y	=	$bmin - 2.5*$brange
 	global			gheight	=	31
 
-	twoway 			scatter k1 k2 k3 obs, xlab(0(6)60) xsize(10) ysize(6)   ///
+	twoway 			scatter k1 k2 k3 obs, xlab(0(6)60) xsize(10) ysize(6) ytitle("") ///
 						title("Growing Degree Days: Weather + Weather{sup:2}") ylab(0(1)$gheight ) ///
-						ytitle("") msize(vsmall vsmall vsmall) ylabel( ///
+						msize(vsmall vsmall vsmall) mcolor(gs10 gs10 gs10) ylabel( ///
 						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "MERRA-2" ///
 						6 "ERA5" 7 "CPC" 8 "*{bf:Weather Product}*" 10 "{bf:HH bilinear}" ///
 						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
@@ -1708,6 +1722,8 @@ preserve
 						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
 						19 "Admin area" 20 "*{bf:Extraction}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
+						(scatter k3 obs if k3 == 10, ///
+						msize(vsmall vsmall) mcolor(orange)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
 						range($from_y $bmax ) axis(2)) ) || ///
@@ -1719,15 +1735,15 @@ preserve
 						(rbar ci_lo ci_up obs if b_sig != ., ///
 						barwidth(.2) color(erose%50) yaxis(2)  ///
 						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
-						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
+						legend(order(5 6) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/v19_reg4_cty`l'", replace)
 restore
 
-*/
-************************************************************************
-**## 5c - weather and FEs
-************************************************************************
 
+************************************************************************
+**## 7c - weather and FEs
+************************************************************************
+ISSUE IN THIS GRAPH
 preserve
 	keep			if varname == 19 & country == `l' & regname == 2
 	sort 			beta
@@ -1760,9 +1776,9 @@ preserve
 	global			from_y	=	$bmin - 2.5*$brange
 	global			gheight	=	31
 
-	twoway 			scatter k1 k2 k3 obs, xlab(0(6)60) xsize(10) ysize(6)   ///
-						title("`ctyl'") ylab(0(1)$gheight ) ///
-						ytitle("") msize(vsmall vsmall vsmall) ylabel( ///
+	twoway 			scatter k1 k2 k3 obs, xlab(0(6)60) xsize(10) ysize(6) ytitle("") ///
+						title("Growing Degree Days: Weather + FE") ylab(0(1)$gheight ) ///
+						msize(vsmall vsmall vsmall) mcolor(gs10 gs10 gs10) ylabel( ///
 						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "MERRA-2" ///
 						6 "ERA5" 7 "CPC" 8 "*{bf:Weather Product}*" 10 "{bf:HH bilinear}" ///
 						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
@@ -1770,6 +1786,8 @@ preserve
 						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
 						19 "Admin area" 20 "*{bf:Extraction}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
+						(scatter k3 obs if k3 == 10, ///
+						msize(vsmall vsmall) mcolor(orange)) || ///
 						(scatter k1 obs if ext == 1, ///
 						msize(small small) mcolor(orange)) /// || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
@@ -1783,15 +1801,15 @@ preserve
 						(rbar ci_lo ci_up obs if b_sig != ., ///
 						barwidth(.2) color(erose%50) yaxis(2)  ///
 						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
-						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
+						legend(order(5 6) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/v19_reg2_cty`l'", replace)
 						
-		graph export 	"$sfig/v19_reg2_cty`l'.pdf", as(pdf) replace
+	*	graph export 	"$sfig/v19_reg2_cty`l'.pdf", as(pdf) replace
 restore
-/*
+
 
 ************************************************************************
-**## 5d - weather squared and FEs
+**## 7d - weather squared and FEs
 ************************************************************************
 
 preserve
@@ -1826,9 +1844,9 @@ preserve
 	global			from_y	=	$bmin - 2.5*$brange
 	global			gheight	=	31
 
-	twoway 			scatter k1 k2 k3 obs, xlab(0(6)60) xsize(10) ysize(6)   ///
+	twoway 			scatter k1 k2 k3 obs, xlab(0(6)60) xsize(10) ysize(6) ytitle("") ///
 						title("Growing Degree Days: Weather + Weather{sup:2} + FE") ylab(0(1)$gheight ) ///
-						ytitle("") msize(vsmall vsmall vsmall) ylabel( ///
+						msize(vsmall vsmall vsmall) mcolor(gs10 gs10 gs10) ylabel( ///
 						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "MERRA-2" ///
 						6 "ERA5" 7 "CPC" 8 "*{bf:Weather Product}*" 10 "{bf:HH bilinear}" ///
 						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
@@ -1836,6 +1854,8 @@ preserve
 						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
 						19 "Admin area" 20 "*{bf:Extraction}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
+						(scatter k3 obs if k3 == 10, ///
+						msize(vsmall vsmall) mcolor(orange)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
 						range($from_y $bmax ) axis(2)) ) || ///
@@ -1847,13 +1867,13 @@ preserve
 						(rbar ci_lo ci_up obs if b_sig != ., ///
 						barwidth(.2) color(erose%50) yaxis(2)  ///
 						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
-						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
+						legend(order(5 6) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/v19_reg5_cty`l'", replace)
 restore
 
 /*
 ************************************************************************
-**## 5e - weather and FEs and inputs
+**## 7e - weather and FEs and inputs
 ************************************************************************
 
 preserve
@@ -1888,9 +1908,9 @@ preserve
 	global			from_y	=	$bmin - 2.5*$brange
 	global			gheight	=	31
 
-	twoway 			scatter k1 k2 k3 obs, xlab(0(6)60) xsize(10) ysize(6)   ///
+	twoway 			scatter k1 k2 k3 obs, xlab(0(6)60) xsize(10) ysize(6) ytitle("") ///
 						title("Growing Degree Days: Weather + FE + Inputs") ylab(0(1)$gheight ) ///
-						ytitle("") msize(vsmall vsmall vsmall) ylabel( ///
+						msize(vsmall vsmall vsmall) mcolor(gs10 gs10 gs10) ylabel( ///
 						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "MERRA-2" ///
 						6 "ERA5" 7 "CPC" 8 "*{bf:Weather Product}*" 10 "{bf:HH bilinear}" ///
 						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
@@ -1898,6 +1918,8 @@ preserve
 						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
 						19 "Admin area" 20 "*{bf:Extraction}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
+						(scatter k3 obs if k3 == 10, ///
+						msize(vsmall vsmall) mcolor(orange)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
 						range($from_y $bmax ) axis(2)) ) || ///
@@ -1909,13 +1931,13 @@ preserve
 						(rbar ci_lo ci_up obs if b_sig != ., ///
 						barwidth(.2) color(erose%50) yaxis(2)  ///
 						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
-						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
+						legend(order(5 6) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/v19_reg3_cty`l'", replace)
 restore			
 
 
 ************************************************************************
-**## 5f - weather squared and FEs and inputs
+**## 7f - weather squared and FEs and inputs
 ************************************************************************
 
 preserve
@@ -1950,9 +1972,9 @@ preserve
 	global			from_y	=	$bmin - 2.5*$brange
 	global			gheight	=	31
 
-	twoway 			scatter k1 k2 k3 obs, xlab(0(6)60) xsize(10) ysize(6)   ///
+	twoway 			scatter k1 k2 k3 obs, xlab(0(6)60) xsize(10) ysize(6) ytitle("") ///
 						title("Growing Degree Days: Weather + Weather{sup:2} + FE + Inputs") ylab(0(1)$gheight ) ///
-						ytitle("") msize(vsmall vsmall vsmall) ylabel( ///
+						msize(vsmall vsmall vsmall) mcolor(gs10 gs10 gs10) ylabel( ///
 						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "MERRA-2" ///
 						6 "ERA5" 7 "CPC" 8 "*{bf:Weather Product}*" 10 "{bf:HH bilinear}" ///
 						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
@@ -1960,6 +1982,8 @@ preserve
 						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
 						19 "Admin area" 20 "*{bf:Extraction}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
+						(scatter k3 obs if k3 == 10, ///
+						msize(vsmall vsmall) mcolor(orange)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
 						range($from_y $bmax ) axis(2)) ) || ///
@@ -1971,16 +1995,15 @@ preserve
 						(rbar ci_lo ci_up obs if b_sig != ., ///
 						barwidth(.2) color(erose%50) yaxis(2)  ///
 						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
-						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
+						legend(order(5 6) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/v19_reg6_cty`l'", replace)
 restore
-*/
 */
 	}
 	
 	
 ************************************************************************
-**## 5g - combine graphs
+**## 9 - combine graphs
 ************************************************************************
 	
 * define loop through levels of the data type variable	
