@@ -98,7 +98,7 @@ preserve
 						3 "EA bilinear" 4 "EA simple" 5 "EA modified bilinear" ///
 						6 "EA modified simple" 7 "Admin bilinear" ///
 						8 "Admin simple" 9 "EA zone" ///
-						10 "Admin area" 11 "*{bf:Extraction}*" 18 " ", ///
+						10 "Admin area" 11 "*{bf:Anon. Method}*" 18 " ", ///
 						angle(0) labsize(vsmall) tstyle(notick)) || ///
 						(scatter k1 obs if ext == 1, ///
 						msize(small small) mcolor(orange)) ///
@@ -154,7 +154,7 @@ preserve
 						3 "EA bilinear" 4 "EA simple" 5 "EA modified bilinear" ///
 						6 "EA modified simple" 7 "Admin bilinear" ///
 						8 "Admin simple" 9 "EA zone" ///
-						10 "Admin area" 11 "*{bf:Extraction}*" 18 " ", ///
+						10 "Admin area" 11 "*{bf:Anon. Method}*" 18 " ", ///
 						angle(0) labsize(vsmall) tstyle(notick)) || ///
 						(scatter k1 obs if ext == 1, ///
 						msize(small small) mcolor(orange)) ///
@@ -210,7 +210,7 @@ preserve
 						3 "EA bilinear" 4 "EA simple" 5 "EA modified bilinear" ///
 						6 "EA modified simple" 7 "Admin bilinear" ///
 						8 "Admin simple" 9 "EA zone" ///
-						10 "Admin area" 11 "*{bf:Extraction}*" 18 " ", ///
+						10 "Admin area" 11 "*{bf:Anon. Method}*" 18 " ", ///
 						angle(0) labsize(vsmall) tstyle(notick)) || ///
 						(scatter k1 obs if ext == 1, ///
 						msize(small small) mcolor(orange)) ///
@@ -264,7 +264,7 @@ preserve
 						3 "EA bilinear" 4 "EA simple" 5 "EA modified bilinear" ///
 						6 "EA modified simple" 7 "Admin bilinear" ///
 						8 "Admin simple" 9 "EA zone" ///
-						10 "Admin area" 11 "*{bf:Extraction}*" 18 " ", ///
+						10 "Admin area" 11 "*{bf:Anon. Method}*" 18 " ", ///
 						angle(0) labsize(vsmall) tstyle(notick)) || ///
 						(scatter k1 obs if ext == 1, ///
 						msize(small small) mcolor(orange)) ///
@@ -318,7 +318,7 @@ preserve
 						3 "EA bilinear" 4 "EA simple" 5 "EA modified bilinear" ///
 						6 "EA modified simple" 7 "Admin bilinear" ///
 						8 "Admin simple" 9 "EA zone" ///
-						10 "Admin area" 11 "*{bf:Extraction}*" 18 " ", ///
+						10 "Admin area" 11 "*{bf:Anon. Method}*" 18 " ", ///
 						angle(0) labsize(vsmall) tstyle(notick)) || ///
 						(scatter k1 obs if ext == 1, ///
 						msize(small small) mcolor(orange)) ///
@@ -372,7 +372,7 @@ preserve
 						3 "EA bilinear" 4 "EA simple" 5 "EA modified bilinear" ///
 						6 "EA modified simple" 7 "Admin bilinear" ///
 						8 "Admin simple" 9 "EA zone" ///
-						10 "Admin area" 11 "*{bf:Extraction}*" 18 " ", ///
+						10 "Admin area" 11 "*{bf:Anon. Method}*" 18 " ", ///
 						angle(0) labsize(vsmall) tstyle(notick)) || ///
 						(scatter k1 obs if ext == 1, ///
 						msize(small small) mcolor(orange)) ///
