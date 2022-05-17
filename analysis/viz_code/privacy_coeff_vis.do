@@ -95,7 +95,7 @@ preserve
 
 	lab 			var k1 "Dep. Var."
 	lab				var k2 "Weather Product"
-	lab 			var k3 "Extraction"
+	lab 			var k3 "Anon. Method"
 
 	qui sum			ci_up
 	global			bmax = r(max)
@@ -116,7 +116,7 @@ preserve
 						14 "HH simple" 15 "EA bilinear" 16 "EA simple" ///
 						17 "EA modified bilinear" 18 "EA modified simple" ///
 						19 "Admin bilinear" 20 "Admin simple" 21 "EA zone" ///
-						22 "Admin area" 23 "*{bf:Extraction}*" 34 " ", ///
+						22 "Admin area" 23 "*{bf:Anon. Method}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter k3 obs if k3 == 13, ///
 						msize(vsmall vsmall) mcolor(orange)) || ///
@@ -155,7 +155,7 @@ preserve
 
 	lab 			var k1 "Dep. Var."
 	lab				var k2 "Weather Product"
-	lab 			var k3 "Extraction"
+	lab 			var k3 "Anon. Method"
 
 	qui sum			ci_up
 	global			bmax = r(max)
@@ -176,7 +176,7 @@ preserve
 						14 "HH simple" 15 "EA bilinear" 16 "EA simple" ///
 						17 "EA modified bilinear" 18 "EA modified simple" ///
 						19 "Admin bilinear" 20 "Admin simple" 21 "EA zone" ///
-						22 "Admin area" 23 "*{bf:Extraction}*" 34 " ", ///
+						22 "Admin area" 23 "*{bf:Anon. Method}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter k3 obs if k3 == 13, ///
 						msize(vsmall vsmall) mcolor(orange)) || ///
@@ -215,7 +215,7 @@ preserve
 
 	lab 			var k1 "Dep. Var."
 	lab				var k2 "Weather Product"
-	lab 			var k3 "Extraction"
+	lab 			var k3 "Anon. Method"
 
 	qui sum			ci_up
 	global			bmax = r(max)
@@ -236,7 +236,7 @@ preserve
 						14 "HH simple" 15 "EA bilinear" 16 "EA simple" ///
 						17 "EA modified bilinear" 18 "EA modified simple" ///
 						19 "Admin bilinear" 20 "Admin simple" 21 "EA zone" ///
-						22 "Admin area" 23 "*{bf:Extraction}*" 34 " ", ///
+						22 "Admin area" 23 "*{bf:Anon. Method}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter k3 obs if k3 == 13, ///
 						msize(vsmall vsmall) mcolor(orange)) || ///
@@ -277,7 +277,7 @@ preserve
 
 	lab 			var k1 "Dep. Var."
 	lab				var k2 "Weather Product"
-	lab 			var k3 "Extraction"
+	lab 			var k3 "Anon. Method"
 
 	qui sum			ci_up
 	global			bmax = r(max)
@@ -298,7 +298,7 @@ preserve
 						14 "HH simple" 15 "EA bilinear" 16 "EA simple" ///
 						17 "EA modified bilinear" 18 "EA modified simple" ///
 						19 "Admin bilinear" 20 "Admin simple" 21 "EA zone" ///
-						22 "Admin area" 23 "*{bf:Extraction}*" 34 " ", ///
+						22 "Admin area" 23 "*{bf:Anon. Method}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter k3 obs if k3 == 13, ///
 						msize(vsmall vsmall) mcolor(orange)) || ///
@@ -337,7 +337,7 @@ preserve
 
 	lab 			var k1 "Dep. Var."
 	lab				var k2 "Weather Product"
-	lab 			var k3 "Extraction"
+	lab 			var k3 "Anon. Method"
 
 	qui sum			ci_up
 	global			bmax = r(max)
@@ -358,7 +358,7 @@ preserve
 						14 "HH simple" 15 "EA bilinear" 16 "EA simple" ///
 						17 "EA modified bilinear" 18 "EA modified simple" ///
 						19 "Admin bilinear" 20 "Admin simple" 21 "EA zone" ///
-						22 "Admin area" 23 "*{bf:Extraction}*" 34 " ", ///
+						22 "Admin area" 23 "*{bf:Anon. Method}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter k3 obs if k3 == 13, ///
 						msize(vsmall vsmall) mcolor(orange)) || ///
@@ -397,7 +397,7 @@ preserve
 
 	lab 			var k1 "Dep. Var."
 	lab				var k2 "Weather Product"
-	lab 			var k3 "Extraction"
+	lab 			var k3 "Anon. Method"
 
 	qui sum			ci_up
 	global			bmax = r(max)
@@ -418,7 +418,7 @@ preserve
 						14 "HH simple" 15 "EA bilinear" 16 "EA simple" ///
 						17 "EA modified bilinear" 18 "EA modified simple" ///
 						19 "Admin bilinear" 20 "Admin simple" 21 "EA zone" ///
-						22 "Admin area" 23 "*{bf:Extraction}*" 34 " ", ///
+						22 "Admin area" 23 "*{bf:Anon. Method}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter k3 obs if k3 == 13, ///
 						msize(vsmall vsmall) mcolor(orange)) || ///
@@ -470,7 +470,7 @@ preserve
 
 	lab 			var k1 "Dep. Var."
 	lab				var k2 "Weather Product"
-	lab 			var k3 "Extraction"
+	lab 			var k3 "Anon. Method"
 
 	qui sum			ci_up
 	global			bmax = r(max)
@@ -491,7 +491,7 @@ preserve
 						14 "HH simple" 15 "EA bilinear" 16 "EA simple" ///
 						17 "EA modified bilinear" 18 "EA modified simple" ///
 						19 "Admin bilinear" 20 "Admin simple" 21 "EA zone" ///
-						22 "Admin area" 23 "*{bf:Extraction}*" 34 " ", ///
+						22 "Admin area" 23 "*{bf:Anon. Method}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter k3 obs if k3 == 13, ///
 						msize(vsmall vsmall) mcolor(orange)) || ///
@@ -530,7 +530,7 @@ preserve
 
 	lab 			var k1 "Dep. Var."
 	lab				var k2 "Weather Product"
-	lab 			var k3 "Extraction"
+	lab 			var k3 "Anon. Method"
 
 	qui sum			ci_up
 	global			bmax = r(max)
@@ -551,7 +551,7 @@ preserve
 						14 "HH simple" 15 "EA bilinear" 16 "EA simple" ///
 						17 "EA modified bilinear" 18 "EA modified simple" ///
 						19 "Admin bilinear" 20 "Admin simple" 21 "EA zone" ///
-						22 "Admin area" 23 "*{bf:Extraction}*" 34 " ", ///
+						22 "Admin area" 23 "*{bf:Anon. Method}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter k3 obs if k3 == 13, ///
 						msize(vsmall vsmall) mcolor(orange)) || ///
@@ -590,7 +590,7 @@ preserve
 
 	lab 			var k1 "Dep. Var."
 	lab				var k2 "Weather Product"
-	lab 			var k3 "Extraction"
+	lab 			var k3 "Anon. Method"
 
 	qui sum			ci_up
 	global			bmax = r(max)
@@ -611,7 +611,7 @@ preserve
 						14 "HH simple" 15 "EA bilinear" 16 "EA simple" ///
 						17 "EA modified bilinear" 18 "EA modified simple" ///
 						19 "Admin bilinear" 20 "Admin simple" 21 "EA zone" ///
-						22 "Admin area" 23 "*{bf:Extraction}*" 34 " ", ///
+						22 "Admin area" 23 "*{bf:Anon. Method}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter k3 obs if k3 == 13, ///
 						msize(vsmall vsmall) mcolor(orange)) || ///
@@ -650,7 +650,7 @@ preserve
 
 	lab 			var k1 "Dep. Var."
 	lab				var k2 "Weather Product"
-	lab 			var k3 "Extraction"
+	lab 			var k3 "Anon. Method"
 
 	qui sum			ci_up
 	global			bmax = r(max)
@@ -671,7 +671,7 @@ preserve
 						14 "HH simple" 15 "EA bilinear" 16 "EA simple" ///
 						17 "EA modified bilinear" 18 "EA modified simple" ///
 						19 "Admin bilinear" 20 "Admin simple" 21 "EA zone" ///
-						22 "Admin area" 23 "*{bf:Extraction}*" 34 " ", ///
+						22 "Admin area" 23 "*{bf:Anon. Method}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter k3 obs if k3 == 13, ///
 						msize(vsmall vsmall) mcolor(orange)) || ///
@@ -710,7 +710,7 @@ preserve
 
 	lab 			var k1 "Dep. Var."
 	lab				var k2 "Weather Product"
-	lab 			var k3 "Extraction"
+	lab 			var k3 "Anon. Method"
 
 	qui sum			ci_up
 	global			bmax = r(max)
@@ -731,7 +731,7 @@ preserve
 						14 "HH simple" 15 "EA bilinear" 16 "EA simple" ///
 						17 "EA modified bilinear" 18 "EA modified simple" ///
 						19 "Admin bilinear" 20 "Admin simple" 21 "EA zone" ///
-						22 "Admin area" 23 "*{bf:Extraction}*" 34 " ", ///
+						22 "Admin area" 23 "*{bf:Anon. Method}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
@@ -768,7 +768,7 @@ preserve
 
 	lab 			var k1 "Dep. Var."
 	lab				var k2 "Weather Product"
-	lab 			var k3 "Extraction"
+	lab 			var k3 "Anon. Method"
 
 	qui sum			ci_up
 	global			bmax = r(max)
@@ -789,7 +789,7 @@ preserve
 						14 "HH simple" 15 "EA bilinear" 16 "EA simple" ///
 						17 "EA modified bilinear" 18 "EA modified simple" ///
 						19 "Admin bilinear" 20 "Admin simple" 21 "EA zone" ///
-						22 "Admin area" 23 "*{bf:Extraction}*" 34 " ", ///
+						22 "Admin area" 23 "*{bf:Anon. Method}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
@@ -839,7 +839,7 @@ preserve
 
 	lab 			var k1 "Dep. Var."
 	lab				var k2 "Weather Product"
-	lab 			var k3 "Extraction"
+	lab 			var k3 "Anon. Method"
 
 	qui sum			ci_up
 	global			bmax = r(max)
@@ -860,7 +860,7 @@ preserve
 						14 "HH simple" 15 "EA bilinear" 16 "EA simple" ///
 						17 "EA modified bilinear" 18 "EA modified simple" ///
 						19 "Admin bilinear" 20 "Admin simple" 21 "EA zone" ///
-						22 "Admin area" 23 "*{bf:Extraction}*" 34 " ", ///
+						22 "Admin area" 23 "*{bf:Anon. Method}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter k3 obs if k3 == 13, ///
 						msize(vsmall vsmall) mcolor(orange)) || ///
@@ -899,7 +899,7 @@ preserve
 
 	lab 			var k1 "Dep. Var."
 	lab				var k2 "Weather Product"
-	lab 			var k3 "Extraction"
+	lab 			var k3 "Anon. Method"
 
 	qui sum			ci_up
 	global			bmax = r(max)
@@ -920,7 +920,7 @@ preserve
 						14 "HH simple" 15 "EA bilinear" 16 "EA simple" ///
 						17 "EA modified bilinear" 18 "EA modified simple" ///
 						19 "Admin bilinear" 20 "Admin simple" 21 "EA zone" ///
-						22 "Admin area" 23 "*{bf:Extraction}*" 34 " ", ///
+						22 "Admin area" 23 "*{bf:Anon. Method}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter k3 obs if k3 == 13, ///
 						msize(vsmall vsmall) mcolor(orange)) || ///
@@ -959,7 +959,7 @@ preserve
 
 	lab 			var k1 "Dep. Var."
 	lab				var k2 "Weather Product"
-	lab 			var k3 "Extraction"
+	lab 			var k3 "Anon. Method"
 
 	qui sum			ci_up
 	global			bmax = r(max)
@@ -980,7 +980,7 @@ preserve
 						14 "HH simple" 15 "EA bilinear" 16 "EA simple" ///
 						17 "EA modified bilinear" 18 "EA modified simple" ///
 						19 "Admin bilinear" 20 "Admin simple" 21 "EA zone" ///
-						22 "Admin area" 23 "*{bf:Extraction}*" 34 " ", ///
+						22 "Admin area" 23 "*{bf:Anon. Method}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter k3 obs if k3 == 13, ///
 						msize(vsmall vsmall) mcolor(orange)) || ///
@@ -1019,7 +1019,7 @@ preserve
 
 	lab 			var k1 "Dep. Var."
 	lab				var k2 "Weather Product"
-	lab 			var k3 "Extraction"
+	lab 			var k3 "Anon. Method"
 
 	qui sum			ci_up
 	global			bmax = r(max)
@@ -1040,7 +1040,7 @@ preserve
 						14 "HH simple" 15 "EA bilinear" 16 "EA simple" ///
 						17 "EA modified bilinear" 18 "EA modified simple" ///
 						19 "Admin bilinear" 20 "Admin simple" 21 "EA zone" ///
-						22 "Admin area" 23 "*{bf:Extraction}*" 34 " ", ///
+						22 "Admin area" 23 "*{bf:Anon. Method}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter k3 obs if k3 == 13, ///
 						msize(vsmall vsmall) mcolor(orange)) || ///
@@ -1079,7 +1079,7 @@ preserve
 
 	lab 			var k1 "Dep. Var."
 	lab				var k2 "Weather Product"
-	lab 			var k3 "Extraction"
+	lab 			var k3 "Anon. Method"
 
 	qui sum			ci_up
 	global			bmax = r(max)
@@ -1100,7 +1100,7 @@ preserve
 						14 "HH simple" 15 "EA bilinear" 16 "EA simple" ///
 						17 "EA modified bilinear" 18 "EA modified simple" ///
 						19 "Admin bilinear" 20 "Admin simple" 21 "EA zone" ///
-						22 "Admin area" 23 "*{bf:Extraction}*" 34 " ", ///
+						22 "Admin area" 23 "*{bf:Anon. Method}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
@@ -1137,7 +1137,7 @@ preserve
 
 	lab 			var k1 "Dep. Var."
 	lab				var k2 "Weather Product"
-	lab 			var k3 "Extraction"
+	lab 			var k3 "Anon. Method"
 
 	qui sum			ci_up
 	global			bmax = r(max)
@@ -1158,7 +1158,7 @@ preserve
 						14 "HH simple" 15 "EA bilinear" 16 "EA simple" ///
 						17 "EA modified bilinear" 18 "EA modified simple" ///
 						19 "Admin bilinear" 20 "Admin simple" 21 "EA zone" ///
-						22 "Admin area" 23 "*{bf:Extraction}*" 34 " ", ///
+						22 "Admin area" 23 "*{bf:Anon. Method}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
@@ -1242,7 +1242,7 @@ preserve
 
 	lab 			var k1 "Dep. Var."
 	lab				var k2 "Weather Product"
-	lab 			var k3 "Extraction"
+	lab 			var k3 "Anon. Method"
 
 	qui sum			ci_up
 	global			bmax = r(max)
@@ -1262,7 +1262,7 @@ preserve
 						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
 						14 "EA modified bilinear" 15 "EA modified simple" ///
 						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
-						19 "Admin area" 20 "*{bf:Extraction}*" 34 " ", ///
+						19 "Admin area" 20 "*{bf:Anon. Method}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter k3 obs if k3 == 10, ///
 						msize(vsmall vsmall) mcolor(orange)) || ///
@@ -1306,7 +1306,7 @@ preserve
 
 	lab 			var k1 "Dep. Var."
 	lab				var k2 "Weather Product"
-	lab 			var k3 "Extraction"
+	lab 			var k3 "Anon. Method"
 
 	qui sum			ci_up
 	global			bmax = r(max)
@@ -1326,7 +1326,7 @@ preserve
 						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
 						14 "EA modified bilinear" 15 "EA modified simple" ///
 						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
-						19 "Admin area" 20 "*{bf:Extraction}*" 34 " ", ///
+						19 "Admin area" 20 "*{bf:Anon. Method}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter k3 obs if k3 == 10, ///
 						msize(vsmall vsmall) mcolor(orange)) || ///
@@ -1370,7 +1370,7 @@ preserve
 
 	lab 			var k1 "Dep. Var."
 	lab				var k2 "Weather Product"
-	lab 			var k3 "Extraction"
+	lab 			var k3 "Anon. Method"
 
 	qui sum			ci_up
 	global			bmax = r(max)
@@ -1390,7 +1390,7 @@ preserve
 						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
 						14 "EA modified bilinear" 15 "EA modified simple" ///
 						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
-						19 "Admin area" 20 "*{bf:Extraction}*" 34 " ", ///
+						19 "Admin area" 20 "*{bf:Anon. Method}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter k3 obs if k3 == 10, ///
 						msize(vsmall vsmall) mcolor(orange)) || ///
@@ -1434,7 +1434,7 @@ preserve
 
 	lab 			var k1 "Dep. Var."
 	lab				var k2 "Weather Product"
-	lab 			var k3 "Extraction"
+	lab 			var k3 "Anon. Method"
 
 	qui sum			ci_up
 	global			bmax = r(max)
@@ -1454,7 +1454,7 @@ preserve
 						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
 						14 "EA modified bilinear" 15 "EA modified simple" ///
 						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
-						19 "Admin area" 20 "*{bf:Extraction}*" 34 " ", ///
+						19 "Admin area" 20 "*{bf:Anon. Method}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter k3 obs if k3 == 10, ///
 						msize(vsmall vsmall) mcolor(orange)) || ///
@@ -1498,7 +1498,7 @@ preserve
 
 	lab 			var k1 "Dep. Var."
 	lab				var k2 "Weather Product"
-	lab 			var k3 "Extraction"
+	lab 			var k3 "Anon. Method"
 
 	qui sum			ci_up
 	global			bmax = r(max)
@@ -1518,7 +1518,7 @@ preserve
 						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
 						14 "EA modified bilinear" 15 "EA modified simple" ///
 						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
-						19 "Admin area" 20 "*{bf:Extraction}*" 34 " ", ///
+						19 "Admin area" 20 "*{bf:Anon. Method}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter k3 obs if k3 == 10, ///
 						msize(vsmall vsmall) mcolor(orange)) || ///
@@ -1562,7 +1562,7 @@ preserve
 
 	lab 			var k1 "Dep. Var."
 	lab				var k2 "Weather Product"
-	lab 			var k3 "Extraction"
+	lab 			var k3 "Anon. Method"
 
 	qui sum			ci_up
 	global			bmax = r(max)
@@ -1582,7 +1582,7 @@ preserve
 						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
 						14 "EA modified bilinear" 15 "EA modified simple" ///
 						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
-						19 "Admin area" 20 "*{bf:Extraction}*" 34 " ", ///
+						19 "Admin area" 20 "*{bf:Anon. Method}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter k3 obs if k3 == 10, ///
 						msize(vsmall vsmall) mcolor(orange)) || ///
@@ -1636,7 +1636,7 @@ preserve
 
 	lab 			var k1 "Dep. Var."
 	lab				var k2 "Weather Product"
-	lab 			var k3 "Extraction"
+	lab 			var k3 "Anon. Method"
 
 	qui sum			ci_up
 	global			bmax = r(max)
@@ -1656,7 +1656,7 @@ preserve
 						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
 						14 "EA modified bilinear" 15 "EA modified simple" ///
 						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
-						19 "Admin area" 20 "*{bf:Extraction}*" 34 " ", ///
+						19 "Admin area" 20 "*{bf:Anon. Method}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter k3 obs if k3 == 10, ///
 						msize(vsmall vsmall) mcolor(orange)) || ///
@@ -1700,7 +1700,7 @@ preserve
 
 	lab 			var k1 "Dep. Var."
 	lab				var k2 "Weather Product"
-	lab 			var k3 "Extraction"
+	lab 			var k3 "Anon. Method"
 
 	qui sum			ci_up
 	global			bmax = r(max)
@@ -1720,7 +1720,7 @@ preserve
 						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
 						14 "EA modified bilinear" 15 "EA modified simple" ///
 						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
-						19 "Admin area" 20 "*{bf:Extraction}*" 34 " ", ///
+						19 "Admin area" 20 "*{bf:Anon. Method}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter k3 obs if k3 == 10, ///
 						msize(vsmall vsmall) mcolor(orange)) || ///
@@ -1743,7 +1743,7 @@ restore
 ************************************************************************
 **## 7c - weather and FEs
 ************************************************************************
-ISSUE IN THIS GRAPH
+
 preserve
 	keep			if varname == 19 & country == `l' & regname == 2
 	sort 			beta
@@ -1764,7 +1764,7 @@ preserve
 
 	lab 			var k1 "Dep. Var."
 	lab				var k2 "Weather Product"
-	lab 			var k3 "Extraction"
+	lab 			var k3 "Anon. Method"
 
 	qui sum			ci_up
 	global			bmax = r(max)
@@ -1784,12 +1784,10 @@ preserve
 						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
 						14 "EA modified bilinear" 15 "EA modified simple" ///
 						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
-						19 "Admin area" 20 "*{bf:Extraction}*" 34 " ", ///
+						19 "Admin area" 20 "*{bf:Anon. Method}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter k3 obs if k3 == 10, ///
 						msize(vsmall vsmall) mcolor(orange)) || ///
-						(scatter k1 obs if ext == 1, ///
-						msize(small small) mcolor(orange)) /// || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
 						axis(2) labsize(vsmall) angle(0) ) yscale( ///
 						range($from_y $bmax ) axis(2)) ) || ///
@@ -1803,7 +1801,7 @@ preserve
 						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
 						legend(order(5 6) cols(2) size(small) rowgap(.5) pos(12)) ///
 						saving("$sfig/v19_reg2_cty`l'", replace)
-						
+
 	*	graph export 	"$sfig/v19_reg2_cty`l'.pdf", as(pdf) replace
 restore
 
@@ -1832,7 +1830,7 @@ preserve
 
 	lab 			var k1 "Dep. Var."
 	lab				var k2 "Weather Product"
-	lab 			var k3 "Extraction"
+	lab 			var k3 "Anon. Method"
 
 	qui sum			ci_up
 	global			bmax = r(max)
@@ -1852,7 +1850,7 @@ preserve
 						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
 						14 "EA modified bilinear" 15 "EA modified simple" ///
 						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
-						19 "Admin area" 20 "*{bf:Extraction}*" 34 " ", ///
+						19 "Admin area" 20 "*{bf:Anon. Method}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter k3 obs if k3 == 10, ///
 						msize(vsmall vsmall) mcolor(orange)) || ///
@@ -1896,7 +1894,7 @@ preserve
 
 	lab 			var k1 "Dep. Var."
 	lab				var k2 "Weather Product"
-	lab 			var k3 "Extraction"
+	lab 			var k3 "Anon. Method"
 
 	qui sum			ci_up
 	global			bmax = r(max)
@@ -1916,7 +1914,7 @@ preserve
 						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
 						14 "EA modified bilinear" 15 "EA modified simple" ///
 						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
-						19 "Admin area" 20 "*{bf:Extraction}*" 34 " ", ///
+						19 "Admin area" 20 "*{bf:Anon. Method}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter k3 obs if k3 == 10, ///
 						msize(vsmall vsmall) mcolor(orange)) || ///
@@ -1960,7 +1958,7 @@ preserve
 
 	lab 			var k1 "Dep. Var."
 	lab				var k2 "Weather Product"
-	lab 			var k3 "Extraction"
+	lab 			var k3 "Anon. Method"
 
 	qui sum			ci_up
 	global			bmax = r(max)
@@ -1980,7 +1978,7 @@ preserve
 						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
 						14 "EA modified bilinear" 15 "EA modified simple" ///
 						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
-						19 "Admin area" 20 "*{bf:Extraction}*" 34 " ", ///
+						19 "Admin area" 20 "*{bf:Anon. Method}*" 34 " ", ///
 						angle(0) labsize(tiny) tstyle(notick)) || ///
 						(scatter k3 obs if k3 == 10, ///
 						msize(vsmall vsmall) mcolor(orange)) || ///
@@ -2000,10 +1998,405 @@ preserve
 restore
 */
 	}
+
+	
+************************************************************************
+**# 8 - generate specification chart for z-GDD
+************************************************************************
+	
+* define loop through levels of the data type variable	
+	levelsof 	country, local(cty)
+	foreach 	l of local cty {
+
+	
+************************************************************************
+**## 8a - weather only
+************************************************************************
+	
+preserve
+	keep			if varname == 21 & country == `l' & regname == 1
+	sort 			beta
+	gen 			obs = _n
+
+* stack values of the specification indicators
+	gen 			k1 		= 	depvar
+	gen 			k2 		= 	sat + 2 + 2
+	gen 			k3 		= 	ext + 3 + 2 + 2 + 2
+	
+* subtract values of off k2 because of varname numbering
+	replace			k2		=	5 if k2 == 11
+	replace			k2		=	6 if k2 == 12
+	replace			k2		=	7 if k2 == 13
+	
+* label new variables	
+	lab				var obs "Specification # - sorted by effect size"
+
+	lab 			var k1 "Dep. Var."
+	lab				var k2 "Weather Product"
+	lab 			var k3 "Anon. Method"
+
+	qui sum			ci_up
+	global			bmax = r(max)
+	
+	qui sum			ci_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - 2.5*$brange
+	global			gheight	=	31
+
+	twoway 			scatter k1 k2 k3 obs, xlab(0(6)60) xsize(10) ysize(6) xtitle("") ytitle("") ///
+						title("z-Score of GDD: Weather")  ylab(0(1)$gheight ) ///
+						msize(vsmall vsmall vsmall) mcolor(gs10 gs10 gs10) ylabel( ///
+						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "MERRA-2" ///
+						6 "ERA5" 7 "CPC" 8 "*{bf:Weather Product}*" 10 "{bf:HH bilinear}" ///
+						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
+						14 "EA modified bilinear" 15 "EA modified simple" ///
+						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
+						19 "Admin area" 20 "*{bf:Anon. Method}*" 34 " ", ///
+						angle(0) labsize(tiny) tstyle(notick)) || ///
+						(scatter k3 obs if k3 == 10, ///
+						msize(vsmall vsmall) mcolor(orange)) || ///
+						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
+						axis(2) labsize(vsmall) angle(0) ) yscale( ///
+						range($from_y $bmax ) axis(2)) ) || ///
+						(scatter b_sig obs, yaxis(2) mcolor(cranberry%75) ylab(, ///
+						axis(2) labsize(vsmall) angle(0) ) yscale( ///
+						range($from_y $bmax ) axis(2)) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) yaxis(2) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(cranberry%50) yaxis(2)  ///
+						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
+						legend(order(5 6) cols(2) size(small) rowgap(.5) pos(12)) ///
+						saving("$sfig/v21_reg1_cty`l'", replace)
+restore
+
+
+************************************************************************
+**## 8b - weather squared only
+************************************************************************
+
+preserve
+	keep			if varname == 21 & country == `l' & regname == 4
+	sort 			beta
+	gen 			obs = _n
+
+* stack values of the specification indicators
+	gen 			k1 		= 	depvar
+	gen 			k2 		= 	sat + 2 + 2
+	gen 			k3 		= 	ext + 3 + 2 + 2 + 2
+	
+* subtract values of off k2 because of varname numbering
+	replace			k2		=	5 if k2 == 11
+	replace			k2		=	6 if k2 == 12
+	replace			k2		=	7 if k2 == 13
+	
+* label new variables	
+	lab				var obs "Specification # - sorted by effect size"
+
+	lab 			var k1 "Dep. Var."
+	lab				var k2 "Weather Product"
+	lab 			var k3 "Anon. Method"
+
+	qui sum			ci_up
+	global			bmax = r(max)
+	
+	qui sum			ci_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - 2.5*$brange
+	global			gheight	=	31
+
+	twoway 			scatter k1 k2 k3 obs, xlab(0(6)60) xsize(10) ysize(6) ytitle("") ///
+						title("z-Score of GDD: Weather + Weather{sup:2}") ylab(0(1)$gheight ) ///
+						msize(vsmall vsmall vsmall) mcolor(gs10 gs10 gs10) ylabel( ///
+						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "MERRA-2" ///
+						6 "ERA5" 7 "CPC" 8 "*{bf:Weather Product}*" 10 "{bf:HH bilinear}" ///
+						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
+						14 "EA modified bilinear" 15 "EA modified simple" ///
+						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
+						19 "Admin area" 20 "*{bf:Anon. Method}*" 34 " ", ///
+						angle(0) labsize(tiny) tstyle(notick)) || ///
+						(scatter k3 obs if k3 == 10, ///
+						msize(vsmall vsmall) mcolor(orange)) || ///
+						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
+						axis(2) labsize(vsmall) angle(0) ) yscale( ///
+						range($from_y $bmax ) axis(2)) ) || ///
+						(scatter b_sig obs, yaxis(2) mcolor(cranberry%75) ylab(, ///
+						axis(2) labsize(vsmall) angle(0) ) yscale( ///
+						range($from_y $bmax ) axis(2)) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) yaxis(2) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(cranberry%50) yaxis(2)  ///
+						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
+						legend(order(5 6) cols(2) size(small) rowgap(.5) pos(12)) ///
+						saving("$sfig/v21_reg4_cty`l'", replace)
+restore
+
+
+************************************************************************
+**## 8c - weather and FEs
+************************************************************************
+
+preserve
+	keep			if varname == 21 & country == `l' & regname == 2
+	sort 			beta
+	gen 			obs = _n
+
+* stack values of the specification indicators
+	gen 			k1 		= 	depvar
+	gen 			k2 		= 	sat + 2 + 2
+	gen 			k3 		= 	ext + 3 + 2 + 2 + 2
+	
+* subtract values of off k2 because of varname numbering
+	replace			k2		=	5 if k2 == 11
+	replace			k2		=	6 if k2 == 12
+	replace			k2		=	7 if k2 == 13
+	
+* label new variables	
+	lab				var obs "Specification # - sorted by effect size"
+
+	lab 			var k1 "Dep. Var."
+	lab				var k2 "Weather Product"
+	lab 			var k3 "Anon. Method"
+
+	qui sum			ci_up
+	global			bmax = r(max)
+	
+	qui sum			ci_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - 2.5*$brange
+	global			gheight	=	31
+
+	twoway 			scatter k1 k2 k3 obs, xlab(0(6)60) xsize(10) ysize(6) xtitle("") ytitle("") ///
+						title("z-Score of GDD: Weather + FE") ylab(0(1)$gheight ) ///
+						msize(vsmall vsmall vsmall) mcolor(gs10 gs10 gs10) ylabel( ///
+						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "MERRA-2" ///
+						6 "ERA5" 7 "CPC" 8 "*{bf:Weather Product}*" 10 "{bf:HH bilinear}" ///
+						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
+						14 "EA modified bilinear" 15 "EA modified simple" ///
+						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
+						19 "Admin area" 20 "*{bf:Anon. Method}*" 34 " ", ///
+						angle(0) labsize(tiny) tstyle(notick)) || ///
+						(scatter k3 obs if k3 == 10, ///
+						msize(vsmall vsmall) mcolor(orange)) || ///
+						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
+						axis(2) labsize(vsmall) angle(0) ) yscale( ///
+						range($from_y $bmax ) axis(2)) ) || ///
+						(scatter b_sig obs, yaxis(2) mcolor(cranberry%75) ylab(, ///
+						axis(2) labsize(vsmall) angle(0) ) yscale( ///
+						range($from_y $bmax ) axis(2)) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) yaxis(2) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(cranberry%50) yaxis(2)  ///
+						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
+						legend(order(5 6) cols(2) size(small) rowgap(.5) pos(12)) ///
+						saving("$sfig/v21_reg2_cty`l'", replace)
+restore
+
+
+************************************************************************
+**## 8d - weather squared and FEs
+************************************************************************
+
+preserve
+	keep			if varname == 21 & country == `l' & regname == 5
+	sort 			beta
+	gen 			obs = _n
+
+* stack values of the specification indicators
+	gen 			k1 		= 	depvar
+	gen 			k2 		= 	sat + 2 + 2
+	gen 			k3 		= 	ext + 3 + 2 + 2 + 2
+	
+* subtract values of off k2 because of varname numbering
+	replace			k2		=	5 if k2 == 11
+	replace			k2		=	6 if k2 == 12
+	replace			k2		=	7 if k2 == 13
+	
+* label new variables	
+	lab				var obs "Specification # - sorted by effect size"
+
+	lab 			var k1 "Dep. Var."
+	lab				var k2 "Weather Product"
+	lab 			var k3 "Anon. Method"
+
+	qui sum			ci_up
+	global			bmax = r(max)
+	
+	qui sum			ci_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - 2.5*$brange
+	global			gheight	=	31
+
+	twoway 			scatter k1 k2 k3 obs, xlab(0(6)60) xsize(10) ysize(6) ytitle("") ///
+						title("z-Score of GDD: Weather + Weather{sup:2} + FE") ylab(0(1)$gheight ) ///
+						msize(vsmall vsmall vsmall) mcolor(gs10 gs10 gs10) ylabel( ///
+						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "MERRA-2" ///
+						6 "ERA5" 7 "CPC" 8 "*{bf:Weather Product}*" 10 "{bf:HH bilinear}" ///
+						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
+						14 "EA modified bilinear" 15 "EA modified simple" ///
+						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
+						19 "Admin area" 20 "*{bf:Anon. Method}*" 34 " ", ///
+						angle(0) labsize(tiny) tstyle(notick)) || ///
+						(scatter k3 obs if k3 == 10, ///
+						msize(vsmall vsmall) mcolor(orange)) || ///
+						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
+						axis(2) labsize(vsmall) angle(0) ) yscale( ///
+						range($from_y $bmax ) axis(2)) ) || ///
+						(scatter b_sig obs, yaxis(2) mcolor(cranberry%75) ylab(, ///
+						axis(2) labsize(vsmall) angle(0) ) yscale( ///
+						range($from_y $bmax ) axis(2)) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) yaxis(2) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(cranberry%50) yaxis(2)  ///
+						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
+						legend(order(5 6) cols(2) size(small) rowgap(.5) pos(12)) ///
+						saving("$sfig/v21_reg5_cty`l'", replace)
+restore
+
+/*
+************************************************************************
+**## 8e - weather and FEs and inputs
+************************************************************************
+
+preserve
+	keep			if varname == 21 & country == `l' & regname == 4
+	sort 			beta
+	gen 			obs = _n
+
+* stack values of the specification indicators
+	gen 			k1 		= 	depvar
+	gen 			k2 		= 	sat + 2 + 2
+	gen 			k3 		= 	ext + 3 + 2 + 2 + 2
+	
+* subtract values of off k2 because of varname numbering
+	replace			k2		=	5 if k2 == 11
+	replace			k2		=	6 if k2 == 12
+	replace			k2		=	7 if k2 == 13
+	
+* label new variables	
+	lab				var obs "Specification # - sorted by effect size"
+
+	lab 			var k1 "Dep. Var."
+	lab				var k2 "Weather Product"
+	lab 			var k3 "Anon. Method"
+
+	qui sum			ci_up
+	global			bmax = r(max)
+	
+	qui sum			ci_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - 2.5*$brange
+	global			gheight	=	31
+
+	twoway 			scatter k1 k2 k3 obs, xlab(0(6)60) xsize(10) ysize(6) ytitle("") ///
+						title("z-Score of GDD: Weather + FE + Inputs") ylab(0(1)$gheight ) ///
+						msize(vsmall vsmall vsmall) mcolor(gs10 gs10 gs10) ylabel( ///
+						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "MERRA-2" ///
+						6 "ERA5" 7 "CPC" 8 "*{bf:Weather Product}*" 10 "{bf:HH bilinear}" ///
+						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
+						14 "EA modified bilinear" 15 "EA modified simple" ///
+						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
+						19 "Admin area" 20 "*{bf:Anon. Method}*" 34 " ", ///
+						angle(0) labsize(tiny) tstyle(notick)) || ///
+						(scatter k3 obs if k3 == 10, ///
+						msize(vsmall vsmall) mcolor(orange)) || ///
+						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
+						axis(2) labsize(vsmall) angle(0) ) yscale( ///
+						range($from_y $bmax ) axis(2)) ) || ///
+						(scatter b_sig obs, yaxis(2) mcolor(cranberry%75) ylab(, ///
+						axis(2) labsize(vsmall) angle(0) ) yscale( ///
+						range($from_y $bmax ) axis(2)) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) yaxis(2) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(cranberry%50) yaxis(2)  ///
+						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
+						legend(order(5 6) cols(2) size(small) rowgap(.5) pos(12)) ///
+						saving("$sfig/v21_reg3_cty`l'", replace)
+restore			
+
+
+************************************************************************
+**## 8f - weather squared and FEs and inputs
+************************************************************************
+
+preserve
+	keep			if varname == 21 & country == `l' & regname == 6
+	sort 			beta
+	gen 			obs = _n
+
+* stack values of the specification indicators
+	gen 			k1 		= 	depvar
+	gen 			k2 		= 	sat + 2 + 2
+	gen 			k3 		= 	ext + 3 + 2 + 2 + 2
+	
+* subtract values of off k2 because of varname numbering
+	replace			k2		=	5 if k2 == 11
+	replace			k2		=	6 if k2 == 12
+	replace			k2		=	7 if k2 == 13
+	
+* label new variables	
+	lab				var obs "Specification # - sorted by effect size"
+
+	lab 			var k1 "Dep. Var."
+	lab				var k2 "Weather Product"
+	lab 			var k3 "Anon. Method"
+
+	qui sum			ci_up
+	global			bmax = r(max)
+	
+	qui sum			ci_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - 2.5*$brange
+	global			gheight	=	31
+
+	twoway 			scatter k1 k2 k3 obs, xlab(0(6)60) xsize(10) ysize(6) ytitle("") ///
+						title("z-Score of GDD: Weather + Weather{sup:2} + FE + Inputs") ylab(0(1)$gheight ) ///
+						msize(vsmall vsmall vsmall) mcolor(gs10 gs10 gs10) ylabel( ///
+						1 "Quantity" 2 "Value" 3 "*{bf:Dep. Var.}*" 5 "MERRA-2" ///
+						6 "ERA5" 7 "CPC" 8 "*{bf:Weather Product}*" 10 "{bf:HH bilinear}" ///
+						11 "HH simple" 12 "EA bilinear" 13 "EA simple" ///
+						14 "EA modified bilinear" 15 "EA modified simple" ///
+						16 "Admin bilinear" 17 "Admin simple" 18 "EA zone" ///
+						19 "Admin area" 20 "*{bf:Anon. Method}*" 34 " ", ///
+						angle(0) labsize(tiny) tstyle(notick)) || ///
+						(scatter k3 obs if k3 == 10, ///
+						msize(vsmall vsmall) mcolor(orange)) || ///
+						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, ///
+						axis(2) labsize(vsmall) angle(0) ) yscale( ///
+						range($from_y $bmax ) axis(2)) ) || ///
+						(scatter b_sig obs, yaxis(2) mcolor(cranberry%75) ylab(, ///
+						axis(2) labsize(vsmall) angle(0) ) yscale( ///
+						range($from_y $bmax ) axis(2)) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) yaxis(2) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(cranberry%50) yaxis(2)  ///
+						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
+						legend(order(5 6) cols(2) size(small) rowgap(.5) pos(12)) ///
+						saving("$sfig/v21_reg6_cty`l'", replace)
+restore
+*/
+	}
 	
 	
 ************************************************************************
-**## 9 - combine graphs
+**# 9 - combine graphs
 ************************************************************************
 	
 * define loop through levels of the data type variable	
@@ -2023,11 +2416,17 @@ restore
 						col(2) iscale(.5) pos(12) commonscheme
 						
 	graph export 	"$xfig\quad_cty`l'_tp.pdf", as(pdf) replace
+	
+* combine country graphs for z-score
+	grc1leg2 		"$sfig/v21_reg1_cty`l'.gph" "$sfig/v21_reg2_cty`l'.gph" ///
+						"$sfig/v21_reg4_cty`l'.gph" "$sfig/v21_reg5_cty`l'.gph", ///
+						col(2) iscale(.5) pos(12) commonscheme
+						
+	graph export 	"$xfig\zgdd_cty`l'_tp.pdf", as(pdf) replace
 	}
-		
 
 ************************************************************************
-**# 6 - end matter
+**# 10 - end matter
 ************************************************************************
 
 * close the log
