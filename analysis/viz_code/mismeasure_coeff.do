@@ -105,7 +105,7 @@ preserve
 	global			gheight	=	23
 
 	twoway 			scatter k1 k2 k3 obs, xlab(0(4)36) xsize(10) ysize(6) xtitle("") ytitle("") ///
-						title("Mean Daily Rainfall: Ethiopia")  ylab(0(1)$gheight ) ///
+						title("Ethiopia")  ylab(0(1)$gheight ) ///
 						msize(small small small) mcolor(gs10 gs10 gs10) ylabel( ///
 						1 "Weather" 2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "*{bf: Model}*" 6 "Quantity" 7 "Value" 8 "*{bf:Dep. Var.}*" ///
@@ -162,7 +162,7 @@ preserve
 	global			gheight	=	23
 
 	twoway 			scatter k1 k2 k3 obs, xlab(0(4)36) xsize(10) ysize(6) xtitle("") ytitle("") ///
-						title("Mean Daily Rainfall: Malawi")  ylab(0(1)$gheight ) ///
+						title("Malawi")  ylab(0(1)$gheight ) ///
 						msize(small small small) mcolor(gs10 gs10 gs10) ylabel( ///
 						1 "Weather" 2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "*{bf: Model}*" 6 "Quantity" 7 "Value" 8 "*{bf:Dep. Var.}*" ///
@@ -219,7 +219,7 @@ preserve
 	global			gheight	=	23
 
 	twoway 			scatter k1 k2 k3 obs, xlab(0(4)36) xsize(10) ysize(6) xtitle("") ytitle("") ///
-						title("Mean Daily Rainfall: Niger")  ylab(0(1)$gheight ) ///
+						title("Niger")  ylab(0(1)$gheight ) ///
 						msize(small small small) mcolor(gs10 gs10 gs10) ylabel( ///
 						1 "Weather" 2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "*{bf: Model}*" 6 "Quantity" 7 "Value" 8 "*{bf:Dep. Var.}*" ///
@@ -277,7 +277,7 @@ preserve
 	global			gheight	=	23
 
 	twoway 			scatter k1 k2 k3 obs, xlab(0(4)36) xsize(10) ysize(6) xtitle("") ytitle("") ///
-						title("Mean Daily Rainfall: Nigeria")  ylab(0(1)$gheight ) ///
+						title("Nigeria")  ylab(0(1)$gheight ) ///
 						msize(small small small) mcolor(gs10 gs10 gs10) ylabel( ///
 						1 "Weather" 2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "*{bf: Model}*" 6 "Quantity" 7 "Value" 8 "*{bf:Dep. Var.}*" ///
@@ -334,7 +334,7 @@ preserve
 	global			gheight	=	23
 
 	twoway 			scatter k1 k2 k3 obs, xlab(0(4)36) xsize(10) ysize(6) xtitle("") ytitle("") ///
-						title("Mean Daily Rainfall: Tanzania")  ylab(0(1)$gheight ) ///
+						title("Tanzania")  ylab(0(1)$gheight ) ///
 						msize(small small small) mcolor(gs10 gs10 gs10) ylabel( ///
 						1 "Weather" 2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "*{bf: Model}*" 6 "Quantity" 7 "Value" 8 "*{bf:Dep. Var.}*" ///
@@ -392,7 +392,7 @@ preserve
 	global			gheight	=	23
 
 	twoway 			scatter k1 k2 k3 obs, xlab(0(4)36) xsize(10) ysize(6) xtitle("") ytitle("") ///
-						title("Mean Daily Rainfall: Uganda")  ylab(0(1)$gheight ) ///
+						title("Uganda")  ylab(0(1)$gheight ) ///
 						msize(small small small) mcolor(gs10 gs10 gs10) ylabel( ///
 						1 "Weather" 2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "*{bf: Model}*" 6 "Quantity" 7 "Value" 8 "*{bf:Dep. Var.}*" ///
@@ -808,7 +808,7 @@ preserve
 	global			gheight	=	23
 
 	twoway 			scatter k1 k2 k3 obs, xlab(0(2)18) xsize(10) ysize(6) xtitle("") ytitle("") ///
-						title("Growing Degree Days: Ethiopia")  ylab(0(1)$gheight ) ///
+						title("Ethiopia")  ylab(0(1)$gheight ) ///
 						msize(small small small) mcolor(gs10 gs10 gs10) ylabel( ///
 						1 "Weather" 2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "*{bf: Model}*" 6 "Quantity" 7 "Value" 8 "*{bf:Dep. Var.}*" ///
@@ -869,7 +869,7 @@ preserve
 	global			gheight	=	23
 
 	twoway 			scatter k1 k2 k3 obs, xlab(0(2)18) xsize(10) ysize(6) xtitle("") ytitle("") ///
-						title("Growing Degree Days: Malawi")  ylab(0(1)$gheight ) ///
+						title("Malawi")  ylab(0(1)$gheight ) ///
 						msize(small small small) mcolor(gs10 gs10 gs10) ylabel( ///
 						1 "Weather" 2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "*{bf: Model}*" 6 "Quantity" 7 "Value" 8 "*{bf:Dep. Var.}*" ///
@@ -930,7 +930,7 @@ preserve
 	global			gheight	=	23
 
 	twoway 			scatter k1 k2 k3 obs, xlab(0(2)18) xsize(10) ysize(6) xtitle("") ytitle("") ///
-						title("Growing Degree Days: Niger")  ylab(0(1)$gheight ) ///
+						title("Niger")  ylab(0(1)$gheight ) ///
 						msize(small small small) mcolor(gs10 gs10 gs10) ylabel( ///
 						1 "Weather" 2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "*{bf: Model}*" 6 "Quantity" 7 "Value" 8 "*{bf:Dep. Var.}*" ///
@@ -992,7 +992,7 @@ preserve
 	global			gheight	=	23
 
 	twoway 			scatter k1 k2 k3 obs, xlab(0(2)18) xsize(10) ysize(6) xtitle("") ytitle("") ///
-						title("Growing Degree Days: Nigeria")  ylab(0(1)$gheight ) ///
+						title("Nigeria")  ylab(0(1)$gheight ) ///
 						msize(small small small) mcolor(gs10 gs10 gs10) ylabel( ///
 						1 "Weather" 2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "*{bf: Model}*" 6 "Quantity" 7 "Value" 8 "*{bf:Dep. Var.}*" ///
@@ -1053,7 +1053,7 @@ preserve
 	global			gheight	=	23
 
 	twoway 			scatter k1 k2 k3 obs, xlab(0(2)18) xsize(10) ysize(6) xtitle("") ytitle("") ///
-						title("Growing Degree Days: Tanzania")  ylab(0(1)$gheight ) ///
+						title("Tanzania")  ylab(0(1)$gheight ) ///
 						msize(small small small) mcolor(gs10 gs10 gs10) ylabel( ///
 						1 "Weather" 2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "*{bf: Model}*" 6 "Quantity" 7 "Value" 8 "*{bf:Dep. Var.}*" ///
@@ -1115,7 +1115,7 @@ preserve
 	global			gheight	=	23
 
 	twoway 			scatter k1 k2 k3 obs, xlab(0(2)18) xsize(10) ysize(6) xtitle("") ytitle("") ///
-						title("Growing Degree Days: Uganda")  ylab(0(1)$gheight ) ///
+						title("Uganda")  ylab(0(1)$gheight ) ///
 						msize(small small small) mcolor(gs10 gs10 gs10) ylabel( ///
 						1 "Weather" 2 "Weather + FE" 3 "Weather + FE + Inputs" ///
 						4 "*{bf: Model}*" 6 "Quantity" 7 "Value" 8 "*{bf:Dep. Var.}*" ///
