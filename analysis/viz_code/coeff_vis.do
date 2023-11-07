@@ -1,8 +1,8 @@
-* Project: WB Weather
+* Project: WB Weather - UGA
 * Created on: September 2019
 * Created by: jdm
-* Edited by: alj
-* Last edit: 13 November 2020 
+* Edited by: jdm
+* Last edit: 17 November 2023
 * Stata v.16.1 
 
 * does
@@ -555,7 +555,7 @@ restore
 * **********************************************************************
 * 2 - generate random number to select extraction method
 * **********************************************************************
-
+/*
 * choose one extraction method at random
 preserve
 	clear			all
@@ -569,6 +569,12 @@ restore
 
 * keep extraction 3	
 	keep			if ext == 3
+*/
+* real HH bilinear extraction was 1 so we go with that
+	keep			if ext == 1
+	
+* we also only want uga for this analysis
+	keep			if country == 7
 		
 * **********************************************************************
 * 3 - generate serrbar graphs by satellite
@@ -610,9 +616,9 @@ preserve
 						yline(0, lcolor(maroon) ) ///
 						ytitle("Coefficient") title("Mean Daily Rainfall") ///
 						xline(72 144 216 288 360 432) xmtick(36(72)396)  ///
-						xlabel(0 "0" 36 "Rainfall 1" 72 "72" 108 "Rainfall 2" ///
-						144 "144" 180 "Rainfall 3" 216 "216" 252 "Rainfall 4" ///
-						288 "288" 324 "Rainfall 5" 360 "360" 396 "Rainfall 6" ///
+						xlabel(0 "0" 36 "CHIRPS" 72 "72" 108 "CPC" ///
+						144 "144" 180 "MERRA-2" 216 "216" 252 "ARC2" ///
+						288 "288" 324 "ERA5" 360 "360" 396 "TAMSAT" ///
 						432 "432", alt) xtitle("") ), legend(pos(12) col(2) ///
 						order(1 2))  saving("$sfig/v01_sat", replace)
 restore
@@ -632,9 +638,9 @@ preserve
 						yline(0, lcolor(maroon) ) ///
 						ytitle("Coefficient") title("Median Daily Rainfall") ///
 						xline(72 144 216 288 360 432) xmtick(36(72)396)  ///
-						xlabel(0 "0" 36 "Rainfall 1" 72 "72" 108 "Rainfall 2" ///
-						144 "144" 180 "Rainfall 3" 216 "216" 252 "Rainfall 4" ///
-						288 "288" 324 "Rainfall 5" 360 "360" 396 "Rainfall 6" ///
+						xlabel(0 "0" 36 "CHIRPS" 72 "72" 108 "CPC" ///
+						144 "144" 180 "MERRA-2" 216 "216" 252 "ARC2" ///
+						288 "288" 324 "ERA5" 360 "360" 396 "TAMSAT" ///
 						432 "432", alt) xtitle("") ), legend(pos(12) col(2) ///
 						order(1 2))  saving("$sfig/v02_sat", replace)
 restore	
@@ -654,9 +660,9 @@ preserve
 						yline(0, lcolor(maroon) ) ///
 						ytitle("Coefficient") title("Variance of Daily Rainfall") ///
 						xline(72 144 216 288 360 432) xmtick(36(72)396)  ///
-						xlabel(0 "0" 36 "Rainfall 1" 72 "72" 108 "Rainfall 2" ///
-						144 "144" 180 "Rainfall 3" 216 "216" 252 "Rainfall 4" ///
-						288 "288" 324 "Rainfall 5" 360 "360" 396 "Rainfall 6" ///
+						xlabel(0 "0" 36 "CHIRPS" 72 "72" 108 "CPC" ///
+						144 "144" 180 "MERRA-2" 216 "216" 252 "ARC2" ///
+						288 "288" 324 "ERA5" 360 "360" 396 "TAMSAT" ///
 						432 "432", alt) xtitle("") ), legend(pos(12) col(2) ///
 						order(1 2))  saving("$sfig/v03_sat", replace)
 restore
@@ -676,9 +682,9 @@ preserve
 						yline(0, lcolor(maroon) ) ///
 						ytitle("Coefficient") title("Skew of Daily Rainfall") ///
 						xline(72 144 216 288 360 432) xmtick(36(72)396)  ///
-						xlabel(0 "0" 36 "Rainfall 1" 72 "72" 108 "Rainfall 2" ///
-						144 "144" 180 "Rainfall 3" 216 "216" 252 "Rainfall 4" ///
-						288 "288" 324 "Rainfall 5" 360 "360" 396 "Rainfall 6" ///
+						xlabel(0 "0" 36 "CHIRPS" 72 "72" 108 "CPC" ///
+						144 "144" 180 "MERRA-2" 216 "216" 252 "ARC2" ///
+						288 "288" 324 "ERA5" 360 "360" 396 "TAMSAT" ///
 						432 "432", alt) xtitle("") ), legend(pos(12) col(2) ///
 						order(1 2))  saving("$sfig/v04_sat", replace)
 restore
@@ -698,9 +704,9 @@ preserve
 						yline(0, lcolor(maroon) ) ///
 						ytitle("Coefficient") title("Total Seasonal Rainfall") ///
 						xline(72 144 216 288 360 432) xmtick(36(72)396)  ///
-						xlabel(0 "0" 36 "Rainfall 1" 72 "72" 108 "Rainfall 2" ///
-						144 "144" 180 "Rainfall 3" 216 "216" 252 "Rainfall 4" ///
-						288 "288" 324 "Rainfall 5" 360 "360" 396 "Rainfall 6" ///
+						xlabel(0 "0" 36 "CHIRPS" 72 "72" 108 "CPC" ///
+						144 "144" 180 "MERRA-2" 216 "216" 252 "ARC2" ///
+						288 "288" 324 "ERA5" 360 "360" 396 "TAMSAT" ///
 						432 "432", alt) xtitle("") ), legend(pos(12) col(2) ///
 						order(1 2))  saving("$sfig/v05_sat", replace)
 restore
@@ -720,9 +726,9 @@ preserve
 						yline(0, lcolor(maroon) ) ///
 						ytitle("Coefficient") title("Deviation in Total Seasonal Rainfall") ///
 						xline(72 144 216 288 360 432) xmtick(36(72)396)  ///
-						xlabel(0 "0" 36 "Rainfall 1" 72 "72" 108 "Rainfall 2" ///
-						144 "144" 180 "Rainfall 3" 216 "216" 252 "Rainfall 4" ///
-						288 "288" 324 "Rainfall 5" 360 "360" 396 "Rainfall 6" ///
+						xlabel(0 "0" 36 "CHIRPS" 72 "72" 108 "CPC" ///
+						144 "144" 180 "MERRA-2" 216 "216" 252 "ARC2" ///
+						288 "288" 324 "ERA5" 360 "360" 396 "TAMSAT" ///
 						432 "432", alt) xtitle("") ), legend(pos(12) col(2) ///
 						order(1 2))  saving("$sfig/v06_sat", replace)
 restore
@@ -742,9 +748,9 @@ preserve
 						yline(0, lcolor(maroon) ) ///
 						ytitle("Coefficient") title("z-Score of Total Seasonal Rainfall") ///
 						xline(72 144 216 288 360 432) xmtick(36(72)396)  ///
-						xlabel(0 "0" 36 "Rainfall 1" 72 "72" 108 "Rainfall 2" ///
-						144 "144" 180 "Rainfall 3" 216 "216" 252 "Rainfall 4" ///
-						288 "288" 324 "Rainfall 5" 360 "360" 396 "Rainfall 6" ///
+						xlabel(0 "0" 36 "CHIRPS" 72 "72" 108 "CPC" ///
+						144 "144" 180 "MERRA-2" 216 "216" 252 "ARC2" ///
+						288 "288" 324 "ERA5" 360 "360" 396 "TAMSAT" ///
 						432 "432", alt) xtitle("") ), legend(pos(12) col(2) ///
 						order(1 2))  saving("$sfig/v07_sat", replace)
 restore
@@ -764,9 +770,9 @@ preserve
 						yline(0, lcolor(maroon) ) ///
 						ytitle("Coefficient") title("Number of Days with Rain") ///
 						xline(72 144 216 288 360 432) xmtick(36(72)396)  ///
-						xlabel(0 "0" 36 "Rainfall 1" 72 "72" 108 "Rainfall 2" ///
-						144 "144" 180 "Rainfall 3" 216 "216" 252 "Rainfall 4" ///
-						288 "288" 324 "Rainfall 5" 360 "360" 396 "Rainfall 6" ///
+						xlabel(0 "0" 36 "CHIRPS" 72 "72" 108 "CPC" ///
+						144 "144" 180 "MERRA-2" 216 "216" 252 "ARC2" ///
+						288 "288" 324 "ERA5" 360 "360" 396 "TAMSAT" ///
 						432 "432", alt) xtitle("") ), legend(pos(12) col(2) ///
 						order(1 2))  saving("$sfig/v08_sat", replace)
 restore
@@ -786,9 +792,9 @@ preserve
 						yline(0, lcolor(maroon) ) ///
 						ytitle("Coefficient") title("Deviation in Number of Days with Rain") ///
 						xline(72 144 216 288 360 432) xmtick(36(72)396)  ///
-						xlabel(0 "0" 36 "Rainfall 1" 72 "72" 108 "Rainfall 2" ///
-						144 "144" 180 "Rainfall 3" 216 "216" 252 "Rainfall 4" ///
-						288 "288" 324 "Rainfall 5" 360 "360" 396 "Rainfall 6" ///
+						xlabel(0 "0" 36 "CHIRPS" 72 "72" 108 "CPC" ///
+						144 "144" 180 "MERRA-2" 216 "216" 252 "ARC2" ///
+						288 "288" 324 "ERA5" 360 "360" 396 "TAMSAT" ///
 						432 "432", alt) xtitle("") ), legend(pos(12) col(2) ///
 						order(1 2))  saving("$sfig/v09_sat", replace)
 restore
@@ -808,9 +814,9 @@ preserve
 						yline(0, lcolor(maroon) ) ///
 						ytitle("Coefficient") title("Number of Days without Rain") ///
 						xline(72 144 216 288 360 432) xmtick(36(72)396)  ///
-						xlabel(0 "0" 36 "Rainfall 1" 72 "72" 108 "Rainfall 2" ///
-						144 "144" 180 "Rainfall 3" 216 "216" 252 "Rainfall 4" ///
-						288 "288" 324 "Rainfall 5" 360 "360" 396 "Rainfall 6" ///
+						xlabel(0 "0" 36 "CHIRPS" 72 "72" 108 "CPC" ///
+						144 "144" 180 "MERRA-2" 216 "216" 252 "ARC2" ///
+						288 "288" 324 "ERA5" 360 "360" 396 "TAMSAT" ///
 						432 "432", alt) xtitle("") ), legend(pos(12) col(2) ///
 						order(1 2))  saving("$sfig/v10_sat", replace)
 restore
@@ -830,9 +836,9 @@ preserve
 						yline(0, lcolor(maroon) ) ///
 						ytitle("Coefficient") title("Deviation in Number of Days without Rain") ///
 						xline(72 144 216 288 360 432) xmtick(36(72)396)  ///
-						xlabel(0 "0" 36 "Rainfall 1" 72 "72" 108 "Rainfall 2" ///
-						144 "144" 180 "Rainfall 3" 216 "216" 252 "Rainfall 4" ///
-						288 "288" 324 "Rainfall 5" 360 "360" 396 "Rainfall 6" ///
+						xlabel(0 "0" 36 "CHIRPS" 72 "72" 108 "CPC" ///
+						144 "144" 180 "MERRA-2" 216 "216" 252 "ARC2" ///
+						288 "288" 324 "ERA5" 360 "360" 396 "TAMSAT" ///
 						432 "432", alt) xtitle("") ), legend(pos(12) col(2) ///
 						order(1 2))  saving("$sfig/v11_sat", replace)
 restore
@@ -852,9 +858,9 @@ preserve
 						yline(0, lcolor(maroon) ) ///
 						ytitle("Coefficient") title("Percentage of Days with Rain") ///
 						xline(72 144 216 288 360 432) xmtick(36(72)396)  ///
-						xlabel(0 "0" 36 "Rainfall 1" 72 "72" 108 "Rainfall 2" ///
-						144 "144" 180 "Rainfall 3" 216 "216" 252 "Rainfall 4" ///
-						288 "288" 324 "Rainfall 5" 360 "360" 396 "Rainfall 6" ///
+						xlabel(0 "0" 36 "CHIRPS" 72 "72" 108 "CPC" ///
+						144 "144" 180 "MERRA-2" 216 "216" 252 "ARC2" ///
+						288 "288" 324 "ERA5" 360 "360" 396 "TAMSAT" ///
 						432 "432", alt) xtitle("") ), legend(pos(12) col(2) ///
 						order(1 2))  saving("$sfig/v12_sat", replace)
 restore
@@ -874,9 +880,9 @@ preserve
 						yline(0, lcolor(maroon) ) ///
 						ytitle("Coefficient") title("Deviation in Percentage of Days with Rain") ///
 						xline(72 144 216 288 360 432) xmtick(36(72)396)  ///
-						xlabel(0 "0" 36 "Rainfall 1" 72 "72" 108 "Rainfall 2" ///
-						144 "144" 180 "Rainfall 3" 216 "216" 252 "Rainfall 4" ///
-						288 "288" 324 "Rainfall 5" 360 "360" 396 "Rainfall 6" ///
+						xlabel(0 "0" 36 "CHIRPS" 72 "72" 108 "CPC" ///
+						144 "144" 180 "MERRA-2" 216 "216" 252 "ARC2" ///
+						288 "288" 324 "ERA5" 360 "360" 396 "TAMSAT" ///
 						432 "432", alt) xtitle("") ), legend(pos(12) col(2) ///
 						order(1 2))  saving("$sfig/v13_sat", replace)
 restore
@@ -896,9 +902,9 @@ preserve
 						yline(0, lcolor(maroon) ) ///
 						ytitle("Coefficient") title("Longest Dry Spell") ///
 						xline(72 144 216 288 360 432) xmtick(36(72)396)  ///
-						xlabel(0 "0" 36 "Rainfall 1" 72 "72" 108 "Rainfall 2" ///
-						144 "144" 180 "Rainfall 3" 216 "216" 252 "Rainfall 4" ///
-						288 "288" 324 "Rainfall 5" 360 "360" 396 "Rainfall 6" ///
+						xlabel(0 "0" 36 "CHIRPS" 72 "72" 108 "CPC" ///
+						144 "144" 180 "MERRA-2" 216 "216" 252 "ARC2" ///
+						288 "288" 324 "ERA5" 360 "360" 396 "TAMSAT" ///
 						432 "432", alt) xtitle("") ), legend(pos(12) col(2) ///
 						order(1 2))  saving("$sfig/v14_sat", replace)
 restore
@@ -1163,48 +1169,48 @@ preserve
 	esttab 				sig_1* ///
 							using "$xtab/var_sig_eth_rf.tex", ///
 							main(mean) cells(mean(fmt(2))) label ///
-							mtitle("Rainfall 1" "Rainfall 2" "Rainfall 3" ///
-							"Rainfall 4" "Rainfall 5" "Rainfall 6") ///
+							mtitle("CHIRPS" "CPC" "MERRA-2" ///
+							"ARC2" "ERA5" "TAMSAT") ///
 							nonum collabels(none) booktabs f replace
 							
 * output table - rainfall malawi
 	esttab 				sig_2* ///
 							using "$xtab/var_sig_mwi_rf.tex", ///
 							main(mean) cells(mean(fmt(2))) label ///
-							mtitle("Rainfall 1" "Rainfall 2" "Rainfall 3" ///
-							"Rainfall 4" "Rainfall 5" "Rainfall 6") ///
+							mtitle("CHIRPS" "CPC" "MERRA-2" ///
+							"ARC2" "ERA5" "TAMSAT") ///
 							nonum collabels(none) booktabs f replace
 							
 * output table - rainfall niger
 	esttab 				sig_4* ///
 							using "$xtab/var_sig_ngr_rf.tex", ///
 							main(mean) cells(mean(fmt(2))) label ///
-							mtitle("Rainfall 1" "Rainfall 2" "Rainfall 3" ///
-							"Rainfall 4" "Rainfall 5" "Rainfall 6") ///
+							mtitle("CHIRPS" "CPC" "MERRA-2" ///
+							"ARC2" "ERA5" "TAMSAT") ///
 							nonum collabels(none) booktabs f replace
 							
 * output table - rainfall nigeria
 	esttab 				sig_5* ///
 							using "$xtab/var_sig_nga_rf.tex", ///
 							main(mean) cells(mean(fmt(2))) label ///
-							mtitle("Rainfall 1" "Rainfall 2" "Rainfall 3" ///
-							"Rainfall 4" "Rainfall 5" "Rainfall 6") ///
+							mtitle("CHIRPS" "CPC" "MERRA-2" ///
+							"ARC2" "ERA5" "TAMSAT") ///
 							nonum collabels(none) booktabs f replace
 							
 * output table - rainfall tanzania
 	esttab 				sig_6* ///
 							using "$xtab/var_sig_tza_rf.tex", ///
 							main(mean) cells(mean(fmt(2))) label ///
-							mtitle("Rainfall 1" "Rainfall 2" "Rainfall 3" ///
-							"Rainfall 4" "Rainfall 5" "Rainfall 6") ///
+							mtitle("CHIRPS" "CPC" "MERRA-2" ///
+							"ARC2" "ERA5" "TAMSAT") ///
 							nonum collabels(none) booktabs f replace
 							
 * output table - rainfall uganda
 	esttab 				sig_7* ///
 							using "$xtab/var_sig_uga_rf.tex", ///
 							main(mean) cells(mean(fmt(2))) label ///
-							mtitle("Rainfall 1" "Rainfall 2" "Rainfall 3" ///
-							"Rainfall 4" "Rainfall 5" "Rainfall 6") ///
+							mtitle("CHIRPS" "CPC" "MERRA-2" ///
+							"ARC2" "ERA5" "TAMSAT") ///
 							nonum collabels(none) booktabs f replace
 restore
 
@@ -1297,7 +1303,7 @@ restore
 * **********************************************************************
 * 3a - specification curves for ethiopia
 * **********************************************************************
-
+/*
 * mean daily rainfall
 preserve
 	keep			if varname == 1 & country == 1
@@ -1337,8 +1343,8 @@ preserve
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
 						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
-						13 "Rainfall 1" 14 "Rainfall 2" 15 "Rainfall 3" ///
-						16 "Rainfall 4" 17 "Rainfall 5" 18 "Rainfall 6" ///
+						13 "CHIRPS" 14 "CPC" 15 "MERRA-2" ///
+						16 "ARC2" 17 "ERA5" 18 "TAMSAT" ///
 						19 "*{bf:Rainfall Product}*" 28 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
@@ -1393,8 +1399,8 @@ preserve
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
 						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
-						13 "Rainfall 1" 14 "Rainfall 2" 15 "Rainfall 3" ///
-						16 "Rainfall 4" 17 "Rainfall 5" 18 "Rainfall 6" ///
+						13 "CHIRPS" 14 "CPC" 15 "MERRA-2" ///
+						16 "ARC2" 17 "ERA5" 18 "TAMSAT" ///
 						19 "*{bf:Rainfall Product}*" 28 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
@@ -1449,8 +1455,8 @@ preserve
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
 						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
-						13 "Rainfall 1" 14 "Rainfall 2" 15 "Rainfall 3" ///
-						16 "Rainfall 4" 17 "Rainfall 5" 18 "Rainfall 6" ///
+						13 "CHIRPS" 14 "CPC" 15 "MERRA-2" ///
+						16 "ARC2" 17 "ERA5" 18 "TAMSAT" ///
 						19 "*{bf:Rainfall Product}*" 28 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
@@ -1517,8 +1523,8 @@ preserve
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
 						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
-						13 "Rainfall 1" 14 "Rainfall 2" 15 "Rainfall 3" ///
-						16 "Rainfall 4" 17 "Rainfall 5" 18 "Rainfall 6" ///
+						13 "CHIRPS" 14 "CPC" 15 "MERRA-2" ///
+						16 "ARC2" 17 "ERA5" 18 "TAMSAT" ///
 						19 "*{bf:Rainfall Product}*" 28 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
@@ -1573,8 +1579,8 @@ preserve
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
 						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
-						13 "Rainfall 1" 14 "Rainfall 2" 15 "Rainfall 3" ///
-						16 "Rainfall 4" 17 "Rainfall 5" 18 "Rainfall 6" ///
+						13 "CHIRPS" 14 "CPC" 15 "MERRA-2" ///
+						16 "ARC2" 17 "ERA5" 18 "TAMSAT" ///
 						19 "*{bf:Rainfall Product}*" 28 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
@@ -1629,8 +1635,8 @@ preserve
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
 						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
-						13 "Rainfall 1" 14 "Rainfall 2" 15 "Rainfall 3" ///
-						16 "Rainfall 4" 17 "Rainfall 5" 18 "Rainfall 6" ///
+						13 "CHIRPS" 14 "CPC" 15 "MERRA-2" ///
+						16 "ARC2" 17 "ERA5" 18 "TAMSAT" ///
 						19 "*{bf:Rainfall Product}*" 28 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
@@ -1697,8 +1703,8 @@ preserve
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
 						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
-						13 "Rainfall 1" 14 "Rainfall 2" 15 "Rainfall 3" ///
-						16 "Rainfall 4" 17 "Rainfall 5" 18 "Rainfall 6" ///
+						13 "CHIRPS" 14 "CPC" 15 "MERRA-2" ///
+						16 "ARC2" 17 "ERA5" 18 "TAMSAT" ///
 						19 "*{bf:Rainfall Product}*" 28 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
@@ -1753,8 +1759,8 @@ preserve
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
 						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
-						13 "Rainfall 1" 14 "Rainfall 2" 15 "Rainfall 3" ///
-						16 "Rainfall 4" 17 "Rainfall 5" 18 "Rainfall 6" ///
+						13 "CHIRPS" 14 "CPC" 15 "MERRA-2" ///
+						16 "ARC2" 17 "ERA5" 18 "TAMSAT" ///
 						19 "*{bf:Rainfall Product}*" 28 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
@@ -1809,8 +1815,8 @@ preserve
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
 						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
-						13 "Rainfall 1" 14 "Rainfall 2" 15 "Rainfall 3" ///
-						16 "Rainfall 4" 17 "Rainfall 5" 18 "Rainfall 6" ///
+						13 "CHIRPS" 14 "CPC" 15 "MERRA-2" ///
+						16 "ARC2" 17 "ERA5" 18 "TAMSAT" ///
 						19 "*{bf:Rainfall Product}*" 28 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
@@ -1877,8 +1883,8 @@ preserve
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
 						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
-						13 "Rainfall 1" 14 "Rainfall 2" 15 "Rainfall 3" ///
-						16 "Rainfall 4" 17 "Rainfall 5" 18 "Rainfall 6" ///
+						13 "CHIRPS" 14 "CPC" 15 "MERRA-2" ///
+						16 "ARC2" 17 "ERA5" 18 "TAMSAT" ///
 						19 "*{bf:Rainfall Product}*" 28 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
@@ -1933,8 +1939,8 @@ preserve
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
 						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
-						13 "Rainfall 1" 14 "Rainfall 2" 15 "Rainfall 3" ///
-						16 "Rainfall 4" 17 "Rainfall 5" 18 "Rainfall 6" ///
+						13 "CHIRPS" 14 "CPC" 15 "MERRA-2" ///
+						16 "ARC2" 17 "ERA5" 18 "TAMSAT" ///
 						19 "*{bf:Rainfall Product}*" 28 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
@@ -1989,8 +1995,8 @@ preserve
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
 						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
-						13 "Rainfall 1" 14 "Rainfall 2" 15 "Rainfall 3" ///
-						16 "Rainfall 4" 17 "Rainfall 5" 18 "Rainfall 6" ///
+						13 "CHIRPS" 14 "CPC" 15 "MERRA-2" ///
+						16 "ARC2" 17 "ERA5" 18 "TAMSAT" ///
 						19 "*{bf:Rainfall Product}*" 28 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
@@ -2057,8 +2063,8 @@ preserve
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
 						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
-						13 "Rainfall 1" 14 "Rainfall 2" 15 "Rainfall 3" ///
-						16 "Rainfall 4" 17 "Rainfall 5" 18 "Rainfall 6" ///
+						13 "CHIRPS" 14 "CPC" 15 "MERRA-2" ///
+						16 "ARC2" 17 "ERA5" 18 "TAMSAT" ///
 						19 "*{bf:Rainfall Product}*" 28 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
@@ -2113,8 +2119,8 @@ preserve
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
 						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
-						13 "Rainfall 1" 14 "Rainfall 2" 15 "Rainfall 3" ///
-						16 "Rainfall 4" 17 "Rainfall 5" 18 "Rainfall 6" ///
+						13 "CHIRPS" 14 "CPC" 15 "MERRA-2" ///
+						16 "ARC2" 17 "ERA5" 18 "TAMSAT" ///
 						19 "*{bf:Rainfall Product}*" 28 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
@@ -2169,8 +2175,8 @@ preserve
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
 						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
-						13 "Rainfall 1" 14 "Rainfall 2" 15 "Rainfall 3" ///
-						16 "Rainfall 4" 17 "Rainfall 5" 18 "Rainfall 6" ///
+						13 "CHIRPS" 14 "CPC" 15 "MERRA-2" ///
+						16 "ARC2" 17 "ERA5" 18 "TAMSAT" ///
 						19 "*{bf:Rainfall Product}*" 28 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
@@ -2193,7 +2199,7 @@ restore
 						
 	graph export 	"$xfig\tza_rain_sat.pdf", as(pdf) replace			
 
-	
+*/
 * **********************************************************************
 * 3f - specification curves for uganda
 * **********************************************************************
@@ -2237,8 +2243,8 @@ preserve
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
 						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
-						13 "Rainfall 1" 14 "Rainfall 2" 15 "Rainfall 3" ///
-						16 "Rainfall 4" 17 "Rainfall 5" 18 "Rainfall 6" ///
+						13 "CHIRPS" 14 "CPC" 15 "MERRA-2" ///
+						16 "ARC2" 17 "ERA5" 18 "TAMSAT" ///
 						19 "*{bf:Rainfall Product}*" 28 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
@@ -2293,8 +2299,8 @@ preserve
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
 						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
-						13 "Rainfall 1" 14 "Rainfall 2" 15 "Rainfall 3" ///
-						16 "Rainfall 4" 17 "Rainfall 5" 18 "Rainfall 6" ///
+						13 "CHIRPS" 14 "CPC" 15 "MERRA-2" ///
+						16 "ARC2" 17 "ERA5" 18 "TAMSAT" ///
 						19 "*{bf:Rainfall Product}*" 28 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
@@ -2349,8 +2355,8 @@ preserve
 						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
 						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
 						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
-						13 "Rainfall 1" 14 "Rainfall 2" 15 "Rainfall 3" ///
-						16 "Rainfall 4" 17 "Rainfall 5" 18 "Rainfall 6" ///
+						13 "CHIRPS" 14 "CPC" 15 "MERRA-2" ///
+						16 "ARC2" 17 "ERA5" 18 "TAMSAT" ///
 						19 "*{bf:Rainfall Product}*" 28 " ", angle(0) ///
 						labsize(vsmall) tstyle(notick)) || ///
 						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
@@ -2366,10 +2372,67 @@ preserve
 						saving("$sfig/uga_v08_sat", replace)						
 restore
 
+* longest dry spell
+preserve
+	keep			if varname == 14 & country == 7
+	sort 			beta
+	gen 			obs = _n
+
+* stack values of the specification indicators
+	gen 			k1 		= 	regname
+	gen 			k2 		= 	depvar + 6 + 2
+	gen				k3		=	sat + 6 + 2 + 2 + 2
+	
+* label new variables	
+	lab				var obs "Specification # - sorted by model & effect size"
+
+	lab 			var k1 "Model"
+	lab 			var k2 "Dependant Variable"
+	lab 			var k3 "Weather Product"
+
+	sum			 	ci_up
+	global			bmax = r(max)
+	
+	sum			 	ci_lo
+	global			bmin = r(min)
+	
+	global			brange	=	$bmax - $bmin
+	global			from_y	=	$bmin - 2.5*$brange
+	global			gheight	=	28
+	  
+	di $bmin
+	di $brange
+	di $from_y
+	di $gheight
+			
+	twoway 			scatter k1 k2 k3 obs, xlab(0(4)72) xsize(10) ysize(6) msize(small small small)  ///
+						title("Longest Dry Spell") ylab(0(1)$gheight ) ylabel(1 "Weather" ///
+						2 "Weather + FE" 3 "Weather + FE + Inputs" ///
+						4 "Weather + Weather{sup:2}" 5 "Weather + Weather{sup:2} + FE" /// 
+						6 "Weather + Weather{sup:2} + FE + Inputs" 7 "*{bf:Model}*" ///
+						9 "Quantity" 10 "Value" 11 "*{bf:Dependant Variable}*" ///
+						13 "CHIRPS" 14 "CPC" 15 "MERRA-2" ///
+						16 "ARC2" 17 "ERA5" 18 "TAMSAT" ///
+						19 "*{bf:Rainfall Product}*" 28 " ", angle(0) ///
+						labsize(vsmall) tstyle(notick)) || ///
+						(scatter b_ns obs, yaxis(2) mcolor(black%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(scatter b_sig obs, yaxis(2) mcolor(edkblue%75) ylab(, axis(2) ///
+						labsize(tiny) angle(0) ) yscale(range($from_y $bmax ) axis(2)) ) || ///
+						(rbar ci_lo ci_up obs if b_sig == ., ///
+						barwidth(.2) color(black%50) yaxis(2) ) || ///
+						(rbar ci_lo ci_up obs if b_sig != ., ///
+						barwidth(.2) color(edkblue%50) yaxis(2)  ///
+						yline(0, lcolor(maroon) axis(2) lstyle(solid) ) ), ///
+						legend(order(4 5) cols(2) size(small) rowgap(.5) pos(12)) ///
+						saving("$sfig/uga_v14_sat", replace)						
+restore
+
 * combine varname specification curves
 	grc1leg2 		"$sfig/uga_v01_sat.gph" "$sfig/uga_v05_sat.gph"  ///
-						"$sfig/uga_v08_sat.gph", col(2) iscale(.5) ///
-						ring(0) pos(5) holes(4) commonscheme
+						"$sfig/uga_v08_sat.gph" "$sfig/uga_v14_sat.gph", ///
+						col(2) iscale(.5) ///
+						ring(0) pos(12) commonscheme
 						
 	graph export 	"$xfig\uga_rain_sat.pdf", as(pdf) replace
 						
