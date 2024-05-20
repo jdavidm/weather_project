@@ -21,10 +21,6 @@ Contributors:
 * Brian McGreal (Data curation)
 * Alison Conley (Data curation)
 * Emil Kee-Tui (Data curation)
-* Reece Branham (Data curation)
-* Rodrigo Guerra Su (Data curation)
-* Jacob Taylor (Data curation)
-* Kieran Douglas (Data curation)
 
 ## Data cleaning
 
